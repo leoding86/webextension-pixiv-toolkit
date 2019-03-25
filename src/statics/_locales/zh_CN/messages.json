@@ -1,0 +1,155 @@
+{
+   "author": {
+      "message": "画师"
+   },
+   "author_id": {
+      "message": "画师编号"
+   },
+   "downloadFullscreenZipFile": {
+      "message": "下载全屏zip包"
+   },
+   "downloadNormalZipFile": {
+      "message": "下载普通zip包"
+   },
+   "downloadZipFile": {
+      "message": "下载zip包"
+   },
+   "downloadPage": {
+      "message": "下载页数"
+   },
+   "waitDownload": {
+      "message": "请等待上一个下载完成"
+   },
+   "save_page": {
+      "message": "保存页数"
+   },
+   "enable_ugoira_meta": {
+      "message": "可用的元数据（拖动选择）"
+   },
+   "extDescription": {
+      "message": "能够将Pixiv上的动图保存为 GIF 或 WebM 动画，也可以将漫画以原始尺寸打包下载。"
+   },
+   "extName": {
+      "message": "Pixiv动图&漫画下载器"
+   },
+   "generate_gif_btn_complete_text": {
+      "message": "保存GIF"
+   },
+   "generate_gif_btn_error_download_text": {
+      "message": "下载出错"
+   },
+   "generate_gif_btn_text": {
+      "message": "生成GIF"
+   },
+   "generate_webm_btn_complete_text": {
+      "message": "保存WebM"
+   },
+   "generate_webm_btn_text": {
+      "message": "生成WebM"
+   },
+   "generating_webm": {
+      "message": "生成WebM中"
+   },
+   "generating": {
+      "message": "生成中..."
+   },
+   "preparing": {
+      "message": "准备生成..."
+   },
+   "id": {
+      "message": "编号"
+   },
+   "rename_ugoira_file": {
+      "message": "命名动图下载文件"
+   },
+   "setting": {
+      "message": "设置"
+   },
+   "settings": {
+        "message": "设置"
+   },
+   "setting_not_saved": {
+      "message": "设置保存出错"
+   },
+   "setting_saved": {
+      "message": "设置已保存"
+   },
+   "title": {
+      "message": "标题"
+   },
+   "used_ugoira_meta": {
+      "message": "已选择的元数据"
+   },
+   "ugoira_quality": {
+       "message": "生成GIF质量"
+   },
+   "ugoira_best": {
+       "message": "极好"
+   },
+   "ugoira_good": {
+       "message": "较好"
+   },
+   "ugoira_normal": {
+       "message": "普通"
+   },
+   "quality": {
+       "message": "质量"
+   },
+   "extend_duration": {
+       "message": "延长时长"
+   },
+   "extend_duration_desc": {
+       "message": "当原始动图时长低于选择的时长时额外延长动图时长"
+   },
+   "enable_extend_title": {
+       "message": "原始动图时长"
+   },
+   "enable_extend_desc": {
+       "message": "选择0时将禁用延长时长"
+   },
+   "extend_duration_seconds_title": {
+       "message": "至少延长动图时长至选择的时长"
+   },
+   "open_settings": {
+       "message": "打开设置"
+   },
+   "open_settings_intro": {
+       "message": "请右键点击图标选择\"选项\"进入设置页面"
+   },
+   "extend_enable": {
+       "message": "启用延长时长功能"
+   },
+   "rename_ugoira": {
+      "message": "重命名动图文件"
+   },
+   "rename_manga": {
+      "message": "重命名漫画"
+   },
+   "rename_manga_image": {
+      "message": "重命名漫画内图片"
+   },
+   "quick_picks": {
+      "message": "快速选取"
+   },
+   "rename_format": {
+      "message": "重命名格式"
+   },
+   "manga_image_name_prefix": {
+       "message": "漫画图片数字前缀"
+   },
+   "page_num": {
+      "message": "页码"
+   },
+   "pending": {
+      "message": "准备下载"
+   },
+   "general": {
+      "message": "一般设置"
+   },
+   "pack_ugoira_frames_info_into_zip": {
+      "message": "将动图帧信息打包进zip文件"
+   },
+   "pack_ugoira_frames_info": {
+      "message": "打包帧信息"
+   }
+}

@@ -1,0 +1,96 @@
+Convert the ugoira on Pixiv to GIF or WebM file, and pack the images of manga to download without change page or open new tab.
+
+Notice:
+If you are using version < 1.5, plz update it asap.
+
+GitHub:
+https://github.com/leoding86/pixiv-ugoira-managa-downloader
+----------------------------------------------
+v1.8.4
+Remove the permissions for testing some features that forgot to remove;
+Fix a bug that broken the extension.
+Notice: The zip download button now will display when the resource has downloaded, next version will add feature for renaming ugoira zip file.
+
+v1.8.3
+Update ugoira UI;
+Fix bugs.
+
+v1.8.2
+Fix bugs.
+
+v1.8.1
+Update setting styles;
+Fix bug.
+
+v1.8
+Refactor rename feature for easy use;
+Fix issue about missing buttons sometimes.
+
+v1.7.1:
+Fix manga rename settings display issue.
+
+v1.7:
+Add manga rename settings;
+Fix issue about missing file extension.
+
+v1.6.2:
+Reposition download/generate buttons.
+
+v1.6.1:
+Add a option to turn on/off extend gif duration function;
+Change default settings.
+
+v1.6:
+Add extend ugoira duration function (not avaliable for the old version pixiv for technical reseaon);
+Move settings page to extension options page from pop page and redesign settings page UI.
+
+v1.5.1:
+Add ugoira to gif quanlity setting. If you find color deviation in the gif, set ugoira quanlity to best should fix the issue.
+
+v1.5:
+Now it can work on new Pixiv site (with old site compatibility)
+
+v1.4.1:
+Fix the problem that cause generate gif or webm function broken.
+
+v1.4:
+Optimiza memory usage for downloading manga.
+
+v1.3:
+Refactor manga download implement to fix some issues;
+Change manga download UI.
+
+v1.2.1:
+Now extension can work currently.
+
+v1.2:
+New feature: Generate webm file.
+Remove japanese language support (Maybe someone can help me to translate).
+
+v1.1.4:
+Fix issue that manga cannot be downloaded.
+
+v1.1.3:
+Update button style.
+
+v1.1.2:
+Fix issue of sometimes display black frame in GIF.
+
+v1.1.1:
+Fix issue of cannot generate gif when user use newer Chrome.
+
+v1.1:
+Fix issue of cannot show button when user is not logined on Pixiv;
+Fix issue of cannot show button on new version site;
+Add setting, now you can set name of the gif file on setting page.
+
+v1.0.3:
+Fix issue of cannot download zip file when click the download zip button
+
+v1.0.2:
+Add Japanese language support.
+
+v1.0.1:
+Remove webNavigation permission.
+----------------------------------------------
+Please report bugs and tell me what you need. Thanks!

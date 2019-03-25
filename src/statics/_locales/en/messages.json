@@ -1,0 +1,155 @@
+{
+   "author": {
+      "message": "Author"
+   },
+   "author_id": {
+      "message": "Author ID"
+   },
+   "downloadFullscreenZipFile": {
+      "message": "Download fullscreen zip"
+   },
+   "downloadNormalZipFile": {
+      "message": "Download normal zip"
+   },
+   "downloadZipFile": {
+      "message": "Download zip"
+   },
+   "downloadPage": {
+      "message": "Download page"
+   },
+   "waitDownload": {
+      "message": "Please wait the last download complete"
+   },
+   "save_page": {
+      "message": "Save page"
+   },
+   "enable_ugoira_meta": {
+      "message": "Metas can use (Drag to select)"
+   },
+   "extDescription": {
+      "message": "Convert the ugoira on Pixiv to GIF or WebM file, and pack the images of manga for downloading."
+   },
+   "extName": {
+      "message": "Pixiv ugoira & manga downloader"
+   },
+   "generate_btn_error_text": {
+      "message": "Error"
+   },
+   "generate_gif_btn_complete_text": {
+      "message": "Save GIF"
+   },
+   "generate_gif_btn_text": {
+      "message": "Generate GIF"
+   },
+   "generate_webm_btn_complete_text": {
+      "message": "Save WebM"
+   },
+   "generate_webm_btn_text": {
+      "message": "Generate WebM"
+   },
+   "generating_webm": {
+      "message": "Compiling WebM"
+   },
+   "generating": {
+      "message": "Generating"
+   },
+   "preparing": {
+      "message": "Preparing"
+   },
+   "id": {
+      "message": "ID"
+   },
+   "rename_ugoira_file": {
+      "message": "Rename ugoira file"
+   },
+   "setting": {
+      "message": "Setting"
+   },
+   "settings": {
+        "message": "Settings"
+   },
+   "setting_not_saved": {
+      "message": "Save setting failed"
+   },
+   "setting_saved": {
+      "message": "Setting saved"
+   },
+   "title": {
+      "message": "Title"
+   },
+   "used_ugoira_meta": {
+      "message": "Metas is in used"
+   },
+   "ugoira_quality": {
+       "message": "Ugoira quality"
+   },
+   "ugoira_best": {
+       "message": "Best"
+   },
+   "ugoira_good": {
+       "message": "Good"
+   },
+   "ugoira_normal": {
+       "message": "Normal"
+   },
+   "quality": {
+       "message": "Quality"
+   },
+   "extend_duration": {
+       "message": "Extend duration"
+   },
+   "extend_duration_desc": {
+       "message": "Extend ugoira duration when the duration is not expected"
+   },
+   "enable_extend_title": {
+       "message": "Enable repeat when ugoira duration under choosen duration"
+   },
+   "enable_extend_desc": {
+       "message": "Extend duration will be disabled when 0 is choosen"
+   },
+   "extend_duration_seconds_title": {
+       "message": "Extend ugoira duration to choosen duration at least"
+   },
+   "open_settings": {
+       "message": "Open settings"
+   },
+   "open_settings_intro": {
+       "message": "Please right-click the icon and click \"Options\" to open settings page"
+   },
+   "extend_enable": {
+       "message": "Turn on/off extend duration function"
+   },
+   "rename_ugoira": {
+      "message": "Rename downloaded ugoira"
+   },
+   "rename_manga": {
+      "message": "Rename downloaded manga"
+   },
+   "rename_manga_image": {
+      "message": "Rename images in the downloaded manga"
+   },
+   "quick_picks": {
+      "message": "Quick picks"
+   },
+   "rename_format": {
+      "message": "Rename format"
+   },
+   "manga_image_name_prefix": {
+       "message": "Manga images page number prefix"
+   },
+   "page_num": {
+      "message": "Page No."
+   },
+   "pending": {
+      "message": "Pending"
+   },
+   "general": {
+      "message": "General"
+   },
+   "pack_ugoira_frames_info_into_zip": {
+      "message": "Pack ugoira frames info into zip file"
+   },
+   "pack_ugoira_frames_info": {
+      "message": "Pack frames info"
+   }
+}
