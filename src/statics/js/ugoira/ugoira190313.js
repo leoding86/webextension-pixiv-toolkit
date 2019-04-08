@@ -35,6 +35,8 @@ _pumd.Ugoira190313 = (function (common) {
 
   UgoiraEnhancer.prototype = {
     init: function () {
+      let self = this;
+
       this.wrapper = document.createElement('div');
       this.wrapper.style = 'position:relative;width:580px;padding:10px;margin:16px auto;background:#eee;border-radius:5px;';
 
@@ -43,14 +45,16 @@ _pumd.Ugoira190313 = (function (common) {
       info.innerText = 'Pixiv Toolkit';
       this.wrapper.appendChild(info);
 
-      this.appWrapper = this.guessButtonsContainer();
+      this.guessButtonsContainer(function (appWrapper) {
+        self.appWrapper = appWrapper;
 
-      if (this.appWrapper) {
-        this.appWrapper.insertBefore(this.wrapper, this.appWrapper.firstChild);
-      } else {
-        // console.log('ping');
-        throw 'app wrapper not found';
-      }
+        if (self.appWrapper) {
+          self.appWrapper.insertBefore(self.wrapper, self.appWrapper.firstChild);
+        } else {
+          // console.log('ping');
+          throw 'app wrapper not found';
+        }
+      });
     },
 
     destroy: function () {
@@ -117,10 +121,23 @@ _pumd.Ugoira190313 = (function (common) {
       return this;
     },
 
-    guessButtonsContainer() {
-      return document.querySelector('article figcaption') ||
+    guessButtonsContainer(callback) {
+      let self = this;
+
+      let timeout = setTimeout(function () {
+        common.console.log('Guessing wrapper');
+
+        let wrapper = document.querySelector('article figcaption') ||
         document.querySelector('article figure') ||
         document.querySelector('figcaption');
+
+        if (!wrapper) {
+          self.guessButtonsContainer(callback);
+        } else {
+          common.console.log('App wrapper found');
+          callback.call(self, wrapper);
+        }
+      }, 1000);
     },
 
     downloadResource: function (src, options) {
