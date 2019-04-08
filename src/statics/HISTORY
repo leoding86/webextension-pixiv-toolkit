@@ -6,6 +6,9 @@ If you are using version < 1.5, plz update it asap.
 GitHub:
 https://github.com/leoding86/pixiv-ugoira-managa-downloader
 ----------------------------------------------
+v1.8.6
+Fix ugoira convert buttons cannot display properly.
+
 v1.8.5
 Add a option for adding ugoira frames info into zip;
 Ugoira zip can be renamed;
