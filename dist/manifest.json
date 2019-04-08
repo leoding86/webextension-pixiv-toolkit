@@ -38,7 +38,7 @@
          ]
       }
    ],
-   "version": "1.8.5",
+   "version": "1.8.6",
    "web_accessible_resources": [ "img/download.png" ],
    "options_page": "pages/index.html"
 }
