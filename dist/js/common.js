@@ -155,6 +155,8 @@ _pumd.common = (function () {
         }
     }
 
+    common.console = window.console;
+
     return common;
 })();
 
