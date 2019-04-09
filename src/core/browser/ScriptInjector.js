@@ -3,6 +3,7 @@ import browser from 'browser';
 function ScriptInjector() {
     this.injectDetails = [];
     this.injectFiles = [];
+    this.injectedFiles = [];
 }
 
 ScriptInjector.prototype = {
@@ -35,6 +36,10 @@ ScriptInjector.prototype = {
 
         return new Promise(function (resolve) {
             self.injectDetails.forEach(function (detail, index) {
+                if (self.injectedFiles.indexOf(detail.file) > -1) {
+                    return;
+                }
+
                 if (index == self.injectDetails.length - 1) {
                     browser.tabs.executeScript(tabId, detail, function () {
                         resolve();
@@ -42,6 +47,10 @@ ScriptInjector.prototype = {
                 } else {
                     browser.tabs.executeScript(tabId, detail);
                 }
+
+                console.log('inject file ' + detail.file);
+                
+                self.injectedFiles.push(detail.file);
             });
         });
     }
