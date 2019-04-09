@@ -82,6 +82,16 @@ Main.prototype = {
         ]).inject(sender.tab.id);
     },
 
+    injectMangaAction: function (sender, sendResponse) {
+        var scriptInjector = new ScriptInjector();
+
+        scriptInjector.addInjectFiles([
+            "lib/jszip/jszip.js",
+            "js/MangaAdapter.js",
+            "js/manga/Manga186.js"
+        ]).inject(sender.tab.id);
+    },
+
     injectNovel: function () {
         let self = this;
 
