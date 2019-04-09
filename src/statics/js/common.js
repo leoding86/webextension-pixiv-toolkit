@@ -205,6 +205,44 @@ _pumd.button = (function() {
     return button;
 })();
 
+/**
+ * Define extension UI components here
+ */
+_pumd.Component = {}
+
+/**
+ * Define button component here
+ */
+_pumd.Component.Button = function (text, style) {
+    this.destroy = function () {
+        this.el.remove();
+    };
+  
+    this.setText = function (text) {
+        this.el.innerText = text;
+    };
+  
+    this.setAttribute = function (attribute, value) {
+        this.el.setAttribute(attribute, value);
+    },
+  
+    this.onClicked = function (listener) {
+        this.el.addEventListener('click', listener);
+    },
+  
+    this.appendTo = function (element) {
+        element.appendChild(this.el);
+    }
+
+    this.el = document.createElement('a');
+    this.el.style = style;
+    this.setText(text);
+};
+
+_pumd.Component.Button.create = function (text, style) {
+    return new _pumd.Component.Button(text, style);
+};
+
 _pumd.RetryTicker = (function () {
     function RetryTicker(max) {
         this.maxTry = max;
@@ -228,5 +266,9 @@ _pumd.RetryTicker = (function () {
 
     return RetryTicker;
 })();
+
+_pumd.getBrowser = function () {
+    return chrome ? chrome : browser;
+};
 
 var randomStr = _pumd.common.getRandomStr(10);
