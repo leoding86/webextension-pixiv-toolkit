@@ -39,8 +39,11 @@
 
                             if (json && json.body) {
                                 if (json.body.illustType === DetermineInjectType.UGOIRA_TYPE) {
-                                    // console.log('ugoira type')
+                                    common.console.log('ugoira type');
                                     self.injectUgoira(json.body);
+                                } else if (json.body.illustType === DetermineInjectType.MANGA_TYPE) {
+                                    common.console.log('inject manga');
+                                    self.injectManga(json.body);
                                 }
 
                                 resolve(json.body);
@@ -83,6 +86,28 @@
                     let ugoiraAdapter = ptk.fence.get('ugoiraAdapter');
                     ugoiraAdapter.inital(context).then(function (context) {
                         ugoiraAdapter.makeToolkit().destroy().run().show();
+                    });
+                }
+            },
+
+            injectManga: function (context) {
+                if (!ptk.fence.has('mangaAdapter')) {
+                    browser.runtime.sendMessage({
+                        action: 'injectManga'
+                    });
+
+                    setTimeout(function () {
+                        let mangaAdapter = new ptk.MangaAdatper();
+                        mangaAdapter.inital().then(function (context) {
+                            mangaAdapter.getToolkit().run().show();
+                        });
+
+                        ptk.fence.put('mangaAdapter', mangaAdapter);
+                    }, 1000);
+                } else {
+                    let mangaAdapter = ptk.fence.get('mangaAdapter');
+                    mangaAdapter.inital(context).then(function (context) {
+                        mangaAdapter.getToolkit().reset().run().show();
                     });
                 }
             },
