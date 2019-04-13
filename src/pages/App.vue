@@ -2,7 +2,7 @@
   <div id="app">
     <v-app>
       <v-toolbar class="v-primary" app absolute clipped-left height="56">
-        <span class="title v-primary">{{ lt('settings') }}</span>
+        <span class="title v-primary">{{ lt('extName') }}</span>
       </v-toolbar>
       <v-content>
         <router-view />
