@@ -205,6 +205,124 @@ _pumd.button = (function() {
     return button;
 })();
 
+_pumd.Queue = function () {
+    this.stack = [];
+    this.index = 0;
+    this.complete = 0;
+    this.fail = 0;
+    this.total = 0;
+    this.onItemComplete;
+    this.onItemFail;
+    this.stopQueue = false;
+};
+
+_pumd.Queue.prototype = {
+    add: function (item) {
+        this.stack.push(item);
+        this.total = this.stack.length;
+    },
+
+    next: function () {
+        if (this.index < this.stack.length) {
+            this.index++;
+        }
+    },
+
+    current: function () {
+        return this.stack[this.index];
+    },
+
+    start: function (callback, done) {
+        let _this = this,
+            item;
+
+        if (item = this.current()) {
+            callback(item).then(function () {
+                _this.complete++;
+                if (_this.onItemComplete) {
+                    _this.onItemComplete.call(_this);
+                }
+            }).catch(function () {
+                _this.fail++;
+                if (_this.onItemFail) {
+                    _this.onItemFail.call(_this, this.index);
+                }
+            }).finally(function () {
+                if (_this.stopQueue) {
+                    return;
+                }
+
+                _this.next();
+                _this.start(callback, done);
+            });
+        } else {
+            if (_this.onDone) {
+                _this.onDone.call(_this);
+            }
+        }
+    },
+
+    abort: function () {
+        this.stopQueue = !0;
+    }
+};
+
+/**
+ * Define extension UI components here
+ */
+_pumd.Component = {}
+
+/**
+ * Define button component here
+ */
+_pumd.Component.Button = function (text, style) {
+    this.destroy = function () {
+        this.el.remove();
+    };
+  
+    this.setText = function (text) {
+        this.el.innerText = text;
+    };
+  
+    this.setAttribute = function (attribute, value) {
+        this.el.setAttribute(attribute, value);
+    };
+  
+    this.onClicked = function (listener) {
+        this.el.addEventListener('click', listener);
+    };
+
+    this.onClickedListener = function (listener) {
+        let self = this;
+
+        this.el.addEventListener('click', function () {
+            listener.call(self);
+        });
+    };
+  
+    this.appendTo = function (element) {
+        element.appendChild(this.el);
+    };
+
+    this.setProp = function (prop, val) {
+        this[prop] = val;
+
+        return val;
+    };
+
+    this.getProp = function (prop) {
+        return this[prop];
+    };
+
+    this.el = document.createElement('a');
+    this.el.style = style;
+    this.setText(text);
+};
+
+_pumd.Component.Button.create = function (text, style) {
+    return new _pumd.Component.Button(text, style);
+};
+
 _pumd.RetryTicker = (function () {
     function RetryTicker(max) {
         this.maxTry = max;
@@ -228,5 +346,9 @@ _pumd.RetryTicker = (function () {
 
     return RetryTicker;
 })();
+
+_pumd.getBrowser = function () {
+    return chrome ? chrome : browser;
+};
 
 var randomStr = _pumd.common.getRandomStr(10);

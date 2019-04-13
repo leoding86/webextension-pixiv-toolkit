@@ -6,6 +6,7 @@
     function ScriptInjector() {
         this.injectDetails = [];
         this.injectFiles = [];
+        this.injectedFiles = [];
     }
 
     ScriptInjector.prototype = {
@@ -38,6 +39,10 @@
 
             return new Promise(function (resolve) {
                 self.injectDetails.forEach(function (detail, index) {
+                    if (self.injectedFiles.indexOf(detail.file) > -1) {
+                        return;
+                    }
+
                     if (index == self.injectDetails.length - 1) {
                         browser.tabs.executeScript(tabId, detail, function () {
                             resolve();
@@ -45,6 +50,10 @@
                     } else {
                         browser.tabs.executeScript(tabId, detail);
                     }
+
+                    console.log('inject file ' + detail.file);
+                    
+                    self.injectedFiles.push(detail.file);
                 });
             });
         }
@@ -241,6 +250,16 @@
                 'js/UgoiraAdapter.js',
                 // 'js/180607/ugoira.js'
                 'js/ugoira/ugoira190313.js'
+            ]).inject(sender.tab.id);
+        },
+
+        injectMangaAction: function (sender, sendResponse) {
+            var scriptInjector = new ScriptInjector();
+
+            scriptInjector.addInjectFiles([
+                "lib/jszip/jszip.js",
+                "js/MangaAdapter.js",
+                "js/manga/Manga186.js"
             ]).inject(sender.tab.id);
         },
 

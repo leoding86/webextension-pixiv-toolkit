@@ -17,6 +17,9 @@
    "downloadPage": {
       "message": "下载页数"
    },
+   "download_page__short": {
+      "message": "DL"
+   },
    "waitDownload": {
       "message": "请等待上一个下载完成"
    },

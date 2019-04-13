@@ -15,6 +15,13 @@
         DetermineInjectType.prototype = {
             inject: function (url) {
                 let self = this;
+                
+                // Reset current toolkit
+                let currentToolkit = ptk.fence.get('currentToolkit');
+
+                if (currentToolkit) {
+                    this.reset(currentToolkit);
+                }
 
                 if (this.xhr) {
                     this.xhr.abort();
@@ -39,8 +46,13 @@
 
                             if (json && json.body) {
                                 if (json.body.illustType === DetermineInjectType.UGOIRA_TYPE) {
-                                    // console.log('ugoira type')
+                                    common.console.log('ugoira type');
                                     self.injectUgoira(json.body);
+                                } else if (json.body.illustType === DetermineInjectType.MANGA_TYPE ||
+                                    json.body.illustType === DetermineInjectType.ILLUST_TYPE
+                                ) {
+                                    common.console.log('inject manga');
+                                    self.injectManga(json.body);
                                 }
 
                                 resolve(json.body);
@@ -52,6 +64,14 @@
 
                     self.xhr.send();
                 });
+            },
+
+            reset: function (toolkit) {
+                try {
+                    toolkit.reset();
+                } catch (e) {
+                    toolkit.destroy();
+                }
             },
 
             getIllustUrl: function (illustId) {
@@ -74,6 +94,9 @@
                     setTimeout(function () {
                         let ugoiraAdapter = new ptk.UgoiraAdapter();
                         ugoiraAdapter.inital(context).then(function (context) {
+                            // store toolkit to current toolkit
+                            ptk.fence.put('currentToolkit', ugoiraAdapter.makeToolkit());
+
                             ugoiraAdapter.makeToolkit().run();
                         });
 
@@ -81,8 +104,48 @@
                     }, 1000);
                 } else {
                     let ugoiraAdapter = ptk.fence.get('ugoiraAdapter');
+
+                    // store toolkit to current toolkit
+                    ptk.fence.put('currentToolkit', ugoiraAdapter.makeToolkit());
+
                     ugoiraAdapter.inital(context).then(function (context) {
-                        ugoiraAdapter.makeToolkit().destroy().run().show();
+                        ugoiraAdapter.makeToolkit().run().show();
+                    });
+                }
+            },
+
+            injectManga: function (context) {
+                if (!ptk.fence.has('mangaAdapter')) {
+                    browser.runtime.sendMessage({
+                        action: 'injectManga'
+                    });
+
+                    setTimeout(function () {
+                        let mangaAdapter = new ptk.MangaAdatper();
+                        mangaAdapter.inital(context).then(function (context) {
+                            let mangaToolkit = mangaAdapter.getToolkit();
+                            
+                            // store toolkit to current toolkit
+                            ptk.fence.put('currentToolkit', mangaToolkit);
+
+                            mangaToolkit.init().then(function () {
+                                mangaToolkit.run();
+                            });
+                        });
+
+                        ptk.fence.put('mangaAdapter', mangaAdapter);
+                    }, 1000);
+                } else {
+                    let mangaAdapter = ptk.fence.get('mangaAdapter');
+                    mangaAdapter.inital(context).then(function (context) {
+                        let mangaToolkit = mangaAdapter.getToolkit();
+                        
+                        // store toolkit to current toolkit
+                        ptk.fence.put('currentToolkit', mangaToolkit);
+
+                        mangaToolkit.run().then(function () {
+                            mangaToolkit.show();
+                        });
                     });
                 }
             },
