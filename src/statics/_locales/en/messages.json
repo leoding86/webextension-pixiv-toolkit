@@ -17,6 +17,9 @@
    "downloadPage": {
       "message": "Download page"
    },
+   "download_page__short": {
+      "message": "DL page"
+   },
    "waitDownload": {
       "message": "Please wait the last download complete"
    },
