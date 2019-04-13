@@ -4,16 +4,17 @@ _pumd.MangaAdatper = (function (window, ptk) {
 
         this.mangaToolkit;
 
-        this.inital = function () {
-            // nothing special here for now
+        this.inital = function (context) {
+            let self = this;
 
             return new Promise(function (resolve) {
-                resolve();
-                return;
+                self.parseContext(context).then(function () {
+                    resolve();
+                });
             });
         };
 
-        this.parseContext = function () {
+        this.parseContext = function (context) {
             let self = this;
 
             this.illustContext = {
@@ -53,6 +54,7 @@ _pumd.MangaAdatper = (function (window, ptk) {
 
         this.getToolkit = function () {
             if (this.mangaToolkit) {
+                this.mangaToolkit.context = this.illustContext;
                 return this.mangaToolkit;
             }
 
