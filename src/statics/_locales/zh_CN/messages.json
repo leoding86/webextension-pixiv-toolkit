@@ -154,5 +154,11 @@
    },
    "pack_ugoira_frames_info": {
       "message": "打包帧信息"
+   },
+   "number_of_pages_in_each_chunk": {
+      "message": "每个包里的图片张数"
+   },
+   "number_of_pages_in_each_chunk_desc": {
+      "message": "如果游览器在下载中崩溃，请调低这个参数"
    }
 }

@@ -154,5 +154,11 @@
    },
    "pack_ugoira_frames_info": {
       "message": "Pack frames info"
+   },
+   "number_of_pages_in_each_chunk": {
+      "message": "Number of pages in each chunk"
+   },
+   "number_of_pages_in_each_chunk_desc": {
+      "message": "Reduce this number if browser is crushing during downloading"
    }
 }
