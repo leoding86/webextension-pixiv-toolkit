@@ -85,6 +85,16 @@
                         </v-btn>
                     </v-list-tile-action>
                 </v-list-tile>
+                <v-list-tile>
+                    <v-list-tile-content>
+                        <v-list-tile-title>Number of pages in each chunk</v-list-tile-title>
+                        <v-list-tile-sub-title>Reduce this number if browser is crushing during downloading</v-list-tile-sub-title>
+                    </v-list-tile-content>
+                    <v-list-tile-action>
+                        <v-text-field reverse v-model="mangaPagesInChunk"
+                            @change="mangaPagesInChunkChanged" type="number"></v-text-field>
+                    </v-list-tile-action>
+                </v-list-tile>
             </v-list>
         </v-card>
         <router-view />
@@ -117,7 +127,8 @@ export default {
             mangaRenameFormat: '',
             mangaImageRenameFormat: '',
             enableExtension: true,
-            enablePackUgoiraFramesInfo: true
+            enablePackUgoiraFramesInfo: true,
+            mangaPagesInChunk: 99
         }
     },
 
@@ -131,6 +142,7 @@ export default {
             self.mangaImageRenameFormat = items.mangaImageRenameFormat ? items.mangaImageRenameFormat : '';
             self.enableExtension = items.enableExtension ? items.enableExtension : '';
             self.enablePackUgoiraFramesInfo = !!items.enablePackUgoiraFramesInfo;
+            self.mangaPagesInChunk = items.mangaPagesInChunk;
         });
     },
 
@@ -234,6 +246,17 @@ export default {
         onEnablePackUgoiraFramesInfoChangedHandler: function () {
             let _this = this;
             cr._s.set({ 'enablePackUgoiraFramesInfo': this.enablePackUgoiraFramesInfo });
+        },
+
+        mangaPagesInChunkChanged: function () {
+            let _this = this;
+            
+            if (!this.mangaPagesInChunk.match(/^[1-9]\d*$/)) {
+                alert('Please input number greater then 1');
+                return;
+            }
+            
+            cr._s.set({ mangaPagesInChunk: parseInt(this.mangaPagesInChunk) });
         },
 
         tl (string) {
