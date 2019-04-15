@@ -122,7 +122,10 @@ Main.prototype = {
             browser.storage.local.get(null, function (items) {
                 var updater = new Updater(items);
 
+                debugger;
+
                 if (updater.isNewer(version)) {
+                    console.log('update');
                     updater.setDefaultSettings({
                         version: version,
                         enableExtend: false,
@@ -139,7 +142,13 @@ Main.prototype = {
                          * @version 1.8.5
                          * Pack ugoira frames info to zip file
                          */
-                        enablePackUgoiraFramesInfo: true
+                        enablePackUgoiraFramesInfo: true,
+
+                        /**
+                         * @version 1.8.8
+                         * Set manga page chunk
+                         */
+                        mangaPagesInChunk: 99
                     });
 
                     updater.removeSettings([
