@@ -41,33 +41,34 @@ _pumd.Manga186 = (function (window, ptk) {
 
     run: function () {
       let self = this;
-      let startIndex = 0;
-
-      this.retryTicker = new ptk.RetryTicker();
-      this.splitSize = 99;
-      this.buttons = [];
-      this.chunks = [];
-      this.zips = [];
-
-      while (startIndex <= this.context.pages.length - 1) {
-        let chunk = {};
-        chunk.start = startIndex;
-
-        let endIndex = startIndex + self.splitSize - 1;
-
-        if (endIndex >= self.context.pages.length) {
-          endIndex = self.context.pages.length - 1;
-        }
-
-        chunk.end = endIndex;
-
-        self.chunks.push(chunk);
-
-        startIndex = chunk.end + 1;
-      }
 
       return new Promise(function (resolve) {
         ptk.common.storage.get(null, function (extensionItems) {
+          let startIndex = 0;
+
+          self.retryTicker = new ptk.RetryTicker();
+          self.splitSize = parseInt(extensionItems.mangaPagesInChunk.match(/^[1-9]\d*$/) ? extensionItems.mangaPagesInChunk : 99);
+          self.buttons = [];
+          self.chunks = [];
+          self.zips = [];
+
+          while (startIndex <= self.context.pages.length - 1) {
+            let chunk = {};
+            chunk.start = startIndex;
+
+            let endIndex = startIndex + self.splitSize - 1;
+
+            if (endIndex >= self.context.pages.length) {
+              endIndex = self.context.pages.length - 1;
+            }
+
+            chunk.end = endIndex;
+
+            self.chunks.push(chunk);
+
+            startIndex = chunk.end + 1;
+          }
+
           if (!extensionItems.mangaImageRenameFormat ||
             extensionItems.mangaImageRenameFormat.indexOf('{pageNum}') < 0
           ) {
