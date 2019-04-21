@@ -47,7 +47,7 @@ _pumd.Manga186 = (function (window, ptk) {
           let startIndex = 0;
 
           self.retryTicker = new ptk.RetryTicker();
-          self.splitSize = parseInt(extensionItems.mangaPagesInChunk.match(/^[1-9]\d*$/) ? extensionItems.mangaPagesInChunk : 99);
+          self.splitSize = parseInt(/^[1-9]\d*$/.test((extensionItems.mangaPagesInChunk + '')) ? extensionItems.mangaPagesInChunk : 99);
           self.buttons = [];
           self.chunks = [];
           self.zips = [];
@@ -220,14 +220,16 @@ _pumd.Manga186 = (function (window, ptk) {
         xhr.open('get', url);
         xhr.overrideMimeType('text/plain; charset=x-user-defined');
         xhr.onload = function () {
-          var pageNum = this.responseURL.match(/\d+\.[^.]+$/)[0];
+          var parts = this.responseURL.match(/(\d+)\.([^.]+)$/);
+          var pageNum = parts[1];
+          var extName = parts[2];
           self.context.pageNum = pageNum;
 
           let fileName = common.formatName(
             self.extensionItems.mangaImageRenameFormat,
             self.context,
             pageNum
-          );
+          ) + '.' + extName;
           zip.file(fileName, this.responseText, {
             binary: true
           });
