@@ -34,7 +34,8 @@
                     <v-list-tile-action>
                         <v-select :items="quanlityItems"
                                   v-model="ugoiraQuanlity"
-                                  type="value" @change="onUgoiraQuanlityChangeHandler"></v-select>
+                                  type="value" @change="onUgoiraQuanlityChangeHandler"
+                                  style="width:150px;"></v-select>
                     </v-list-tile-action>
                 </v-list-tile>
                 <v-list-tile>
@@ -92,7 +93,8 @@
                     </v-list-tile-content>
                     <v-list-tile-action>
                         <v-text-field reverse v-model="mangaPagesInChunk"
-                            @change="mangaPagesInChunkChanged" type="number"></v-text-field>
+                            @change="mangaPagesInChunkChanged" type="number"
+                            style="width:100px;"></v-text-field>
                     </v-list-tile-action>
                 </v-list-tile>
             </v-list>
