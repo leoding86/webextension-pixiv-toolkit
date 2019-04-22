@@ -45,7 +45,7 @@ _pumd.Novel189 = (function (window, ptk) {
     },
 
     createDownloadBtn: function () {
-      this.downloadBtn = new ptk.Component.Button(ptk.common.lan.msg('download_novel'), 'background:#0096fa;color:#fff;padding:3px 5px;border-radius:3px;font-weight:700;font-size:12px');
+      this.downloadBtn = new ptk.Component.Button(ptk.common.lan.msg('download_novel'), 'background:#0096fa;color:#fff;padding:3px 5px;border-radius:3px;font-weight:700;font-size:12px;display:none');
       return this.downloadBtn;
     },
 
@@ -83,6 +83,7 @@ _pumd.Novel189 = (function (window, ptk) {
       this.writeSections();
 
       this.epubMaker.downloadEpub(function (epubZipContent, filename) {
+        self.downloadBtn.el.style.display = 'inline';
         self.downloadBtn.setAttribute('href', URL.createObjectURL(epubZipContent));
         self.downloadBtn.setAttribute('download', filename);
       });
