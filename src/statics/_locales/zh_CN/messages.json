@@ -160,5 +160,8 @@
    },
    "number_of_pages_in_each_chunk_desc": {
       "message": "如果游览器在下载中崩溃，请调低这个参数"
+   },
+   "download_novel": {
+     "message": "下载小说"
    }
 }

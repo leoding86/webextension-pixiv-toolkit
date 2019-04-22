@@ -160,5 +160,8 @@
    },
    "number_of_pages_in_each_chunk_desc": {
       "message": "Reduce this number if browser is crushing during downloading"
+   },
+   "download_novel": {
+     "message": "Download novel"
    }
 }
