@@ -36,6 +36,17 @@
             "lib/jszip/jszip.js",
             "js/manga.js"
          ]
+      }, {
+        "matches": ["*://*.pixiv.net/novel/show.php?id=*"],
+        "js": [
+          "lib/handlebars-latest.js",
+          "lib/jszip/jszip.js",
+          "lib/jszip/jszip-utils.min.js",
+          "lib/js-epub-maker/js-epub-maker.js",
+          "js/common.js",
+          "js/novel/Novel189.js",
+          "js/NovelAdapter.js"
+        ]
       }
    ],
    "version": "1.8.8",
