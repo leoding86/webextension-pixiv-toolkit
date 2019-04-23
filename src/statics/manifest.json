@@ -1,55 +1,68 @@
 {
-   "background": {
-      "scripts": [ "background.js" ]
-   },
-   "browser_action": {
-      "default_icon": "icon.png",
-      "default_title": "__MSG_extName__"
-   },
-   "content_security_policy": "script-src 'self'; object-src 'self'; worker-src blob https://www.pixiv.net",
-   "default_locale": "en",
-   "description": "__MSG_extDescription__",
-   "icons": {
-      "128": "icon128.png",
-      "16": "icon16.png",
-      "48": "icon48.png"
-   },
-   "manifest_version": 2,
-   "name": "__MSG_extName__",
-   "permissions": [
-      "webRequest",
-      "storage",
-      "*://*.pixiv.net/*",
-      "*://*.pximg.net/*"
-   ],
-   "content_scripts": [
-      {
-         "matches": ["*://*.pixiv.net/member_illust.php?mode=medium&illust_id=*"],
-         "js": [
-            "js/common.js",
-            "js/illustInjectDetector.js"
-         ]
-      }, {
-         "matches": ["*://*.pixiv.net/member_illust.php?mode=manga&illust_id=*"],
-         "js": [
-            "js/common.js",
-            "lib/jszip/jszip.js",
-            "js/manga.js"
-         ]
-      }, {
-        "matches": ["*://*.pixiv.net/novel/show.php?id=*"],
-        "js": [
-          "lib/handlebars-latest.js",
-          "lib/jszip/jszip.js",
-          "lib/jszip/jszip-utils.min.js",
-          "lib/js-epub-maker/js-epub-maker.js",
-          "js/common.js",
-          "js/novel/Novel189.js",
-          "js/NovelAdapter.js"
+    "background": {
+        "scripts": [
+            "background.js"
         ]
-      }
-   ],
-   "version": "1.8.8",
-   "web_accessible_resources": [ "img/download.png" ],
-   "options_page": "pages/index.html"
+    },
+    "browser_action": {
+        "default_icon": "icon.png",
+        "default_title": "__MSG_extName__"
+    },
+    "short_name": "PTK",
+    "content_security_policy": "script-src 'self'; object-src 'self'; worker-src blob https://www.pixiv.net",
+    "default_locale": "en",
+    "description": "__MSG_extDescription__",
+    "icons": {
+        "128": "icon128.png",
+        "16": "icon16.png",
+        "48": "icon48.png"
+    },
+    "manifest_version": 2,
+    "name": "__MSG_extName__",
+    "permissions": [
+        "webRequest",
+        "storage",
+        "*://*.pixiv.net/*",
+        "*://*.pximg.net/*"
+    ],
+    "content_scripts": [
+        {
+            "matches": [
+                "*://*.pixiv.net/member_illust.php?mode=medium&illust_id=*"
+            ],
+            "js": [
+                "js/common.js",
+                "js/illustInjectDetector.js"
+            ]
+        },
+        {
+            "matches": [
+                "*://*.pixiv.net/member_illust.php?mode=manga&illust_id=*"
+            ],
+            "js": [
+                "js/common.js",
+                "lib/jszip/jszip.js",
+                "js/manga.js"
+            ]
+        },
+        {
+            "matches": [
+                "*://*.pixiv.net/novel/show.php?id=*"
+            ],
+            "js": [
+                "lib/handlebars-latest.js",
+                "lib/jszip/jszip.js",
+                "lib/jszip/jszip-utils.min.js",
+                "lib/js-epub-maker/js-epub-maker.js",
+                "js/common.js",
+                "js/novel/Novel189.js",
+                "js/NovelAdapter.js"
+            ]
+        }
+    ],
+    "version": "1.8.8",
+    "web_accessible_resources": [
+        "img/download.png"
+    ],
+    "options_page": "pages/index.html"
 }
