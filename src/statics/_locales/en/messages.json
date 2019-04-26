@@ -33,7 +33,7 @@
       "message": "Convert ugoira to gif or/and webm, pack manga for downloading and download novel on Pixiv."
    },
    "extName": {
-      "message": "Pixiv Toolkit (old name: Pixiv ugoira & manga downloader)"
+      "message": "Pixiv Toolkit"
    },
    "generate_btn_error_text": {
       "message": "Error"

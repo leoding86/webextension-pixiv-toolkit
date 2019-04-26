@@ -33,7 +33,7 @@
       "message": "一个用于将P站动图转化成gif或webm格式，将漫画打包下载和下载小说的工具包。"
    },
    "extName": {
-      "message": "Pixiv工具箱（原名称：Pixiv动图&漫画下载器）"
+      "message": "Pixiv工具箱"
    },
    "generate_gif_btn_complete_text": {
       "message": "保存GIF"
