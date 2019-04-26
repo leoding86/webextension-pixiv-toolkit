@@ -195,7 +195,6 @@
                 self.bindActionButton();
                 self.listenStorageChanged();
                 self.listenMessage();
-                self.injectNovel();
             });
         },
 
@@ -261,28 +260,6 @@
                 "js/MangaAdapter.js",
                 "js/manga/Manga186.js"
             ]).inject(sender.tab.id);
-        },
-
-        injectNovel: function () {
-            let self = this;
-
-            browser.webRequest.onCompleted.addListener(function(details) {
-                if (self.enableExtension && details.frameId === 0 && details.statusCode === 200) {
-                    // console.log('Load noval app');
-
-                    scriptFiles.forEach(function(scriptFile) {
-                        browser.tabs.executeScript(details.tabId, {file: scriptFile});
-                    });
-
-                    browser.tabs.executeScript(details.tabId, {file: 'lib/js-epub-maker/js-epub-maker.min.js'});
-                    browser.tabs.executeScript(details.tabId, {file: 'js/NovalAdapter.js'});
-                    browser.tabs.executeScript(details.tabId, {file: 'js/190115/Noval.js'});
-                }
-            }, {
-                urls: [
-                    "*://*.pixiv.net/novel/show.php?id=*"
-                ]
-            });
         },
 
         update: function () {

@@ -6,6 +6,11 @@ If you are using version < 1.5, plz update it asap.
 GitHub:
 https://github.com/leoding86/pixiv-ugoira-managa-downloader
 ----------------------------------------------
+v2.0.0
+Rename extension name to Pixiv Toolkit;
+Add feature for downloading novel;
+Fix bugs.
+
 v1.8.8
 Add option for setting each chunk size for packing manga;
 Fix a bug about packing incorrect manga page name.

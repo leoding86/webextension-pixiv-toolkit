@@ -30,10 +30,10 @@
       "message": "可用的元数据（拖动选择）"
    },
    "extDescription": {
-      "message": "能够将Pixiv上的动图保存为 GIF 或 WebM 动画，也可以将漫画以原始尺寸打包下载。"
+      "message": "一个用于将P站动图转化成gif或webm格式，将漫画打包下载和下载小说的工具包。"
    },
    "extName": {
-      "message": "Pixiv动图&漫画下载器"
+      "message": "Pixiv工具箱"
    },
    "generate_gif_btn_complete_text": {
       "message": "保存GIF"
@@ -160,5 +160,8 @@
    },
    "number_of_pages_in_each_chunk_desc": {
       "message": "如果游览器在下载中崩溃，请调低这个参数"
+   },
+   "download_novel": {
+     "message": "下载小说"
    }
 }

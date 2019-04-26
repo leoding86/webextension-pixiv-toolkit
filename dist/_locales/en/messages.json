@@ -30,10 +30,10 @@
       "message": "Metas can use (Drag to select)"
    },
    "extDescription": {
-      "message": "Convert the ugoira on Pixiv to GIF or WebM file, and pack the images of manga for downloading."
+      "message": "Convert ugoira to gif or/and webm, pack manga for downloading and download novel on Pixiv."
    },
    "extName": {
-      "message": "Pixiv ugoira & manga downloader"
+      "message": "Pixiv Toolkit"
    },
    "generate_btn_error_text": {
       "message": "Error"
@@ -160,5 +160,8 @@
    },
    "number_of_pages_in_each_chunk_desc": {
       "message": "Reduce this number if browser is crushing during downloading"
+   },
+   "download_novel": {
+     "message": "Download novel"
    }
 }
