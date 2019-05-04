@@ -13,6 +13,18 @@
                 </v-list-tile>
             </v-list>
         </v-card> -->
+        <div id="supports">
+          <v-btn class="support-btn" @click="openInNewTab('https://www.patreon.com/leoding')">
+            <img src="../assets/patreon.png" />
+            Support Me !
+            <v-icon right>open_in_new</v-icon>
+          </v-btn>
+          <v-btn class="support-btn" v-if="isChrome" @click="openInNewTab('https://chrome.google.com/webstore/detail/pixiv-toolkit/ajlcnbbeidbackfknkgknjefhmbngdnj')">
+            <img src="../assets/chrome-es.png" />
+            Give 5 stars !
+            <v-icon right>open_in_new</v-icon>
+          </v-btn>
+        </div>
         <span class="card-title">Ugoira</span>
         <v-card style="margin-bottom:30px;">
             <v-list two-line>
@@ -105,6 +117,7 @@
 
 <script>
 import '@/assets/global.scss'
+import common from '@/modules/common';
 import cr from '@/modules/cr'
 
 export default {
@@ -130,11 +143,17 @@ export default {
             mangaImageRenameFormat: '',
             enableExtension: true,
             enablePackUgoiraFramesInfo: true,
-            mangaPagesInChunk: 99
+            mangaPagesInChunk: 99,
+
+            isChrome: false
         }
     },
 
     mounted () {
+        if (common.isBrowser('chrome')) {
+            this.isChrome = true;
+        }
+
         var self = this;
 
         cr._s.get(null).then(function(items) {
@@ -252,13 +271,17 @@ export default {
 
         mangaPagesInChunkChanged: function () {
             let _this = this;
-            
+
             if (!this.mangaPagesInChunk.match(/^[1-9]\d*$/)) {
                 alert('Please input number greater then 1');
                 return;
             }
-            
+
             cr._s.set({ mangaPagesInChunk: parseInt(this.mangaPagesInChunk) });
+        },
+
+        openInNewTab (url) {
+          window.open(url, '_blank');
         },
 
         tl (string) {
@@ -275,5 +298,20 @@ export default {
         font-size: 18px;
         margin-bottom: 10px;
     }
+}
+
+#supports {
+  margin-bottom: 10px;
+
+  .support-btn {
+    height: 46px;
+    font-size: 16px;
+    margin: 10px 10px 10px 0;
+
+    img {
+      width: 36px;
+      margin-right: 10px;
+    }
+  }
 }
 </style>
