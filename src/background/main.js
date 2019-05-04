@@ -141,6 +141,11 @@ Main.prototype = {
                         }, function () {
                             // console.log('update complete. version: ' + version);
                         });
+
+                        // Open extension page for logging update entries
+                        browser.tabs.create({
+                            url: browser.runtime.getURL('./pages/index.html')
+                        });
                     });
                 }
             });
