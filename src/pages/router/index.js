@@ -5,6 +5,7 @@ import UgoriaExtendDialog from '@/components/UgoiraExtendDialog'
 import RenameUgoiraDialog from '@/components/RenameUgoiraDialog';
 import RenameMangaDialog from '@/components/RenameMangaDialog';
 import RenameMangaImageDialog from '@/components/RenameMangaImageDialog';
+import ThirdParts from '@/components/ThirdParts';
 
 Vue.use(Router)
 
@@ -33,6 +34,10 @@ export default new Router({
               component: RenameMangaImageDialog
           }
       ]
+    }, {
+      path: '/third-parts',
+      name: 'ThirdParts',
+      component: ThirdParts
     }
   ]
 })
