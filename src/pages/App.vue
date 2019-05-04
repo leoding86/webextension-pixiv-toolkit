@@ -1,7 +1,41 @@
 <template>
   <div id="app">
     <v-app>
+      <v-navigation-drawer
+        app
+        v-model="drawer"
+        absolute
+        temporary>
+
+        <v-toolbar flat>
+          <v-list>
+            <v-list-tile>
+              <v-list-tile-title>
+                Menu
+              </v-list-tile-title>
+            </v-list-tile>
+          </v-list>
+        </v-toolbar>
+
+        <v-list dense>
+          <v-list-tile ripple @click="routeTo('Options')">
+            <v-list-tile-content>
+              <v-list-tile-title>Options</v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+          <v-list-tile ripple @click="routeTo('ThirdParts')">
+            <v-list-tile-content>
+              <v-list-tile-title>Third-Parts</v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+        </v-list>
+      </v-navigation-drawer>
       <v-toolbar class="v-primary" app absolute clipped-left height="56">
+        <v-btn flat dark icon
+          @click="drawer = !drawer">
+          <v-icon
+            dark>menu</v-icon>
+        </v-btn>
         <span class="title v-primary">{{ lt('extName') }} <span style="font-size:12px">{{ version }}</span></span>
       </v-toolbar>
       <v-content>
@@ -23,6 +57,12 @@ Vue.use(Vuetify)
 export default {
   name: 'App',
 
+  data () {
+    return {
+      drawer: false
+    }
+  },
+
   computed: {
     version () {
       return 'v' + extConfig.version;
@@ -30,6 +70,12 @@ export default {
   },
 
   methods: {
+      routeTo (name) {
+        this.$router.push({
+          name: name
+        })
+      },
+
       lt (string) {
           return cr._e(string);
       }
