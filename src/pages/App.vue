@@ -20,12 +20,12 @@
         <v-list dense>
           <v-list-tile ripple @click="routeTo('Options')">
             <v-list-tile-content>
-              <v-list-tile-title>Options</v-list-tile-title>
+              <v-list-tile-title>Settings</v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
-          <v-list-tile ripple @click="routeTo('ThirdParts')">
+          <v-list-tile ripple @click="routeTo('ThirdParty')">
             <v-list-tile-content>
-              <v-list-tile-title>Third-Parts</v-list-tile-title>
+              <v-list-tile-title>Third-Party</v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
         </v-list>
