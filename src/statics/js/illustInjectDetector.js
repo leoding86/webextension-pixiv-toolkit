@@ -15,7 +15,7 @@
         DetermineInjectType.prototype = {
             inject: function (url) {
                 let self = this;
-                
+
                 // Reset current toolkit
                 let currentToolkit = ptk.fence.get('currentToolkit');
 
@@ -48,17 +48,26 @@
                                 if (json.body.illustType === DetermineInjectType.UGOIRA_TYPE) {
                                     common.console.log('ugoira type');
                                     self.injectUgoira(json.body);
-                                } else if (json.body.illustType === DetermineInjectType.MANGA_TYPE ||
-                                    json.body.illustType === DetermineInjectType.ILLUST_TYPE
-                                ) {
+                                } else if (json.body.illustType === DetermineInjectType.MANGA_TYPE) {
                                     common.console.log('inject manga');
+                                    self.injectManga(json.body);
+                                } else if (json.body.illustType === DetermineInjectType.ILLUST_TYPE) {
+                                    common.console.log('inject illust');
                                     self.injectManga(json.body);
                                 }
 
                                 resolve(json.body);
-                            } else {
-                                reject();
+
+                                return;
                             }
+
+                            browser.sendMessage({
+                              action: 'deactiveIcon'
+                            });
+
+                            reject();
+
+                            return;
                         }
                     };
 
@@ -79,6 +88,11 @@
             },
 
             injectUgoira: function (context) {
+                // update action icon to active
+                browser.runtime.sendMessage({
+                  action: 'activeIcon'
+                });
+
                 ptk.fence.put('ugoiraContext', context);
                 // console.log('inject ugoira')
 
@@ -115,6 +129,11 @@
             },
 
             injectManga: function (context) {
+                // update action icon to active
+                browser.runtime.sendMessage({
+                  action: 'activeIcon'
+                });
+
                 if (!ptk.fence.has('mangaAdapter')) {
                     browser.runtime.sendMessage({
                         action: 'injectManga'
@@ -124,7 +143,7 @@
                         let mangaAdapter = new ptk.MangaAdatper();
                         mangaAdapter.inital(context).then(function (context) {
                             let mangaToolkit = mangaAdapter.getToolkit();
-                            
+
                             // store toolkit to current toolkit
                             ptk.fence.put('currentToolkit', mangaToolkit);
 
@@ -139,7 +158,7 @@
                     let mangaAdapter = ptk.fence.get('mangaAdapter');
                     mangaAdapter.inital(context).then(function (context) {
                         let mangaToolkit = mangaAdapter.getToolkit();
-                        
+
                         // store toolkit to current toolkit
                         ptk.fence.put('currentToolkit', mangaToolkit);
 
