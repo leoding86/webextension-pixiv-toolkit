@@ -7,6 +7,7 @@ import RenameMangaDialog from '@/components/RenameMangaDialog';
 import RenameMangaImageDialog from '@/components/RenameMangaImageDialog';
 import ThirdParty from '@/components/ThirdParty';
 import Sponsors from '@/components/Sponsors';
+import History from '@/components/History';
 
 Vue.use(Router)
 
@@ -43,6 +44,10 @@ export default new Router({
       path: '/sponsors',
       name: 'Sponsors',
       component: Sponsors
+    }, {
+      path: '/history',
+      name: 'History',
+      component: History
     }
   ]
 })
