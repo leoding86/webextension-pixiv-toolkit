@@ -159,7 +159,7 @@ Main.prototype = {
 
                         // Open extension page for logging update entries
                         browser.tabs.create({
-                            url: browser.runtime.getURL('./pages/index.html')
+                            url: browser.runtime.getURL('./pages/index.html') + '#/history'
                         });
                     });
                 }
