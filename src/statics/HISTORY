@@ -6,6 +6,11 @@ If you are using version < 1.5, plz update it asap.
 GitHub:
 https://github.com/leoding86/pixiv-ugoira-managa-downloader
 ----------------------------------------------
+v2.0.1
+Add selectable rename metas for renaming manga;
+Change extension icons;
+Fix bugs.
+
 v2.0.0
 Rename extension name to Pixiv Toolkit;
 Add feature for downloading novel;
