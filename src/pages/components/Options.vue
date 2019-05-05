@@ -13,13 +13,13 @@
                 </v-list-tile>
             </v-list>
         </v-card> -->
-        <supports></supports>
-        <span class="card-title">Ugoira</span>
+        <supports :showSponsorsLink=false :showPatreon=false></supports>
+        <span class="card-title">{{ tl('Ugoira') }}</span>
         <v-card style="margin-bottom:30px;">
             <v-list two-line>
                 <v-list-tile @click="showRenameUgoiraDialog()">
                     <v-list-tile-content>
-                        <v-list-tile-title>Rename ugoira file</v-list-tile-title>
+                        <v-list-tile-title>{{ tl('rename_ugoira_file') }}</v-list-tile-title>
                         <v-list-tile-sub-title>{{ ugoiraRenameFormatPreview }}</v-list-tile-sub-title>
                     </v-list-tile-content>
                     <v-list-tile-action>
@@ -62,12 +62,12 @@
                 </v-list-tile>
             </v-list>
         </v-card>
-        <span class="card-title">Manga</span>
+        <span class="card-title">{{ tl('Manga') }}</span>
         <v-card>
             <v-list two-line>
                 <v-list-tile @click="showRenameMangaDialog()">
                     <v-list-tile-content>
-                        <v-list-tile-title>Rename manga file</v-list-tile-title>
+                        <v-list-tile-title>{{ tl('rename_manga') }}</v-list-tile-title>
                         <v-list-tile-sub-title>{{ mangaRenameFormatPreview }}</v-list-tile-sub-title>
                     </v-list-tile-content>
                     <v-list-tile-action>
@@ -78,7 +78,7 @@
                 </v-list-tile>
                 <v-list-tile @click="showRenameMangaImageDialog()">
                     <v-list-tile-content>
-                        <v-list-tile-title>Rename manga image file</v-list-tile-title>
+                        <v-list-tile-title>{{ tl('rename_manga_image') }}</v-list-tile-title>
                         <v-list-tile-sub-title>{{ mangaImageRenameFormatPreview }}</v-list-tile-sub-title>
                     </v-list-tile-content>
                     <v-list-tile-action>
@@ -89,8 +89,8 @@
                 </v-list-tile>
                 <v-list-tile>
                     <v-list-tile-content>
-                        <v-list-tile-title>Number of pages in each chunk</v-list-tile-title>
-                        <v-list-tile-sub-title>Reduce this number if browser is crushing during downloading</v-list-tile-sub-title>
+                        <v-list-tile-title>{{ tl('number_of_pages_in_each_chunk') }}</v-list-tile-title>
+                        <v-list-tile-sub-title>{{ tl('number_of_pages_in_each_chunk_desc') }}</v-list-tile-sub-title>
                     </v-list-tile-content>
                     <v-list-tile-action>
                         <v-text-field reverse v-model="mangaPagesInChunk"
