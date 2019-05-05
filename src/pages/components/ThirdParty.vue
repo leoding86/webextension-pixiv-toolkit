@@ -1,6 +1,6 @@
 <template>
   <v-container style="max-width: 640px;">
-    <span class="card-title">Third-Party</span>
+    <span class="card-title">{{ tl('Third_Party') }}</span>
 
     <v-card style="margin-bottom:30px;">
       <v-list
@@ -27,6 +27,8 @@
 </template>
 
 <script>
+import cr from '@/modules/cr'
+
 export default {
   data () {
     return {
@@ -67,6 +69,10 @@ export default {
   methods: {
     openInNew (url) {
       window.open(url, '_blank');
+    },
+
+    tl(string) {
+      return cr._e(string);
     }
   }
 }
