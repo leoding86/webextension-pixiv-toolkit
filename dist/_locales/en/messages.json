@@ -125,11 +125,17 @@
    "rename_ugoira": {
       "message": "Rename downloaded ugoira"
    },
+   "Ugoira": {
+     "message": "Ugoira"
+   },
+   "Manga": {
+    "message": "Manga"
+   },
    "rename_manga": {
-      "message": "Rename downloaded manga"
+      "message": "Rename manga"
    },
    "rename_manga_image": {
-      "message": "Rename images in the downloaded manga"
+      "message": "Rename manga image file"
    },
    "quick_picks": {
       "message": "Quick picks"
@@ -163,5 +169,23 @@
    },
    "download_novel": {
      "message": "Download novel"
+   },
+   "Menu": {
+     "message": "Menu"
+   },
+   "give_5_stars": {
+     "message": "Give 5 stars"
+   },
+   "Become_a_patron": {
+     "message": "Become a patron"
+   },
+   "Change_History": {
+     "message": "Change History"
+   },
+   "Sponsors": {
+     "message": "Sponsors"
+   },
+   "Third_Party": {
+     "message": "Third-Party"
    }
 }

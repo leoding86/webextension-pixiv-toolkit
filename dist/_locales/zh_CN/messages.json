@@ -125,6 +125,12 @@
    "rename_ugoira": {
       "message": "重命名动图文件"
    },
+   "Ugoira": {
+     "message": "动图"
+   },
+   "Manga": {
+    "message": "漫画"
+   },
    "rename_manga": {
       "message": "重命名漫画"
    },
@@ -163,5 +169,23 @@
    },
    "download_novel": {
      "message": "下载小说"
+   },
+   "Menu": {
+     "message": "菜单"
+   },
+   "give_5_stars": {
+     "message": "5星好评"
+   },
+   "Become_a_patron": {
+     "message": "成为赞助者"
+   },
+   "Change_History": {
+     "message": "更新历史"
+   },
+   "Sponsors": {
+     "message": "赞助者"
+   },
+   "Third_Party": {
+     "message": "第三方"
    }
 }

@@ -262,6 +262,23 @@
             ]).inject(sender.tab.id);
         },
 
+        /**
+         * Update action icon
+         */
+        activeIconAction: function (sender) {
+          browser.browserAction.setIcon({
+            path: browser.runtime.getURL('./icon_active.png'),
+            tabId: sender.tab.id
+          });
+        },
+
+        deactiveIconAction: function (sender) {
+          browser.browserAction.setIcon({
+            path: browser.runtime.getUrl('./icon.png'),
+            tabId: sender.tab.id
+          });
+        },
+
         update: function () {
             PackageFileReader.read('manifest.json', function (result) {
                 var manifest = JSON.parse(result);
@@ -269,8 +286,6 @@
 
                 browser.storage.local.get(null, function (items) {
                     var updater = new Updater(items);
-
-                    debugger;
 
                     if (updater.isNewer(version)) {
                         console.log('update');
@@ -311,6 +326,11 @@
                                 version: version
                             }, function () {
                                 // console.log('update complete. version: ' + version);
+                            });
+
+                            // Open extension page for logging update entries
+                            browser.tabs.create({
+                                url: browser.runtime.getURL('./pages/index.html') + '#/history'
                             });
                         });
                     }
