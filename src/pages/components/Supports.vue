@@ -1,8 +1,8 @@
 <template>
   <div id="supports">
-    <v-btn class="support-btn" @click="openInNewTab('https://www.patreon.com/leoding')">
+    <v-btn v-if="showPatreon" class="support-btn" @click="openInNewTab('https://www.patreon.com/leoding')">
       <img src="../assets/patreon.png">
-      Become a patron !
+      {{ tl('Become_a_patron') }} !
       <v-icon right>open_in_new</v-icon>
     </v-btn>
     <v-btn
@@ -11,7 +11,7 @@
       @click="openInNewTab('https://chrome.google.com/webstore/detail/pixiv-toolkit/ajlcnbbeidbackfknkgknjefhmbngdnj')"
     >
       <img src="../assets/chrome-es.png">
-      Give 5 stars !
+      {{ tl('Give_5_stars') }} !
       <v-icon right>open_in_new</v-icon>
     </v-btn>
 
@@ -19,7 +19,7 @@
       <v-list>
         <v-list-tile ripple @click="showSponsors">
           <v-list-tile-content>
-            <v-list-tile-title>Sponsors</v-list-tile-title>
+            <v-list-tile-title>{{ tl('Sponsors') }}</v-list-tile-title>
           </v-list-tile-content>
           <v-list-tile-action>
             <v-btn icon ripple>
@@ -39,6 +39,11 @@ import cr from "@/modules/cr";
 export default {
   props: {
     showSponsorsLink: {
+      type: Boolean,
+      default: true
+    },
+
+    showPatreon: {
       type: Boolean,
       default: true
     }
