@@ -116,8 +116,6 @@ Main.prototype = {
             browser.storage.local.get(null, function (items) {
                 var updater = new Updater(items);
 
-                debugger;
-
                 if (updater.isNewer(version)) {
                     console.log('update');
                     updater.setDefaultSettings({
