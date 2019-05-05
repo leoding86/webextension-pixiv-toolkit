@@ -53,7 +53,16 @@ export default {
         {
           title: cr._e("author_id"),
           holder: "{authorId}"
-        }, {
+        },
+        {
+          title: cr._e("title"),
+          holder: '{title}'
+        },
+        {
+          title: cr._e("author"),
+          holder: '{author}'
+        },
+        {
             title: cr._e("page_num"),
             holder: "{pageNum}"
         }
