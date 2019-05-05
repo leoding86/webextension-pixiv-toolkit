@@ -91,6 +91,23 @@ Main.prototype = {
         ]).inject(sender.tab.id);
     },
 
+    /**
+     * Update action icon
+     */
+    activeIconAction: function (sender) {
+      browser.browserAction.setIcon({
+        path: browser.runtime.getURL('./icon_active.png'),
+        tabId: sender.tab.id
+      });
+    },
+
+    deactiveIconAction: function (sender) {
+      browser.browserAction.setIcon({
+        path: browser.runtime.getUrl('./icon.png'),
+        tabId: sender.tab.id
+      });
+    },
+
     update: function () {
         PackageFileReader.read('manifest.json', function (result) {
             var manifest = JSON.parse(result);
