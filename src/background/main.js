@@ -140,7 +140,13 @@ Main.prototype = {
                          * @version 1.8.8
                          * Set manga page chunk
                          */
-                        mangaPagesInChunk: 99
+                        mangaPagesInChunk: 99,
+
+                        /**
+                         * @version 2.0.2
+                         */
+                        ugoiraGenerateAndDownload: false,
+                        mangaPackAndDownload: false
                     });
 
                     updater.removeSettings([
