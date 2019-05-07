@@ -148,6 +148,10 @@ _pumd.Manga186 = (function (window, ptk) {
             button.setAttribute('href', URL.createObjectURL(blob));
             button.setText(common.lan.msg('save_page') + ' ' + pageRange);
             button.setProp('download', false);
+
+            if (self.extensionItems.mangaPackAndDownload) {
+              button.click();
+            }
           });
         }
 
@@ -210,8 +214,8 @@ _pumd.Manga186 = (function (window, ptk) {
     /**
      * Download image and save it to zip
      * @param {XMLHttpRequest} xhr
-     * @param {string} url 
-     * @param {JSZip} zip 
+     * @param {string} url
+     * @param {JSZip} zip
      */
     saveImage: function (xhr, url, zip) {
       let self = this;
