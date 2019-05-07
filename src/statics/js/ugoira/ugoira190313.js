@@ -1,4 +1,4 @@
-_pumd.Ugoira190313 = (function (common) {
+_pumd.Ugoira190313 = (function (ptk, common) {
   let browser = chrome;
 
   let buttonDefaultStyle = 'display:block;width:150px;margin-bottom:5px;background-color: #0096fa;border: none;border-radius: 16px;color: #fff;cursor: pointer;font-size: 12px;font-weight: 700;line-height: 1;padding: 10px 25px;text-align: center;transition: background-color .2s;cursor:pointer;';
@@ -77,7 +77,7 @@ _pumd.Ugoira190313 = (function (common) {
     run: function () {
       let self = this;
 
-      this.resourceDownloader.button = Button.create('0%', buttonInlineStyle);
+      this.resourceDownloader.button = ptk.Component.Button.create('0%', buttonInlineStyle);
       this.resourceDownloader.button.appendTo(this.wrapper);
       this.downloadResource(this.context.illustOriginalSrc, {
         onProgress: function (progress) {
@@ -108,12 +108,19 @@ _pumd.Ugoira190313 = (function (common) {
         self.gifGenerator.on('finished', function () {
           this.button.setAttribute('download', basename + '.gif');
 
+          if (self.settings.ugoiraGenerateAndDownload) {
+            this.button.click();
+          }
         });
         self.gifGenerator.appendTo(self.wrapper);
 
         self.webMGenerator = new WebMGenerator(self.zipData, self.context.illustMimeType, self.context.illustFrames, self.settings);
         self.webMGenerator.on('finished', function () {
           this.button.setAttribute('download', basename + '.webm');
+
+          if (self.settings.ugoiraGenerateAndDownload) {
+            this.button.click();
+          }
         });
         self.webMGenerator.appendTo(self.wrapper);
       });
@@ -177,10 +184,10 @@ _pumd.Ugoira190313 = (function (common) {
     this.mimeType = mimeType;
     this.frames = frames;
     this.settings = settings;
-    this.button = Button.create(common.lan.msg('generate_gif_btn_text'), buttonInlineStyle),
-      this.gif,
-      this.zip,
-      this.listeners = {};
+    this.button = ptk.Component.Button.create(common.lan.msg('generate_gif_btn_text'), buttonInlineStyle),
+    this.gif,
+    this.zip,
+    this.listeners = {};
 
     this.button.onClicked(function () {
       if (self.status > 0) {
@@ -300,8 +307,8 @@ _pumd.Ugoira190313 = (function (common) {
     this.frames = frames;
     this.zip;
     this.encoder,
-      this.listeners = {};
-    this.button = Button.create(common.lan.msg('generate_webm_btn_text'), buttonInlineStyle);
+    this.listeners = {};
+    this.button = ptk.Component.Button.create(common.lan.msg('generate_webm_btn_text'), buttonInlineStyle);
 
     this.button.onClicked(function () {
       if (self.status > 0) {
@@ -408,38 +415,42 @@ _pumd.Ugoira190313 = (function (common) {
     }
   }
 
-  function Button(text, style) {
-    let button = document.createElement('a');
-    button.style = !!style ? style : buttonDefaultStyle;
-    this.el = button;
-    this.setText(text);
-  }
+  // function Button(text, style) {
+  //   let button = document.createElement('a');
+  //   button.style = !!style ? style : buttonDefaultStyle;
+  //   this.el = button;
+  //   this.setText(text);
+  // }
 
-  Button.create = function (text, style) {
-    return new Button(text, style);
-  };
+  // Button.create = function (text, style) {
+  //   return new Button(text, style);
+  // };
 
-  Button.prototype = {
-    destroy: function () {
-      this.el.remove();
-    },
+  // Button.prototype = {
+  //   destroy: function () {
+  //     this.el.remove();
+  //   },
 
-    setText: function (text) {
-      this.el.innerText = text;
-    },
+  //   setText: function (text) {
+  //     this.el.innerText = text;
+  //   },
 
-    setAttribute: function (attribute, value) {
-      this.el.setAttribute(attribute, value);
-    },
+  //   setAttribute: function (attribute, value) {
+  //     this.el.setAttribute(attribute, value);
+  //   },
 
-    onClicked: function (listener) {
-      this.el.addEventListener('click', listener);
-    },
+  //   onClicked: function (listener) {
+  //     this.el.addEventListener('click', listener);
+  //   },
 
-    appendTo: function (element) {
-      element.appendChild(this.el);
-    }
-  };
+  //   click: function () {
+  //     this.el.click();
+  //   },
+
+  //   appendTo: function (element) {
+  //     element.appendChild(this.el);
+  //   }
+  // };
 
   let utils = {
     getImageSize: function (src, done) {
@@ -452,4 +463,4 @@ _pumd.Ugoira190313 = (function (common) {
   };
 
   return UgoiraEnhancer;
-})(_pumd.common, _pumd.UgoiraAdapter);
+})(_pumd, _pumd.common);
