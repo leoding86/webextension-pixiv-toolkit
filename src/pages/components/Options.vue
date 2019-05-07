@@ -49,6 +49,17 @@
                             @change="onEnablePackUgoiraFramesInfoChangedHandler"></v-switch>
                     </v-list-tile-action>
                 </v-list-tile>
+                <v-list-tile>
+                  <v-list-tile-content>
+                    <v-list-tile-title>Generate and download</v-list-tile-title>
+                    <v-list-tile-sub-title>
+                      Download gif/webm when file is generated
+                    </v-list-tile-sub-title>
+                  </v-list-tile-content>
+                  <v-list-tile-action>
+                    <v-switch v-model="ugoiraGenerateAndDownload"></v-switch>
+                  </v-list-tile-action>
+                </v-list-tile>
                 <v-list-tile @click="showUgoiraExtendDialog()">
                     <v-list-tile-content>
                         <v-list-tile-title>{{ tl('extend_duration') }}</v-list-tile-title>
@@ -87,6 +98,21 @@
                         </v-btn>
                     </v-list-tile-action>
                 </v-list-tile>
+
+                <v-list-tile>
+                  <v-list-tile-content>
+                    <v-list-tile-title>
+                      Pack and download
+                    </v-list-tile-title>
+                    <v-list-tile-sub-title>
+                      Download when the images are packed
+                    </v-list-tile-sub-title>
+                  </v-list-tile-content>
+                  <v-list-tile-action>
+                    <v-switch v-model="mangaPackAndDownload"></v-switch>
+                  </v-list-tile-action>
+                </v-list-tile>
+
                 <v-list-tile>
                     <v-list-tile-content>
                         <v-list-tile-title>{{ tl('number_of_pages_in_each_chunk') }}</v-list-tile-title>
@@ -139,6 +165,10 @@ export default {
             enablePackUgoiraFramesInfo: true,
             mangaPagesInChunk: 99,
 
+            ugoiraGenerateAndDownload: false,
+
+            mangaPackAndDownload: false,
+
             isChrome: false
         }
     },
@@ -154,6 +184,8 @@ export default {
             self.enableExtension = items.enableExtension ? items.enableExtension : '';
             self.enablePackUgoiraFramesInfo = !!items.enablePackUgoiraFramesInfo;
             self.mangaPagesInChunk = items.mangaPagesInChunk;
+            self.ugoiraGenerateAndDownload = items.ugoiraGenerateAndDownload;
+            self.mangaPackAndDownload = items.mangaPackAndDownload;
         });
     },
 
@@ -209,6 +241,22 @@ export default {
               enableExtension: val
           }).then(() => {
               window.cr.storage.items.enableExtend = val;
+          });
+        },
+
+        ugoiraGenerateAndDownload (val) {
+          cr._s.set({
+            ugoiraGenerateAndDownload: val
+          }).then(() => {
+            window.cr.storage.items.ugoiraGenerateAndDownload = val;
+          });
+        },
+
+        mangaPackAndDownload (val) {
+          cr._s.set({
+            mangaPackAndDownload: val
+          }).then(() => {
+            window.cr.storage.items.mangaPackAndDownload = val;
           });
         }
     },
