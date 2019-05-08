@@ -51,9 +51,11 @@
                 </v-list-tile>
                 <v-list-tile>
                   <v-list-tile-content>
-                    <v-list-tile-title>Generate and download</v-list-tile-title>
+                    <v-list-tile-title>
+                      {{ tl('setting_generate_and_download') }}
+                    </v-list-tile-title>
                     <v-list-tile-sub-title>
-                      Download gif/webm when file is generated
+                      {{ tl('setting_generate_and_download_desc') }}
                     </v-list-tile-sub-title>
                   </v-list-tile-content>
                   <v-list-tile-action>
@@ -102,10 +104,10 @@
                 <v-list-tile>
                   <v-list-tile-content>
                     <v-list-tile-title>
-                      Pack and download
+                      {{ tl('setting_pack_and_download') }}
                     </v-list-tile-title>
                     <v-list-tile-sub-title>
-                      Download when the images are packed
+                      {{ tl('setting_pack_and_download_desc') }}
                     </v-list-tile-sub-title>
                   </v-list-tile-content>
                   <v-list-tile-action>
