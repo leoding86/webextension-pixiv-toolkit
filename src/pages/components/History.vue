@@ -5,6 +5,11 @@
     <v-card>
       <v-card-text>
         <p class="history-entry">
+          <strong>2.0.2</strong>
+          Add settings for downloading ugoira/manga when it's generated/packed;<br>
+          Fix bugs.
+        </p>
+        <p class="history-entry">
           <strong>2.0.1</strong><br>
           Add selectable rename metas for renaming manga;<br>
           Change extension icons;<br>
