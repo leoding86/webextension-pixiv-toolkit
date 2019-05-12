@@ -5,7 +5,7 @@
     <v-card>
       <v-card-text>
         <p class="history-entry">
-          <strong>2.0.2</strong>
+          <strong>2.0.2</strong><br>
           Add settings for downloading ugoira/manga when it's generated/packed;<br>
           Fix bugs.
         </p>
