@@ -187,5 +187,17 @@
    },
    "Third_Party": {
      "message": "第三方"
+   },
+   "setting_generate_and_download": {
+     "message": "生成并下载"
+   },
+   "setting_generate_and_download_desc": {
+     "message": "当gif或webm生产后直接下载文件"
+   },
+   "setting_pack_and_download": {
+     "message": "打包并下载"
+   },
+   "setting_pack_and_download_desc": {
+     "message": "当图片打包完成后自动下载文件"
    }
 }

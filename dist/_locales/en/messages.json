@@ -187,5 +187,17 @@
    },
    "Third_Party": {
      "message": "Third-Party"
+   },
+   "setting_generate_and_download": {
+     "message": "Generate and download"
+   },
+   "setting_generate_and_download_desc": {
+     "message": "Download gif/webm when file is generated"
+   },
+   "setting_pack_and_download": {
+     "message": "Pack and download"
+   },
+   "setting_pack_and_download_desc": {
+     "message": "Download zip when images are packed"
    }
 }

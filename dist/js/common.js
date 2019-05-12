@@ -279,15 +279,15 @@ _pumd.Component.Button = function (text, style) {
     this.destroy = function () {
         this.el.remove();
     };
-  
+
     this.setText = function (text) {
         this.el.innerText = text;
     };
-  
+
     this.setAttribute = function (attribute, value) {
         this.el.setAttribute(attribute, value);
     };
-  
+
     this.onClicked = function (listener) {
         this.el.addEventListener('click', listener);
     };
@@ -299,7 +299,7 @@ _pumd.Component.Button = function (text, style) {
             listener.call(self);
         });
     };
-  
+
     this.appendTo = function (element) {
         element.appendChild(this.el);
     };
@@ -312,6 +312,10 @@ _pumd.Component.Button = function (text, style) {
 
     this.getProp = function (prop) {
         return this[prop];
+    };
+
+    this.click = function () {
+      this.el.click();
     };
 
     this.el = document.createElement('a');
