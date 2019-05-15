@@ -34,8 +34,20 @@ Main.prototype = {
 
     bindActionButton: function () {
         browser.browserAction.onClicked.addListener(function () {
-            browser.tabs.create({
-                url: browser.runtime.getURL('./pages/index.html')
+            browser.browserAction.getBadgeText({}, function (text) {
+              let url = './pages/index.html';
+
+              if (!!text) {
+                url += '#/history';
+              }
+
+              browser.browserAction.setBadgeText({
+                text: ''
+              }, function () {
+                browser.tabs.create({
+                  url: browser.runtime.getURL(url)
+                });
+              });
             });
         });
     },
@@ -210,7 +222,8 @@ Main.prototype = {
                          * @version 2.0.3
                          */
                         enableExtTakeOverDownloads: false,
-                        downloadRelativeLocation: null
+                        downloadRelativeLocation: null,
+                        showHistoryWhenUpdateCompleted: true
                     });
 
                     updater.removeSettings([
@@ -227,10 +240,21 @@ Main.prototype = {
                             // console.log('update complete. version: ' + version);
                         });
 
-                        // Open extension page for logging update entries
-                        browser.tabs.create({
-                            url: browser.runtime.getURL('./pages/index.html') + '#/history'
-                        });
+                        if (items.showHistoryWhenUpdateCompleted) {
+                          // Open change history
+                          browser.tabs.create({
+                              url: browser.runtime.getURL('./pages/index.html') + '#/history'
+                          });
+                        } else {
+                          // Mark new on badge
+                          browser.browserAction.setBadgeText({
+                            text: 'NEW'
+                          });
+
+                          browser.browserAction.setBadgeBackgroundColor({
+                            color: '#FF0000'
+                          });
+                        }
                     });
                 }
             });
