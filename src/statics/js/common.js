@@ -318,8 +318,17 @@ _pumd.Component.Button = function (text, style) {
       this.el.click();
     };
 
+    this.download = function () {
+      let a = document.createElement('a');
+      a.setAttribute('href', this.getProp('href'));
+      a.setAttribute('download', this.getProp('download'));
+      a.click();
+      a.remove();
+    };
+
     this.el = document.createElement('a');
     this.el.style = style;
+    this.el.style.cursor = 'pointer';
     this.setText(text);
 };
 
@@ -353,6 +362,112 @@ _pumd.RetryTicker = (function () {
 
 _pumd.getBrowser = function () {
     return chrome ? chrome : browser;
+};
+
+/**
+ * Package browser functions
+ */
+_pumd.browserUtils = {
+
+  storage: {
+    get: function (keys) {
+      return new Promise(function (resolve) {
+        let browser = _pumd.getBrowser();
+
+        browser.storage.local.get(keys, function (items) {
+          resolve(items);
+          return;
+        });
+      })
+    },
+
+    set: function (items) {
+      return new Promise(function (resolve) {
+        let browser = _pumd.getBrowser();
+
+        browser.storage.local.set(items, function () {
+          resolve();
+          return;
+        });
+      });
+    },
+
+    remove: function (keys) {
+      return new Promise(function (resolve) {
+        let browser = _pumd.getBrowser();
+
+        browser.storage.local.remve(keys, function () {
+          resolve();
+          return;
+        });
+      });
+    }
+  },
+
+  downloads: {
+    download: function (options) {
+      return new Promise(function (resolve, reject) {
+        let browser = _pumd.getBrowser();
+
+        browser.runtime.sendMessage({
+          action: 'download',
+          options: options
+        }, function (downloadId) {
+          if (downloadId === undefined) {
+            reject(browser.runtime.lastError);
+            return;
+          }
+
+          resolve(downloadId);
+          return;
+        });
+      });
+    },
+  },
+
+  permissions: {
+    contains: function (permissions) {
+      return new Promise(function (resolve) {
+        let browser = _pumd.getBrowser();
+
+        browser.runtime.sendMessage({
+          action: 'containsPermissions',
+          permissions: permissions
+        }, function (result) {
+          resolve(result);
+          return;
+        });
+      });
+    },
+
+    request: function (permissions) {
+      return new Promise(function (resolve) {
+        let browser = _pumd.getBrowser();
+
+        browser.runtime.sendMessage({
+          action: 'requestPermissions',
+          permissions: permissions
+        }, function (granted) {
+          resolve(granted);
+          return;
+        });
+      });
+    },
+
+    remove: function (permissions) {
+      return new Promise(function (resolve) {
+        let browser = _pumd.getBrowser();
+
+        browser.runtime.sendMessage({
+          action: 'removePermissions',
+          permissions: permissions
+        }, function (removed) {
+          resolve(removed);
+          return;
+        });
+      });
+    }
+  }
 };
 
 var randomStr = _pumd.common.getRandomStr(10);
