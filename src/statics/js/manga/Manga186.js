@@ -143,14 +143,17 @@ _pumd.Manga186 = (function (window, ptk) {
           zip.generateAsync({
             type: 'blob',
           }).then(function (blob) {
-            button.setProp('complete', true);
-            button.setAttribute('download', fileName);
-            button.setAttribute('href', URL.createObjectURL(blob));
             button.setText(common.lan.msg('save_page') + ' ' + pageRange);
-            button.setProp('download', false);
+            button.setProp('complete', true);
+            button.setProp('download', fileName);
+            button.setProp('href', URL.createObjectURL(blob));
 
             if (self.extensionItems.mangaPackAndDownload) {
-              button.click();
+              self.downloadFile(button.getProp('href'), button.getProp('download'));
+            } else {
+              button.onClickedListener(function () {
+                self.downloadFile(button.getProp('href'), button.getProp('download'));
+              });
             }
           });
         }
@@ -248,6 +251,31 @@ _pumd.Manga186 = (function (window, ptk) {
         };
         xhr.send();
       })
+    },
+
+    downloadFile: function (href, filename) {
+      let self = this;
+
+      if (this.extensionItems.enableExtTakeOverDownloads) {
+        ptk.browserUtils.permissions.contains({
+          permissions: ['downloads']
+        }).then(function (result) {
+          if (result) {
+            ptk.browserUtils.downloads.download({
+              url: href,
+              filename: self.extensionItems.downloadRelativeLocation + filename
+            })
+          } else {
+            alert('Please grant downloads permission to extension to download');
+          }
+        })
+      } else {
+        let a = document.createElement('a');
+        a.setAttribute('href', href);
+        a.setAttribute('download', filename);
+        a.click();
+        a.remove();
+      }
     },
 
     guessButtonsContainer: function (callback) {
