@@ -8,6 +8,7 @@ import RenameMangaImageDialog from '@/components/RenameMangaImageDialog';
 import ThirdParty from '@/components/ThirdParty';
 import Sponsors from '@/components/Sponsors';
 import History from '@/components/History';
+import DownloadRelativeLocationDialog from '@/components/DownloadRelativeLocationDialog';
 
 Vue.use(Router)
 
@@ -34,6 +35,10 @@ export default new Router({
               path: 'rename-manga-image',
               name: 'RenameMangaImage',
               component: RenameMangaImageDialog
+          }, {
+            path: 'download-relative-dialog',
+            name: 'DownloadRelativeLocationDialog',
+            component: DownloadRelativeLocationDialog
           }
       ]
     }, {
