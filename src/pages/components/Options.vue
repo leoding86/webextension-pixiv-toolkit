@@ -129,14 +129,16 @@
             </v-list>
         </v-card>
 
-        <span class="card-title">Downloads <sup class="beta-notice">Beta</sup></span>
+        <span class="card-title">{{ tl('Downloads') }} <sup class="beta-notice">Beta</sup></span>
 
-        <v-card>
+        <p class="beta-notice-msg">Only works for downloading novel and manga for now</p>
+
+        <v-card style="margin-bottom:30px;">
             <v-list two-line>
                 <v-list-tile>
                     <v-list-tile-content>
-                        <v-list-tile-title>Downloads permission</v-list-tile-title>
-                        <v-list-tile-sub-title>Downloads settings need downloads permission to work</v-list-tile-sub-title>
+                        <v-list-tile-title>{{ tl('setting_downloads_permission') }}</v-list-tile-title>
+                        <v-list-tile-sub-title>{{ tl('setting_downloads_permission_desc') }}</v-list-tile-sub-title>
                     </v-list-tile-content>
                     <v-list-tile-action>
                         <v-btn @click="switchDownloadsPermission">{{ downloadPermissionText }}</v-btn>
@@ -144,8 +146,8 @@
                 </v-list-tile>
                 <v-list-tile>
                     <v-list-tile-content>
-                        <v-list-tile-title>Extension takes over downloads</v-list-tile-title>
-                        <v-list-tile-sub-title>Enable/Disable extension takes over downloads</v-list-tile-sub-title>
+                        <v-list-tile-title>{{ tl('setting_ext_take_over_downloads') }}</v-list-tile-title>
+                        <v-list-tile-sub-title>{{ tl('setting_ext_take_over_downloads_desc') }}</v-list-tile-sub-title>
                     </v-list-tile-content>
                     <v-list-tile-action>
                         <v-switch v-model="enableExtTakeOverDownloads"
@@ -154,15 +156,30 @@
                 </v-list-tile>
                 <v-list-tile>
                   <v-list-tile-content>
-                    <v-list-tile-title>Relative location</v-list-tile-title>
+                    <v-list-tile-title>{{ tl('setting_relative_location') }}</v-list-tile-title>
                     <v-list-tile-sub-title>{{ downloadRelativeLocation }}</v-list-tile-sub-title>
                   </v-list-tile-content>
                   <v-list-tile-action>
                     <v-btn :disabled="!enableExtTakeOverDownloads"
-                      @click="showDownloadRelativeLocationDialog()">Change</v-btn>
+                      @click="showDownloadRelativeLocationDialog()">{{ tl('Change') }}</v-btn>
                   </v-list-tile-action>
                 </v-list-tile>
             </v-list>
+        </v-card>
+
+        <span class="card-title">{{ tl('Others') }}</span>
+
+        <v-card>
+          <v-list two-line>
+            <v-list-tile>
+              <v-list-tile-content>
+                <v-list-tile-title>{{ tl('setting_show_history_when_update_completed') }}</v-list-tile-title>
+              </v-list-tile-content>
+              <v-list-tile-action>
+                <v-switch v-model="showHistoryWhenUpdateCompleted"></v-switch>
+              </v-list-tile-action>
+            </v-list-tile>
+          </v-list>
         </v-card>
 
         <router-view />
@@ -216,6 +233,8 @@ export default {
 
             downloadRelativeLocation: null,
 
+            showHistoryWhenUpdateCompleted: true,
+
             browser: chrome
         }
     },
@@ -237,6 +256,8 @@ export default {
             self.enableExtTakeOverDownloads = !!items.enableExtTakeOverDownloads;
 
             self.downloadRelativeLocation = items.downloadRelativeLocation;
+
+            self.showHistoryWhenUpdateCompleted = !!items.showHistoryWhenUpdateCompleted;
         });
 
         cr._s.onChanged.addListener(self.onStorageChanged);
@@ -301,9 +322,9 @@ export default {
 
         downloadPermissionText () {
             if (this.hasDownloadsPermission) {
-                return 'Remove';
+                return this.tl('Remove');
             } else {
-                return 'Grant';
+                return this.tl('Grant');
             }
         }
     },
@@ -336,6 +357,12 @@ export default {
         enableExtTakeOverDownloads (val) {
           cr._s.set({
             enableExtTakeOverDownloads: val
+          });
+        },
+
+        showHistoryWhenUpdateCompleted (val) {
+          cr._s.set({
+            showHistoryWhenUpdateCompleted: val
           });
         }
     },
