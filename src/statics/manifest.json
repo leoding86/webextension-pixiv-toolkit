@@ -25,6 +25,9 @@
         "*://*.pixiv.net/*",
         "*://*.pximg.net/*"
     ],
+    "optional_permissions": [
+        "downloads"
+    ],
     "content_scripts": [
         {
             "matches": [
