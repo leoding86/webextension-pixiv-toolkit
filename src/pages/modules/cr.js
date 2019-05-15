@@ -11,7 +11,7 @@ let cr = {
                 });
             });
         },
-    
+
         set (object) {
             return new Promise(function (resolve) {
                 chrome.storage.local.set(object, function () {
@@ -19,13 +19,23 @@ let cr = {
                 });
             });
         },
-    
+
         remove (key) {
             return new Promise(function (resolve) {
                 chrome.storage.local.remove(key, function () {
                     return resolve();
                 })
             });
+        },
+
+        onChanged: {
+          addListener: function (listener) {
+            chrome.storage.onChanged.addListener(listener);
+          },
+
+          removeListener: function (listener) {
+            chrome.storage.onChanged.removeListener(listener);
+          }
         }
     }
 };
