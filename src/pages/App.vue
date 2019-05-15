@@ -4,7 +4,8 @@
       <v-navigation-drawer
         app
         v-model="drawer"
-        absolute
+        clipped
+        fixed
         temporary>
 
         <v-toolbar flat>
@@ -35,7 +36,7 @@
           </v-list-tile>
         </v-list>
       </v-navigation-drawer>
-      <v-toolbar class="v-primary" app absolute clipped-left height="56">
+      <v-toolbar class="v-primary" app fixed clipped-left height="56">
         <v-btn flat dark icon
           @click="drawer = !drawer">
           <v-icon
