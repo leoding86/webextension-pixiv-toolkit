@@ -24,11 +24,11 @@ Main.prototype = {
         });
     },
 
-    callMessageAction: function (action, options) {
+    callMessageAction: function (action, args) {
         let methodName = action + 'Action';
 
         if (typeof this[methodName] === 'function') {
-            this[methodName].apply(this, options);
+            this[methodName].call(this, args);
         }
     },
 
@@ -55,15 +55,25 @@ Main.prototype = {
 
         browser.runtime.onMessage.addListener(function (message, sender, sendResponse) {
             if (message.action) {
-                self.callMessageAction(message.action, [sender, sendResponse]);
+                // self.callMessageAction(message.action, [sender, sendResponse]);
+                self.callMessageAction(message.action, {
+                  message: message,
+                  sender: sender,
+                  sendResponse: sendResponse
+                });
             }
+
+            /**
+             * Prevent "The message port closed before a response was received" error
+             */
+            return true;
         });
     },
 
     /**
      * Message action
      */
-    injectUgoiraAction: function (sender, sendResponse) {
+    injectUgoiraAction: function (args) {
         if (!this.enableExtension) {
             return;
         }
@@ -78,33 +88,81 @@ Main.prototype = {
             'js/UgoiraAdapter.js',
             // 'js/180607/ugoira.js'
             'js/ugoira/ugoira190313.js'
-        ]).inject(sender.tab.id);
+        ]).inject(args.sender.tab.id);
     },
 
-    injectMangaAction: function (sender, sendResponse) {
+    injectMangaAction: function (args) {
         var scriptInjector = new ScriptInjector();
 
         scriptInjector.addInjectFiles([
             "lib/jszip/jszip.js",
             "js/MangaAdapter.js",
             "js/manga/Manga186.js"
-        ]).inject(sender.tab.id);
+        ]).inject(args.sender.tab.id);
     },
 
     /**
      * Update action icon
      */
-    activeIconAction: function (sender) {
+    activeIconAction: function (args) {
       browser.browserAction.setIcon({
         path: browser.runtime.getURL('./icon_active.png'),
-        tabId: sender.tab.id
+        tabId: args.sender.tab.id
       });
     },
 
-    deactiveIconAction: function (sender) {
+    deactiveIconAction: function (args) {
       browser.browserAction.setIcon({
         path: browser.runtime.getUrl('./icon.png'),
-        tabId: sender.tab.id
+        tabId: args.sender.tab.id
+      });
+    },
+
+    /**
+     * Request permissions and send result back
+     * @param {Object} args
+     */
+    requestPermissionsAction: function (args) {
+      browser.permissions.request(args.message.permissions, function (granted) {
+        if (!!args.sendResponse && typeof args.sendResponse === 'function') {
+          args.sendResponse(granted);
+        }
+      });
+    },
+
+    /**
+     * Remove permissions and send result back
+     * @param {Object} args
+     */
+    removePermissionsAction: function (args) {
+      browser.permissions.remove(args.message.permissions, function (removed) {
+        if (!!args.sendResponse && typeof args.sendResponse === 'function') {
+          args.sendResponse(removed);
+        }
+      })
+    },
+
+    /**
+     * Check if extension has permissions
+     * @param {Object} args
+     */
+    containsPermissionsAction: function (args) {
+      browser.permissions.contains(args.message.permissions, function (result) {
+        if (!!args.sendResponse && typeof args.sendResponse === 'function') {
+          args.sendResponse(result);
+        }
+      });
+    },
+
+    /**
+     * Download things
+     * @param {Object} args
+     */
+    downloadAction: function (args) {
+      browser.downloads.download(args.message.options, function () {
+        if (!!args.sendResponse && typeof args.sendResponse === 'function') {
+          args.sendResponse(downloadId);
+        }
       });
     },
 
@@ -146,7 +204,13 @@ Main.prototype = {
                          * @version 2.0.2
                          */
                         ugoiraGenerateAndDownload: false,
-                        mangaPackAndDownload: false
+                        mangaPackAndDownload: false,
+
+                        /**
+                         * @version 2.0.3
+                         */
+                        enableExtTakeOverDownloads: false,
+                        downloadRelativeLocation: null
                     });
 
                     updater.removeSettings([
