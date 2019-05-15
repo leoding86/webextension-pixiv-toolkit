@@ -2,7 +2,7 @@
   <v-dialog v-model="showDialog" max-width="560">
     <v-card>
       <v-card-text>
-        <h2>Download relative location</h2>
+        <h2>{{ tl('setting_relative_location') }}</h2>
         <v-text-field
           v-model="downloadRelativeLocation"
           :error-messages="errorMessages"
@@ -60,7 +60,7 @@ export default {
 
   computed: {
     hint () {
-      let hint = 'The location will be the suffix of the Chrome downloads location<br>For example, Chrome download location is "D:/downloads/" then the full download location will be "D:/downloads/{{downloadRelativeLocation}}"';
+      let hint = this.tl('relative_location_hint');
 
       let replaceStr = '[YOUR_LOCATION]';
 
@@ -86,6 +86,12 @@ export default {
     cr._s.get(null).then(function(items) {
       vm.downloadRelativeLocation = items.downloadRelativeLocation;
     });
+  },
+
+  methods: {
+    tl (str) {
+      return cr._e(str);
+    }
   }
 }
 </script>
