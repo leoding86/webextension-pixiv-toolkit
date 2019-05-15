@@ -76,7 +76,7 @@
             </v-list>
         </v-card>
         <span class="card-title">{{ tl('Manga') }}</span>
-        <v-card>
+        <v-card style="margin-bottom:30px;">
             <v-list two-line>
                 <v-list-tile @click="showRenameMangaDialog()">
                     <v-list-tile-content>
@@ -128,6 +128,43 @@
                 </v-list-tile>
             </v-list>
         </v-card>
+
+        <span class="card-title">Downloads <sup class="beta-notice">Beta</sup></span>
+
+        <v-card>
+            <v-list two-line>
+                <v-list-tile>
+                    <v-list-tile-content>
+                        <v-list-tile-title>Downloads permission</v-list-tile-title>
+                        <v-list-tile-sub-title>Downloads settings need downloads permission to work</v-list-tile-sub-title>
+                    </v-list-tile-content>
+                    <v-list-tile-action>
+                        <v-btn @click="switchDownloadsPermission">{{ downloadPermissionText }}</v-btn>
+                    </v-list-tile-action>
+                </v-list-tile>
+                <v-list-tile>
+                    <v-list-tile-content>
+                        <v-list-tile-title>Extension takes over downloads</v-list-tile-title>
+                        <v-list-tile-sub-title>Enable/Disable extension takes over downloads</v-list-tile-sub-title>
+                    </v-list-tile-content>
+                    <v-list-tile-action>
+                        <v-switch v-model="enableExtTakeOverDownloads"
+                          :disabled="!hasDownloadsPermission"></v-switch>
+                    </v-list-tile-action>
+                </v-list-tile>
+                <v-list-tile>
+                  <v-list-tile-content>
+                    <v-list-tile-title>Relative location</v-list-tile-title>
+                    <v-list-tile-sub-title>{{ downloadRelativeLocation }}</v-list-tile-sub-title>
+                  </v-list-tile-content>
+                  <v-list-tile-action>
+                    <v-btn :disabled="!enableExtTakeOverDownloads"
+                      @click="showDownloadRelativeLocationDialog()">Change</v-btn>
+                  </v-list-tile-action>
+                </v-list-tile>
+            </v-list>
+        </v-card>
+
         <router-view />
     </v-container>
 </template>
@@ -171,7 +208,15 @@ export default {
 
             mangaPackAndDownload: false,
 
-            isChrome: false
+            isChrome: false,
+
+            hasDownloadsPermission: false,
+
+            enableExtTakeOverDownloads: false,
+
+            downloadRelativeLocation: null,
+
+            browser: chrome
         }
     },
 
@@ -188,6 +233,18 @@ export default {
             self.mangaPagesInChunk = items.mangaPagesInChunk;
             self.ugoiraGenerateAndDownload = items.ugoiraGenerateAndDownload;
             self.mangaPackAndDownload = items.mangaPackAndDownload;
+
+            self.enableExtTakeOverDownloads = !!items.enableExtTakeOverDownloads;
+
+            self.downloadRelativeLocation = items.downloadRelativeLocation;
+        });
+
+        cr._s.onChanged.addListener(self.onStorageChanged);
+
+        this.browser.permissions.contains({
+          permissions: ['downloads']
+        }, function (result) {
+          self.hasDownloadsPermission = result;
         });
     },
 
@@ -209,6 +266,12 @@ export default {
         }
 
         next();
+    },
+
+    beforeRouteLeave (to, from, next) {
+      cr._s.onChanged.removeListener(this.onStorageChanged);
+
+      next();
     },
 
     computed: {
@@ -233,6 +296,14 @@ export default {
                 return this.mangaImageRenameFormat;
             } else {
                 return 'Not set';
+            }
+        },
+
+        downloadPermissionText () {
+            if (this.hasDownloadsPermission) {
+                return 'Remove';
+            } else {
+                return 'Grant';
             }
         }
     },
@@ -259,6 +330,12 @@ export default {
             mangaPackAndDownload: val
           }).then(() => {
             window.cr.storage.items.mangaPackAndDownload = val;
+          });
+        },
+
+        enableExtTakeOverDownloads (val) {
+          cr._s.set({
+            enableExtTakeOverDownloads: val
           });
         }
     },
@@ -318,6 +395,47 @@ export default {
             }
 
             cr._s.set({ mangaPagesInChunk: parseInt(this.mangaPagesInChunk) });
+        },
+
+        showDownloadRelativeLocationDialog: function () {
+          this.$router.push({
+            name: 'DownloadRelativeLocationDialog',
+            params: {
+              downloadRelativeLocation: ''
+            }
+          })
+        },
+
+        onStorageChanged: function (changes, areaName) {
+          let updatedIndex = ['downloadRelativeLocation'];
+
+          for (let i in changes) {
+            if (updatedIndex.indexOf(i) > -1) {
+              this[i] = changes[i].newValue;
+            }
+          }
+        },
+
+        switchDownloadsPermission: function () {
+          let vm = this;
+
+          this.browser.permissions.contains({
+            permissions: ['downloads']
+          }, function (result) {
+            if (result) {
+              vm.browser.permissions.remove({
+                permissions: ['downloads']
+              }, function () {
+                vm.hasDownloadsPermission = vm.enableExtTakeOverDownloads = !!0;
+              });
+            } else {
+              vm.browser.permissions.request({
+                permissions: ['downloads']
+              }, function () {
+                vm.hasDownloadsPermission = !0;
+              });
+            }
+          });
         },
 
         tl (string) {
