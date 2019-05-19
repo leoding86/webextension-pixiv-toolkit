@@ -1,9 +1,15 @@
 <template>
   <v-container style="max-width: 640px;">
-    <supports :showSponsorsLink=false :showPatreon=false></supports>
+    <supports></supports>
     <span class="card-title">{{ tl('Change_History') }}</span>
     <v-card>
       <v-card-text>
+        <p class="history-entry">
+          <strong>2.0.3</strong><br>
+          Add a setting to enable or disable show the history changes after update is complete;<br>
+          Add downloads settings for downloading manga and novel (The downloads settings need downloads permission, you can grant it to or remove it from the extension as you want);<br>
+          Add Patreon link (You can support me on Patreon now. Anyway thank you for using this extension).
+        </p>
         <p class="history-entry">
           <strong>2.0.2</strong><br>
           Add settings for downloading ugoira/manga when it's generated/packed;<br>
