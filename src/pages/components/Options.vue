@@ -13,7 +13,7 @@
                 </v-list-tile>
             </v-list>
         </v-card> -->
-        <supports :showSponsorsLink=false :showPatreon=false></supports>
+        <supports></supports>
         <span class="card-title">{{ tl('Ugoira') }}</span>
         <v-card style="margin-bottom:30px;">
             <v-list two-line>
