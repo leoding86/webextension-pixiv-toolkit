@@ -235,5 +235,11 @@
    },
    "setting_show_history_when_update_completed": {
      "message": "Show change history when update completed"
+   },
+   "sponsor_update_periodically": {
+     "message": "The list will be updated periodically"
+   },
+   "sponsor_very_first": {
+     "message": "Become the very first sponsor"
    }
 }

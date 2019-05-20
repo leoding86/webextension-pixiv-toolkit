@@ -235,5 +235,11 @@
    },
    "setting_show_history_when_update_completed": {
      "message": "升级完成后显示历史修改记录"
+   },
+   "sponsor_update_periodically": {
+     "message": "此列表会周期性更新"
+   },
+   "sponser_very_first": {
+     "message": "成为第一位赞助者"
    }
 }
