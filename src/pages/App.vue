@@ -29,6 +29,12 @@
               <v-list-tile-title>{{ tl('Change_History') }}</v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
+          <v-list-tile ripple @click="routeTo('Sponsors')">
+            <v-list-tile-content>
+              <v-list-tile-title>{{ tl('Sponsors') }}</v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+          <v-divider light></v-divider>
           <v-list-tile ripple @click="routeTo('ThirdParty')">
             <v-list-tile-content>
               <v-list-tile-title>{{ tl('Third_Party') }}</v-list-tile-title>
