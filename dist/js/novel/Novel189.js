@@ -1,7 +1,7 @@
 _pumd.Novel189 = (function (window, ptk) {
-  let browser = ptk.getBrowser();
-
   function NovelToolkit() {
+    this.browser = ptk.getBrowser();
+
     this.context;
 
     this.container;
@@ -83,9 +83,46 @@ _pumd.Novel189 = (function (window, ptk) {
       this.writeSections();
 
       this.epubMaker.downloadEpub(function (epubZipContent, filename) {
+        let blob = URL.createObjectURL(epubZipContent);
+
         self.downloadBtn.el.style.display = 'inline';
-        self.downloadBtn.setAttribute('href', URL.createObjectURL(epubZipContent));
-        self.downloadBtn.setAttribute('download', filename);
+
+        /**
+         * Test chrome downloads and permissions apis
+         */
+        // self.downloadBtn.setAttribute('href', URL.createObjectURL(epubZipContent));
+        self.downloadBtn.setProp('href', blob);
+        self.downloadBtn.setProp('download', filename);
+
+        // Click download button
+        self.downloadBtn.onClickedListener(function () {
+          ptk.browserUtils.storage.get(null).then(function (items) {
+            // Check download setting
+            if (items.enableExtTakeOverDownloads) {
+              // Check if downloads permission is granted
+              ptk.browserUtils.permissions.contains({
+                permissions: ['downloads']
+              }).then(function (result) {
+                if (result) {
+                  ptk.browserUtils.downloads.download({
+                    url: blob,
+                    filename: items.downloadRelativeLocation + filename
+                  })
+                } else {
+                  alert('Pixiv Toolkit needs downloads permission, please grant permission in options page');
+                }
+                return;
+              });
+            } else {
+              // download with link
+              let download = document.createElement('a');
+              download.setAttribute('href', blob);
+              download.setAttribute('download', filename);
+              download.click();
+              download.remove();
+            }
+          });
+        });
       });
     }
   }

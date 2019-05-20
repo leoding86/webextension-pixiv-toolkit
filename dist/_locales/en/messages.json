@@ -199,5 +199,47 @@
    },
    "setting_pack_and_download_desc": {
      "message": "Download zip when images are packed"
+   },
+   "Downloads": {
+     "message": "Downloads"
+   },
+   "setting_downloads_permission": {
+     "message": "Downloads permission"
+   },
+   "setting_downloads_permission_desc": {
+     "message": "Downloads settings need downloads permission to work"
+   },
+   "Grant": {
+     "message": "Grand"
+   },
+   "Remove": {
+     "message": "Remove"
+   },
+   "setting_ext_take_over_downloads": {
+     "message": "Extension takes over downloads"
+   },
+   "setting_ext_take_over_downloads_desc": {
+     "message": "Enable/Disable extension takes over downloads"
+   },
+   "setting_relative_location": {
+     "message": "Relative location"
+   },
+   "relative_location_hint": {
+     "message": "The location will be the suffix of the Chrome downloads location<br>For example, Chrome download location is \"D:/downloads/\" then the full download location will be \"D:/downloads/{{downloadRelativeLocation}}\""
+   },
+   "Change": {
+     "message": "Change"
+   },
+   "Others": {
+     "message": "Others"
+   },
+   "setting_show_history_when_update_completed": {
+     "message": "Show change history when update completed"
+   },
+   "sponsor_update_periodically": {
+     "message": "The list will be updated periodically"
+   },
+   "sponsor_very_first": {
+     "message": "Become the very first sponsor"
    }
 }

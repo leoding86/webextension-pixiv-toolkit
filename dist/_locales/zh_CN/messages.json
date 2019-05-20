@@ -199,5 +199,47 @@
    },
    "setting_pack_and_download_desc": {
      "message": "当图片打包完成后自动下载文件"
+   },
+   "Downloads": {
+     "message": "下载"
+   },
+   "setting_downloads_permission": {
+     "message": "下载权限"
+   },
+   "setting_downloads_permission_desc": {
+     "message": "下载设置需要插件拥有下载权限"
+   },
+   "Grant": {
+     "message": "授权"
+   },
+   "Remove": {
+     "message": "移除"
+   },
+   "setting_ext_take_over_downloads": {
+     "message": "插件接管下载"
+   },
+   "setting_ext_take_over_downloads_desc": {
+     "message": "开启/关闭插件接管下载文件"
+   },
+   "setting_relative_location": {
+     "message": "保存相对位置"
+   },
+   "relative_location_hint": {
+     "message": "此位置将作为浏览器下载设置路径的后缀。<br>例如, 浏览器下载地址设置为 \"D:/downloads/\" ，那么插件将会把文件保存到 \"D:/downloads/{{downloadRelativeLocation}}\""
+   },
+   "Change": {
+     "message": "修改"
+   },
+   "Others": {
+     "message": "其他"
+   },
+   "setting_show_history_when_update_completed": {
+     "message": "升级完成后显示历史修改记录"
+   },
+   "sponsor_update_periodically": {
+     "message": "此列表会周期性更新"
+   },
+   "sponser_very_first": {
+     "message": "成为第一位赞助者"
    }
 }

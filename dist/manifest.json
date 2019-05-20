@@ -25,6 +25,9 @@
         "*://*.pixiv.net/*",
         "*://*.pximg.net/*"
     ],
+    "optional_permissions": [
+        "downloads"
+    ],
     "content_scripts": [
         {
             "matches": [
@@ -60,7 +63,7 @@
             ]
         }
     ],
-    "version": "2.0.2",
+    "version": "2.0.3",
     "web_accessible_resources": [
         "img/download.png"
     ],
