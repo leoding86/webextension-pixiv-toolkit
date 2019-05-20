@@ -1,6 +1,7 @@
 import commonjs from 'rollup-plugin-commonjs';
 
 export default {
+    external: ['browser'],
     input: ['./src/background/main.js'],
     output: {
         file: './dist/background.js',
