@@ -37,6 +37,12 @@ let cr = {
             chrome.storage.onChanged.removeListener(listener);
           }
         }
+    },
+
+    _r: {
+      getURL (src) {
+        return chrome.runtime.getURL(src);
+      }
     }
 };
 
