@@ -4,9 +4,9 @@
       :style="{marginBottom: '10px'}"></supports>
     <v-card>
       <v-card-text>
-        <p style="font-size:14px;">{{ tl('sponsor_update_periodically') }}</p>
+        <p style="font-size:14px;">{{ tl('sponsor_update_periodically') }} ~ヾ(＾∇＾)</p>
         <ul v-if="sponsors.length > 0">
-          <li></li>
+          <li v-for="(sponsor, i) in sponsors" :key="i" :class="'sponsor sponsor__level-' + sponsor.level">{{ sponsor.name }}</li>
         </ul>
         <p class="no-sponsor" v-else>{{ tl('sponsor_very_first') }} ~ヾ(＾∇＾)</p>
       </v-card-text>
@@ -29,6 +29,22 @@ export default {
     }
   },
 
+  mounted () {
+    let vm = this,
+        sponsorsUrl = cr._r.getURL('sponsors.json'),
+        xhr = new XMLHttpRequest();
+
+    xhr.open('get', sponsorsUrl);
+
+    xhr.onload = function () {
+      let sponsors = JSON.parse(this.responseText);
+
+      vm.sponsors = sponsors;
+    };
+
+    xhr.send();
+  },
+
   methods: {
     tl(string) {
       return cr._e(string);
@@ -45,15 +61,29 @@ p.no-sponsor {
 
 ul {
   list-style: none;
+  padding-left: 0;
 
   li {
     display: inline-block;
     font-size: 16px;
-
-    &::after {
-      content: '/';
-      margin: 0 3px;
-    }
   }
+}
+
+.sponsor {
+  display: inline-block;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  padding: 5px 15px;
+  margin-right: 10px;
+  border-radius: 100px;
+  background: #fff;
+}
+
+.level-1 {
+
+}
+
+.sponsor__level-2 {
+  font-weight: 1000;
 }
 </style>
