@@ -5,7 +5,8 @@
     <v-card>
       <v-card-text>
         <p style="font-size:14px;">{{ tl('sponsor_update_periodically') }} ~ヾ(＾∇＾)</p>
-        <ul v-if="sponsors.length > 0">
+        <p style="font-size:14px;" v-if="sponsors === null">Loading sponsors...</p>
+        <ul v-else-if="sponsors.length > 0">
           <li v-for="(sponsor, i) in sponsors" :key="i" :class="'sponsor sponsor__level-' + sponsor.level">{{ sponsor.name }}</li>
         </ul>
         <p class="no-sponsor" v-else>{{ tl('sponsor_very_first') }} ~ヾ(＾∇＾)</p>
@@ -25,13 +26,13 @@ export default {
 
   data () {
     return {
-      sponsors: []
+      sponsors: null
     }
   },
 
   mounted () {
     let vm = this,
-        sponsorsUrl = cr._r.getURL('sponsors.json'),
+        sponsorsUrl = 'https://raw.githubusercontent.com/leoding86/pixiv-toolkits/master/src/statics/sponsors.json',
         xhr = new XMLHttpRequest();
 
     xhr.open('get', sponsorsUrl);
@@ -39,7 +40,7 @@ export default {
     xhr.onload = function () {
       let sponsors = JSON.parse(this.responseText);
 
-      vm.sponsors = sponsors;
+      vm.sponsors = (Object.prototype.toString.call(sponsors) === '[object Array]' && sponsors.length > 0) ? sponsors : [];
     };
 
     xhr.send();
