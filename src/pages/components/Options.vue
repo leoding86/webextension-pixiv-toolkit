@@ -452,14 +452,14 @@ export default {
             if (result) {
               vm.browser.permissions.remove({
                 permissions: ['downloads']
-              }, function () {
-                vm.hasDownloadsPermission = vm.enableExtTakeOverDownloads = !!0;
+              }, function (removed) {
+                vm.hasDownloadsPermission = vm.enableExtTakeOverDownloads = !removed;
               });
             } else {
               vm.browser.permissions.request({
                 permissions: ['downloads']
-              }, function () {
-                vm.hasDownloadsPermission = !0;
+              }, function (granted) {
+                vm.hasDownloadsPermission = !!granted;
               });
             }
           });
