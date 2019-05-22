@@ -27,7 +27,7 @@ _pumd.Ugoira190313 = (function (ptk, common) {
     browser.storage.onChanged.addListener(function (changes, areaName) {
       if (areaName === 'local') {
         Object.keys(changes).forEach(function (key) {
-          self.settings[key] = changes[key];
+          self.settings[key] = changes[key].newValue;
         });
       }
     });
@@ -97,16 +97,30 @@ _pumd.Ugoira190313 = (function (ptk, common) {
             type: 'blob'
           });
         }).then(function (blob) {
-          self.resourceDownloader.button.setAttribute('href', URL.createObjectURL(blob));
           self.resourceDownloader.button.setText(common.lan.msg('downloadZipFile'));
-          self.resourceDownloader.button.setAttribute('download', basename + '.zip');
+          self.resourceDownloader.button.setProp('href', URL.createObjectURL(blob));
+          self.resourceDownloader.button.setProp('filename', basename + '.zip');
+          // self.resourceDownloader.button.setAttribute('href', URL.createObjectURL(blob));
+          // self.resourceDownloader.button.setAttribute('download', basename + '.zip');
+          self.resourceDownloader.button.onClickedListener(function () {
+            self.downloadFile(
+              self.resourceDownloader.button.getProp('href'),
+              self.resourceDownloader.button.getProp('filename')
+            )
+          });
         });
 
         self.zipData = zipData;
 
         self.gifGenerator = new GifGenerator(self.zipData, self.context.illustMimeType, self.context.illustFrames, self.settings);
         self.gifGenerator.on('finished', function () {
-          this.button.setAttribute('download', basename + '.gif');
+          let button = this.button;
+
+          this.button.setProp('download', basename + '.gif');
+
+          this.button.onClickedListener(function () {
+            self.downloadFile(button.getProp('href'), button.getProp('download'));
+          });
 
           if (self.settings.ugoiraGenerateAndDownload) {
             this.button.click();
@@ -116,7 +130,13 @@ _pumd.Ugoira190313 = (function (ptk, common) {
 
         self.webMGenerator = new WebMGenerator(self.zipData, self.context.illustMimeType, self.context.illustFrames, self.settings);
         self.webMGenerator.on('finished', function () {
-          this.button.setAttribute('download', basename + '.webm');
+          let button = this.button;
+
+          this.button.setProp('download', basename + '.webm');
+
+          this.button.onClickedListener(function () {
+            self.downloadFile(button.getProp('href'), button.getProp('download'));
+          });
 
           if (self.settings.ugoiraGenerateAndDownload) {
             this.button.click();
@@ -173,6 +193,31 @@ _pumd.Ugoira190313 = (function (ptk, common) {
         self.xhr.open('GET', src);
         self.xhr.send();
       });
+    },
+
+    downloadFile: function (href, filename) {
+      let self = this;
+
+      if (this.settings.enableExtTakeOverDownloads) {
+        ptk.browserUtils.permissions.contains({
+          permissions: ['downloads']
+        }).then(function (result) {
+          if (result) {
+            ptk.browserUtils.downloads.download({
+              url: href,
+              filename: self.settings.downloadRelativeLocation + filename
+            })
+          } else {
+            alert('Please grant downloads permission to extension to download');
+          }
+        })
+      } else {
+        let a = document.createElement('a');
+        a.setAttribute('href', href);
+        a.setAttribute('download', filename);
+        a.click();
+        a.remove();
+      }
     }
   }
 
@@ -279,7 +324,7 @@ _pumd.Ugoira190313 = (function (ptk, common) {
               self.status = 2;
 
               self.button.setText(common.lan.msg('generate_gif_btn_complete_text'));
-              self.button.setAttribute('href', URL.createObjectURL(blob));
+              self.button.setProp('href', URL.createObjectURL(blob));
 
               if (self.listeners['finished']) {
                 self.listeners['finished'].call(self);
@@ -354,7 +399,7 @@ _pumd.Ugoira190313 = (function (ptk, common) {
             self.encoder.compile(false, function (output) {
               self.status = 2;
 
-              self.button.setAttribute('href', URL.createObjectURL(output));
+              self.button.setProp('href', URL.createObjectURL(output));
               self.button.setText(common.lan.msg('generate_webm_btn_complete_text'));
 
               if (self.listeners['finished']) {
