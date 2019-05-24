@@ -342,7 +342,7 @@
          * @param {Object} args
          */
         downloadAction: function (args) {
-          browser.downloads.download(args.message.options, function () {
+          browser.downloads.download(args.message.options, function (downloadId) {
             if (!!args.sendResponse && typeof args.sendResponse === 'function') {
               args.sendResponse(downloadId);
             }
