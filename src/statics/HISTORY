@@ -6,6 +6,11 @@ If you are using version < 1.5, plz update it asap.
 GitHub:
 https://github.com/leoding86/pixiv-toolkits
 ----------------------------------------------
+V2.0.4
+Downloads settings can apply to all type downloads;
+Fix a bug about granting downloads permission to extension;
+Update sponsors list page.
+
 v2.0.3
 Add a setting to enable or disable show the history changes after update is complete;
 Add downloads settings for downloading manga and novel (The downloads settings need downloads permission, you can grant it to or remove it from the extension as you want);
