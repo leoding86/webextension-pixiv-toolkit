@@ -18,6 +18,7 @@
 <script>
 import cr from "@/modules/cr";
 import Supports from '@/components/Supports';
+import sponsersData from '@/../statics/sponsors.json';
 
 export default {
   components: {
@@ -80,8 +81,8 @@ ul {
   background: #fff;
 }
 
-.level-1 {
-
+.sponsor__level-1 {
+  font-weight: 500;
 }
 
 .sponsor__level-2 {
