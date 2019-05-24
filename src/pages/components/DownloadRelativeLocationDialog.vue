@@ -62,7 +62,7 @@ export default {
     hint () {
       let hint = this.tl('relative_location_hint');
 
-      let replaceStr = '[YOUR_LOCATION]';
+      let replaceStr = '[RELATIVE_LOCATION]';
 
       if (this.downloadRelativeLocation && !this.locationRegex.test(this.downloadRelativeLocation)) {
         this.errorMessages.push('Invalid input, example: "pixiv_downloads/"');
