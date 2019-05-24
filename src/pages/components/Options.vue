@@ -131,8 +131,6 @@
 
         <span class="card-title">{{ tl('Downloads') }} <sup class="beta-notice">Beta</sup></span>
 
-        <p class="beta-notice-msg">Only works for downloading novel and manga for now</p>
-
         <v-card style="margin-bottom:30px;">
             <v-list two-line>
                 <v-list-tile>
