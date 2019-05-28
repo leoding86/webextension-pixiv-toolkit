@@ -2,31 +2,19 @@
   <v-container style="max-width: 640px;">
     <supports></supports>
     <span class="card-title">{{ tl('Change_History') }}</span>
+
     <v-card>
+      <v-list-tile>
+        <v-list-tile-content>
+          <v-list-tile-title>{{ tl('setting_show_history_when_update_completed') }}</v-list-tile-title>
+        </v-list-tile-content>
+        <v-list-tile-action>
+          <v-switch v-model="showHistoryWhenUpdateCompleted"></v-switch>
+        </v-list-tile-action>
+      </v-list-tile>
+      <v-divider></v-divider>
       <v-card-text>
-        <p class="history-entry">
-          <strong>2.0.3</strong><br>
-          Add a setting to enable or disable show the history changes after update is complete;<br>
-          Add downloads settings for downloading manga and novel (The downloads settings need downloads permission, you can grant it to or remove it from the extension as you want);<br>
-          Add Patreon link (You can support me on Patreon now. Anyway thank you for using this extension).
-        </p>
-        <p class="history-entry">
-          <strong>2.0.2</strong><br>
-          Add settings for downloading ugoira/manga when it's generated/packed;<br>
-          Fix bugs.
-        </p>
-        <p class="history-entry">
-          <strong>2.0.1</strong><br>
-          Add selectable rename metas for renaming manga;<br>
-          Change extension icons;<br>
-          Fix bugs.
-        </p>
-        <p class="history-entry">
-          <strong>2.0.0</strong><br>
-          Rename extension name to Pixiv Toolkit;<br>
-          Add feature for downloading novel;<br>
-          Fix bugs.
-        </p>
+        <div style="font-size:14px" v-html="history"></div>
       </v-card-text>
     </v-card>
   </v-container>
@@ -43,11 +31,52 @@ export default {
 
   data () {
     return {
-      sponsors: []
+      xhr: null,
+      sponsors: [],
+      history: 'loading',
+      showHistoryWhenUpdateCompleted: true
+    }
+  },
+
+  mounted () {
+    let vm = this;
+
+    cr._s.get(null).then(items => {
+      vm.showHistoryWhenUpdateCompleted = items.showHistoryWhenUpdateCompleted
+    });
+
+    this.loadHistory().then(history => {
+      vm.history = history;
+    });
+  },
+
+  watch: {
+    showHistoryWhenUpdateCompleted (val) {
+      cr._s.set({
+        showHistoryWhenUpdateCompleted: val
+      });
     }
   },
 
   methods: {
+    loadHistory () {
+      let vm = this;
+
+      return new Promise(resolve => {
+        if (!vm.xhr) {
+          vm.xhr = new XMLHttpRequest();
+        }
+
+        vm.xhr.open('get', cr._r.getURL('HISTORY'));
+        vm.xhr.onload = () => {
+          let parts = vm.xhr.responseText.split(/-{46}/);
+          resolve(parts[1].trim().replace(/[\r\n|\r|\n]/g, '<br>'));
+        };
+
+        vm.xhr.send();
+      });
+    },
+
     tl(string) {
       return cr._e(string);
     }
