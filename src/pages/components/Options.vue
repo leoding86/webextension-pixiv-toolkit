@@ -129,7 +129,7 @@
             </v-list>
         </v-card>
 
-        <span class="card-title">{{ tl('Downloads') }} <sup class="beta-notice">Beta</sup></span>
+        <span class="card-title">{{ tl('Downloads') }}</span>
 
         <v-card style="margin-bottom:30px;">
             <v-list two-line>
@@ -160,6 +160,20 @@
                   <v-list-tile-action>
                     <v-btn :disabled="!enableExtTakeOverDownloads"
                       @click="showDownloadRelativeLocationDialog()">{{ tl('Change') }}</v-btn>
+                  </v-list-tile-action>
+                </v-list-tile>
+                <v-list-tile>
+                  <v-list-tile-content>
+                    <v-list-tile-title>
+                      Ask where to save each file before downloading <sup class="beta-notice">*</sup>
+                    </v-list-tile-title>
+                    <v-list-tile-sub-title>
+                      This setting has no effect if the similar setting of your Chrome is on.
+                    </v-list-tile-sub-title>
+                  </v-list-tile-content>
+                  <v-list-tile-action>
+                    <v-switch v-model="downloadSaveAs"
+                      :disabled="!hasDownloadsPermission || !enableExtTakeOverDownloads"></v-switch>
                   </v-list-tile-action>
                 </v-list-tile>
             </v-list>
@@ -233,6 +247,8 @@ export default {
 
             showHistoryWhenUpdateCompleted: true,
 
+            downloadSaveAs: false,
+
             browser: chrome
         }
     },
@@ -256,6 +272,8 @@ export default {
             self.downloadRelativeLocation = items.downloadRelativeLocation;
 
             self.showHistoryWhenUpdateCompleted = !!items.showHistoryWhenUpdateCompleted;
+
+            self.downloadSaveAs = !!items.downloadSaveAs;
         });
 
         cr._s.onChanged.addListener(self.onStorageChanged);
@@ -362,6 +380,12 @@ export default {
           cr._s.set({
             showHistoryWhenUpdateCompleted: val
           });
+        },
+
+        downloadSaveAs (val) {
+          cr._s.set({
+            downloadSaveAs: val
+          });
         }
     },
 
@@ -432,7 +456,10 @@ export default {
         },
 
         onStorageChanged: function (changes, areaName) {
-          let updatedIndex = ['downloadRelativeLocation'];
+          let updatedIndex = [
+            'downloadRelativeLocation',
+            'downloadSaveAs'
+          ];
 
           for (let i in changes) {
             if (updatedIndex.indexOf(i) > -1) {
