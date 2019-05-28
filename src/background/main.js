@@ -223,7 +223,12 @@ Main.prototype = {
                          */
                         enableExtTakeOverDownloads: false,
                         downloadRelativeLocation: null,
-                        showHistoryWhenUpdateCompleted: true
+                        showHistoryWhenUpdateCompleted: true,
+
+                        /**
+                         * @version 2.0.5
+                         */
+                        downloadSaveAs: false
                     });
 
                     updater.removeSettings([
