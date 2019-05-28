@@ -6,7 +6,12 @@ If you are using version < 1.5, plz update it asap.
 GitHub:
 https://github.com/leoding86/pixiv-toolkits
 ----------------------------------------------
-V2.0.4
+v2.0.5
+Add 'Asking where to save file before downloading' setting;
+Add 'Show change history when update completed' setting in change history page, avoid users ignoring it;
+Add a link of new extension, you should try it out ヽ(^o^)ノ.
+
+v2.0.4
 Downloads settings can apply to all type downloads;
 Fix a bug about granting downloads permission to extension;
 Update sponsors list page.

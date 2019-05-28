@@ -210,7 +210,7 @@
      "message": "Downloads settings need downloads permission to work"
    },
    "Grant": {
-     "message": "Grand"
+     "message": "Grant"
    },
    "Remove": {
      "message": "Remove"
@@ -241,5 +241,8 @@
    },
    "sponsor_very_first": {
      "message": "Become the very first sponsor"
+   },
+   "Try_Manga_Toolkit": {
+       "message": "Try Manga Toolkit"
    }
 }
