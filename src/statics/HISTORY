@@ -8,7 +8,7 @@ https://github.com/leoding86/pixiv-toolkits
 ----------------------------------------------
 v2.0.5
 Add 'Asking where to save file before downloading' setting;
-Add 'Show change history when update completed' setting in change history page, avoid users ignoring it;
+Add 'Show change history when update completed' setting in change history page, avoid users don't see it;
 Add a link of new extension, you should try it out ヽ(^o^)ノ.
 
 v2.0.4
