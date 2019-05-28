@@ -1,17 +1,30 @@
 <template>
   <div id="supports">
-    <v-btn v-if="showPatreon" class="support-btn" @click="openInNewTab('https://www.patreon.com/leoding')">
+    <v-btn
+      small
+      v-if="showPatreon" class="support-btn" @click="openInNewTab('https://www.patreon.com/leoding')">
       <img src="../assets/patreon.png">
       {{ tl('Become_a_patron') }} !
       <v-icon right>open_in_new</v-icon>
     </v-btn>
+
     <v-btn
+      small
       class="support-btn"
       v-if="isChrome"
       @click="openInNewTab('https://chrome.google.com/webstore/detail/pixiv-toolkit/ajlcnbbeidbackfknkgknjefhmbngdnj')"
     >
       <img src="../assets/chrome-es.png">
       {{ tl('Give_5_stars') }} !
+      <v-icon right>open_in_new</v-icon>
+    </v-btn>
+
+    <v-btn
+     small
+     class="support-btn"
+    >
+      <img src="../assets/manga-toolkit.png">
+      {{ tl('Try_Manga_Toolkit') }}
       <v-icon right>open_in_new</v-icon>
     </v-btn>
 
@@ -85,12 +98,12 @@ export default {
   margin-bottom: 25px;
 
   .support-btn {
-    height: 46px;
+    height: 40px;
     font-size: 16px;
-    margin: 10px 10px 10px 0;
+    margin: 0 10px 10px 0;
 
     img {
-      width: 36px;
+      width: 30px;
       margin-right: 10px;
     }
   }
