@@ -1,8 +1,8 @@
-import ScriptInjector from '../core/browser/ScriptInjector';
-import PackageFileReader from '../core/browser/PackageFileReader';
-import Updater from '../core/browser/Updater';
-import bootstrap from '../core/bootstrap';
-import browser from 'browser';
+import { ScriptInjector, Updater, PackageFileReader } from '@/modules/Util';
+import Browser from '@/modules/Browser/Browser';
+import ScheduledTask from '@/modules/ScheduledTask';
+
+const browser = Browser.getBrowser();
 
 function Main() {
     // constructor
@@ -21,6 +21,7 @@ Main.prototype = {
             self.bindActionButton();
             self.listenStorageChanged();
             self.listenMessage();
+            self.runSubscribeTask()
         });
     },
 
@@ -35,7 +36,7 @@ Main.prototype = {
     bindActionButton: function () {
         browser.browserAction.onClicked.addListener(function () {
             browser.browserAction.getBadgeText({}, function (text) {
-              let url = './pages/index.html';
+              let url = './options_page/index.html';
 
               if (!!text) {
                 url += '#/history';
@@ -82,6 +83,18 @@ Main.prototype = {
         });
     },
 
+    runSubscribeTask: function () {
+      let scheduledTask = new ScheduledTask();
+      scheduledTask.task = () => {
+        return new Promise(function (resolve, reject) {
+          console.log('run reload subscribe task');
+          resolve();
+        })
+      };
+      scheduledTask.intervalTime = 5000;
+      // scheduledTask.run();
+    },
+
     /**
      * Message action
      */
@@ -125,7 +138,7 @@ Main.prototype = {
 
     deactiveIconAction: function (args) {
       browser.browserAction.setIcon({
-        path: browser.runtime.getUrl('./icon.png'),
+        path: browser.runtime.getURL('./icon.png'),
         tabId: args.sender.tab.id
       });
     },
@@ -228,7 +241,12 @@ Main.prototype = {
                         /**
                          * @version 2.0.5
                          */
-                        downloadSaveAs: false
+                        downloadSaveAs: false,
+
+                        /**
+                         * @version 2.1
+                         */
+                        featureKnown: false
                     });
 
                     updater.removeSettings([
@@ -248,7 +266,7 @@ Main.prototype = {
                         if (items.showHistoryWhenUpdateCompleted) {
                           // Open change history
                           browser.tabs.create({
-                              url: browser.runtime.getURL('./pages/index.html') + '#/history'
+                              url: browser.runtime.getURL('./options_page/index.html') + '#/history'
                           });
                         } else {
                           // Mark new on badge
@@ -267,4 +285,5 @@ Main.prototype = {
     }
 }
 
-bootstrap(Main);
+const main = new Main();
+main.run();

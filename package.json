@@ -6,9 +6,10 @@
   "private": true,
   "scripts": {
     "dev": "webpack --watch --progress --config build/webpack.dev.conf.js",
-    "build": "node build/build.js",
-    "buildw": "webpack --config build/webpack.prod.conf.js --watch --progress",
-    "build_background": "rollup -c build/rollup.config.js --watch"
+    "dev:cs": "webpack --watch --progress --config config/webpack.content-scripts.config.js",
+    "dev:op": "webpack --watch --progress --config config/webpack.options-page.config.js",
+    "dev:bg": "webpack --watch --progress --config config/webpack.background.config.js",
+    "build": "cross-env NODE_ENV=production webpack --config webpack.config.js"
   },
   "dependencies": {
     "node-sass": "^4.9.2",
@@ -32,6 +33,7 @@
     "babel-preset-stage-2": "^6.22.0",
     "chalk": "^2.0.1",
     "copy-webpack-plugin": "^4.0.1",
+    "cross-env": "^5.2.0",
     "css-loader": "^0.28.0",
     "extract-text-webpack-plugin": "^3.0.0",
     "file-loader": "^1.1.4",

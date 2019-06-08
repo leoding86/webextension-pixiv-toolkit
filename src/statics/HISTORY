@@ -3,9 +3,16 @@ Convert the ugoira on Pixiv to GIF or WebM file, and pack the images of manga to
 Notice:
 If you are using version < 1.5, plz update it asap.
 
-GitHub:
-https://github.com/leoding86/pixiv-toolkits
+Github:
+https://github.com/leoding86/webextension-pixiv-toolkit
 ----------------------------------------------
+v2.1.1
+Fix a bug about cannot save manga if user use default settings.
+
+v2.1
+Refactor extension and UI, if you find some issues please let me know;
+Recover the Manga Toolkit extension link.
+
 v2.0.5
 Add 'Asking where to save file before downloading' setting;
 Add 'Show change history when update completed' setting in change history page, avoid users don't see it;
