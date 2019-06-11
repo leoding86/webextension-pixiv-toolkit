@@ -5,7 +5,7 @@
   "author": "leoding86 <leoding86@msn.com>",
   "private": true,
   "scripts": {
-    "dev": "webpack --watch --progress --config build/webpack.dev.conf.js",
+    "dev": "webpack --watch --progress --config webpack.config.js",
     "dev:cs": "webpack --watch --progress --config config/webpack.content-scripts.config.js",
     "dev:op": "webpack --watch --progress --config config/webpack.options-page.config.js",
     "dev:bg": "webpack --watch --progress --config config/webpack.background.config.js",
