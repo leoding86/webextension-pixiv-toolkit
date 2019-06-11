@@ -19,7 +19,7 @@ class Detector {
     this.browser = Browser.getBrowser();
     this.currentUrl;
     this.currentType;
-    this.currentAdapter;
+    this.currentTool;
     this.contextData;
     this.ugoiraAdapter;
     this.mangaAdapter;
@@ -114,13 +114,15 @@ class Detector {
   }
 
   injectIllust() {
+    let self = this;
+
     return new Promise(resolve => {
-      if (this.currentType === Detector.UGOIRA_TYPE) {
-        resolve(this.injectUgoiraAdapter());
-      } else if (this.currentType === Detector.MANGA_TYPE) {
-        resolve(this.injectMangaAdapter());
-      } else if (this.currentType === Detector.ILLUST_TYPE) {
-        resolve(this.injectMangaAdapter());
+      if (self.currentType === Detector.UGOIRA_TYPE) {
+        resolve(self.injectUgoiraAdapter());
+      } else if (self.currentType === Detector.MANGA_TYPE) {
+        resolve(self.injectMangaAdapter());
+      } else if (self.currentType === Detector.ILLUST_TYPE) {
+        resolve(self.injectMangaAdapter());
       }
     });
   }
@@ -189,7 +191,7 @@ class Detector {
       }
 
       self.ugoiraAdapter.inital(self.contextData).then(context => {
-        let ugoiraTool = self.ugoiraAdapter.makeTool();
+        let ugoiraTool = self.currentTool = self.ugoiraAdapter.makeTool();
         // ugoiraTool.run().show();
 
         resolve(ugoiraTool);
@@ -206,7 +208,7 @@ class Detector {
       }
 
       self.mangaAdapter.inital(self.contextData).then(context => {
-        let mangaTool = self.mangaAdapter.makeTool();
+        let mangaTool = self.currentTool = self.mangaAdapter.makeTool();
         // mangaTool.run().show();
 
         resolve(mangaTool);
@@ -223,7 +225,7 @@ class Detector {
       }
 
       self.novelAdapter.inital(self.contextData).then(context => {
-        let novelTool = self.novelAdapter.makeTool();
+        let novelTool = self.currentTool = self.novelAdapter.makeTool();
         // novelTool.run().show();
 
         resolve(novelTool);

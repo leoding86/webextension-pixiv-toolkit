@@ -31,7 +31,8 @@ class UgoiraAdapter {
         illustTitle: context.illustTitle,
         userName: context.userName,
         userId: context.userId,
-        userAcount: context.userAccount
+        userAcount: context.userAccount,
+        urls: context.urls // images
       };
 
       let xhr = new XMLHttpRequest();

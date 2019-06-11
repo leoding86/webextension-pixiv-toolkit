@@ -1,6 +1,7 @@
 import RetryTicker from '@/modules/Util/RetryTicker';
 import Queue from '@/modules/Util/Queue';
 import formatName from '@/modules/Util/formatName';
+import Logger from '@/modules/Logger'
 
 class MangaTool {
   constructor(context) {
@@ -50,6 +51,26 @@ class MangaTool {
     ) {
       self.mangaImageRenameFormat += '{pageNum}';
     }
+  }
+
+  getUserId() {
+    return this.context.userId
+  }
+
+  getId() {
+    return this.context.illustId
+  }
+
+  getImages() {
+    return this.context.urls
+  }
+
+  getTitle() {
+    return this.context.illustTitle
+  }
+
+  isR() {
+    return !!this.context.r
   }
 
   getPageRange(chunk) {
@@ -133,6 +154,8 @@ class MangaTool {
           reject();
         }
       }
+
+      Logger.notice('save manga image ' + url)
 
       xhr.send();
     });

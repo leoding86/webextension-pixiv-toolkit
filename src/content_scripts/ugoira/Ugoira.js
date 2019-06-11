@@ -49,6 +49,26 @@ class UgoiraTool {
     })
   }
 
+  getUserId() {
+    return this.context.userId
+  }
+
+  getId() {
+    return this.context.illustId
+  }
+
+  getImages() {
+    return this.context.urls
+  }
+
+  getTitle() {
+    return this.context.illustTitle
+  }
+
+  isR() {
+    return !!this.context.r
+  }
+
   downloadResource() {
     let self = this
 

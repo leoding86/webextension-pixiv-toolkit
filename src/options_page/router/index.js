@@ -10,6 +10,7 @@ import Sponsors from '@@/components/Sponsors';
 import History from '@@/components/History';
 import DownloadRelativeLocationDialog from '@@/components/DownloadRelativeLocationDialog';
 import Subscribes from '@@/components/Subscribes'
+import IllustHistory from '@@/components/IllustHistory'
 
 Vue.use(Router)
 
@@ -42,6 +43,10 @@ export default new Router({
             component: DownloadRelativeLocationDialog
           }
       ]
+    }, {
+      path: '/illust-history',
+      name: 'IllustHistory',
+      component: IllustHistory
     }, {
       path: '/third-party',
       name: 'ThirdParty',

@@ -19,11 +19,16 @@
         </v-toolbar>
 
         <v-list dense>
-          <!-- <v-list-tile
+          <v-list-tile
+            ripple
+            @click="routeTo('IllustHistory')">
+            Illust View History
+          </v-list-tile>
+          <v-list-tile
             ripple
             @click="routeTo('Subscribes')">
             {{ tl('Subscribes') }}
-          </v-list-tile> -->
+          </v-list-tile>
 
           <v-divider light></v-divider>
           <v-list-tile ripple @click="routeTo('Options')">
@@ -70,6 +75,7 @@ import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
 import cr from './modules/cr'
 import extConfig from '@@/../statics/manifest.json'
+import { Storage as BrowserStorage } from '@/modules/Browser'
 
 Vue.use(Vuetify)
 
@@ -78,7 +84,8 @@ export default {
 
   data () {
     return {
-      drawer: false
+      drawer: false,
+      browserItems: {}
     }
   },
 
@@ -86,6 +93,10 @@ export default {
     version () {
       return 'v' + extConfig.version;
     }
+  },
+
+  mounted() {
+    //
   },
 
   methods: {

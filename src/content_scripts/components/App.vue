@@ -3,6 +3,9 @@
     <div :class="{'ptk__handler': true, 'ptk__handler--active': containerShowed}"
       @click="handlerClickHandle"
     >P*</div>
+    <div :class="subscribeBtnClassnames" v-if="showSubscribe"
+      style="right:180px;"
+      @click="subscribeBtnClickHandle">{{ subscribeText }}</div>
     <ugoira-tool v-if="isUgoira" :tool="tool">ugoira</ugoira-tool>
     <manga-tool v-else-if="isManga" :tool="tool">manga</manga-tool>
     <manga-tool v-else-if="isIllust" :tool="tool">illust</manga-tool>
@@ -14,11 +17,15 @@
 </template>
 
 <script>
+import { storage as browserStorage, runtime as browserRuntime } from '@/content_scripts/Browser';
 import Detector from "@/content_scripts/Detector";
-import { storage as browserStorage } from '@/content_scripts/Browser';
 import Novel from "@/content_scripts/components/Novel";
 import Manga from '@/content_scripts/components/Manga';
 import Ugoira from '@/content_scripts/components/Ugoira'
+import PlusAddon from '@/modules/PlusAddon'
+
+let plusAddon = new PlusAddon()
+plusAddon.checkBeforeSend = true
 
 export default {
   components: {
@@ -30,11 +37,13 @@ export default {
   data() {
     return {
       detector: new Detector(),
+      hasSubscribed: null,
       pageType: null,
       currentUrl: null,
       tool: null,
       containerShowed: false,
-      browserItems: null
+      browserItems: null,
+      subscribing: false
     };
   },
 
@@ -57,6 +66,24 @@ export default {
 
     isNovel() {
       return Detector.NOVEL_TYPE === this.pageType;
+    },
+
+    showSubscribe() {
+      return (this.pageType === Detector.UGOIRA_TYPE || this.pageType === Detector.ILLUST_TYPE)/* && this.hasSubscribed !== null*/
+    },
+
+    subscribeBtnClassnames() {
+      return {
+        'ptk__handler': true,
+      }
+    },
+
+    subscribeText() {
+      if (this.subscribing === true) {
+        return 'Processing'
+      }
+
+      return this.hasSubscribed ? 'Unsubscribe' : 'Subscribe'
     }
   },
 
@@ -120,6 +147,25 @@ export default {
 
           vm.tool = tool;
           vm.pageType = vm.detector.currentType;
+
+          // deal with plus addon subscription
+          plusAddon.hasUserSubscribed({
+            userId: vm.tool.getUserId()
+          }).then(response => {
+            vm.hasSubscribed = !!response
+          })
+
+          // check page type to determine save history
+          if (this.isUgoira || this.isManga || this.isIllust) {
+            plusAddon.saveIllustHistory({
+              id: vm.tool.getId(),
+              title: vm.tool.getTitle(),
+              images: vm.tool.getImages(),
+              type: vm.pageType,
+              viewed_at: Math.round(Date.now() / 1000),
+              r: vm.tool.isR()
+            })
+          }
         })
         .catch(e => {
           console.log(e);
@@ -132,6 +178,35 @@ export default {
       browserStorage.set({
         featureKnown: true
       })
+    },
+
+    subscribeBtnClickHandle() {
+      let vm = this
+
+      if (this.subscribing) {
+        alert('Please waiting...')
+        return
+      }
+
+      this.subscribing = true
+
+      if (vm.hasSubscribed) {
+        plusAddon.unsubscribeUser({
+          userId: vm.tool.getUserId()
+        }).then(response => {
+          vm.hasSubscribed = false
+          vm.subscribing = false
+        })
+      } else {
+        plusAddon.subscribeUser({
+          userId: vm.tool.getUserId()
+        }).then(response => {
+          if (response.ok) {
+            vm.hasSubscribed = true
+          }
+          vm.subscribing = false
+        })
+      }
     }
   }
 };
@@ -151,7 +226,7 @@ export default {
   .ptk__handler {
     position: absolute;
     top: -22px;
-    right: 150px;
+    right: 130px;
     z-index: 99999;
     padding: 0 11px;
     border-top-left-radius: 3px;

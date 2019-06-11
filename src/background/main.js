@@ -1,12 +1,14 @@
-import { ScriptInjector, Updater, PackageFileReader } from '@/modules/Util';
+import { Updater, PackageFileReader } from '@/modules/Util';
 import Browser from '@/modules/Browser/Browser';
-import ScheduledTask from '@/modules/ScheduledTask';
+import actions from '@/background/actions'
 
 const browser = Browser.getBrowser();
 
 function Main() {
     // constructor
     this.enableExtension = false;
+    this.logs = []
+    this.logsMax = 200
 }
 
 Main.prototype = {
@@ -21,11 +23,38 @@ Main.prototype = {
             self.bindActionButton();
             self.listenStorageChanged();
             self.listenMessage();
-            self.runSubscribeTask()
+            self.listenMessageExternal()
         });
+
+        browser.webRequest.onBeforeSendHeaders.addListener(details => {
+          for (let i = 0, l = details.requestHeaders.length; i < l; ++i) {
+            if (details.requestHeaders[i].name === 'Referer') {
+              details.requestHeaders.splice(i, 1)
+              break;
+            }
+          }
+
+          details.requestHeaders.push({
+            name: 'Referer',
+            value: 'https://www.pixiv.net'
+          })
+
+          return { requestHeaders: details.requestHeaders }
+        }, {
+          urls: ["*://i.pximg.net/*"]
+        }, [
+          "requestHeaders",
+          "blocking",
+          "extraHeaders"
+        ])
     },
 
     callMessageAction: function (action, args) {
+        if (actions.has(action)) {
+          actions.callAction(action, args)
+          return
+        }
+
         let methodName = action + 'Action';
 
         if (typeof this[methodName] === 'function') {
@@ -83,47 +112,24 @@ Main.prototype = {
         });
     },
 
-    runSubscribeTask: function () {
-      let scheduledTask = new ScheduledTask();
-      scheduledTask.task = () => {
-        return new Promise(function (resolve, reject) {
-          console.log('run reload subscribe task');
-          resolve();
-        })
-      };
-      scheduledTask.intervalTime = 5000;
-      // scheduledTask.run();
-    },
-
     /**
-     * Message action
+     * Listen message sended from other extension
      */
-    injectUgoiraAction: function (args) {
-        if (!this.enableExtension) {
-            return;
+    listenMessageExternal: function () {
+      let self = this
+
+      browser.runtime.onMessageExternal.addListener((message, sender, sendResponse) => {
+        console.log(sender)
+
+        if (message.action) {
+          //
         }
 
-        var scriptInjector = new ScriptInjector();
-
-        scriptInjector.addInjectFiles([
-            'lib/jszip/jszip.js',
-            'lib/gifjs/gif.js',
-            'lib/whammy.js',
-            // 'js/ugoira.js',
-            'js/UgoiraAdapter.js',
-            // 'js/180607/ugoira.js'
-            'js/ugoira/ugoira190313.js'
-        ]).inject(args.sender.tab.id);
-    },
-
-    injectMangaAction: function (args) {
-        var scriptInjector = new ScriptInjector();
-
-        scriptInjector.addInjectFiles([
-            "lib/jszip/jszip.js",
-            "js/MangaAdapter.js",
-            "js/manga/Manga186.js"
-        ]).inject(args.sender.tab.id);
+        /**
+         * Prevent "The message port closed before a response was received" error
+         */
+        return true
+      })
     },
 
     /**
@@ -191,6 +197,13 @@ Main.prototype = {
       });
     },
 
+    /**
+     * Record logs
+     */
+    recordLogAction: function (args) {
+      console.log(args)
+    },
+
     update: function () {
         PackageFileReader.read('manifest.json', function (result) {
             var manifest = JSON.parse(result);
@@ -246,7 +259,12 @@ Main.prototype = {
                         /**
                          * @version 2.1
                          */
-                        featureKnown: false
+                        featureKnown: false,
+
+                        /**
+                         * @version 2.2
+                         */
+                        subscribedUsers: {}
                     });
 
                     updater.removeSettings([

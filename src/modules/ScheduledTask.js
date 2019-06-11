@@ -7,8 +7,11 @@ function ScheduledTask () {
   this.run = function () {
     var self = this;
 
-    if (typeof this.task === 'function' && (this.status === ScheduledTask.WAITING || this.status === ScheduledTask.IDLE) && this.intervalTime > 1000) {
-      this.task().then(function () {
+    if (typeof this.task.handle === 'function' &&
+      (this.status === ScheduledTask.WAITING || this.status === ScheduledTask.IDLE) &&
+      this.intervalTime > 1000
+    ) {
+      this.task.handle.call(this.task).then(function () {
         self.status = ScheduledTask.COMPLETE;
 
         self.scheduleNext();

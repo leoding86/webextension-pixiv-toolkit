@@ -21,6 +21,7 @@
     "name": "__MSG_extName__",
     "permissions": [
         "webRequest",
+        "webRequestBlocking",
         "storage",
         "*://*.pixiv.net/*",
         "*://*.pximg.net/*"
@@ -49,6 +50,6 @@
             ]
         }
     ],
-    "version": "2.1.1",
+    "version": "2.2",
     "options_page": "options_page/index.html"
 }
