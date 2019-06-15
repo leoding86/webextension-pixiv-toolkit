@@ -28,7 +28,8 @@ class MangaAdapter {
         userName: context.userName,
         userId: context.userId,
         userAcount: context.userAccount,
-        urls: context.urls // images
+        urls: context.urls, // images
+        r: context.xRestrict
       };
 
       let xhr = new XMLHttpRequest();

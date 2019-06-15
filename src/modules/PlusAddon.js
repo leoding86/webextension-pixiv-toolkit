@@ -92,6 +92,13 @@ class PlusAddon {
       args: args
     })
   }
+
+  deleteIllustHistory(args) {
+    return this.sendMessage({
+      action: 'deleteIllustHistory',
+      args: args
+    })
+  }
 }
 
 export default PlusAddon

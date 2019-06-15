@@ -21,14 +21,19 @@
         <v-list dense>
           <v-list-tile
             ripple
-            @click="routeTo('IllustHistory')">
-            Illust View History
+            @click="illustHistoryClickHandle">
+            <v-list-tile-content>
+              <span>Illust History <sup v-if="!plusVersion" style="padding-left:5px;color:red;font-size:10px">Plus</sup></span>
+            </v-list-tile-content>
+            <v-list-tile-action>
+              <v-icon>open_in_new</v-icon>
+            </v-list-tile-action>
           </v-list-tile>
-          <v-list-tile
+          <!-- <v-list-tile
             ripple
             @click="routeTo('Subscribes')">
-            {{ tl('Subscribes') }}
-          </v-list-tile>
+            {{ tl('Subscribes') }} <sup v-if="!plusVersion" style="padding-left:5px;color:red;font-size:10px">Plus</sup>
+          </v-list-tile> -->
 
           <v-divider light></v-divider>
           <v-list-tile ripple @click="routeTo('Options')">
@@ -60,7 +65,11 @@
           <v-icon
             dark>menu</v-icon>
         </v-btn>
-        <span class="title v-primary">{{ tl('extName') }} <span style="font-size:12px">{{ version }}</span></span>
+        <span class="title v-primary">
+          {{ tl('extName') }}
+          <span style="font-size:12px">{{ version }}</span>
+          <sup v-if="plusVersion" style="font-size:12px;font-weight:700;">Plus v{{plusVersion}}</sup>
+        </span>
       </v-toolbar>
       <v-content>
         <router-view />
@@ -92,11 +101,15 @@ export default {
   computed: {
     version () {
       return 'v' + extConfig.version;
+    },
+
+    plusVersion() {
+      return this.$root.plusVersion
     }
   },
 
-  mounted() {
-    //
+  beforeMount() {
+    let vm = this
   },
 
   methods: {
@@ -104,6 +117,16 @@ export default {
         this.$router.push({
           name: name
         })
+      },
+
+      illustHistoryClickHandle() {
+        if (this.plusVersion) {
+          browser.tabs.create({
+            url: 'chrome-extension://goembpdahiginhplnkjopmieffglncne/options_page/index.html#/illust-history'
+          })
+        } else {
+          //
+        }
       },
 
       tl (string) {

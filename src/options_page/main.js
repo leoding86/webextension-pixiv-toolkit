@@ -3,10 +3,16 @@ import App from './App'
 import router from './router'
 import cr from './modules/cr'
 import { Storage as BrowserStorage } from '@/modules/Browser'
+import Browser from '@/modules/Browser/Browser'
+import PlusAddon from '@/modules/PlusAddon'
 
-let browser = BrowserStorage.getInstance()
+let browser = window.browser = Browser.getBrowser()
+
+let browserStorage = BrowserStorage.getInstance()
 
 let thisApp = window.thisApp = {}
+
+let plusAddon = window.plusAddon = new PlusAddon()
 
 window.browserItems = {}
 
@@ -20,20 +26,34 @@ cr._s.get().then(function (items) {
         }
     }
 
-    browser.onChanged().addListener((changes, namespace) => {
+    browserStorage.onChanged().addListener((changes, namespace) => {
       for (let key in changes) {
         window.browserItems[key] = changes[key].newValue;
       }
     })
 
-    browser.get(null).then(items => {
+    browserStorage.get(null).then(items => {
       window.browserItems = thisApp.browserItems = items
 
       /* eslint-disable no-new */
       new Vue({
         el: '#app',
         router,
-        render: h => h(App)
+        render: h => h(App),
+        data() {
+          return {
+            plusVersion: null
+          }
+        },
+        beforeMount() {
+          let vm = this
+
+          plusAddon.checkPlusAddonInstalled().then(result => {
+            if (result && result.version) {
+              vm.plusVersion = result.version
+            }
+          })
+        },
       })
     })
 });
