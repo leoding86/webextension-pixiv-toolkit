@@ -44,8 +44,7 @@ Main.prototype = {
           urls: ["*://i.pximg.net/*"]
         }, [
           "requestHeaders",
-          "blocking",
-          "extraHeaders"
+          "blocking"
         ])
     },
 
