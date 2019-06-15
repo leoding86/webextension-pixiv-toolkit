@@ -3,9 +3,9 @@
     <div :class="{'ptk__handler': true, 'ptk__handler--active': containerShowed}"
       @click="handlerClickHandle"
     >P*</div>
-    <div :class="subscribeBtnClassnames" v-if="showSubscribe"
+    <!-- <div :class="subscribeBtnClassnames" v-if="showSubscribe"
       style="right:180px;"
-      @click="subscribeBtnClickHandle">{{ subscribeText }}</div>
+      @click="subscribeBtnClickHandle">{{ subscribeText }}</div> -->
     <ugoira-tool v-if="isUgoira" :tool="tool">ugoira</ugoira-tool>
     <manga-tool v-else-if="isManga" :tool="tool">manga</manga-tool>
     <manga-tool v-else-if="isIllust" :tool="tool">illust</manga-tool>
@@ -90,7 +90,7 @@ export default {
   mounted() {
     let vm = window.thisApp = this;
 
-    browserStorage.onChanged.addListener((changes, namespace) => {
+    window.browser.storage.onChanged.addListener((changes, namespace) => {
       for (let key in changes) {
         vm.browserItems[key] = changes[key].newValue;
       }
@@ -226,7 +226,7 @@ export default {
   .ptk__handler {
     position: absolute;
     top: -22px;
-    right: 130px;
+    right: 135px;
     z-index: 99999;
     padding: 0 11px;
     border-top-left-radius: 3px;
