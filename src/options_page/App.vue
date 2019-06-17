@@ -122,10 +122,12 @@ export default {
       illustHistoryClickHandle() {
         if (this.plusVersion) {
           browser.tabs.create({
-            url: 'chrome-extension://goembpdahiginhplnkjopmieffglncne/options_page/index.html#/illust-history'
+            url: 'chrome-extension://fnljpdfpdilgbfgdcmhckjhoibfdkgdk/options_page/index.html#/illust-history'
           })
         } else {
-          //
+          this.$router.push({
+            name: 'IllustHistory'
+          })
         }
       },
 

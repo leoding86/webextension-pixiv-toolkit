@@ -48,8 +48,8 @@ ScriptInjector.prototype = {
                     browser.tabs.executeScript(tabId, detail);
                 }
 
-                console.log('inject file ' + detail.file);
-                
+                // console.log('inject file ' + detail.file);
+
                 self.injectedFiles.push(detail.file);
             });
         });

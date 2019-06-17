@@ -1,6 +1,7 @@
 {
     "background": {
         "scripts": [
+            "lib/babel-polyfill.min.js",
             "backgrounds/background.js"
         ]
     },
@@ -9,7 +10,7 @@
         "default_title": "__MSG_extName__"
     },
     "short_name": "PTK",
-    "content_security_policy": "script-src 'self'; object-src 'self'; worker-src blob https://www.pixiv.net",
+    "content_security_policy": "script-src 'self'; object-src 'self'",
     "default_locale": "en",
     "description": "__MSG_extDescription__",
     "icons": {
@@ -40,6 +41,7 @@
                 "content_scripts/static/css/app.css"
             ],
             "js": [
+                "lib/babel-polyfill.min.js",
                 "lib/handlebars-latest.js",
                 "lib/jszip/jszip.js",
                 "lib/jszip/jszip-utils.min.js",
@@ -50,6 +52,6 @@
             ]
         }
     ],
-    "version": "2.2",
+    "version": "2.3",
     "options_page": "options_page/index.html"
 }

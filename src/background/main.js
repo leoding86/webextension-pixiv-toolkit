@@ -26,26 +26,59 @@ Main.prototype = {
             self.listenMessageExternal()
         });
 
-        browser.webRequest.onBeforeSendHeaders.addListener(details => {
-          for (let i = 0, l = details.requestHeaders.length; i < l; ++i) {
-            if (details.requestHeaders[i].name === 'Referer') {
-              details.requestHeaders.splice(i, 1)
-              break;
+        /**
+         * override referer head for pixiv assets
+         **/
+        try {
+          browser.webRequest.onBeforeSendHeaders.addListener(details => {
+
+            for (let i = 0, l = details.requestHeaders.length; i < l; ++i) {
+              if (details.requestHeaders[i].name === 'Referer') {
+                details.requestHeaders.splice(i, 1)
+                break;
+              }
             }
-          }
 
-          details.requestHeaders.push({
-            name: 'Referer',
-            value: 'https://www.pixiv.net'
-          })
+            details.requestHeaders.push({
+              name: 'Referer',
+              value: 'https://www.pixiv.net/'
+            })
 
-          return { requestHeaders: details.requestHeaders }
-        }, {
-          urls: ["*://i.pximg.net/*"]
-        }, [
-          "requestHeaders",
-          "blocking"
-        ])
+            return { requestHeaders: details.requestHeaders }
+          }, {
+            urls: [
+              "*://i.pximg.net/*"
+            ]
+          }, [
+            "requestHeaders",
+            "blocking",
+            "extraHeaders"
+          ])
+        } catch (e) {
+          browser.webRequest.onBeforeSendHeaders.addListener(details => {
+
+            for (let i = 0, l = details.requestHeaders.length; i < l; ++i) {
+              if (details.requestHeaders[i].name === 'Referer') {
+                details.requestHeaders.splice(i, 1)
+                break;
+              }
+            }
+
+            details.requestHeaders.push({
+              name: 'Referer',
+              value: 'https://www.pixiv.net/'
+            })
+
+            return { requestHeaders: details.requestHeaders }
+          }, {
+            urls: [
+              "*://i.pximg.net/*"
+            ]
+          }, [
+            "requestHeaders",
+            "blocking"
+          ])
+        }
     },
 
     callMessageAction: function (action, args) {
@@ -66,16 +99,16 @@ Main.prototype = {
             browser.browserAction.getBadgeText({}, function (text) {
               let url = './options_page/index.html';
 
-              if (!!text) {
+              if (text.toLowerCase() === 'new') {
                 url += '#/history';
+
+                browser.browserAction.setBadgeText({
+                  text: ''
+                });
               }
 
-              browser.browserAction.setBadgeText({
-                text: ''
-              }, function () {
-                browser.tabs.create({
-                  url: browser.runtime.getURL(url)
-                });
+              browser.tabs.create({
+                url: browser.runtime.getURL(url)
               });
             });
         });
@@ -118,7 +151,7 @@ Main.prototype = {
       let self = this
 
       browser.runtime.onMessageExternal.addListener((message, sender, sendResponse) => {
-        console.log(sender)
+        // console.log(sender)
 
         if (message.action) {
           //
@@ -200,7 +233,7 @@ Main.prototype = {
      * Record logs
      */
     recordLogAction: function (args) {
-      console.log(args)
+      // console.log(args)
     },
 
     update: function () {
@@ -212,7 +245,7 @@ Main.prototype = {
                 var updater = new Updater(items);
 
                 if (updater.isNewer(version)) {
-                    console.log('update');
+                    // console.log('update');
                     updater.setDefaultSettings({
                         version: version,
                         enableExtend: false,
@@ -263,7 +296,12 @@ Main.prototype = {
                         /**
                          * @version 2.2
                          */
-                        subscribedUsers: {}
+                        subscribedUsers: {},
+
+                        /**
+                         * @version 2.3
+                         */
+                        autoActivateDownloadPanel: false
                     });
 
                     updater.removeSettings([

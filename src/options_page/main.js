@@ -4,7 +4,7 @@ import router from './router'
 import cr from './modules/cr'
 import { Storage as BrowserStorage } from '@/modules/Browser'
 import Browser from '@/modules/Browser/Browser'
-import PlusAddon from '@/modules/PlusAddon'
+import PlusAddonPort from '@/modules/PlusAddonPort'
 
 let browser = window.browser = Browser.getBrowser()
 
@@ -12,7 +12,13 @@ let browserStorage = BrowserStorage.getInstance()
 
 let thisApp = window.thisApp = {}
 
-let plusAddon = window.plusAddon = new PlusAddon()
+let plusAddonPort
+
+plusAddonPort = window.plusAddonPort = new PlusAddonPort('options_page')
+
+if (browser.runtime.lastError) {
+  plusAddonPort = null
+}
 
 window.browserItems = {}
 
@@ -48,11 +54,15 @@ cr._s.get().then(function (items) {
         beforeMount() {
           let vm = this
 
-          plusAddon.checkPlusAddonInstalled().then(result => {
-            if (result && result.version) {
-              vm.plusVersion = result.version
-            }
-          })
+          if (plusAddonPort) {
+            plusAddonPort.port.onMessage.addListener((message, port) => {
+              if (message && message.version) {
+                vm.plusVersion = message.version
+              }
+            })
+
+            plusAddonPort.checkPlusAddonInstalled()
+          }
         },
       })
     })

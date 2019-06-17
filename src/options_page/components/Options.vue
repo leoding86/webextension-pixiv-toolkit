@@ -184,6 +184,15 @@
         <v-card>
           <v-list two-line>
             <v-list-tile>
+                <v-list-tile-content>
+                    <v-list-tile-title>Activate download panel automatically</v-list-tile-title>
+                    <v-list-tile-sub-title>Download panel will show up automatically when page loaded</v-list-tile-sub-title>
+                </v-list-tile-content>
+                <v-list-tile-action>
+                    <v-switch v-model="autoActivateDownloadPanel"></v-switch>
+                </v-list-tile-action>
+            </v-list-tile>
+            <v-list-tile>
               <v-list-tile-content>
                 <v-list-tile-title>{{ tl('setting_show_history_when_update_completed') }}</v-list-tile-title>
               </v-list-tile-content>
@@ -249,6 +258,8 @@ export default {
 
             downloadSaveAs: false,
 
+            autoActivateDownloadPanel: false,
+
             browser: chrome
         }
     },
@@ -274,6 +285,8 @@ export default {
             self.showHistoryWhenUpdateCompleted = !!items.showHistoryWhenUpdateCompleted;
 
             self.downloadSaveAs = !!items.downloadSaveAs;
+
+            self.autoActivateDownloadPanel = !!items.autoActivateDownloadPanel;
         });
 
         cr._s.onChanged.addListener(self.onStorageChanged);
@@ -386,6 +399,12 @@ export default {
           cr._s.set({
             downloadSaveAs: val
           });
+        },
+
+        autoActivateDownloadPanel(val) {
+          cr._s.set({
+            autoActivateDownloadPanel: val
+          })
         }
     },
 

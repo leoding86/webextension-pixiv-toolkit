@@ -37,11 +37,11 @@ export default {
 
       resourceProgress: 0,
 
-      gifProgress: 0,
+      gifProgress: null,
       gifStatus: 0,
       gifUrl: null,
 
-      webmProgress: 0,
+      webmProgress: null,
       webmStatus: 0,
       webmUrl: null
     }
@@ -57,6 +57,10 @@ export default {
     },
 
     gifGenerateText() {
+      if (this.gifProgress === null) {
+        return 'Generate GIF'
+      }
+
       return this.gifProgress !== 1
         ? "Generating GIF" +
             (this.gifProgress > 0
@@ -66,6 +70,10 @@ export default {
     },
 
     webGenerateText() {
+      if (this.webmProgress === null) {
+        return 'Generate WebM'
+      }
+
       return this.webmProgress !== 1
         ? "Generating WebM " +
             (this.webmProgress > 0

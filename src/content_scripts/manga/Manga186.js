@@ -85,7 +85,7 @@ _pumd.Manga186 = (function (window, ptk) {
           resolve();
         });
 
-        console.log('run');
+        // console.log('run');
 
       });
     },
@@ -167,7 +167,7 @@ _pumd.Manga186 = (function (window, ptk) {
             self.saveImage(xhr, url, zip).then(function () {
               resolve();
             }).catch(function (e) {
-              console.log(e);
+              // console.log(e);
               reject();
             });
           });

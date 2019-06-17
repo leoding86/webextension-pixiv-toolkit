@@ -1,57 +1,41 @@
 <template>
-  <v-container grid-list-md>
-    <p v-if="!isPlus">Need Plus Addon</p>
-    <v-layout row wrap>
-      <v-flex md2 sm3 xs4 v-for="illust in illusts" :key="illust.id">
-        <v-card class="card--history-item" @click="openInNew(illust)">
-          <v-img :src="illust.images.original" aspect-ratio="1"></v-img>
-          <div class="card--history-info">{{ illust.title }}</div>
-          <div class="card--type">{{ readableType(illust.type) }}</div>
-          <div class="card--r" v-if="!!illust.r">R</div>
-        </v-card>
-      </v-flex>
-    </v-layout>
-  </v-container>
+  <div style="max-width:600px;margin:0 auto">
+    <page-title title="Illust History"></page-title>
+
+    <plus-notice></plus-notice>
+
+    <div style="margin-top:20px;">
+      <h2>Screenshot</h2>
+      <img src="@/statics/img/illust-history-screenshot-01.jpg"
+        style="width:100%"
+        @click="openInNew('/img/illust-history-screenshot-01.jpg')">
+    </div>
+  </div>
 </template>
 
 <script>
-import PlusAddon from "@/modules/PlusAddon";
-
-let plusAddon = new PlusAddon();
+import PageTitle from '@@/components/PageTitle'
+import PlusNotice from '@@/components/PlusNotice'
 
 export default {
+  components: {
+    'page-title': PageTitle,
+    'plus-notice': PlusNotice
+  },
+
   data() {
     return {
-      isPlus: null,
-      illusts: []
+      //
     };
   },
 
   beforeMount() {
-    let vm = this;
-
-    plusAddon.checkPlusAddonInstalled().then(result => {
-      vm.isPlus = !!result;
-
-      plusAddon.listIllustHistoriesAction().then(illusts => {
-        vm.illusts = illusts;
-      });
-    });
+    //
   },
 
   methods: {
-    readableType(type) {
-      if (type == 1) {
-        return "M";
-      } else if (type == 2) {
-        return "A";
-      } else if (type == 0) {
-        return "I";
-      }
-    },
-
-    openInNew(illust) {
-      window.open('https://www.pixiv.net/member_illust.php?mode=medium&illust_id=' + illust.id)
+    openInNew(url) {
+      window.open(url, '_blank')
     }
   }
 };
@@ -61,8 +45,10 @@ export default {
 .card--history-item {
   position: relative;
   cursor: pointer;
+  overflow: hidden;
 
-  &:hover .card--type {
+  &:hover .card--type,
+  &:hover .card--r {
     width: 30px;
     height: 30px;
     line-height: 30px;
@@ -90,7 +76,44 @@ export default {
     text-align: center;
     color: #fff;
     background: rgba(0, 0, 0, 0.5);
-    transition: all 0.2s
+    transition: all 0.2s;
+    z-index: 2;
+  }
+
+  .card--r {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+    line-height: 20px;
+    text-align: center;
+    color: #fff;
+    background: rgba(255, 0, 0, 0.8);
+    transition: all 0.2s;
+    z-index: 2;
+  }
+
+  .card--image-wrap {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card--image__mask {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: url(../assets/mask.gif) repeat;
+    z-index: 1;
+    opacity: 1;
+    transition: opacity 0.7s
+  }
+
+  &:hover .card--image__mask {
+    opacity: 0;
   }
 }
 </style>

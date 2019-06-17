@@ -65,7 +65,7 @@ class SyncSubscribeTask {
             user.lastestIllustWorkId = lastestWork.illustWorkId
 
             // store
-            console.log('there is new')
+            // console.log('there is new')
           }
 
           self.next()
@@ -98,7 +98,7 @@ class SyncSubscribeTask {
             let data = JSON.parse(xhr.responseText)
 
             if (data && data.body) {
-              console.log(data.body)
+              // console.log(data.body)
 
               let illustsIds = Object.keys(data.body.illusts)
 
