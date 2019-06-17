@@ -1,4 +1,6 @@
-Convert the ugoira on Pixiv to GIF or WebM file, and pack the images of manga to download and download novel.
+You can use this extension to convert the ugoira on Pixiv to GIF or WebM file, or pack the images of manga to download or save novel as epub.
+
+There are some features need Pixiv Toolkit Plus Addon to activate. You can purchase it from Chrome Store or you can get it by supporting me on Parteon. I really appreciate if you can support me. Anyway, thanks for downloading this extension.
 
 Notice:
 If you are using version < 1.5, plz update it asap.
@@ -6,6 +8,17 @@ If you are using version < 1.5, plz update it asap.
 Github:
 https://github.com/leoding86/webextension-pixiv-toolkit
 ----------------------------------------------
+v2.3
+Add setting about activating downloading panel automatically;
+Fix bugs.
+
+v2.2
+Fix the issue that the extension cannot work properly in old verison Chrome. Now it can works well on Chrome above version 49;
+Change file frames.json in zip file to file animiation.json;
+Add a feature about saving illust visit history. This feature require Pixiv Toolkit Plus Addon to activate.
+Notice:
+The feature about saving illust visit history will save the data in local, in other words, the data will save in your Chrome. So, if you uninstall the extension or uninstall Chrome, you will lose the history data. I'll rent a server to store the data if I have enough patrons. Before that moment, please take care of your data (I'll develop a feature about exporting history data before I can rent a server).
+
 v2.1.1
 Fix a bug about cannot save manga if user use default settings.
 
