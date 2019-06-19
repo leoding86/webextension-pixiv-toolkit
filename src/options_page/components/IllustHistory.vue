@@ -1,14 +1,14 @@
 <template>
-  <div style="max-width:600px;margin:0 auto">
+  <div style="max-width:900px;margin:0 auto;padding:0 20px">
     <page-title title="Illust History"></page-title>
 
     <plus-notice></plus-notice>
 
     <div style="margin-top:20px;">
       <h2>Screenshot</h2>
-      <img src="@/statics/img/illust-history-screenshot-01.jpg"
+      <img :src="example01"
         style="width:100%"
-        @click="openInNew('/img/illust-history-screenshot-01.jpg')">
+        @click="openInNew(example01)">
     </div>
   </div>
 </template>
@@ -16,6 +16,7 @@
 <script>
 import PageTitle from '@@/components/PageTitle'
 import PlusNotice from '@@/components/PlusNotice'
+import example01 from '@/statics/img/illust-history-screenshot-01.jpg'
 
 export default {
   components: {
@@ -25,7 +26,7 @@ export default {
 
   data() {
     return {
-      //
+      example01: example01
     };
   },
 
