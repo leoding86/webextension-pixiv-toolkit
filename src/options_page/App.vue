@@ -5,10 +5,11 @@
         app
         v-model="drawer"
         clipped
-        fixed
-        temporary>
+        hide-overlay
+        :temporary="drawerTemporary">
 
-        <v-toolbar flat>
+        <v-toolbar flat
+          v-if="drawerTemporary">
           <v-list>
             <v-list-tile>
               <v-list-tile-title>
@@ -48,7 +49,7 @@
           </v-list-tile>
           <v-list-tile ripple @click="routeTo('Sponsors')">
             <v-list-tile-content>
-              <v-list-tile-title>{{ tl('Sponsors') }}</v-list-tile-title>
+              <v-list-tile-title>{{ tl('Sponsors') }}😍</v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
           <v-divider light></v-divider>
@@ -61,7 +62,7 @@
       </v-navigation-drawer>
       <v-toolbar class="v-primary" app fixed clipped-left height="56">
         <v-btn flat dark icon
-          @click="drawer = !drawer">
+          @click="drawer = !drawer" v-if="drawerTemporary">
           <v-icon
             dark>menu</v-icon>
         </v-btn>
@@ -71,7 +72,7 @@
           <sup v-if="plusVersion" style="font-size:12px;font-weight:700;">Plus v{{plusVersion}}</sup>
         </span>
       </v-toolbar>
-      <v-content>
+      <v-content style="padding-left:0;">
         <router-view />
       </v-content>
     </v-app>
@@ -93,8 +94,9 @@ export default {
 
   data () {
     return {
-      drawer: false,
-      browserItems: {}
+      drawer: true,
+      browserItems: {},
+      drawerTemporary: false
     }
   },
 
@@ -110,9 +112,28 @@ export default {
 
   beforeMount() {
     let vm = this
+
+    window.addEventListener('resize', this.resizeHandle)
+
+    this.resizeHandle()
   },
 
   methods: {
+    resizeHandle() {
+      if (window.innerWidth < 1300) {
+        if (!this.drawerTemporary) {
+          this.drawerTemporary = true
+          this.drawer = false
+        }
+      } else {
+        if (this.drawerTemporary) {
+          this.drawerTemporary = false
+          this.drawer = true
+        }
+      }
+      console.log('resize')
+    },
+
       routeTo (name) {
         this.$router.push({
           name: name
