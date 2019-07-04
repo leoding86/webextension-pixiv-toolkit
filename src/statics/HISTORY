@@ -1,0 +1,160 @@
+You can use this extension to convert the ugoira on Pixiv to GIF or WebM file, or pack the images of manga to download or save novel as epub.
+
+There are some features need Pixiv Toolkit Plus Addon to activate. You can purchase it from Chrome Store or you can get it by supporting me on Parteon. I really appreciate if you can support me. Anyway, thanks for downloading this extension.
+
+Notice:
+If you are using version < 1.5, plz update it asap.
+
+Github:
+https://github.com/leoding86/webextension-pixiv-toolkit
+----------------------------------------------
+v2.3
+Add setting about activating downloading panel automatically;
+Fix bugs.
+
+v2.2
+Fix the issue that the extension cannot work properly in old verison Chrome. Now it can works well on Chrome above version 49;
+Change file frames.json in zip file to file animiation.json;
+Add a feature about saving illust visit history. This feature require Pixiv Toolkit Plus Addon to activate.
+Notice:
+The feature about saving illust visit history will save the data in local, in other words, the data will save in your Chrome. So, if you uninstall the extension or uninstall Chrome, you will lose the history data. I'll rent a server to store the data if I have enough patrons. Before that moment, please take care of your data (I'll develop a feature about exporting history data before I can rent a server).
+
+v2.1.1
+Fix a bug about cannot save manga if user use default settings.
+
+v2.1
+Refactor extension and UI, if you find some issues please let me know;
+Recover the Manga Toolkit extension link.
+
+v2.0.5
+Add 'Asking where to save file before downloading' setting;
+Add 'Show change history when update completed' setting in change history page, avoid users don't see it;
+Add a link of new extension, you should try it out ヽ(^o^)ノ.
+
+v2.0.4
+Downloads settings can apply to all type downloads;
+Fix a bug about granting downloads permission to extension;
+Update sponsors list page.
+
+v2.0.3
+Add a setting to enable or disable show the history changes after update is complete;
+Add downloads settings for downloading manga and novel (The downloads settings need downloads permission, you can grant it to or remove it from the extension as you want);
+Add Patreon link (You can support me on Patreon now. Anyway thank you for using this extension).
+
+v2.0.2
+Add settings for downloading ugoira/manga when it's generated/packed;
+Fix bugs.
+
+v2.0.1
+Add selectable rename metas for renaming manga;
+Change extension icons;
+Fix bugs.
+
+v2.0.0
+Rename extension name to Pixiv Toolkit;
+Add feature for downloading novel;
+Fix bugs.
+
+v1.8.8
+Add option for setting each chunk size for packing manga;
+Fix a bug about packing incorrect manga page name.
+
+v1.8.7
+Fix issues with Pixiv updates.
+
+v1.8.6
+Fix ugoira convert buttons cannot display properly.
+
+v1.8.5
+Add a option for adding ugoira frames info into zip;
+Ugoira zip can be renamed;
+Fix bugs.
+
+v1.8.4
+Remove the permissions for testing some features that forgot to remove;
+Fix a bug that broken the extension.
+Notice: The zip download button now will display when the resource has downloaded, next version will add feature for renaming ugoira zip file.
+
+v1.8.3
+Update ugoira UI;
+Fix bugs.
+
+v1.8.2
+Fix bugs.
+
+v1.8.1
+Update setting styles;
+Fix bug.
+
+v1.8
+Refactor rename feature for easy use;
+Fix issue about missing buttons sometimes.
+
+v1.7.1:
+Fix manga rename settings display issue.
+
+v1.7:
+Add manga rename settings;
+Fix issue about missing file extension.
+
+v1.6.2:
+Reposition download/generate buttons.
+
+v1.6.1:
+Add a option to turn on/off extend gif duration function;
+Change default settings.
+
+v1.6:
+Add extend ugoira duration function (not avaliable for the old version pixiv for technical reseaon);
+Move settings page to extension options page from pop page and redesign settings page UI.
+
+v1.5.1:
+Add ugoira to gif quanlity setting. If you find color deviation in the gif, set ugoira quanlity to best should fix the issue.
+
+v1.5:
+Now it can work on new Pixiv site (with old site compatibility)
+
+v1.4.1:
+Fix the problem that cause generate gif or webm function broken.
+
+v1.4:
+Optimiza memory usage for downloading manga.
+
+v1.3:
+Refactor manga download implement to fix some issues;
+Change manga download UI.
+
+v1.2.1:
+Now extension can work currently.
+
+v1.2:
+New feature: Generate webm file.
+Remove japanese language support (Maybe someone can help me to translate).
+
+v1.1.4:
+Fix issue that manga cannot be downloaded.
+
+v1.1.3:
+Update button style.
+
+v1.1.2:
+Fix issue of sometimes display black frame in GIF.
+
+v1.1.1:
+Fix issue of cannot generate gif when user use newer Chrome.
+
+v1.1:
+Fix issue of cannot show button when user is not logined on Pixiv;
+Fix issue of cannot show button on new version site;
+Add setting, now you can set name of the gif file on setting page.
+
+v1.0.3:
+Fix issue of cannot download zip file when click the download zip button
+
+v1.0.2:
+Add Japanese language support.
+
+v1.0.1:
+Remove webNavigation permission.
+----------------------------------------------
+Please report bugs and tell me what you need. Thanks!

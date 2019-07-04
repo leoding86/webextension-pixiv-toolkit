@@ -1,0 +1,251 @@
+{
+   "author": {
+      "message": "画师"
+   },
+   "author_id": {
+      "message": "画师编号"
+   },
+   "downloadFullscreenZipFile": {
+      "message": "下载全屏zip包"
+   },
+   "downloadNormalZipFile": {
+      "message": "下载普通zip包"
+   },
+   "downloadZipFile": {
+      "message": "下载zip包"
+   },
+   "downloadPage": {
+      "message": "下载页数"
+   },
+   "download_page__short": {
+      "message": "DL"
+   },
+   "waitDownload": {
+      "message": "请等待上一个下载完成"
+   },
+   "save_page": {
+      "message": "保存页数"
+   },
+   "enable_ugoira_meta": {
+      "message": "可用的元数据（拖动选择）"
+   },
+   "extDescription": {
+      "message": "一个用于将P站动图转化成gif或webm格式，将漫画打包下载和下载小说的工具包。"
+   },
+   "extName": {
+      "message": "Pixiv工具箱"
+   },
+   "generate_gif_btn_complete_text": {
+      "message": "保存GIF"
+   },
+   "generate_gif_btn_error_download_text": {
+      "message": "下载出错"
+   },
+   "generate_gif_btn_text": {
+      "message": "生成GIF"
+   },
+   "generate_webm_btn_complete_text": {
+      "message": "保存WebM"
+   },
+   "generate_webm_btn_text": {
+      "message": "生成WebM"
+   },
+   "generating_webm": {
+      "message": "生成WebM中"
+   },
+   "generating": {
+      "message": "生成中..."
+   },
+   "preparing": {
+      "message": "准备生成..."
+   },
+   "id": {
+      "message": "编号"
+   },
+   "rename_ugoira_file": {
+      "message": "命名动图下载文件"
+   },
+   "setting": {
+      "message": "设置"
+   },
+   "settings": {
+        "message": "设置"
+   },
+   "setting_not_saved": {
+      "message": "设置保存出错"
+   },
+   "setting_saved": {
+      "message": "设置已保存"
+   },
+   "title": {
+      "message": "标题"
+   },
+   "used_ugoira_meta": {
+      "message": "已选择的元数据"
+   },
+   "ugoira_quality": {
+       "message": "生成GIF质量"
+   },
+   "ugoira_best": {
+       "message": "极好"
+   },
+   "ugoira_good": {
+       "message": "较好"
+   },
+   "ugoira_normal": {
+       "message": "普通"
+   },
+   "quality": {
+       "message": "质量"
+   },
+   "extend_duration": {
+       "message": "延长时长"
+   },
+   "extend_duration_desc": {
+       "message": "当原始动图时长低于选择的时长时额外延长动图时长"
+   },
+   "enable_extend_title": {
+       "message": "原始动图时长"
+   },
+   "enable_extend_desc": {
+       "message": "选择0时将禁用延长时长"
+   },
+   "extend_duration_seconds_title": {
+       "message": "至少延长动图时长至选择的时长"
+   },
+   "open_settings": {
+       "message": "打开设置"
+   },
+   "open_settings_intro": {
+       "message": "请右键点击图标选择\"选项\"进入设置页面"
+   },
+   "extend_enable": {
+       "message": "启用延长时长功能"
+   },
+   "rename_ugoira": {
+      "message": "重命名动图文件"
+   },
+   "Ugoira": {
+     "message": "动图"
+   },
+   "Manga": {
+    "message": "漫画"
+   },
+   "rename_manga": {
+      "message": "重命名漫画"
+   },
+   "rename_manga_image": {
+      "message": "重命名漫画内图片"
+   },
+   "quick_picks": {
+      "message": "快速选取"
+   },
+   "rename_format": {
+      "message": "重命名格式"
+   },
+   "manga_image_name_prefix": {
+       "message": "漫画图片数字前缀"
+   },
+   "page_num": {
+      "message": "页码"
+   },
+   "pending": {
+      "message": "准备下载"
+   },
+   "general": {
+      "message": "一般设置"
+   },
+   "pack_ugoira_frames_info_into_zip": {
+      "message": "将动图帧信息打包进zip文件"
+   },
+   "pack_ugoira_frames_info": {
+      "message": "打包帧信息"
+   },
+   "number_of_pages_in_each_chunk": {
+      "message": "每个包里的图片张数"
+   },
+   "number_of_pages_in_each_chunk_desc": {
+      "message": "如果游览器在下载中崩溃，请调低这个参数"
+   },
+   "download_novel": {
+     "message": "下载小说"
+   },
+   "Menu": {
+     "message": "菜单"
+   },
+   "give_5_stars": {
+     "message": "5星好评"
+   },
+   "Become_a_patron": {
+     "message": "成为赞助者"
+   },
+   "Change_History": {
+     "message": "更新历史"
+   },
+   "Sponsors": {
+     "message": "赞助者"
+   },
+   "Third_Party": {
+     "message": "第三方"
+   },
+   "setting_generate_and_download": {
+     "message": "生成并下载"
+   },
+   "setting_generate_and_download_desc": {
+     "message": "当gif或webm生产后直接下载文件"
+   },
+   "setting_pack_and_download": {
+     "message": "打包并下载"
+   },
+   "setting_pack_and_download_desc": {
+     "message": "当图片打包完成后自动下载文件"
+   },
+   "Downloads": {
+     "message": "下载"
+   },
+   "setting_downloads_permission": {
+     "message": "下载权限"
+   },
+   "setting_downloads_permission_desc": {
+     "message": "下载设置需要插件拥有下载权限"
+   },
+   "Grant": {
+     "message": "授权"
+   },
+   "Remove": {
+     "message": "移除"
+   },
+   "setting_ext_take_over_downloads": {
+     "message": "插件接管下载"
+   },
+   "setting_ext_take_over_downloads_desc": {
+     "message": "开启/关闭插件接管下载文件"
+   },
+   "setting_relative_location": {
+     "message": "保存相对位置"
+   },
+   "relative_location_hint": {
+     "message": "此位置将作为浏览器下载设置路径的后缀。<br>例如, 浏览器下载地址设置为 \"D:/downloads/\" ，那么插件将会把文件保存到 \"D:/downloads/{{downloadRelativeLocation}}\""
+   },
+   "Change": {
+     "message": "修改"
+   },
+   "Others": {
+     "message": "其他"
+   },
+   "setting_show_history_when_update_completed": {
+     "message": "升级完成后显示历史修改记录"
+   },
+   "sponsor_update_periodically": {
+     "message": "是你们让它变得更好，谢谢！（此列表会周期性更新）"
+   },
+   "sponser_very_first": {
+     "message": "成为第一位赞助者"
+   },
+   "Try_Manga_Toolkit": {
+       "message": "尝试漫画工具箱"
+   },
+   "Subscribes": {
+       "message": "订阅"
+   }
+}

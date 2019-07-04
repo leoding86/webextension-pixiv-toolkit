@@ -1,0 +1,251 @@
+{
+   "author": {
+      "message": "Author"
+   },
+   "author_id": {
+      "message": "Author ID"
+   },
+   "downloadFullscreenZipFile": {
+      "message": "Download fullscreen zip"
+   },
+   "downloadNormalZipFile": {
+      "message": "Download normal zip"
+   },
+   "downloadZipFile": {
+      "message": "Download zip"
+   },
+   "downloadPage": {
+      "message": "Download page"
+   },
+   "download_page__short": {
+      "message": "DL page"
+   },
+   "waitDownload": {
+      "message": "Please wait the last download complete"
+   },
+   "save_page": {
+      "message": "Save page"
+   },
+   "enable_ugoira_meta": {
+      "message": "Metas can use (Drag to select)"
+   },
+   "extDescription": {
+      "message": "Convert ugoira to gif or/and webm, pack manga for downloading and download novel on Pixiv."
+   },
+   "extName": {
+      "message": "Pixiv Toolkit"
+   },
+   "generate_btn_error_text": {
+      "message": "Error"
+   },
+   "generate_gif_btn_complete_text": {
+      "message": "Save GIF"
+   },
+   "generate_gif_btn_text": {
+      "message": "Generate GIF"
+   },
+   "generate_webm_btn_complete_text": {
+      "message": "Save WebM"
+   },
+   "generate_webm_btn_text": {
+      "message": "Generate WebM"
+   },
+   "generating_webm": {
+      "message": "Compiling WebM"
+   },
+   "generating": {
+      "message": "Generating"
+   },
+   "preparing": {
+      "message": "Preparing"
+   },
+   "id": {
+      "message": "ID"
+   },
+   "rename_ugoira_file": {
+      "message": "Rename ugoira file"
+   },
+   "setting": {
+      "message": "Setting"
+   },
+   "settings": {
+        "message": "Settings"
+   },
+   "setting_not_saved": {
+      "message": "Save setting failed"
+   },
+   "setting_saved": {
+      "message": "Setting saved"
+   },
+   "title": {
+      "message": "Title"
+   },
+   "used_ugoira_meta": {
+      "message": "Metas is in used"
+   },
+   "ugoira_quality": {
+       "message": "Ugoira quality"
+   },
+   "ugoira_best": {
+       "message": "Best"
+   },
+   "ugoira_good": {
+       "message": "Good"
+   },
+   "ugoira_normal": {
+       "message": "Normal"
+   },
+   "quality": {
+       "message": "Quality"
+   },
+   "extend_duration": {
+       "message": "Extend duration"
+   },
+   "extend_duration_desc": {
+       "message": "Extend ugoira duration when the duration is not expected"
+   },
+   "enable_extend_title": {
+       "message": "Enable repeat when ugoira duration under choosen duration"
+   },
+   "enable_extend_desc": {
+       "message": "Extend duration will be disabled when 0 is choosen"
+   },
+   "extend_duration_seconds_title": {
+       "message": "Extend ugoira duration to choosen duration at least"
+   },
+   "open_settings": {
+       "message": "Open settings"
+   },
+   "open_settings_intro": {
+       "message": "Please right-click the icon and click \"Options\" to open settings page"
+   },
+   "extend_enable": {
+       "message": "Turn on/off extend duration function"
+   },
+   "rename_ugoira": {
+      "message": "Rename downloaded ugoira"
+   },
+   "Ugoira": {
+     "message": "Ugoira"
+   },
+   "Manga": {
+    "message": "Manga"
+   },
+   "rename_manga": {
+      "message": "Rename manga"
+   },
+   "rename_manga_image": {
+      "message": "Rename manga image file"
+   },
+   "quick_picks": {
+      "message": "Quick picks"
+   },
+   "rename_format": {
+      "message": "Rename format"
+   },
+   "manga_image_name_prefix": {
+       "message": "Manga images page number prefix"
+   },
+   "page_num": {
+      "message": "Page No."
+   },
+   "pending": {
+      "message": "Pending"
+   },
+   "general": {
+      "message": "General"
+   },
+   "pack_ugoira_frames_info_into_zip": {
+      "message": "Pack ugoira frames info into zip file"
+   },
+   "pack_ugoira_frames_info": {
+      "message": "Pack frames info"
+   },
+   "number_of_pages_in_each_chunk": {
+      "message": "Number of pages in each chunk"
+   },
+   "number_of_pages_in_each_chunk_desc": {
+      "message": "Reduce this number if browser is crushing during downloading"
+   },
+   "download_novel": {
+     "message": "Download novel"
+   },
+   "Menu": {
+     "message": "Menu"
+   },
+   "give_5_stars": {
+     "message": "Give 5 stars"
+   },
+   "Become_a_patron": {
+     "message": "Become a patron"
+   },
+   "Change_History": {
+     "message": "Change History"
+   },
+   "Sponsors": {
+     "message": "Sponsors"
+   },
+   "Third_Party": {
+     "message": "Third-Party"
+   },
+   "setting_generate_and_download": {
+     "message": "Generate and download"
+   },
+   "setting_generate_and_download_desc": {
+     "message": "Download gif/webm when file is generated"
+   },
+   "setting_pack_and_download": {
+     "message": "Pack and download"
+   },
+   "setting_pack_and_download_desc": {
+     "message": "Download zip when images are packed"
+   },
+   "Downloads": {
+     "message": "Downloads"
+   },
+   "setting_downloads_permission": {
+     "message": "Downloads permission"
+   },
+   "setting_downloads_permission_desc": {
+     "message": "Downloads settings need downloads permission to work"
+   },
+   "Grant": {
+     "message": "Grant"
+   },
+   "Remove": {
+     "message": "Remove"
+   },
+   "setting_ext_take_over_downloads": {
+     "message": "Extension takes over downloads"
+   },
+   "setting_ext_take_over_downloads_desc": {
+     "message": "Enable/Disable extension takes over downloads"
+   },
+   "setting_relative_location": {
+     "message": "Relative location"
+   },
+   "relative_location_hint": {
+     "message": "The location will be the suffix of the Chrome downloads location<br>For example, Chrome download location is \"D:/downloads/\" then the full download location will be \"D:/downloads/{{downloadRelativeLocation}}\""
+   },
+   "Change": {
+     "message": "Change"
+   },
+   "Others": {
+     "message": "Others"
+   },
+   "setting_show_history_when_update_completed": {
+     "message": "Show change history when update completed"
+   },
+   "sponsor_update_periodically": {
+     "message": "You guys make it better, thanks! (The list will be updated periodically)"
+   },
+   "sponsor_very_first": {
+     "message": "Become the very first sponsor"
+   },
+   "Try_Manga_Toolkit": {
+       "message": "Try Manga Toolkit"
+   },
+   "Subscribes": {
+       "message": "Subscribes"
+   }
+}
