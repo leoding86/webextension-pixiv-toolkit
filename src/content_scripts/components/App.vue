@@ -11,7 +11,7 @@
 
     <ugoira-tool v-if="isUgoira" :tool="tool">ugoira</ugoira-tool>
     <manga-tool v-else-if="isManga" :tool="tool">manga</manga-tool>
-    <manga-tool v-else-if="isIllust" :tool="tool">illust</manga-tool>
+    <illust-tool v-else-if="isIllust" :tool="tool">illust</illust-tool>
     <novel-tool v-else-if="isNovel" :tool="tool">novel</novel-tool>
     <div v-else>
       <p>Unsupported page</p>
@@ -24,6 +24,7 @@ import { storage as browserStorage, runtime as browserRuntime } from '@/content_
 import Detector from "@/content_scripts/Detector"
 import Novel from "@/content_scripts/components/Novel"
 import Manga from '@/content_scripts/components/Manga'
+import Illust from '@/content_scripts/components/Illust'
 import Ugoira from '@/content_scripts/components/Ugoira'
 import SubscriptionButton from '@/content_scripts/components/sub/SubscriptionButton'
 
@@ -31,6 +32,7 @@ export default {
   components: {
     "novel-tool": Novel,
     'manga-tool': Manga,
+    'illust-tool': Illust,
     'ugoira-tool': Ugoira,
     'subscription-button': SubscriptionButton
   },
