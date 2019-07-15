@@ -2,6 +2,7 @@ import Browser from '@/modules/Browser/Browser';
 import { runtime as browserRuntime } from '@/content_scripts/Browser';
 import UgoiraAdapter from './UgoiraAdapter';
 import MangaAdapter from './MangaAdapter';
+import IllustAdapter from './IllustAdapter'
 import NovelAdapter from './NovelAdapter';
 
 class Detector {
@@ -23,6 +24,7 @@ class Detector {
     this.contextData;
     this.ugoiraAdapter;
     this.mangaAdapter;
+    this.illustAdapter
     this.novelAdapter;
   }
 
@@ -122,7 +124,7 @@ class Detector {
       } else if (self.currentType === Detector.MANGA_TYPE) {
         resolve(self.injectMangaAdapter());
       } else if (self.currentType === Detector.ILLUST_TYPE) {
-        resolve(self.injectMangaAdapter());
+        resolve(self.injectIllustAdapter());
       }
     });
   }
@@ -209,9 +211,24 @@ class Detector {
 
       self.mangaAdapter.inital(self.contextData).then(context => {
         let mangaTool = self.currentTool = self.mangaAdapter.makeTool();
-        // mangaTool.run().show();
 
         resolve(mangaTool);
+      })
+    });
+  }
+
+  injectIllustAdapter() {
+    let self = this
+
+    return new Promise((resolve, reject) => {
+      if (!self.illustAdapter) {
+        self.illustAdapter = new IllustAdapter()
+      }
+
+      self.illustAdapter.inital(self.contextData).then(context => {
+        let illustTool = self.currentTool = self.illustAdapter.makeTool()
+
+        resolve(illustTool)
       })
     });
   }
