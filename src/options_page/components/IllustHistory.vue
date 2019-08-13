@@ -1,42 +1,395 @@
 <template>
-  <div style="max-width:900px;margin:0 auto;padding:0 20px">
+  <div class="container container--big">
     <page-title title="Illust History"></page-title>
 
-    <plus-notice></plus-notice>
+    <div style="margin-bottom:20px">
+      <v-switch v-model="disableBlurOnR" label="Disable mask" style="display:inline-block"></v-switch>
+      <!-- <v-switch v-model="landscape" label="Switch aspect ratio" style="display:inline-block;margin-left:20px"></v-switch> -->
+      <br>
+      <v-btn @click="exportIllustHistory"
+        style="margin-left:0;">
+        Export ({{ total }})
+        <v-progress-circular
+          indeterminate
+          color="primary"
+          v-if="exporting"
+          size="20"
+          width="3"
+          style="margin-left:5px"
+        ></v-progress-circular>
+      </v-btn>
+      <v-btn
+        @click="importIllustHistory">
+        Import <span v-if="importTotal > 0">({{ importedCount }} / {{ importTotal }})</span>
+        <v-progress-circular
+          indeterminate
+          color="primary"
+          v-if="importing"
+          size="20"
+          width="3"
+          style="margin-left:5px"
+        ></v-progress-circular>
+      </v-btn>
 
-    <div style="margin-top:20px;">
-      <h2>Screenshot</h2>
-      <img :src="example01"
-        style="width:100%"
-        @click="openInNew(example01)">
+      <!-- <v-btn @click="insertData">Insert 10w</v-btn> -->
     </div>
+
+    <v-layout row wrap>
+      <p v-if="illusts.length <= 0"
+        style="font-size:14px;text-align:center;">
+        There is no any history
+      </p>
+      <v-flex v-else md2 sm3 xs4 v-for="(illust, i) in illusts" :key="i">
+        <v-card class="card--history-item">
+          <div class="card--image-wrap">
+            <div v-if="illust.r && !disableBlurOnR" class="card--image__mask"></div>
+            <div class="card--image" :style="{paddingBottom: '117%', backgroundImage: 'url(' + illust.images.small + ')'}"></div>
+          </div>
+          <div class="card--history-info">{{ illust.title }}</div>
+          <div class="card--type">{{ readableType(illust.type) }}</div>
+          <div class="card--r" v-if="!!illust.r">R</div>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn outline small icon color="red"
+              @click="deleteOne(illust)">
+              <v-icon small>delete_outline</v-icon>
+            </v-btn>
+            <v-btn outline small icon
+              @click="openInNew(illust)">
+              <v-icon small>open_in_new</v-icon>
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-flex>
+    </v-layout>
+
+    <div style="text-align:center;clear:both;" v-if="loading">
+      <v-progress-circular
+        indeterminate
+        color="primary"
+      ></v-progress-circular>
+    </div>
+
+    <div style="margin:20px 0;" v-if="!(loading || importing || exporting)">
+      <v-btn @click="prev()" style="margin-left:0">Newer</v-btn>
+      <v-btn @click="next()">Older</v-btn>
+      <v-menu open-on-hover top offset-y>
+        <template v-slot:activator="{ on }">
+          <v-btn
+            v-on="on">
+            Page {{ page }}
+          </v-btn>
+        </template>
+
+        <v-list style="height: 300px;">
+          <v-list-tile v-for="page in pages" :key="page" style="background: #fff"
+            @click="changePage(page)">
+            <v-list-tile-title>{{ page }}</v-list-tile-title>
+          </v-list-tile>
+        </v-list>
+      </v-menu>
+    </div>
+
+    <v-dialog v-model="confirmDialog"
+      width="500">
+      <v-card>
+        <v-card-title>Delete confirmation</v-card-title>
+        <v-card-text>
+          <p style="font-size:14px;">This operation cannot be reversed, are you sure?</p>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn @click="deleteIllust"
+            color="error">Delete</v-btn>
+          <v-btn @click="confirmDialog = false">Keep it</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
 <script>
 import PageTitle from '@@/components/PageTitle'
-import PlusNotice from '@@/components/PlusNotice'
-import example01 from '@/statics/img/illust-history-screenshot-01.jpg'
+import IllustHistory from '@/repositories/IllustHistory'
+import { start } from 'pretty-error';
 
 export default {
   components: {
-    'page-title': PageTitle,
-    'plus-notice': PlusNotice
+    'page-title': PageTitle
   },
 
   data() {
     return {
-      example01: example01
+      total: 0,
+      illusts: [],
+      page: 0,
+      step: 36,
+      disableBlurOnR: false,
+      landscape: false,
+      loading: false,
+      confirmDialog: false,
+      illustDeleteReady: null,
+      illustHistory: new IllustHistory(),
+      exporting: false,
+      importing: false,
+      pages: 0,
+      importTotal: 0,
+      importedCount: 0
     };
   },
 
   beforeMount() {
-    //
+    let vm = this;
+
+    this.loading = true
+
+    this.illustHistory.init().then(() => {
+      vm.illustHistory.db.allDocs({
+        endkey: '_'
+      }).then(items => {
+        vm.total = items.rows.length
+        vm.pages = Math.floor(vm.total / vm.step) + 1
+      })
+
+      vm.page = 1
+    })
+  },
+
+  computed: {
+    isPlus() {
+      return this.$root.plusVersion
+    },
+
+    imageAspectRatio() {
+      if (this.landscape) {
+        return 1.5
+      } else {
+        return 0.85
+      }
+    },
+
+    importProgress() {
+      if (this.importTotal === 0) {
+        return ''
+      }
+
+      return ' (' + this.importedCount + '/' + this.importTotal + ')'
+    }
+  },
+
+  watch: {
+    page(val) {
+      let vm = this
+
+      this.loading = true
+
+      this.illustHistory.getIllusts({
+        limit: this.step,
+        skip: (val - 1) * this.step
+      }).then(illusts => {
+        vm.loading = false
+
+        if (!illusts || illusts.length < 1) {
+          return
+        }
+
+        vm.illusts = illusts
+      })
+    }
   },
 
   methods: {
-    openInNew(url) {
-      window.open(url, '_blank')
+    readableType(type) {
+      if (type == 1) {
+        return "M";
+      } else if (type == 2) {
+        return "A";
+      } else if (type == 0) {
+        return "I";
+      }
+    },
+
+    openInNew(illust) {
+      window.open('https://www.pixiv.net/member_illust.php?mode=medium&illust_id=' + illust.id)
+    },
+
+    deleteOne(illust) {
+      this.confirmDialog = true
+      this.illustDeleteReady = illust
+    },
+
+    deleteIllust() {
+      this.confirmDialog = false
+
+      let vm = this
+
+      this.illustHistory.deleteIllust(this.illustDeleteReady).then(() => {
+        vm.illusts.splice(vm.illusts.indexOf(this.illustDeleteReady), 1)
+        vm.total--
+      })
+    },
+
+    changePage(page) {
+      this.page = page
+    },
+
+    prev() {
+      if (this.page <= 1) {
+        alert('There is no newer')
+        return
+      }
+
+      this.page--
+    },
+
+    next() {
+      if (this.page >= this.pages) {
+        alert('There is no older')
+        return
+      }
+
+      this.page++
+    },
+
+    insertData() {
+      let startId = 70114228
+      let endId = startId + 10000
+
+      this.putExampleData(startId, endId).then(() => {
+        console.log('complete')
+      }).catch(() => {
+        console.log('error')
+      })
+    },
+
+    putExampleData(startId, endId) {
+      let vm = this
+
+      let root = 'https://www.pixiv.net/ajax/illust/'
+
+      let url = root + startId
+
+      console.log('request ' + url)
+
+      return new Promise(resolve => {
+        let xhr = new XMLHttpRequest()
+        xhr.open('get', url)
+        xhr.addEventListener('loadend', () => {
+          let data
+
+          try {
+            data = JSON.parse(xhr.responseText)
+
+            if (data.error === false && data.body) {
+              vm.illustHistory.putIllust({
+                id: data.body.illustId,
+                title: data.body.illustTitle,
+                images: data.body.urls,
+                type: data.body.illustType,
+                viewed_at: Math.floor(Date.now()),
+                r: data.body.xRestrict === 0 ? false : true
+              })
+            }
+          } catch (e) {
+            //do nothing
+          }
+
+          startId++
+
+          if (startId > endId) {
+            resolve()
+          } else {
+            resolve(vm.putExampleData(startId, endId))
+          }
+        })
+        xhr.send()
+      })
+    },
+
+    exportIllustHistory() {
+      if (this.exporting || this.importing) {
+        return
+      }
+
+      this.exporting = true
+
+      let json = ''
+      let vm = this
+
+      this.illustHistory.getIllusts({
+        limit: null
+      }).then(docs => {
+        let blob = new Blob([JSON.stringify(docs)], {type: 'application/json'})
+
+        let a = document.createElement('a')
+        a.href = URL.createObjectURL(blob)
+        a.download = 'illust_histories-' + Date.now() + '.json'
+        a.click()
+        vm.exporting = false
+      })
+    },
+
+    importIllustHistory() {
+      if (this.exporting || this.importing) {
+        return
+      }
+
+      let input = document.createElement('input')
+      let vm = this
+
+      input.type = 'file'
+      input.addEventListener('change', (e) => {
+        const files = e.target.files
+
+        let fileReader = new FileReader()
+
+        vm.importing = true
+
+        fileReader.addEventListener('load', () => {
+          let items
+
+          try {
+            items = JSON.parse(fileReader.result)
+
+            vm.importTotal = items.length
+
+            let worker = new Worker('./import_illust_history_worker.js')
+
+            worker.onmessage = e => {
+              vm.importedCount = e.data.importedCount
+
+              if (e.data.imported) {
+                vm.importedCount = items.length
+
+                vm.importTotal = 0 // disable displaying import progress
+
+                vm.importing = false
+
+                alert('Import complete, please reload the page.')
+              }
+            }
+
+            worker.postMessage({
+              items: items
+            })
+
+            // vm.importTotal = items.length
+
+            // vm.importIllustItems(items).then(() => {
+            //   alert('Import complete')
+            //   window.location.reload()
+            // })
+          } catch (e) {
+            console.log(e)
+          }
+        })
+
+        fileReader.readAsText(files[0])
+      })
+
+      if (window.confirm('Import history data will take a long time, after import completed, it will take a long time to rebuild indexes (based on the data size). The existing data will not be overwritten. Are you sure? ')) {
+        input.click()
+      }
     }
   }
 };
@@ -47,14 +400,20 @@ export default {
   position: relative;
   cursor: pointer;
   overflow: hidden;
+  border-radius: 0;
+  box-shadow: none;
 
-  &:hover .card--type,
-  &:hover .card--r {
-    width: 30px;
-    height: 30px;
-    line-height: 30px;
-    font-size: 16px;
-  }
+  // &:hover {
+  //   z-index: 9;
+  // }
+
+  // &:hover .card--type,
+  // &:hover .card--r {
+  //   width: 30px;
+  //   height: 30px;
+  //   line-height: 30px;
+  //   font-size: 16px;
+  // }
 
   .card--history-info {
     font-size: 14px;
@@ -68,8 +427,8 @@ export default {
 
   .card--type {
     position: absolute;
-    top: 0;
-    right: 0;
+    top: 3px;
+    right: 3px;
     width: 20px;
     height: 20px;
     font-size: 12px;
@@ -83,8 +442,8 @@ export default {
 
   .card--r {
     position: absolute;
-    top: 0;
-    left: 0;
+    top: 3px;
+    left: 3px;
     width: 20px;
     height: 20px;
     font-size: 12px;
@@ -111,6 +470,11 @@ export default {
     z-index: 1;
     opacity: 1;
     transition: opacity 0.7s
+  }
+
+  .card--image {
+    background-size: cover;
+    background-position: center center;
   }
 
   &:hover .card--image__mask {
