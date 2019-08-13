@@ -24,17 +24,9 @@
             ripple
             @click="illustHistoryClickHandle">
             <v-list-tile-content>
-              <span>Illust History <sup v-if="!plusVersion" style="padding-left:5px;color:red;font-size:10px">Plus</sup></span>
+              <span>Illust History</span>
             </v-list-tile-content>
-            <v-list-tile-action>
-              <v-icon>open_in_new</v-icon>
-            </v-list-tile-action>
           </v-list-tile>
-          <!-- <v-list-tile
-            ripple
-            @click="routeTo('Subscribes')">
-            {{ tl('Subscribes') }} <sup v-if="!plusVersion" style="padding-left:5px;color:red;font-size:10px">Plus</sup>
-          </v-list-tile> -->
 
           <v-divider light></v-divider>
           <v-list-tile ripple @click="routeTo('Options')">
@@ -69,7 +61,6 @@
         <span class="title v-primary">
           {{ tl('extName') }}
           <span style="font-size:12px">{{ version }}</span>
-          <sup v-if="plusVersion" style="font-size:12px;font-weight:700;">Plus v{{plusVersion}}</sup>
         </span>
       </v-toolbar>
       <v-content style="padding-left:0;">
@@ -103,10 +94,6 @@ export default {
   computed: {
     version () {
       return 'v' + extConfig.version;
-    },
-
-    plusVersion() {
-      return this.$root.plusVersion
     }
   },
 
@@ -141,15 +128,9 @@ export default {
       },
 
       illustHistoryClickHandle() {
-        if (this.plusVersion) {
-          browser.tabs.create({
-            url: 'chrome-extension://fnljpdfpdilgbfgdcmhckjhoibfdkgdk/options_page/index.html#/illust-history'
-          })
-        } else {
-          this.$router.push({
-            name: 'IllustHistory'
-          })
-        }
+        this.$router.push({
+          name: 'IllustHistory'
+        });
       },
 
       tl (string) {
