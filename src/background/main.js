@@ -1,17 +1,27 @@
 import { Updater, PackageFileReader } from '@/modules/Util';
 import Browser from '@/modules/Browser/Browser';
-import actions from '@/background/actions'
+import actions from '@/background/actions';
+import IllustHistoryPort from '@/modules/Ports/IllustHistoryPort';
 
 const browser = Browser.getBrowser();
 
 function Main() {
   // constructor
   this.enableExtension = false;
-  this.logs = []
-  this.logsMax = 200
+  this.logs = [];
+  this.logsMax = 200;
+  this.ports = this.getPorts();
 }
 
 Main.prototype = {
+  getPorts: function() {
+    let ports = {};
+
+    ports[IllustHistoryPort.port] = IllustHistoryPort;
+
+    return ports;
+  },
+
   run: function () {
     let self = this;
 
@@ -23,7 +33,7 @@ Main.prototype = {
       self.bindActionButton();
       self.listenStorageChanged();
       self.listenMessage();
-      self.listenMessageExternal()
+      self.listenPortConnect();
     });
 
     /**
@@ -144,24 +154,12 @@ Main.prototype = {
     });
   },
 
-  /**
-   * Listen message sended from other extension
-   */
-  listenMessageExternal: function () {
-    let self = this
-
-    browser.runtime.onMessageExternal.addListener((message, sender, sendResponse) => {
-      // console.log(sender)
-
-      if (message.action) {
-        //
+  listenPortConnect: function() {
+    browser.runtime.onConnect.addListener(port => {
+      if (port.name && this.ports[port.name]) {
+        this.ports[port.name].getInstanceFromPort(port);
       }
-
-      /**
-       * Prevent "The message port closed before a response was received" error
-       */
-      return true
-    })
+    });
   },
 
   /**
