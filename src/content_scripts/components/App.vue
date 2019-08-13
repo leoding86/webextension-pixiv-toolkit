@@ -27,6 +27,7 @@ import Manga from '@/content_scripts/components/Manga'
 import Illust from '@/content_scripts/components/Illust'
 import Ugoira from '@/content_scripts/components/Ugoira'
 import SubscriptionButton from '@/content_scripts/components/sub/SubscriptionButton'
+import IllustHistoryPort from '@/modules/Ports/IllustHistoryPort'
 
 export default {
   components: {
@@ -39,6 +40,7 @@ export default {
 
   data() {
     return {
+      illustHistoryPort: IllustHistoryPort.getInstance(),
       detector: new Detector(),
       pageType: null,
       currentUrl: null,
@@ -89,10 +91,6 @@ export default {
 
   mounted() {
     let vm = window.thisApp = this;
-
-    plusAddonPort.port.onMessage.addListener((message, port) => {
-      // console.log(message)
-    })
 
     window.browser.storage.onChanged.addListener((changes, namespace) => {
       for (let key in changes) {
@@ -153,8 +151,8 @@ export default {
           vm.pageType = vm.detector.currentType;
 
           // check page type to determine save history
-          if (this.isUgoira || this.isManga || this.isIllust) {
-            plusAddonPort.saveIllustHistory({
+          if (vm.isUgoira || vm.isManga || vm.isIllust) {
+            vm.illustHistoryPort.saveIllustHistory({
               id: vm.tool.getId(),
               title: vm.tool.getTitle(),
               images: vm.tool.getImages(),
