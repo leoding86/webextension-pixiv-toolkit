@@ -6,7 +6,7 @@
       <v-switch v-model="disableBlurOnR" label="Disable mask" style="display:inline-block"></v-switch>
       <!-- <v-switch v-model="landscape" label="Switch aspect ratio" style="display:inline-block;margin-left:20px"></v-switch> -->
       <br>
-      <v-btn @click="exportIllustHistory"
+      <!-- <v-btn @click="exportIllustHistory"
         style="margin-left:0;">
         Export ({{ total }})
         <v-progress-circular
@@ -29,7 +29,7 @@
           width="3"
           style="margin-left:5px"
         ></v-progress-circular>
-      </v-btn>
+      </v-btn> -->
 
       <!-- <v-btn @click="insertData">Insert 10w</v-btn> -->
     </div>
@@ -39,7 +39,7 @@
         style="font-size:14px;text-align:center;">
         There is no any history
       </p>
-      <v-flex v-else md2 sm3 xs4 v-for="(illust, i) in illusts" :key="i">
+      <v-flex v-else lg1 md2 sm3 xs4 v-for="(illust, i) in illusts" :key="i">
         <v-card class="card--history-item">
           <div class="card--image-wrap">
             <div v-if="illust.r && !disableBlurOnR" class="card--image__mask"></div>
@@ -70,7 +70,7 @@
       ></v-progress-circular>
     </div>
 
-    <div style="margin:20px 0;" v-if="!(loading || importing || exporting)">
+    <div style="margin:20px 0;" v-if="!loading && !importing && !exporting && illusts.length > 0">
       <v-btn @click="prev()" style="margin-left:0">Newer</v-btn>
       <v-btn @click="next()">Older</v-btn>
       <v-menu open-on-hover top offset-y>
