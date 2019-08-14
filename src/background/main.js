@@ -37,58 +37,44 @@ Main.prototype = {
     });
 
     /**
-     * override referer head for pixiv assets
+     * Starting from Chrome 72, the following request headers are not provided and cannot be modified or removed without
+     * specifying 'extraHeaders' in opt_extraInfoSpec:
+     *   Accept-Language
+     *   Accept-Encoding
+     *   Referer
+     *   Cookie
+     * Starting from Chrome 72, the Set-Cookie response header is not provided and cannot be modified or removed without
+     * specifying 'extraHeaders' in opt_extraInfoSpec.
      **/
-    try {
-      browser.webRequest.onBeforeSendHeaders.addListener(details => {
+    let opt_extraInfoSpec = [
+      browser.webRequest.OnBeforeSendHeadersOptions.BLOCKING,
+      browser.webRequest.OnBeforeSendHeadersOptions.REQUEST_HEADERS
+    ];
 
-        for (let i = 0, l = details.requestHeaders.length; i < l; ++i) {
-          if (details.requestHeaders[i].name === 'Referer') {
-            details.requestHeaders.splice(i, 1)
-            break;
-          }
-        }
-
-        details.requestHeaders.push({
-          name: 'Referer',
-          value: 'https://www.pixiv.net/'
-        })
-
-        return { requestHeaders: details.requestHeaders }
-      }, {
-          urls: [
-            "*://i.pximg.net/*"
-          ]
-        }, [
-          "requestHeaders",
-          "blocking",
-          "extraHeaders"
-        ])
-    } catch (e) {
-      browser.webRequest.onBeforeSendHeaders.addListener(details => {
-
-        for (let i = 0, l = details.requestHeaders.length; i < l; ++i) {
-          if (details.requestHeaders[i].name === 'Referer') {
-            details.requestHeaders.splice(i, 1)
-            break;
-          }
-        }
-
-        details.requestHeaders.push({
-          name: 'Referer',
-          value: 'https://www.pixiv.net/'
-        })
-
-        return { requestHeaders: details.requestHeaders }
-      }, {
-          urls: [
-            "*://i.pximg.net/*"
-          ]
-        }, [
-          "requestHeaders",
-          "blocking"
-        ])
+    if (browser.webRequest.OnBeforeSendHeadersOptions.EXTRA_HEADERS) {
+      opt_extraInfoSpec.push(browser.webRequest.OnBeforeSendHeadersOptions.EXTRA_HEADERS);
     }
+
+    browser.webRequest.onBeforeSendHeaders.addListener(details => {
+
+      for (let i = 0, l = details.requestHeaders.length; i < l; ++i) {
+        if (details.requestHeaders[i].name.toLowerCase() === 'referer') {
+          details.requestHeaders.splice(i, 1)
+          break;
+        }
+      }
+
+      details.requestHeaders.push({
+        name: 'Referer',
+        value: 'https://www.pixiv.net/'
+      })
+
+      return { requestHeaders: details.requestHeaders }
+    }, {
+      urls: [
+        "*://i.pximg.net/*"
+      ]
+    }, opt_extraInfoSpec);
   },
 
   callMessageAction: function (action, args) {
