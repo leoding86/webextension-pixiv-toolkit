@@ -13,7 +13,8 @@ const isProduction = process.env.NODE_ENV === 'production' ?
 
 const config = merge.smart(baseConfig, {
   entry: {
-    app: './src/options_page/main.js'
+    app: './src/options_page/main.js',
+    import_illust_history_worker: './src/options_page/workers/importIllustHistoryWorker.js'
   },
   output: {
     path: utils.resolve('dist/options_page'),
