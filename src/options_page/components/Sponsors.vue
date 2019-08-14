@@ -67,6 +67,7 @@ ul {
 
   li {
     display: inline-block;
+    margin-bottom: 10px;
     font-size: 16px;
   }
 }
