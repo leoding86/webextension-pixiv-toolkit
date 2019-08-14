@@ -6,7 +6,7 @@
       <v-switch v-model="disableBlurOnR" label="Disable mask" style="display:inline-block"></v-switch>
       <!-- <v-switch v-model="landscape" label="Switch aspect ratio" style="display:inline-block;margin-left:20px"></v-switch> -->
       <br>
-      <!-- <v-btn @click="exportIllustHistory"
+      <v-btn @click="exportIllustHistory"
         style="margin-left:0;">
         Export ({{ total }})
         <v-progress-circular
@@ -29,7 +29,7 @@
           width="3"
           style="margin-left:5px"
         ></v-progress-circular>
-      </v-btn> -->
+      </v-btn>
 
       <!-- <v-btn @click="insertData">Insert 10w</v-btn> -->
     </div>
@@ -43,7 +43,7 @@
         <v-card class="card--history-item">
           <div class="card--image-wrap">
             <div v-if="illust.r && !disableBlurOnR" class="card--image__mask"></div>
-            <div class="card--image" :style="{paddingBottom: '117%', backgroundImage: 'url(' + illust.images.small + ')'}"></div>
+            <div class="card--image" :style="{paddingBottom: '117%', backgroundImage: 'url(' + illust.images.thumb + ')'}"></div>
           </div>
           <div class="card--history-info">{{ illust.title }}</div>
           <div class="card--type">{{ readableType(illust.type) }}</div>
