@@ -23,10 +23,12 @@ $side-width: 300px;
 
 .container--big {
   margin-left: $side-width;
+  width: calc(100% - 300px);
 }
 
 @media (max-width: 1300px) {
   .container--big {
     margin-left: 0;
+    width: 100%;
   }
 }
