@@ -7,7 +7,7 @@ class IllustHistory {
   constructor() {
     this.db = new PouchDB('illust_histories');
 
-    this.maxLimit = 5;
+    this.maxLimit = 10000;
 
     this.properties = ['id', 'title', 'type', 'r', 'images', 'viewed_at'];
 
@@ -37,11 +37,11 @@ class IllustHistory {
       return false
     }
 
-    ['small'].forEach(type => {
+    ['thumb'].forEach(type => {
       if (!data.images[type] || typeof data.images[type] !== 'string') {
-        return false
+        data.images.thumb = '';
       }
-    })
+    });
 
     if (data.type === undefined) {
       return false
