@@ -16,6 +16,9 @@ class IllustHistoryPort {
 
   static getInstanceFromPort(port) {
     if (IllustHistoryPort.instance) {
+      IllustHistoryPort.instance.createPort(port);
+      IllustHistoryPort.instance.createListener();
+
       return IllustHistoryPort.instance;
     }
 
