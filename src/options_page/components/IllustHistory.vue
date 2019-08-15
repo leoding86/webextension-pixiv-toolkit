@@ -48,8 +48,7 @@
           <div class="card--history-info">{{ illust.title }}</div>
           <div class="card--type">{{ readableType(illust.type) }}</div>
           <div class="card--r" v-if="!!illust.r">R</div>
-          <v-card-actions>
-            <v-spacer></v-spacer>
+          <v-card-actions class="card--actions-wrap">
             <v-btn outline small icon color="red"
               @click="deleteOne(illust)">
               <v-icon small>delete_outline</v-icon>
@@ -403,6 +402,23 @@ export default {
   border-radius: 0;
   box-shadow: none;
 
+  .card--actions-wrap {
+    display: none;
+    position: absolute;
+    width: 100%;
+    height: 50px;
+    bottom: 0;
+    right: 0;
+    text-align: center;
+    background: #fff;
+  }
+
+  &:hover {
+    .card--actions-wrap {
+      display: block;
+    }
+  }
+
   // &:hover {
   //   z-index: 9;
   // }
@@ -417,12 +433,12 @@ export default {
 
   .card--history-info {
     font-size: 14px;
-    height: 25px;
+    height: 50px;
     line-height: 25px;
     padding: 0 5px;
     overflow: hidden;
     text-overflow: ellipsis;
-    white-space: nowrap;
+    // white-space: nowrap;
   }
 
   .card--type {
