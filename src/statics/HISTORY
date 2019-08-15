@@ -1,13 +1,17 @@
 You can use this extension to convert the ugoira on Pixiv to GIF or WebM file, or pack the images of manga to download or save novel as epub.
 
-There are some features need Pixiv Toolkit Plus Addon to activate. You can purchase it from Chrome Store or you can get it by supporting me on Parteon. I really appreciate if you can support me. Anyway, thanks for downloading this extension.
-
 Notice:
 If you are using version < 1.5, plz update it asap.
 
 Github:
 https://github.com/leoding86/webextension-pixiv-toolkit
 ----------------------------------------------
+v2.5.4
+Merge illusion history feature from Plus Addon;
+Minor fix.
+Some words:
+Maybe I'll price the extension in the future, I've not decided yet. But I'll keep the extension open-source, so you can download from my github page and install it manually.
+
 v2.4.3
 Download image not a zip file if there is only one picture in illusion set;
 Minor fix.
