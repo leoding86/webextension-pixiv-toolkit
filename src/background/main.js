@@ -93,10 +93,13 @@ Main.prototype = {
   bindActionButton: function () {
     browser.browserAction.onClicked.addListener(function () {
       browser.browserAction.getBadgeText({}, function (text) {
-        let url = './options_page/index.html';
+        let url = './options_page/index.html#/illust-history';
 
         if (text.toLowerCase() === 'new') {
-          url += '#/history';
+          /**
+           * Override the page
+           */
+          url = './options_page/index.html#/history';
 
           browser.browserAction.setBadgeText({
             text: ''
