@@ -40,7 +40,13 @@ let _config;
 if (process.env.NODE_ENV === 'production') {
   _config = Object.assign({}, config, {
     plugins: [
-      new UglifyJsPlugin()
+      new UglifyJsPlugin({
+        uglifyOptions: {
+          output: {
+            ascii_only: true
+          }
+        }
+      })
     ]
   });
 } else {
