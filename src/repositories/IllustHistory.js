@@ -147,6 +147,31 @@ class IllustHistory {
     })
   }
 
+  searchIllusts(option = {}) {
+    let _selector = option.selector || { viewed_at: { $gte: null } };
+    let _sort = option.sort || [{ 'viewed_at': 'desc'}];
+    let _limit = option.limit;
+    let _skip = option.skip || 0;
+    let _fun = option.fun;
+
+    return new Promise((resolve, reject) => {
+      this.db.query(_fun, {
+        selector: _selector,
+        sort: _sort,
+        limit: _limit,
+        skip: _skip,
+        include_docs: true
+      }).then(response => {
+        let docs = response.rows.map((row) => {
+          return row.doc;
+        });
+        resolve(docs);
+      }).catch(err => {
+        reject(err);
+      })
+    });
+  }
+
   deleteIllust({id}) {
     let self = this
 
@@ -156,12 +181,6 @@ class IllustHistory {
       }).catch(err => {
         resolve()
       })
-    })
-  }
-
-  searchIllusts() {
-    return new Promise(resolve => {
-
     })
   }
 }
