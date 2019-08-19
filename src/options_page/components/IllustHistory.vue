@@ -1,14 +1,28 @@
 <template>
   <div class="container container--big">
-    <page-title title="Illust History"></page-title>
+    <!-- <page-title title="Illust History"></page-title> -->
+    <!-- Searchbar -->
+    <v-text-field
+      label="Solo"
+      single-line
+      solo
+      flat
+      placeholder="Search History (Beta)"
+      v-model="searchQuery"
+    ></v-text-field>
+    <!-- /Searchbar -->
 
-    <div style="margin-bottom:20px">
-      <v-switch v-model="disableBlurOnR" label="Disable mask" style="display:inline-block"></v-switch>
-      <!-- <v-switch v-model="landscape" label="Switch aspect ratio" style="display:inline-block;margin-left:20px"></v-switch> -->
-      <br>
+    <div class="dataset-head-actions-wrap">
+      <v-btn
+        class="text-none"
+        style="margin-left:0;"
+        depressed
+        flat>Total {{ total }} Records</v-btn>
+
       <v-btn @click="exportIllustHistory"
-        style="margin-left:0;">
-        Export ({{ total }})
+        depressed
+        color="#eee">
+        Export
         <v-progress-circular
           indeterminate
           color="primary"
@@ -18,8 +32,11 @@
           style="margin-left:5px"
         ></v-progress-circular>
       </v-btn>
+
       <v-btn
-        @click="importIllustHistory">
+        @click="importIllustHistory"
+        depressed
+        color="#eee">
         Import <span v-if="importTotal > 0">({{ importedCount }} / {{ importTotal }})</span>
         <v-progress-circular
           indeterminate
@@ -31,10 +48,13 @@
         ></v-progress-circular>
       </v-btn>
 
+      <v-switch v-model="disableBlurOnR" label="Disable mask"></v-switch>
+
       <!-- <v-btn @click="insertData">Insert 10w</v-btn> -->
     </div>
 
-    <v-layout row wrap>
+    <v-layout row wrap
+      class="illust-history-wrap">
       <p v-if="illusts.length <= 0"
         style="font-size:14px;text-align:center;">
         There is no any history
@@ -70,17 +90,25 @@
     </div>
 
     <div style="margin:20px 0;" v-if="!loading && !importing && !exporting && illusts.length > 0">
-      <v-btn @click="prev()" style="margin-left:0">Newer</v-btn>
-      <v-btn @click="next()">Older</v-btn>
+      <v-btn depressed
+        color="#eee"
+        @click="prev()"
+        style="margin-left:0">Newer</v-btn>
+      <v-btn
+        depressed
+        color="#eee"
+        @click="next()">Older</v-btn>
       <v-menu open-on-hover top offset-y>
         <template v-slot:activator="{ on }">
           <v-btn
+            depressed
+            color="#eee"
             v-on="on">
             Page {{ page }}
           </v-btn>
         </template>
 
-        <v-list style="height: 300px;">
+        <v-list>
           <v-list-tile v-for="page in pages" :key="page" style="background: #fff"
             @click="changePage(page)">
             <v-list-tile-title>{{ page }}</v-list-tile-title>
@@ -110,7 +138,6 @@
 <script>
 import PageTitle from '@@/components/PageTitle'
 import IllustHistory from '@/repositories/IllustHistory'
-import { start } from 'pretty-error';
 
 export default {
   components: {
@@ -133,7 +160,9 @@ export default {
       importing: false,
       pages: 0,
       importTotal: 0,
-      importedCount: 0
+      importedCount: 0,
+      searchQuery: '',
+      searchTimeout: null
     };
   },
 
@@ -178,22 +207,31 @@ export default {
 
   watch: {
     page(val) {
-      let vm = this
+      if (this.searchQuery.trim().length === 0) {
+        this.getIllusts();
+      } else {
+        this.searchIllusts();
+      }
+    },
 
-      this.loading = true
+    searchQuery(val) {
+      if (this.searchTimeout) {
+        clearTimeout(this.searchTimeout);
+      }
 
-      this.illustHistory.getIllusts({
-        limit: this.step,
-        skip: (val - 1) * this.step
-      }).then(illusts => {
-        vm.loading = false
+      this.searchTimeout = setTimeout(() => {
+        if (this.page == 1) {
+          if (val.trim().length === 0) {
+            this.getIllusts();
+          } else {
+            this.searchIllusts();
+          }
 
-        if (!illusts || illusts.length < 1) {
-          return
+          return;
         }
 
-        vm.illusts = illusts
-      })
+        this.page = 1;
+      }, 800);
     }
   },
 
@@ -213,8 +251,12 @@ export default {
     },
 
     deleteOne(illust) {
-      this.confirmDialog = true
-      this.illustDeleteReady = illust
+      this.confirmDialog = true;
+
+      /**
+       * Cache item ready to delete
+       */
+      this.illustDeleteReady = illust;
     },
 
     deleteIllust() {
@@ -226,6 +268,55 @@ export default {
         vm.illusts.splice(vm.illusts.indexOf(this.illustDeleteReady), 1)
         vm.total--
       })
+    },
+
+    /**
+     * Get illust histories
+     */
+    getIllusts() {
+      this.loading = true
+
+      this.illustHistory.getIllusts({
+        limit: this.step,
+        skip: (this.page - 1) * this.step
+      }).then(illusts => {
+        this.loading = false
+
+        if (!illusts || illusts.length < 1) {
+          return
+        }
+
+        this.illusts = illusts
+      }).catch(err => {
+        console.log(err);
+      });
+    },
+
+    /**
+     * Search illust histories
+     */
+    searchIllusts() {
+      let vm = this;
+
+      this.illustHistory.searchIllusts({
+        limit: this.step,
+        skip: (this.page - 1) * this.step,
+        fun(doc, emit) {
+          if (doc.title.indexOf(vm.searchQuery) > -1) {
+            emit(doc);
+          }
+        }
+      }).then(illusts => {
+        this.loading = false;
+
+        if (!illusts || illusts.length < 1) {
+          this.illusts = [];
+        } else {
+          this.illusts = illusts;
+        }
+      }).catch(err => {
+        console.log(err);
+      });
     },
 
     changePage(page) {
@@ -395,6 +486,23 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.dataset-head-actions-wrap {
+  .v-input--selection-controls {
+    display: inline-block;
+    box-sizing: border-box;
+    margin-top: 5px;
+    padding-top: 0px;
+    height: 36px;
+    position: relative;
+    top: 4px;
+    left: 10px;
+  }
+}
+
+.illust-history-wrap {
+  margin-top: 20px;
+}
+
 .card--history-item {
   position: relative;
   cursor: pointer;
@@ -410,10 +518,13 @@ export default {
     bottom: 0;
     right: 0;
     text-align: center;
-    background: #fff;
+    background: rgba(255, 255, 255, 0.8);
   }
 
   &:hover {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+    z-index: 99;
+
     .card--actions-wrap {
       display: block;
     }
