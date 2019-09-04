@@ -44,6 +44,9 @@ if (process.env.NODE_ENV === 'production') {
         uglifyOptions: {
           output: {
             ascii_only: true
+          },
+          compress: {
+            drop_console: true,
           }
         }
       })
