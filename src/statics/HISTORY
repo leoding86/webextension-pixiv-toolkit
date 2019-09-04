@@ -6,6 +6,10 @@ If you are using version < 1.5, plz update it asap.
 Github:
 https://github.com/leoding86/webextension-pixiv-toolkit
 ----------------------------------------------
+v2.7
+Add search suffix for searching popluar works (probably);
+Add image cache capability for illust history.
+
 v2.6.4
 New feature: Add search feature for illusion history;
 Update illusion history page UI.
