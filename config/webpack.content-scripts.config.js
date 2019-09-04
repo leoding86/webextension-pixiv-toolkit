@@ -13,7 +13,8 @@ const isProduction = process.env.NODE_ENV === 'production' ?
 
 const config = merge.smart(baseConfig, {
   entry: {
-    app: './src/content_scripts/main.js'
+    app: './src/content_scripts/main.js',
+    search: './src/content_scripts/search.js'
   },
   output: {
     path: utils.resolve('dist/content_scripts'),
