@@ -19,7 +19,7 @@
       <v-icon right>open_in_new</v-icon>
     </v-btn>
 
-    <v-btn
+    <!-- <v-btn
      small
      class="support-btn"
      @click="openInNewTab('https://chrome.google.com/webstore/detail/manga-toolkit/nlmklhfeikfefikpbpckillcbpfjmjbf')"
@@ -27,7 +27,7 @@
       <img src="../assets/manga-toolkit.png">
       {{ tl('Try_Manga_Toolkit') }}
       <v-icon right>open_in_new</v-icon>
-    </v-btn>
+    </v-btn> -->
 
     <v-card v-if="showSponsorsLink">
       <v-list>
