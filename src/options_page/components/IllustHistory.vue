@@ -1,5 +1,8 @@
 <template>
   <div class="container container--big">
+    <supports :show-sponsors-link="false"
+      :show-inline-sponsors-link="true"></supports>
+
     <!-- <page-title title="Illust History"></page-title> -->
     <!-- Searchbar -->
     <v-text-field
@@ -143,11 +146,13 @@
 import PageTitle from '@@/components/PageTitle'
 import IllustHistory from '@/repositories/IllustHistory'
 import CacheableImage from '@@/components/CacheableImage';
+import Supports from '@@/components/Supports';
 
 export default {
   components: {
     'page-title': PageTitle,
-    'cacheable-image': CacheableImage
+    'cacheable-image': CacheableImage,
+    'supports': Supports
   },
 
   data() {
