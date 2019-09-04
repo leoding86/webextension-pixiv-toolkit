@@ -179,6 +179,8 @@
             </v-list>
         </v-card>
 
+        <search-options></search-options>
+
         <span class="card-title">{{ tl('Others') }}</span>
 
         <v-card>
@@ -210,14 +212,16 @@
 <script>
 import '@@/assets/global.scss'
 import common from '@@/modules/common';
-import cr from '@@/modules/cr'
+import cr from '@@/modules/cr';
 import Supports from '@@/components/Supports';
+import SearchOptions from '@@/components/options/SearchOptions'
 
 export default {
     name: 'Options',
 
     components: {
-      supports: Supports
+      supports: Supports,
+      'search-options': SearchOptions
     },
 
     data () {
@@ -523,5 +527,19 @@ export default {
         font-size: 18px;
         margin-bottom: 10px;
     }
+}
+</style>
+
+<style lang="scss">
+#app {
+  .option-section {
+    margin: 30px 0;
+
+    .option-card-title {
+        display: block;
+        font-size: 18px;
+        margin-bottom: 10px;
+    }
+  }
 }
 </style>

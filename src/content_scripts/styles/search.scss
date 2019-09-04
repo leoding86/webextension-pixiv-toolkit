@@ -1,0 +1,63 @@
+.__ptk-search-addon {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 95px;
+  height: 28px;
+  background: #0096fa;
+  z-index: 999;
+  display: none;
+
+  a {
+    display: block;
+    color: #fff;
+    text-align: center;
+    line-height: 28px;
+    font-size: 14px;
+  }
+
+  a:hover {
+    text-decoration: none;
+  }
+
+  .__ptk-search-addon-inner-list {
+    position: absolute;
+    right: 0;
+    top: -1px;
+    border: 1px solid #d6dee5;
+    background: #fff;
+    display: none;
+    z-index: 999;
+
+    & > a {
+      display: block;
+      width: 120px;
+      padding: 0px 5px;
+      color: #000;
+      text-align: right;
+
+      &:hover {
+        background: #f2f4f6;
+      }
+    }
+  }
+}
+
+.__ptk-archer {
+  position: absolute;
+}
+
+.__ptk-archer-top-left {
+  top: 0;
+  left: 0;
+}
+
+.__ptk-archer-bottom-left {
+  bottom: 0;
+  left: 0;
+}
+
+.__ptk-archer-bottom-right {
+  bottom: 0;
+  right: 0;
+}
