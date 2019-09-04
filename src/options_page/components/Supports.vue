@@ -33,7 +33,7 @@
       <v-list>
         <v-list-tile ripple @click="showSponsors">
           <v-list-tile-content>
-            <v-list-tile-title>{{ tl('Sponsors') }}</v-list-tile-title>
+            <v-list-tile-title>{{ tl('Sponsors') }}😍</v-list-tile-title>
           </v-list-tile-content>
           <v-list-tile-action>
             <v-btn icon ripple>
