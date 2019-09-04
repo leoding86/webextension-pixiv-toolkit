@@ -62,6 +62,10 @@ export default new Router({
       path: '/subscribes',
       name: 'Subscribes',
       component: Subscribes
+    }, {
+      path: '/test',
+      name: 'Test',
+      component: () => import('@@/components/Test')
     }
   ]
 })
