@@ -289,7 +289,12 @@ Main.prototype = {
             /**
              * @version 2.3
              */
-            autoActivateDownloadPanel: false
+            autoActivateDownloadPanel: false,
+
+            /**
+             * @version 2.7
+             */
+            enablePtkSearch: true
           });
 
           updater.removeSettings([
