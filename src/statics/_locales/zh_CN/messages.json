@@ -247,5 +247,14 @@
    },
    "Subscribes": {
        "message": "订阅"
+   },
+   "Search": {
+       "message": "搜索"
+   },
+   "Enable_search_suffix": {
+       "message": "启用搜索后缀"
+   },
+   "Add_a_search_suffix_for_searching_popular_works_probably": {
+       "message": "添加搜索后缀以搜索热门作品（大概）"
    }
 }

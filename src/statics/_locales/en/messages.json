@@ -162,7 +162,7 @@
       "message": "Pack frames info"
    },
    "number_of_pages_in_each_chunk": {
-      "message": "Number of pages in each chunk"
+      "message": "Number of images contained in each chunk"
    },
    "number_of_pages_in_each_chunk_desc": {
       "message": "Reduce this number if browser is crushing during downloading"
@@ -247,5 +247,14 @@
    },
    "Subscribes": {
        "message": "Subscribes"
+   },
+   "Search": {
+       "message": "Search"
+   },
+   "Enable_search_suffix": {
+       "message": "Enable search suffix"
+   },
+   "Add_a_search_suffix_for_searching_popular_works_probably": {
+       "message": "Add a search suffix for searching popular works (probably)"
    }
 }
