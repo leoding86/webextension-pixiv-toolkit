@@ -63,7 +63,11 @@
         <v-card class="card--history-item">
           <div class="card--image-wrap">
             <div v-if="illust.r && !disableBlurOnR" class="card--image__mask"></div>
-            <div class="card--image" :style="{paddingBottom: '117%', backgroundImage: 'url(' + illust.images.thumb + ')'}"></div>
+            <!-- <div class="card--image" :style="{paddingBottom: '117%', backgroundImage: 'url(' + illust.images.thumb + ')'}"></div> -->
+            <cacheable-image class="card--image"
+              :src="illust.images.thumb"
+              mode="background">
+            </cacheable-image>
           </div>
           <div class="card--history-info">{{ illust.title }}</div>
           <div class="card--type">{{ readableType(illust.type) }}</div>
@@ -138,10 +142,12 @@
 <script>
 import PageTitle from '@@/components/PageTitle'
 import IllustHistory from '@/repositories/IllustHistory'
+import CacheableImage from '@@/components/CacheableImage';
 
 export default {
   components: {
-    'page-title': PageTitle
+    'page-title': PageTitle,
+    'cacheable-image': CacheableImage
   },
 
   data() {
@@ -602,6 +608,7 @@ export default {
   .card--image {
     background-size: cover;
     background-position: center center;
+    padding-top: 117%;
   }
 
   &:hover .card--image__mask {
