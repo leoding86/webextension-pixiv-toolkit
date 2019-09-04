@@ -19,6 +19,20 @@
       <v-icon right>open_in_new</v-icon>
     </v-btn>
 
+    <v-btn
+      small
+      v-if="showPatreon" class="support-btn" @click="openInNewTab('https://github.com/leoding86/webextension-pixiv-toolkit')">
+      <img src="../assets/github.svg">
+      {{ tl('Star_it') }} !
+      <v-icon right>open_in_new</v-icon>
+    </v-btn>
+
+    <v-btn v-if="showInlineSponsorsLink"
+      small class="support-btn" @click="showSponsors"
+      style="background:#fff;">
+      &nbsp;&nbsp;{{ tl('Sponsors') }} 😍&nbsp;&nbsp;
+    </v-btn>
+
     <!-- <v-btn
      small
      class="support-btn"
@@ -55,6 +69,11 @@ export default {
     showSponsorsLink: {
       type: Boolean,
       default: true
+    },
+
+    showInlineSponsorsLink: {
+      type: Boolean,
+      default: false
     },
 
     showPatreon: {
