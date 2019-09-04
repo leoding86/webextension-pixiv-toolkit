@@ -33,6 +33,18 @@
     "content_scripts": [
         {
             "matches": [
+                "*://*.pixiv.net/*"
+            ],
+            "css": [
+                "content_scripts/static/css/search.css"
+            ],
+            "js": [
+                "lib/babel-polyfill.min.js",
+                "content_scripts/search.js"
+            ]
+        },
+        {
+            "matches": [
                 "*://*.pixiv.net/novel/show.php?id=*",
                 "*://*.pixiv.net/member_illust.php?mode=manga&illust_id=*",
                 "*://*.pixiv.net/member_illust.php?mode=medium&illust_id=*"
@@ -41,7 +53,6 @@
                 "content_scripts/static/css/app.css"
             ],
             "js": [
-                "lib/babel-polyfill.min.js",
                 "lib/handlebars-latest.js",
                 "lib/jszip/jszip.js",
                 "lib/jszip/jszip-utils.min.js",
@@ -52,6 +63,6 @@
             ]
         }
     ],
-    "version": "2.6.4",
+    "version": "2.7",
     "options_page": "options_page/index.html"
 }
