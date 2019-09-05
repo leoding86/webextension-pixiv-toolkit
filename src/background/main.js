@@ -294,7 +294,8 @@ Main.prototype = {
             /**
              * @version 2.7
              */
-            enablePtkSearch: true
+            enablePtkSearch: true,
+            enableSaveVisitHistory: true
           });
 
           updater.removeSettings([
