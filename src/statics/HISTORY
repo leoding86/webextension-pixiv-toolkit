@@ -8,7 +8,8 @@ https://github.com/leoding86/webextension-pixiv-toolkit
 ----------------------------------------------
 v2.7
 Add search suffix for searching popluar works (probably);
-Add image cache capability for illust history.
+Add image cache capability for illust history;
+Add an option to enable/disable save visit history.
 
 v2.6.4
 New feature: Add search feature for illusion history;
