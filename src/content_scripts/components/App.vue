@@ -151,7 +151,7 @@ export default {
           vm.pageType = vm.detector.currentType;
 
           // check page type to determine save history
-          if (vm.isUgoira || vm.isManga || vm.isIllust) {
+          if ((vm.isUgoira || vm.isManga || vm.isIllust) && vm.browserItems.enableSaveVisitHistory) {
             vm.illustHistoryPort.saveIllustHistory({
               id: vm.tool.getId(),
               title: vm.tool.getTitle(),
