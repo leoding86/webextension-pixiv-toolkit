@@ -181,29 +181,7 @@
 
         <search-options></search-options>
 
-        <span class="card-title">{{ tl('Others') }}</span>
-
-        <v-card>
-          <v-list two-line>
-            <v-list-tile>
-                <v-list-tile-content>
-                    <v-list-tile-title>Activate download panel automatically</v-list-tile-title>
-                    <v-list-tile-sub-title>Download panel will show up automatically when page loaded</v-list-tile-sub-title>
-                </v-list-tile-content>
-                <v-list-tile-action>
-                    <v-switch v-model="autoActivateDownloadPanel"></v-switch>
-                </v-list-tile-action>
-            </v-list-tile>
-            <v-list-tile>
-              <v-list-tile-content>
-                <v-list-tile-title>{{ tl('setting_show_history_when_update_completed') }}</v-list-tile-title>
-              </v-list-tile-content>
-              <v-list-tile-action>
-                <v-switch v-model="showHistoryWhenUpdateCompleted"></v-switch>
-              </v-list-tile-action>
-            </v-list-tile>
-          </v-list>
-        </v-card>
+        <other-options></other-options>
 
         <router-view />
     </v-container>
@@ -214,14 +192,16 @@ import '@@/assets/global.scss'
 import common from '@@/modules/common';
 import cr from '@@/modules/cr';
 import Supports from '@@/components/Supports';
-import SearchOptions from '@@/components/options/SearchOptions'
+import SearchOptions from '@@/components/options/SearchOptions';
+import OtherOptions from '@@/components/options/OtherOptions';
 
 export default {
     name: 'Options',
 
     components: {
       supports: Supports,
-      'search-options': SearchOptions
+      'search-options': SearchOptions,
+      'other-options': OtherOptions
     },
 
     data () {
@@ -258,11 +238,7 @@ export default {
 
             downloadRelativeLocation: null,
 
-            showHistoryWhenUpdateCompleted: true,
-
             downloadSaveAs: false,
-
-            autoActivateDownloadPanel: false,
 
             browser: chrome
         }
@@ -286,11 +262,7 @@ export default {
 
             self.downloadRelativeLocation = items.downloadRelativeLocation;
 
-            self.showHistoryWhenUpdateCompleted = !!items.showHistoryWhenUpdateCompleted;
-
             self.downloadSaveAs = !!items.downloadSaveAs;
-
-            self.autoActivateDownloadPanel = !!items.autoActivateDownloadPanel;
         });
 
         cr._s.onChanged.addListener(self.onStorageChanged);
@@ -393,22 +365,10 @@ export default {
           });
         },
 
-        showHistoryWhenUpdateCompleted (val) {
-          cr._s.set({
-            showHistoryWhenUpdateCompleted: val
-          });
-        },
-
         downloadSaveAs (val) {
           cr._s.set({
             downloadSaveAs: val
           });
-        },
-
-        autoActivateDownloadPanel(val) {
-          cr._s.set({
-            autoActivateDownloadPanel: val
-          })
         }
     },
 
