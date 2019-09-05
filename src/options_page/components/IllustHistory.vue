@@ -1,11 +1,16 @@
 <template>
   <div class="container container--big">
-    <supports :show-sponsors-link="false"
+    <supports style="margin-bottom:0"
+      :show-sponsors-link="false"
       :show-inline-sponsors-link="true"></supports>
 
-    <!-- <page-title title="Illust History"></page-title> -->
+    <v-alert
+      :value="true"
+      type="warning"
+      v-if="!enableSaveVisitHistory">Save visit history has been disabled</v-alert>
+
     <!-- Searchbar -->
-    <v-text-field
+    <v-text-field class="search-panel"
       label="Solo"
       single-line
       solo
@@ -173,14 +178,15 @@ export default {
       importTotal: 0,
       importedCount: 0,
       searchQuery: '',
-      searchTimeout: null
+      searchTimeout: null,
+      enableSaveVisitHistory: browserItems.enableSaveVisitHistory
     };
   },
 
   beforeMount() {
     let vm = this;
 
-    this.loading = true
+    this.loading = true;
 
     this.illustHistory.init().then(() => {
       vm.illustHistory.db.allDocs({
@@ -508,6 +514,10 @@ export default {
     top: 4px;
     left: 10px;
   }
+}
+
+.search-panel {
+  margin: 10px 0;
 }
 
 .illust-history-wrap {
