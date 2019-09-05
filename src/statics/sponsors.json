@@ -4,10 +4,6 @@
         "level": 2
     },
     {
-        "name": "Charley Scott",
-        "level": 1
-    },
-    {
         "name": "Curious Curiouser",
         "level": 1
     },
@@ -22,5 +18,21 @@
     {
         "name": "Jovi Wirasakti",
         "level": 3
+    },
+    {
+        "name": "ceoper",
+        "level": 1
+    },
+    {
+        "name": "Marcel Wohlgemuth",
+        "level": 1
+    },
+    {
+        "name": "SwiftBoyo",
+        "level": 1
+    },
+    {
+        "name": "Charley Scott",
+        "level": 1
     }
 ]
