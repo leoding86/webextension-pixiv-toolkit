@@ -47,8 +47,8 @@ Main.prototype = {
      * specifying 'extraHeaders' in opt_extraInfoSpec.
      **/
     let opt_extraInfoSpec = [
-      browser.webRequest.OnBeforeSendHeadersOptions.BLOCKING,
-      browser.webRequest.OnBeforeSendHeadersOptions.REQUEST_HEADERS
+      browser.webRequest.OnBeforeSendHeadersOptions.BLOCKING || "blocking",
+      browser.webRequest.OnBeforeSendHeadersOptions.REQUEST_HEADERS || "requestHeaders"
     ];
 
     if (browser.webRequest.OnBeforeSendHeadersOptions.EXTRA_HEADERS) {
@@ -225,116 +225,114 @@ Main.prototype = {
   },
 
   update: function () {
-    PackageFileReader.read('manifest.json', function (result) {
-      var manifest = JSON.parse(result);
-      var version = manifest.version;
+    let manifest = browser.runtime.getManifest();
+    let version = manifest.version;
 
-      browser.storage.local.get(null, function (items) {
-        var updater = new Updater(items);
+    browser.storage.local.get(null, function (items) {
+      var updater = new Updater(items);
 
-        if (updater.isNewer(version)) {
-          // console.log('update');
-          updater.setDefaultSettings({
-            version: version,
-            enableExtend: false,
-            enableWhenUnderSeconds: 1,
-            extendDuration: 3,
+      if (updater.isNewer(version)) {
+        // console.log('update');
+        updater.setDefaultSettings({
+          version: version,
+          enableExtend: false,
+          enableWhenUnderSeconds: 1,
+          extendDuration: 3,
 
-            ugoiraRenameFormat: '',
-            mangaRenameFormat: '',
-            mangaImageRenameFormat: '',
+          ugoiraRenameFormat: '',
+          mangaRenameFormat: '',
+          mangaImageRenameFormat: '',
 
-            enableExtension: true,
+          enableExtension: true,
 
-            /**
-             * @version 1.8.5
-             * Pack ugoira frames info to zip file
-             */
-            enablePackUgoiraFramesInfo: true,
+          /**
+           * @version 1.8.5
+           * Pack ugoira frames info to zip file
+           */
+          enablePackUgoiraFramesInfo: true,
 
-            /**
-             * @version 1.8.8
-             * Set manga page chunk
-             */
-            mangaPagesInChunk: 99,
+          /**
+           * @version 1.8.8
+           * Set manga page chunk
+           */
+          mangaPagesInChunk: 99,
 
-            /**
-             * @version 2.0.2
-             */
-            ugoiraGenerateAndDownload: false,
-            mangaPackAndDownload: false,
+          /**
+           * @version 2.0.2
+           */
+          ugoiraGenerateAndDownload: false,
+          mangaPackAndDownload: false,
 
-            /**
-             * @version 2.0.3
-             */
-            enableExtTakeOverDownloads: false,
-            downloadRelativeLocation: null,
-            showHistoryWhenUpdateCompleted: true,
+          /**
+           * @version 2.0.3
+           */
+          enableExtTakeOverDownloads: false,
+          downloadRelativeLocation: null,
+          showHistoryWhenUpdateCompleted: true,
 
-            /**
-             * @version 2.0.5
-             */
-            downloadSaveAs: false,
+          /**
+           * @version 2.0.5
+           */
+          downloadSaveAs: false,
 
-            /**
-             * @version 2.1
-             */
-            featureKnown: false,
+          /**
+           * @version 2.1
+           */
+          featureKnown: false,
 
-            /**
-             * @version 2.2
-             */
-            subscribedUsers: {},
+          /**
+           * @version 2.2
+           */
+          subscribedUsers: {},
 
-            /**
-             * @version 2.3
-             */
-            autoActivateDownloadPanel: false,
+          /**
+           * @version 2.3
+           */
+          autoActivateDownloadPanel: false,
 
-            /**
-             * @version 2.7
-             */
-            enablePtkSearch: true,
-            enableSaveVisitHistory: true,
+          /**
+           * @version 2.7
+           */
+          enablePtkSearch: true,
+          enableSaveVisitHistory: true,
 
-            /**
-             * @version 2.8
-             */
-            notSaveNSFWWorkInHistory: false
+          /**
+           * @version 2.8
+           */
+          notSaveNSFWWorkInHistory: false
+        });
+
+        updater.removeSettings([
+          'metasConfig',
+          'mangaMetasConfig',
+          'mangaImageNamePrefix',
+          'mangaImagesMetasConfig'
+        ]);
+
+        updater.mergeSettings(function () {
+          updater.updateSetting({
+            version: version
+          }, function () {
+            // console.log('update complete. version: ' + version);
           });
 
-          updater.removeSettings([
-            'metasConfig',
-            'mangaMetasConfig',
-            'mangaImageNamePrefix',
-            'mangaImagesMetasConfig'
-          ]);
-
-          updater.mergeSettings(function () {
-            updater.updateSetting({
-              version: version
-            }, function () {
-              // console.log('update complete. version: ' + version);
+          if (items.showHistoryWhenUpdateCompleted) {
+            // Open change history
+            browser.tabs.create({
+              url: browser.runtime.getURL('./options_page/index.html') + '#/history'
+            });
+          } else {
+            // Mark new on badge
+            browser.browserAction.setBadgeText({
+              text: 'NEW'
             });
 
-            if (items.showHistoryWhenUpdateCompleted) {
-              // Open change history
-              browser.tabs.create({
-                url: browser.runtime.getURL('./options_page/index.html') + '#/history'
-              });
-            } else {
-              // Mark new on badge
-              browser.browserAction.setBadgeText({
-                text: 'NEW'
-              });
-
-              browser.browserAction.setBadgeBackgroundColor({
-                color: '#FF0000'
-              });
-            }
-          });
-        }
-      });
+            browser.browserAction.setBadgeBackgroundColor({
+              color: '#FF0000'
+            });
+          }
+        });
+      }
     });
   }
 }

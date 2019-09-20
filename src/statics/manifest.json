@@ -60,9 +60,10 @@
                 "lib/gifjs/gif.js",
                 "lib/whammy.js",
                 "content_scripts/app.js"
-            ]
+            ],
+            "run_at": "document_idle"
         }
     ],
-    "version": "2.7",
+    "version": "2.8",
     "options_page": "options_page/index.html"
 }

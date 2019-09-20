@@ -8,14 +8,30 @@ let browserStorage = BrowserStorage.getInstance();
 
 browserStorage.get(null).then(items => {
 
+  function guessElement(selectors) {
+    if (typeof selectors === 'string') {
+      selectors = [selectors];
+    }
+
+    for (let i = 0, l = selectors.length; i < l ; i++) {
+      let target = document.querySelector(selectors[i]);
+
+      if (target) {
+        return target;
+      }
+    }
+
+    return null;
+  }
+
   if (!items.enablePtkSearch) {
     return;
   }
 
   let map = {
-    searchContainer: '#suggest-container',
+    searchContainer: ['#suggest-container', '._2fc7U5Q'],
     searchCategory: '.search-category',
-    searchInput: '#suggest-input',
+    searchInput: ['#suggest-input', '._3S_e970'],
     searchSuggest: '#suggest-list',
     searchResultMid: '#js-react-search-mid'
   };
@@ -25,17 +41,17 @@ browserStorage.get(null).then(items => {
     searchResultMid: false
   };
 
-  let searchInput = document.querySelector(map.searchInput);
-
   let searchUrlTemplate = 'https://www.pixiv.net/search.php?s_mode=s_tag&word=%word%'
 
   /**
    * Find suggest list
    */
   let observer = new MutationObserver(() => {
-    let suggestList = document.querySelector(map.searchSuggest);
+    let searchContainer = guessElement(map.searchContainer);
 
-    if (suggestList && !injected.suggestList) {
+    if (searchContainer && !injected.suggestList) {
+      let searchInput = guessElement(map.searchInput);
+
       injected.suggestList = true;
 
       console.log('Suggest list has been found, append extension search button')
@@ -71,7 +87,7 @@ browserStorage.get(null).then(items => {
         a.innerText = val;
 
         a.addEventListener('mousedown', function() {
-          let word = document.querySelector(map.searchInput).value;
+          let word = searchInput.value;
 
           word = word.replace(/\s+\d+users入り/ig, '') + ' ' + this.getAttribute('data-suffix');
 
@@ -97,7 +113,11 @@ browserStorage.get(null).then(items => {
 
       archer.appendChild(searchCategory);
 
-      document.querySelector(map.searchContainer).appendChild(archer);
+      if (['relative', 'absolute'].indexOf(getComputedStyle(searchContainer).position) < 0) {
+        searchContainer.style.position = 'relative';
+      }
+
+      searchContainer.appendChild(archer);
 
       searchInput.addEventListener('focus', () => {
         searchCategory.style.display = 'block';
@@ -109,5 +129,5 @@ browserStorage.get(null).then(items => {
     }
   });
 
-  observer.observe(document.querySelector('body'), { attributes: true, childList: true });
+  observer.observe(document.querySelector('body'), { attributes: true, childList: true, subtree: true });
 });
