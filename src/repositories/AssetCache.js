@@ -5,7 +5,9 @@ PouchDB.plugin(PouchDBFind)
 
 class AssetCache {
   constructor() {
-    this.db = new PouchDB('asset_caches');
+    this.db = new PouchDB('asset_caches', {
+      revs_limit: 1
+    });
 
     this.maxLimit = 150;
 

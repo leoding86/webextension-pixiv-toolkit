@@ -2,7 +2,9 @@ import PouchDB from 'pouchdb'
 
 class SubscribedUser {
   constructor() {
-    this.db = new PouchDB('subscribed_users')
+    this.db = new PouchDB('subscribed_users',  {
+      revs_limit: 1
+    })
   }
 
   putUser(data) {

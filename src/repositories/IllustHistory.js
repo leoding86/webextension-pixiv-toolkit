@@ -5,7 +5,9 @@ PouchDB.plugin(PouchDBFind)
 
 class IllustHistory {
   constructor() {
-    this.db = new PouchDB('illust_histories');
+    this.db = new PouchDB('illust_histories',  {
+      revs_limit: 1
+    });
 
     this.maxLimit = 10000;
 
