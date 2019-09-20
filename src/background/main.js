@@ -295,7 +295,12 @@ Main.prototype = {
              * @version 2.7
              */
             enablePtkSearch: true,
-            enableSaveVisitHistory: true
+            enableSaveVisitHistory: true,
+
+            /**
+             * @version 2.8
+             */
+            notSaveNSFWWorkInHistory: false
           });
 
           updater.removeSettings([

@@ -145,13 +145,21 @@ export default {
                 vm.containerShowed = false
               }, 1000)
             }
-          }, 200)
+          }, 200);
+
+          if (!vm.browserItems.enableSaveVisitHistory) {
+            return;
+          }
+
+          if (tool.isR() && vm.browserItems.notSaveNSFWWorkInHistory) {
+            return;
+          }
 
           vm.tool = tool;
           vm.pageType = vm.detector.currentType;
 
           // check page type to determine save history
-          if ((vm.isUgoira || vm.isManga || vm.isIllust) && vm.browserItems.enableSaveVisitHistory) {
+          if (vm.isUgoira || vm.isManga || vm.isIllust) {
             vm.illustHistoryPort.saveIllustHistory({
               id: vm.tool.getId(),
               title: vm.tool.getTitle(),
@@ -159,7 +167,7 @@ export default {
               type: vm.pageType,
               viewed_at: Math.round(Date.now() / 1000),
               r: vm.tool.isR()
-            })
+            });
           }
         })
         .catch(e => {

@@ -22,6 +22,17 @@
             <v-switch v-model="enableSaveVisitHistory"></v-switch>
           </v-list-tile-action>
         </v-list-tile>
+
+        <v-list-tile>
+          <v-list-tile-content>
+            <v-list-tile-title>Do not save NSFW work to history</v-list-tile-title>
+          </v-list-tile-content>
+          <v-list-tile-action>
+            <v-switch v-model="notSaveNSFWWorkInHistory"
+              :disabled="!enableSaveVisitHistory"></v-switch>
+          </v-list-tile-action>
+        </v-list-tile>
+
         <v-list-tile>
           <v-list-tile-content>
             <v-list-tile-title>{{ tl('setting_show_history_when_update_completed') }}</v-list-tile-title>
@@ -45,7 +56,8 @@ export default {
       browserStorage: BrowserStorage.getInstance(),
       showHistoryWhenUpdateCompleted: browserItems.showHistoryWhenUpdateCompleted,
       autoActivateDownloadPanel: browserItems.autoActivateDownloadPanel,
-      enableSaveVisitHistory: browserItems.enableSaveVisitHistory
+      enableSaveVisitHistory: browserItems.enableSaveVisitHistory,
+      notSaveNSFWWorkInHistory: browserItems.notSaveNSFWWorkInHistory
     };
   },
 
@@ -69,6 +81,12 @@ export default {
     enableSaveVisitHistory(val) {
       this.browserStorage.set({
         enableSaveVisitHistory: !!val
+      });
+    },
+
+    notSaveNSFWWorkInHistory(val) {
+      this.browserStorage.set({
+        notSaveNSFWWorkInHistory: !!val
       });
     }
   },
