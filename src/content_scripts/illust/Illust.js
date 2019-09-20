@@ -5,7 +5,7 @@ import Logger from '@/modules/Logger'
 
 /**
  * @class IllustTool
- * 
+ *
  * @property context
  * @property retryTicker
  * @property chunks
@@ -16,7 +16,7 @@ class IllustTool {
 
 	/**
 	 * @constructor
-	 * @param {Object} context 
+	 * @param {Object} context
 	 */
   constructor(context) {
     this.context = context;
@@ -98,10 +98,10 @@ class IllustTool {
   getFilename(chunk) {
     return formatName(this.mangaRenameFormat, this.context, this.context.illustId) + '_' + this.getPageRange(chunk) + '.zip';
 	}
-	
+
 	/**
 	 * Check if there is a single in the set
-	 * 
+	 *
 	 * @returns {Boolean}
 	 */
 	isSingle() {
@@ -110,9 +110,9 @@ class IllustTool {
 
 	/**
 	 * Download file
-	 * @param {string} url 
+	 * @param {string} url
 	 * @param {object} [events={}]
-	 * 
+	 *
 	 * @returns {Promise<{blob: Blob, targetName: string}>}
 	 */
 	downloadFile(url, events = {}) {
@@ -126,9 +126,9 @@ class IllustTool {
 				let parts = url.match(/(\d+)\.([^.]+)$/),
 						pageNum = parts[1],
 						extName = parts[2];
-	
+
 				self.context.pageNum = pageNum;
-	
+
 				let filename = formatName(
 					self.mangaImageRenameFormat,
 					self.context,
@@ -148,7 +148,7 @@ class IllustTool {
 					targetName: filename
 				});
 			}
-	
+
 			xhr.onerror = () => {
 				if (!self.retryTicker.reachLimit()) {
 					resolve(self.downloadFile(url));
@@ -163,9 +163,9 @@ class IllustTool {
 					events.onProgress.call(xhr, evt)
 				}
 			}
-	
+
 			Logger.notice('Save file ' + url)
-	
+
 			xhr.send();
 		})
 	}
@@ -224,8 +224,15 @@ class IllustTool {
           pageNum
         ) + '.' + extName;
 
+        /**
+         * Fix jszip date issue which jszip will save the UTC time as the local time to files in zip
+         */
+        let now = new Date();
+        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+
         zip.file(filename, xhr.responseText, {
-          binary: true
+          binary: true,
+          date: now
         });
 
         resolve();

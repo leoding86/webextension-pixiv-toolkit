@@ -139,8 +139,15 @@ class MangaTool {
           pageNum
         ) + '.' + extName;
 
+        /**
+         * Fix jszip date issue which jszip will save the UTC time as the local time to files in zip
+         */
+        let now = new Date();
+        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+
         zip.file(filename, xhr.responseText, {
-          binary: true
+          binary: true,
+          date: now
         });
 
         resolve();
