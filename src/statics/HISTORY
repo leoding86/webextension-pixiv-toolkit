@@ -6,6 +6,11 @@ If you are using version < 1.5, plz update it asap.
 Github:
 https://github.com/leoding86/webextension-pixiv-toolkit
 ----------------------------------------------
+v3.0 beta
+Fix Pixiv new work url issue;
+Fix wrong datetime in zip file;
+Minor fixes.
+
 v2.7
 Add search suffix for searching popluar works (probably);
 Add image cache capability for illust history;
