@@ -149,6 +149,9 @@ export default {
             }
           }, 200);
 
+          vm.tool = tool;
+          vm.pageType = vm.detector.currentType;
+
           if (!vm.browserItems.enableSaveVisitHistory) {
             return;
           }
@@ -156,9 +159,6 @@ export default {
           if (tool.isR() && vm.browserItems.notSaveNSFWWorkInHistory) {
             return;
           }
-
-          vm.tool = tool;
-          vm.pageType = vm.detector.currentType;
 
           // check page type to determine save history
           if (vm.isUgoira || vm.isManga || vm.isIllust) {

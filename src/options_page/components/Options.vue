@@ -249,7 +249,7 @@ export default {
     beforeMount () {
         var self = this;
 
-        this.ugoiraQuanlity = this.browserItems.ugoiraQuanlity;
+        this.ugoiraQuanlity = this.browserItems.ugoiraQuanlity || 10;
         this.ugoiraRenameFormat = this.browserItems.ugoiraRenameFormat;
         this.mangaRenameFormat = this.browserItems.mangaRenameFormat;
         this.mangaImageRenameFormat = this.browserItems.mangaImageRenameFormat;
