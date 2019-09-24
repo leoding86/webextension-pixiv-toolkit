@@ -74,19 +74,21 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
-import cr from './modules/cr'
 import extConfig from '@@/../statics/manifest.json'
-import { Storage as BrowserStorage } from '@/modules/Browser'
+import SuperMixin from '@/mixins/SuperMixin';
 
 Vue.use(Vuetify)
 
 export default {
   name: 'App',
 
+  mixins: [
+    SuperMixin
+  ],
+
   data () {
     return {
       drawer: true,
-      browserItems: {},
       drawerTemporary: false
     }
   },
@@ -118,7 +120,6 @@ export default {
           this.drawer = true
         }
       }
-      console.log('resize')
     },
 
       routeTo (name) {
@@ -131,10 +132,6 @@ export default {
         this.$router.push({
           name: 'IllustHistory'
         });
-      },
-
-      tl (string) {
-          return cr._e(string);
       }
   }
 }

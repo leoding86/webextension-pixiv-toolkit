@@ -3,7 +3,7 @@ import App from './components/App';
 import Browser from '@/modules/Browser/Browser'
 
 // create extension mount point
-window.browser = Browser.getBrowser();
+const browser = window.browser = Browser.getBrowser();
 
 let container = document.createElement('div');
 container.id = '__ptk-app';

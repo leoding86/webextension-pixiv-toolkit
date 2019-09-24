@@ -55,7 +55,7 @@ class IllustAdapter {
   }
 
   getMangaPagesUrl() {
-    return '//www.pixiv.net/ajax/illust/' + this.illustContext.illustId + '/pages';
+    return 'https://www.pixiv.net/ajax/illust/' + this.illustContext.illustId + '/pages';
   }
 
   makeTool() {

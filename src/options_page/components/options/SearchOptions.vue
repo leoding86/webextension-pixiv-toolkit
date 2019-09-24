@@ -19,32 +19,28 @@
 </template>
 
 <script>
-import cr from '@@/modules/cr';
-import { Storage as BrowserStorage } from '@/modules/Browser';
+import SuperMixin from '@/mixins/SuperMixin';
 
 export default {
+  mixins: [
+    SuperMixin
+  ],
+
   data() {
     return {
-      browserStorage: BrowserStorage.getInstance(),
-      enablePtkSearch: browserItems.enablePtkSearch
+      enablePtkSearch: true
     }
   },
 
-  mounted() {
-    console.log(window.browserItems);
+  beforeMount() {
+    this.enablePtkSearch = this.browserItems.enablePtkSearch;
   },
 
   watch: {
     enablePtkSearch(val) {
-      this.browserStorage.set({
+      browser.storage.local.set({
         enablePtkSearch: !!val
       });
-    }
-  },
-
-  methods: {
-    tl (string) {
-        return cr._e(string);
     }
   }
 }

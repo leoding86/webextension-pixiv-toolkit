@@ -20,9 +20,15 @@ export default {
           }
         })
       } else {
-        let a = document.createElement('a')
-        a.setAttribute('href', url)
-        a.setAttribute('download', filename)
+        let a = document.createElement('a');
+        a.setAttribute('href', url);
+        a.setAttribute('download', filename);
+
+        /**
+         * The a element must append to document to make download working in Firefox
+         */
+        document.body.appendChild(a);
+
         a.click()
         a.remove()
       }

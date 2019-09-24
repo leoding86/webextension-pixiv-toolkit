@@ -1,5 +1,3 @@
-import Browser from '@/modules/Browser/Browser';
-import { runtime as browserRuntime } from '@/content_scripts/Browser';
 import UgoiraAdapter from './UgoiraAdapter';
 import MangaAdapter from './MangaAdapter';
 import IllustAdapter from './IllustAdapter'
@@ -17,7 +15,6 @@ class Detector {
 
   constructor() {
     this.xhr = new XMLHttpRequest();
-    this.browser = Browser.getBrowser();
     this.currentUrl;
     this.currentType;
     this.currentTool;
@@ -42,27 +39,48 @@ class Detector {
     });
   }
 
+  fetchIllustId(url) {
+    let regexes = [
+      /illust_id=(\d+)/,
+      /artworks\/(\d+)/
+    ];
+
+    for (let i = 0, l = regexes.length; i < l; i++) {
+      let matches = url.match(regexes[i]);
+
+      if (matches) {
+        return matches[1];
+      }
+    }
+
+    return;
+  }
+
   checkPageType(url) {
     return new Promise((resolve, reject) => {
-      if (url.match(/illust_id=\d+/)) {
-        resolve(this.getIllustType(url));
-      } else if (url.match(/novel\/show\.php\?id=\d+/)) {
-        resolve(Detector.NOVEL_TYPE);
-      } else {
-        reject('Invalid page');
+      let illustId = this.fetchIllustId(url);
+
+      if (illustId) {
+        resolve(this.getIllustType(illustId));
+        return;
       }
+
+      if (url.match(/novel\/show\.php\?id=\d+/)) {
+        resolve(Detector.NOVEL_TYPE);
+        return;
+      }
+
+      reject('Invalid page');
     });
   }
 
-  getIllustType(url) {
+  getIllustType(illustId) {
     let self = this;
 
     return new Promise((resolve, reject) => {
       let matches;
 
-      matches = url.match(/illust_id=(\d+)/);
-
-      self.xhr.open('GET', self.getIllustUrl(matches[1]));
+      self.xhr.open('GET', self.getIllustUrl(illustId));
 
       let json;
 
@@ -75,14 +93,14 @@ class Detector {
 
             resolve(json.body.illustType);
 
-            browserRuntime.sendMessage({
+            browser.runtime.sendMessage({
               action: 'activeIcon'
             });
 
             return;
           }
 
-          browserRuntime.sendMessage({
+          browser.runtime.sendMessage({
             action: 'deactiveIcon'
           });
 
@@ -91,6 +109,10 @@ class Detector {
           return;
         }
       }
+
+      self.xhr.onerror = () => {
+        return;
+      };
 
       self.xhr.send();
     });
@@ -159,7 +181,7 @@ class Detector {
 
             resolve(self.injectNovelAdapter());
 
-            browserRuntime.sendMessage({
+            browser.runtime.sendMessage({
               action: 'activeIcon'
             });
 
@@ -167,7 +189,7 @@ class Detector {
           }
         }
 
-        browserRuntime.sendMessage({
+        browser.runtime.sendMessage({
           action: 'deactiveIcon'
         });
       }
@@ -177,11 +199,11 @@ class Detector {
   }
 
   getIllustUrl(id) {
-    return '//www.pixiv.net/ajax/illust/' + id;
+    return 'https://www.pixiv.net/ajax/illust/' + id;
   }
 
   getNovelUrl(id) {
-    return '//www.pixiv.net/ajax/novel/' + id;
+    return 'https://www.pixiv.net/ajax/novel/' + id;
   }
 
   injectUgoiraAdapter() {

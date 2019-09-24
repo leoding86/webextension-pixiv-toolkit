@@ -2,9 +2,9 @@
   <v-dialog v-model="showDialog" max-width="560">
     <v-card>
       <v-card-text>
-        <h2>{{ lt('rename_ugoira') }}</h2>
+        <h2>{{ tl('rename_ugoira') }}</h2>
         <div class="section-block">
-          <h3>{{ lt('quick_picks') }}</h3>
+          <h3>{{ tl('quick_picks') }}</h3>
           <v-btn
             small
             v-for="meta in metasConfig"
@@ -15,7 +15,7 @@
           >{{ meta.title }}</v-btn>
         </div>
         <div class="section-block">
-          <h3>{{ lt('rename_format') }}</h3>
+          <h3>{{ tl('rename_format') }}</h3>
           <v-text-field
             class="v-input-first"
             ref="renameInput"
@@ -34,32 +34,35 @@
 </template>
 
 <script>
-import cr from "@@/modules/cr";
+import SuperMixin from '@/mixins/SuperMixin';
 import renameFormatMixin from '@@/mixins/renameFormatMixin';
 
 export default {
   name: "RenameUgoiraDialog",
 
-  mixins: [renameFormatMixin],
+  mixins: [
+    SuperMixin,
+    renameFormatMixin
+  ],
 
   data() {
     return {
       showDialog: true,
       metasConfig: [
         {
-          title: cr._e("id"),
+          title: this.tl("id"),
           holder: "{id}"
         },
         {
-          title: cr._e("title"),
+          title: this.tl("title"),
           holder: "{title}"
         },
         {
-          title: cr._e("author"),
+          title: this.tl("author"),
           holder: "{author}"
         },
         {
-          title: cr._e("author_id"),
+          title: this.tl("author_id"),
           holder: "{authorId}"
         }
       ]
@@ -79,29 +82,21 @@ export default {
         }
 
         this.saveTimeout = setTimeout(() => {
-            cr._s.set({
+            browser.storage.local.set({
                 ugoiraRenameFormat: val
-            }).then(() => {
-                // console.log('Ugoira rename format saved');
             });
         }, 300);
     }
   },
 
   mounted() {
-    if (!!this.$route.params.renameFormat) {
-      this.renameFormat = this.$route.params.renameFormat;
-    }
+    this.renameFormat = this.browserItems.ugoiraRenameFormat;
   },
 
   methods: {
     pickMeta: function(meta) {
       this.updateFormat(meta.holder);
       this.setInputCursor(this.$refs.renameInput.$refs.input, meta.holder);
-    },
-
-    lt(string) {
-      return cr._e(string);
     }
   }
 };

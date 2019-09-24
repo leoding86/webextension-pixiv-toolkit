@@ -15,19 +15,19 @@ module.exports = env => {
       background: './src/background/main.js'
     },
     output: {
-      path: utils.resolve('dist/backgrounds'),
+      path: utils.resolve(`dist/${platform}/backgrounds`),
       filename: '[name].js'
     },
     plugins: [
       new CopyPlugin([{
         from: utils.resolve('src/statics'),
-        to: utils.resolve('dist'),
+        to: utils.resolve(`dist/${platform}/`),
         ignore: [
           utils.resolve('src/static/manifest.json')
         ]
       }, {
         from: utils.resolve('src/statics/manifest.json'),
-        to: utils.resolve('dist/manifest.json'),
+        to: utils.resolve(`dist/${platform}/manifest.json`),
         transform(content, path) {
           let json = JSON.parse(content.toString());
 
@@ -37,6 +37,9 @@ module.exports = env => {
             json.options_ui = {};
             json.options_ui.page = json.options_page;
             delete json.options_page;
+
+            console.log(`remove version_name property from manifest`);
+            delete json.version_name;
           }
 
           return JSON.stringify(json);

@@ -152,8 +152,13 @@ import PageTitle from '@@/components/PageTitle'
 import IllustHistory from '@/repositories/IllustHistory'
 import CacheableImage from '@@/components/CacheableImage';
 import Supports from '@@/components/Supports';
+import SuperMixin from '@/mixins/SuperMixin';
 
 export default {
+  mixins: [
+    SuperMixin,
+  ],
+
   components: {
     'page-title': PageTitle,
     'cacheable-image': CacheableImage,
@@ -171,7 +176,6 @@ export default {
       loading: false,
       confirmDialog: false,
       illustDeleteReady: null,
-      illustHistory: new IllustHistory(),
       exporting: false,
       importing: false,
       pages: 0,
@@ -179,7 +183,7 @@ export default {
       importedCount: 0,
       searchQuery: '',
       searchTimeout: null,
-      enableSaveVisitHistory: browserItems.enableSaveVisitHistory
+      enableSaveVisitHistory: true
     };
   },
 
@@ -187,6 +191,12 @@ export default {
     let vm = this;
 
     this.loading = true;
+    this.illustHistory = new IllustHistory();
+
+    /**
+     * Init some data
+     */
+    this.enableSaveVisitHistory = this.browserItems.enableSaveVisitHistory;
 
     this.illustHistory.init().then(() => {
       vm.illustHistory.db.allDocs({
@@ -201,10 +211,6 @@ export default {
   },
 
   computed: {
-    isPlus() {
-      return this.$root.plusVersion
-    },
-
     imageAspectRatio() {
       if (this.landscape) {
         return 1.5
@@ -431,7 +437,9 @@ export default {
         let a = document.createElement('a')
         a.href = URL.createObjectURL(blob)
         a.download = 'illust_histories-' + Date.now() + '.json'
+        document.body.appendChild(a);
         a.click()
+        a.remove();
         vm.exporting = false
       })
     },

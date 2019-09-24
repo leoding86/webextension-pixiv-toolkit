@@ -6,7 +6,10 @@ const contentScriptsConfig = require('./config/webpack.content-scripts.config');
 const optionsPageConfig = require('./config/webpack.options-page.config');
 
 // clean dist
-fs.emptyDirSync('./dist')
+module.exports = env => {
+  let platform = env ? (env.platform || 'chrome') : 'chrome';
+  fs.emptyDirSync(`./dist/${platform}`)
+}
 
 module.exports = [
   backgroundConfig,

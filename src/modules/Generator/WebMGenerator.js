@@ -71,11 +71,15 @@ class WebMGenerator {
         height: size.height
       })
     }).then(() => {
-      self.encoder.compile(false, blob => {
-        self.status = 2
+      try {
+        self.encoder.compile(false, blob => {
+          self.status = 2
 
-        self.event.dispatch('onFinish', [blob])
-      })
+          self.event.dispatch('onFinish', [blob])
+        })
+      } catch (e) {
+        console.error(e);
+      }
     })
   }
 }

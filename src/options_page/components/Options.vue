@@ -189,14 +189,18 @@
 
 <script>
 import '@@/assets/global.scss'
-import common from '@@/modules/common';
-import cr from '@@/modules/cr';
+import '@/mixins/SuperMixin';
 import Supports from '@@/components/Supports';
 import SearchOptions from '@@/components/options/SearchOptions';
 import OtherOptions from '@@/components/options/OtherOptions';
+import SuperMixin from '@/mixins/SuperMixin';
 
 export default {
     name: 'Options',
+
+    mixins: [
+      SuperMixin
+    ],
 
     components: {
       supports: Supports,
@@ -208,13 +212,13 @@ export default {
         return {
             quanlityItems: [
                 {
-                    text: cr._e('ugoira_normal'),
+                    text: this.tl('ugoira_normal'),
                     value: 10
                 }, {
-                    text: cr._e('ugoira_good'),
+                    text: this.tl('ugoira_good'),
                     value: 5
                 }, {
-                    text: cr._e('ugoira_best'),
+                    text: this.tl('ugoira_best'),
                     value: 1
                 }
             ],
@@ -238,88 +242,62 @@ export default {
 
             downloadRelativeLocation: null,
 
-            downloadSaveAs: false,
-
-            browser: chrome
+            downloadSaveAs: false
         }
     },
 
-    mounted () {
+    beforeMount () {
         var self = this;
 
-        cr._s.get(null).then(function(items) {
-            self.ugoiraQuanlity = items.ugoiraQuanlity ? items.ugoiraQuanlity : self.ugoiraQuanlity;
-            self.ugoiraRenameFormat = items.ugoiraRenameFormat ? items.ugoiraRenameFormat : '';
-            self.mangaRenameFormat = items.mangaRenameFormat ? items.mangaRenameFormat : '';
-            self.mangaImageRenameFormat = items.mangaImageRenameFormat ? items.mangaImageRenameFormat : '';
-            self.enableExtension = items.enableExtension ? items.enableExtension : '';
-            self.enablePackUgoiraFramesInfo = !!items.enablePackUgoiraFramesInfo;
-            self.mangaPagesInChunk = items.mangaPagesInChunk;
-            self.ugoiraGenerateAndDownload = items.ugoiraGenerateAndDownload;
-            self.mangaPackAndDownload = items.mangaPackAndDownload;
+        this.ugoiraQuanlity = this.browserItems.ugoiraQuanlity;
+        this.ugoiraRenameFormat = this.browserItems.ugoiraRenameFormat;
+        this.mangaRenameFormat = this.browserItems.mangaRenameFormat;
+        this.mangaImageRenameFormat = this.browserItems.mangaImageRenameFormat;
+        this.enableExtension = this.browserItems.enableExtension;
+        this.enablePackUgoiraFramesInfo = !!this.browserItems.enablePackUgoiraFramesInfo;
+        this.mangaPagesInChunk = this.browserItems.mangaPagesInChunk;
+        this.ugoiraGenerateAndDownload = this.browserItems.ugoiraGenerateAndDownload;
+        this.mangaPackAndDownload = this.browserItems.mangaPackAndDownload;
 
-            self.enableExtTakeOverDownloads = !!items.enableExtTakeOverDownloads;
+        this.enableExtTakeOverDownloads = !!this.browserItems.enableExtTakeOverDownloads;
 
-            self.downloadRelativeLocation = items.downloadRelativeLocation;
+        this.downloadRelativeLocation = this.browserItems.downloadRelativeLocation;
 
-            self.downloadSaveAs = !!items.downloadSaveAs;
-        });
+        this.downloadSaveAs = !!this.browserItems.downloadSaveAs;
 
-        cr._s.onChanged.addListener(self.onStorageChanged);
-
-        this.browser.permissions.contains({
+        browser.permissions.contains({
           permissions: ['downloads']
         }, function (result) {
-          self.hasDownloadsPermission = result;
+          this.hasDownloadsPermission = result;
         });
-    },
-
-    beforeRouteUpdate (to, from, next) {
-        var self = this;
-
-        if (from.name === 'RenameManga') {
-            cr._s.get('mangaRenameFormat').then((items) => {
-                self.mangaRenameFormat = items.mangaRenameFormat;
-            });
-        } else if (from.name === 'RenameMangaImage') {
-            cr._s.get('mangaImageRenameFormat').then((items) => {
-                self.mangaImageRenameFormat = items.mangaImageRenameFormat;
-            });
-        } else if (from.name === 'RenameUgoira') {
-            cr._s.get('ugoiraRenameFormat').then((items) => {
-                self.ugoiraRenameFormat = items.ugoiraRenameFormat
-            });
-        }
-
-        next();
     },
 
     beforeRouteLeave (to, from, next) {
-      cr._s.onChanged.removeListener(this.onStorageChanged);
+      browser.storage.onChanged.removeListener(this.onStorageChanged);
 
       next();
     },
 
     computed: {
         ugoiraRenameFormatPreview () {
-            if (!!this.ugoiraRenameFormat) {
-                return this.ugoiraRenameFormat;
+            if (!!this.browserItems.ugoiraRenameFormat) {
+                return this.browserItems.ugoiraRenameFormat;
             } else {
                 return 'Not set';
             }
         },
 
         mangaRenameFormatPreview () {
-            if (!!this.mangaRenameFormat) {
-                return this.mangaRenameFormat;
+            if (!!this.browserItems.mangaRenameFormat) {
+                return this.browserItems.mangaRenameFormat;
             } else {
                 return 'Not set';
             }
         },
 
         mangaImageRenameFormatPreview() {
-            if (!!this.mangaImageRenameFormat) {
-                return this.mangaImageRenameFormat;
+            if (!!this.browserItems.mangaImageRenameFormat) {
+                return this.browserItems.mangaImageRenameFormat;
             } else {
                 return 'Not set';
             }
@@ -336,37 +314,31 @@ export default {
 
     watch: {
         enableExtension: function (val) {
-          cr._s.set({
+          browser.storage.local.set({
               enableExtension: val
-          }).then(() => {
-              window.cr.storage.items.enableExtend = val;
           });
         },
 
         ugoiraGenerateAndDownload (val) {
-          cr._s.set({
+          browser.storage.local.set({
             ugoiraGenerateAndDownload: val
-          }).then(() => {
-            window.cr.storage.items.ugoiraGenerateAndDownload = val;
           });
         },
 
         mangaPackAndDownload (val) {
-          cr._s.set({
+          browser.storage.local.set({
             mangaPackAndDownload: val
-          }).then(() => {
-            window.cr.storage.items.mangaPackAndDownload = val;
           });
         },
 
         enableExtTakeOverDownloads (val) {
-          cr._s.set({
+          browser.storage.local.set({
             enableExtTakeOverDownloads: val
           });
         },
 
         downloadSaveAs (val) {
-          cr._s.set({
+          browser.storage.local.set({
             downloadSaveAs: val
           });
         }
@@ -410,12 +382,12 @@ export default {
 
         onUgoiraQuanlityChangeHandler: function () {
             let _this = this
-            cr._s.set({ 'ugoiraQuanlity': _this.ugoiraQuanlity } )
+            browser.storage.local.set({ 'ugoiraQuanlity': _this.ugoiraQuanlity } )
         },
 
         onEnablePackUgoiraFramesInfoChangedHandler: function () {
             let _this = this;
-            cr._s.set({ 'enablePackUgoiraFramesInfo': this.enablePackUgoiraFramesInfo });
+            browser.storage.local.set({ 'enablePackUgoiraFramesInfo': this.enablePackUgoiraFramesInfo });
         },
 
         mangaPagesInChunkChanged: function () {
@@ -426,7 +398,7 @@ export default {
                 return;
             }
 
-            cr._s.set({ mangaPagesInChunk: parseInt(this.mangaPagesInChunk) });
+            browser.storage.local.set({ mangaPagesInChunk: parseInt(this.mangaPagesInChunk) });
         },
 
         showDownloadRelativeLocationDialog: function () {
@@ -454,27 +426,23 @@ export default {
         switchDownloadsPermission: function () {
           let vm = this;
 
-          this.browser.permissions.contains({
+          browser.permissions.contains({
             permissions: ['downloads']
           }, function (result) {
             if (result) {
-              vm.browser.permissions.remove({
+              browser.permissions.remove({
                 permissions: ['downloads']
               }, function (removed) {
                 vm.hasDownloadsPermission = vm.enableExtTakeOverDownloads = !removed;
               });
             } else {
-              vm.browser.permissions.request({
+              browser.permissions.request({
                 permissions: ['downloads']
               }, function (granted) {
                 vm.hasDownloadsPermission = !!granted;
               });
             }
           });
-        },
-
-        tl (string) {
-            return cr._e(string);
         }
     }
 }

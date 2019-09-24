@@ -47,7 +47,8 @@
             "matches": [
                 "*://*.pixiv.net/novel/show.php?id=*",
                 "*://*.pixiv.net/member_illust.php?mode=manga&illust_id=*",
-                "*://*.pixiv.net/member_illust.php?mode=medium&illust_id=*"
+                "*://*.pixiv.net/member_illust.php?mode=medium&illust_id=*",
+                "*://*.pixiv.net/*/artworks/*"
             ],
             "css": [
                 "content_scripts/static/css/app.css"
@@ -60,10 +61,10 @@
                 "lib/gifjs/gif.js",
                 "lib/whammy.js",
                 "content_scripts/app.js"
-            ],
-            "run_at": "document_idle"
+            ]
         }
     ],
-    "version": "2.8",
+    "version": "3.0",
+    "version_name": "3.0 beta",
     "options_page": "options_page/index.html"
 }

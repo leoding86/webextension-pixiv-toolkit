@@ -566,7 +566,7 @@ window.Whammy = (function(){
         return webp;
       }), outputAsArray);
       callback(webm);
-      
+
     }.bind(this));
   };
 

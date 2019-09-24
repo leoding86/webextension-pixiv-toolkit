@@ -3,15 +3,17 @@
 const baseConfig = require('./webpack.base.config');
 const utils = require('./utils');
 
-const config = Object.assign({}, baseConfig, {
-  entry: {
-    common: './src/content_scripts/common.js'
-  },
-  output: {
-    library: 'common',
-    path: utils.resolve('dist/content_scripts'),
-    filename: '[name].js'
-  }
-});
+module.exports = env => {
+  let platform = env ? (env.platform || 'chrome') : 'chrome';
 
-module.exports = config;
+  return Object.assign({}, baseConfig, {
+    entry: {
+      common: './src/content_scripts/common.js'
+    },
+    output: {
+      library: 'common',
+      path: utils.resolve(`dist/${platform}/content_scripts`),
+      filename: '[name].js'
+    }
+  });
+};

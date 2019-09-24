@@ -4,8 +4,8 @@ const path = require('path')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 // const packageConfig = require('../package.json')
 
-exports.resolve = function (dir) {
-  return path.join(__dirname, '..', dir)
+exports.resolve = function (dir, subdir) {
+  return path.join(__dirname, '..', dir, subdir ? subdir : '.')
 }
 
 exports.assetsPath = function (_path) {

@@ -72,7 +72,7 @@ class UgoiraAdapter {
   }
 
   buildMetaUrl(userId) {
-    return '//www.pixiv.net/ajax/illust/' + userId + '/ugoira_meta';
+    return 'https://www.pixiv.net/ajax/illust/' + userId + '/ugoira_meta';
   }
 
   makeTool() {

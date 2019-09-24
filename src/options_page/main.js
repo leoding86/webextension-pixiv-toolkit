@@ -1,37 +1,15 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
-import cr from './modules/cr'
-import { Storage as BrowserStorage } from '@/modules/Browser'
 import Browser from '@/modules/Browser/Browser'
 
-window.browser = Browser.getBrowser()
+Vue.config.productionTip = false;
 
-let browserStorage = BrowserStorage.getInstance()
+try {
+  (function(browser) {
+    window.browser = browser;
 
-let thisApp = window.thisApp = {}
-
-window.browserItems = {}
-
-Vue.config.productionTip = false
-window.cr = {}
-
-cr._s.get().then(function (items) {
-    window.cr = {
-        storage: {
-            items: items
-        }
-    }
-
-    browserStorage.onChanged().addListener((changes, namespace) => {
-      for (let key in changes) {
-        window.browserItems[key] = changes[key].newValue;
-      }
-    })
-
-    browserStorage.get(null).then(items => {
-      window.browserItems = thisApp.browserItems = items
-
+    browser.storage.local.get(null, items => {
       /* eslint-disable no-new */
       new Vue({
         el: '#app',
@@ -42,9 +20,23 @@ cr._s.get().then(function (items) {
 
         data() {
           return {
-            plusVersion: null
+            plusVersion: null, // deprecated
+            browserItems: items
           }
+        },
+
+        beforeMount() {
+          let vm = this;
+
+          browser.storage.onChanged.addListener((items, scope) => {
+            for (let key in items) {
+              vm.browserItems[key] = items[key].newValue;
+            }
+          });
         }
       })
-    })
-});
+    });
+  })(Browser.getBrowser());
+} catch (e) {
+  console.error(e);
+}

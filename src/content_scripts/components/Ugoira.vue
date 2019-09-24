@@ -3,7 +3,8 @@
     <ptk-button :text="resourceDownloadText" ref="zipButton"></ptk-button>
     <template v-if="resourceProgress === 100">
       <ptk-button :text="gifGenerateText" @click="gifButtonClicked"></ptk-button>
-      <ptk-button :text="webGenerateText" @click="webmButtonClicked"></ptk-button>
+      <ptk-button :text="webGenerateText" @click="webmButtonClicked"
+       v-if="!isBrowser('firefox')"></ptk-button>
     </template>
   </div>
 </template>
@@ -180,6 +181,12 @@ export default {
 
     getFilename() {
       return formatName(thisApp.browserItems.ugoiraRenameFormat, this.ugoiraTool.context, this.ugoiraTool.context.illustId)
+    },
+
+    isBrowser(browser) {
+      var regex = new RegExp(browser, 'i');
+
+      return regex.test(navigator.userAgent);
     }
   }
 }

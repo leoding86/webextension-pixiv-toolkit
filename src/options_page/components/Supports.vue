@@ -21,6 +21,16 @@
 
     <v-btn
       small
+      class="support-btn"
+      v-if="isFirefox"
+      @click="openInNewTab('')">
+      <img src="../assets/firefox-amo.png">
+      {{ tl('Give_5_stars') }} !
+      <v-icon right>open_in_new</v-icon>
+    </v-btn>
+
+    <v-btn
+      small
       v-if="showPatreon" class="support-btn" @click="openInNewTab('https://github.com/leoding86/webextension-pixiv-toolkit')">
       <img src="../assets/github.svg">
       {{ tl('Star_it') }} !
@@ -84,13 +94,16 @@ export default {
 
   data() {
     return {
-      isChrome: false
+      isChrome: false,
+      isFirefox: false
     };
   },
 
   mounted() {
     if (common.isBrowser("chrome")) {
       this.isChrome = true;
+    } else if (common.isBrowser("firefox")) {
+      this.isFirefox = true;
     }
   },
 

@@ -23,9 +23,13 @@
 
 <script>
 import Supports from '@@/components/Supports';
-import cr from '@@/modules/cr'
+import SuperMixin from '@/mixins/SuperMixin';
 
 export default {
+  mixins: [
+    SuperMixin
+  ],
+
   components: {
     supports: Supports
   },
@@ -33,7 +37,6 @@ export default {
   data () {
     return {
       xhr: null,
-      sponsors: [],
       history: 'loading',
       showHistoryWhenUpdateCompleted: true
     }
@@ -42,9 +45,7 @@ export default {
   mounted () {
     let vm = this;
 
-    cr._s.get(null).then(items => {
-      vm.showHistoryWhenUpdateCompleted = items.showHistoryWhenUpdateCompleted
-    });
+    this.showHistoryWhenUpdateCompleted = this.browserItems.showHistoryWhenUpdateCompleted;
 
     this.loadHistory().then(history => {
       vm.history = history;
@@ -53,7 +54,7 @@ export default {
 
   watch: {
     showHistoryWhenUpdateCompleted (val) {
-      cr._s.set({
+      browser.storage.local.set({
         showHistoryWhenUpdateCompleted: val
       });
     }
@@ -61,25 +62,22 @@ export default {
 
   methods: {
     loadHistory () {
-      let vm = this;
-
       return new Promise(resolve => {
-        if (!vm.xhr) {
-          vm.xhr = new XMLHttpRequest();
+        if (!this.xhr) {
+          this.xhr = new XMLHttpRequest();
         }
 
-        vm.xhr.open('get', cr._r.getURL('HISTORY'));
-        vm.xhr.onload = () => {
-          let parts = vm.xhr.responseText.split(/-{46}/);
+        this.xhr.open('get', browser.runtime.getURL('HISTORY'));
+
+        this.xhr.setRequestHeader("Content-Type", "text/plain");
+
+        this.xhr.onload = () => {
+          let parts = this.xhr.responseText.split(/-{46}/);
           resolve(parts[1].trim().replace(/[\r\n|\r|\n]/g, '<br>'));
         };
 
-        vm.xhr.send();
+        this.xhr.send();
       });
-    },
-
-    tl(string) {
-      return cr._e(string);
     }
   }
 }

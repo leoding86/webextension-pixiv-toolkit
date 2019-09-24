@@ -20,7 +20,6 @@
 </template>
 
 <script>
-import { storage as browserStorage, runtime as browserRuntime } from '@/content_scripts/Browser'
 import Detector from "@/content_scripts/Detector"
 import Novel from "@/content_scripts/components/Novel"
 import Manga from '@/content_scripts/components/Manga'
@@ -40,8 +39,6 @@ export default {
 
   data() {
     return {
-      // illustHistoryPort: IllustHistoryPort.getInstance(),
-      detector: new Detector(),
       pageType: null,
       currentUrl: null,
       tool: null,
@@ -52,7 +49,6 @@ export default {
 
   computed: {
     showApp() {
-      return true;
       return this.pageType !== null;
     },
 
@@ -90,42 +86,47 @@ export default {
     }
   },
 
+  beforeMount() {
+    this.illustHistoryPort = IllustHistoryPort.getInstance();
+    this.detector = new Detector();
+  },
+
   mounted() {
-    // let vm = window.thisApp = this;
+    let vm = window.thisApp = this;
 
-    // chrome.storage.onChanged.addListener((changes, namespace) => {
-    //   for (let key in changes) {
-    //     vm.browserItems[key] = changes[key].newValue;
-    //   }
-    // });
+    browser.storage.onChanged.addListener((changes, namespace) => {
+      for (let key in changes) {
+        vm.browserItems[key] = changes[key].newValue;
+      }
+    });
 
-    // browserStorage.get(null, items => {
-    //   vm.browserItems = items;
+    browser.storage.local.get(null, items => {
+      vm.browserItems = items;
 
-    //   let observer = new MutationObserver((mutationsList, observer) => {
-    //     if (window.location.href !== vm.currentUrl) {
-    //       vm.currentUrl = window.location.href;
+      let observer = new MutationObserver((mutationsList, observer) => {
+        if (window.location.href !== vm.currentUrl) {
+          vm.currentUrl = window.location.href;
 
-    //       // hide container
-    //       vm.containerShowed = false;
+          // hide container
+          vm.containerShowed = false;
 
-    //       // set pageType to null for mounting tool component
-    //       vm.pageType = null;
+          // set pageType to null for mounting tool component
+          vm.pageType = null;
 
-    //       vm.injectPage();
-    //     }
-    //   });
+          vm.injectPage();
+        }
+      });
 
-    //   observer.observe(document.querySelector('body'), {
-    //     attributes: true,
-    //     childList: true,
-    //     subtree: true
-    //   });
+      observer.observe(document.querySelector('body'), {
+        attributes: true,
+        childList: true,
+        subtree: true
+      });
 
-    //   this.currentUrl = window.location.href;
+      this.currentUrl = window.location.href;
 
-    //   this.injectPage();
-    // });
+      this.injectPage();
+    });
   },
 
   methods: {
@@ -172,14 +173,14 @@ export default {
           }
         })
         .catch(e => {
-          // console.log(e);
+          return;
         });
     },
 
     handlerClickHandle() {
       this.containerShowed = !this.containerShowed
 
-      browserStorage.set({
+      browser.storage.local.set({
         featureKnown: true
       })
     }

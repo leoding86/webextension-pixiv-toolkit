@@ -1,6 +1,6 @@
 const Browser = {
     getBrowser () {
-        return window.chrome || window.browser || browser;
+        return window.chrome || chrome || browser;
     }
 }
 

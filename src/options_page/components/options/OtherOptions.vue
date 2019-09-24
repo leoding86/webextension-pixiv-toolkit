@@ -47,53 +47,52 @@
 </template>
 
 <script>
-import cr from "@@/modules/cr";
-import { Storage as BrowserStorage } from "@/modules/Browser";
+import SuperMixin from '@/mixins/SuperMixin';
 
 export default {
+  mixins: [
+    SuperMixin
+  ],
+
   data() {
     return {
-      browserStorage: BrowserStorage.getInstance(),
-      showHistoryWhenUpdateCompleted: browserItems.showHistoryWhenUpdateCompleted,
-      autoActivateDownloadPanel: browserItems.autoActivateDownloadPanel,
-      enableSaveVisitHistory: browserItems.enableSaveVisitHistory,
-      notSaveNSFWWorkInHistory: browserItems.notSaveNSFWWorkInHistory
+      showHistoryWhenUpdateCompleted: true,
+      autoActivateDownloadPanel: false,
+      enableSaveVisitHistory: true,
+      notSaveNSFWWorkInHistory: false
     };
   },
 
-  mounted() {
-    console.log(window.browserItems);
+  beforeMount() {
+    this.showHistoryWhenUpdateCompleted = this.browserItems.showHistoryWhenUpdateCompleted;
+    this.autoActivateDownloadPanel = this.browserItems.autoActivateDownloadPanel;
+    this.enableSaveVisitHistory = this.browserItems.enableSaveVisitHistory;
+    this.notSaveNSFWWorkInHistory = this.browserItems.notSaveNSFWWorkInHistory;
   },
 
   watch: {
     autoActivateDownloadPanel(val) {
-      this.browserStorage.set({
+      browser.storage.local.set({
         autoActivateDownloadPanel: !!val
       });
     },
 
     showHistoryWhenUpdateCompleted(val) {
-      this.browserStorage.set({
+      browser.storage.local.set({
         showHistoryWhenUpdateCompleted: !!val
       });
     },
 
     enableSaveVisitHistory(val) {
-      this.browserStorage.set({
+      browser.storage.local.set({
         enableSaveVisitHistory: !!val
       });
     },
 
     notSaveNSFWWorkInHistory(val) {
-      this.browserStorage.set({
+      browser.storage.local.set({
         notSaveNSFWWorkInHistory: !!val
       });
-    }
-  },
-
-  methods: {
-    tl(string) {
-      return cr._e(string);
     }
   }
 };
