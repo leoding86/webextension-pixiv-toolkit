@@ -196,7 +196,8 @@ export default {
   bottom: -40px;
   overflow: visible;
   z-index: 99999;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.8);
+  // background: url(../assets/app-bg.png) repeat-x;
   transition: all 0.3s;
 
   .ptk__handler {
@@ -225,6 +226,6 @@ export default {
 
 .ptk__container--show {
   bottom: 0;
-  box-shadow: 0 1px 10px rgba(0,0,0,0.5);
+  box-shadow: 0 1px 10px rgba(255,255,255,0.5);
 }
 </style>
