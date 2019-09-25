@@ -6,6 +6,9 @@ If you are using version < 1.5, plz update it asap.
 Github:
 https://github.com/leoding86/webextension-pixiv-toolkit
 ----------------------------------------------
+v3.0.1 beta
+Fix P* won't show up with some urls.
+
 v3.0 beta
 Fix Pixiv new work url issue;
 Fix wrong datetime in zip file;

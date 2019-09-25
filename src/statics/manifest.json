@@ -48,7 +48,8 @@
                 "*://*.pixiv.net/novel/show.php?id=*",
                 "*://*.pixiv.net/member_illust.php?mode=manga&illust_id=*",
                 "*://*.pixiv.net/member_illust.php?mode=medium&illust_id=*",
-                "*://*.pixiv.net/*/artworks/*"
+                "*://*.pixiv.net/*/artworks/*",
+                "*://*.pixiv.net/artworks/*"
             ],
             "css": [
                 "content_scripts/static/css/app.css"
@@ -64,7 +65,7 @@
             ]
         }
     ],
-    "version": "3.0",
-    "version_name": "3.0 beta",
+    "version": "3.0.1",
+    "version_name": "3.0.1 beta",
     "options_page": "options_page/index.html"
 }
