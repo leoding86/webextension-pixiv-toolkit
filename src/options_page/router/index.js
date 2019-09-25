@@ -1,14 +1,14 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Options from '@@/components/Options'
-import UgoriaExtendDialog from '@@/components/UgoiraExtendDialog'
-import RenameUgoiraDialog from '@@/components/RenameUgoiraDialog';
-import RenameMangaDialog from '@@/components/RenameMangaDialog';
-import RenameMangaImageDialog from '@@/components/RenameMangaImageDialog';
+import UgoriaExtendDialog from '@@/components/options/UgoiraExtendDialog'
+import RenameUgoiraDialog from '@@/components/options/RenameUgoiraDialog';
+import RenameMangaDialog from '@@/components/options/RenameMangaDialog';
+import RenameMangaImageDialog from '@@/components/options/RenameMangaImageDialog';
 import ThirdParty from '@@/components/ThirdParty';
 import Sponsors from '@@/components/Sponsors';
 import History from '@@/components/History';
-import DownloadRelativeLocationDialog from '@@/components/DownloadRelativeLocationDialog';
+import DownloadRelativeLocationDialog from '@@/components/options/DownloadRelativeLocationDialog';
 import Subscribes from '@@/components/Subscribes'
 
 Vue.use(Router)
