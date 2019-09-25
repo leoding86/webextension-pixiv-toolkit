@@ -59,9 +59,7 @@ export default (renameFormat, context, fallback) => {
   var name = renameFormat;
 
   if (matches && matches.length > 0) {
-    matches.filter(function (item, pos) {
-      return matches.indexOf(item) == pos;
-    }).forEach(function (match) {
+    matches.forEach(function (match) {
       var key = match.slice(1, -1);
       var val = getContextMetaValue(context, key);
 
