@@ -219,7 +219,7 @@
      "message": "Extension takes over downloads"
    },
    "setting_ext_take_over_downloads_desc": {
-     "message": "Enable/Disable extension takes over downloads"
+     "message": "Need download permission"
    },
    "setting_relative_location": {
      "message": "Relative location"

@@ -219,7 +219,7 @@
      "message": "插件接管下载"
    },
    "setting_ext_take_over_downloads_desc": {
-     "message": "开启/关闭插件接管下载文件"
+     "message": "需要下载权限"
    },
    "setting_relative_location": {
      "message": "保存相对位置"
