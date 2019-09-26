@@ -1,6 +1,11 @@
 <p align="center">
   <img src="https://github.com/leoding86/webextension-pixiv-toolkit/blob/master/src/statics/icon128.png?raw=true"><br><br>
-  <img src="https://circleci.com/gh/leoding86/webextension-pixiv-toolkit.svg?style=svg">
+</p>
+
+<p align="center">
+  <a href="https://circleci.com/gh/leoding86/webextension-pixiv-toolkit"><img src="https://img.shields.io/circleci/build/github/leoding86/webextension-pixiv-toolkit/master?logo=circleci&token=e46c87fa8bb712ab70284f1be692d0d9035da8d4"></a>
+  <a href="https://chrome.google.com/webstore/detail/ajlcnbbeidbackfknkgknjefhmbngdnj"><img src="https://img.shields.io/chrome-web-store/rating/ajlcnbbeidbackfknkgknjefhmbngdnj?logo=google%20chrome&logoColor=white"></a>
+  <a href="https://chrome.google.com/webstore/detail/ajlcnbbeidbackfknkgknjefhmbngdnj"><img src="https://img.shields.io/chrome-web-store/rating-count/ajlcnbbeidbackfknkgknjefhmbngdnj?logo=google%20chrome&logoColor=white"></a>
 </p>
 
 <h2 align="center">Pixiv Toolkit</h2>
