@@ -15,7 +15,7 @@ Pixiv Tookit is a webextension for Pixiv users. You can download animation, mang
 ## How to install
 If you are using Chrome, you can download it from [Chrome web store](https://chrome.google.com/webstore/detail/pixiv-toolkit/ajlcnbbeidbackfknkgknjefhmbngdnj).
 
-If you are not using Chrome, you can try clone the gist to you loacl machine, and build the extension by yourself.
+If you are not using Chrome, you can try clone the project to your local machine, and build the extension by yourself.
 
 ## How to build
 To build the extension, you need these tools below:
@@ -27,8 +27,8 @@ After you install these, run commands step by step:
 
 ```bash
 npm install
-npm run build # build for Chrome or
-npm run build:firefox # build for Firefox
+npm run build # build for Chrome
+npm run build:firefox # or build for Firefox
 ```
 
 Then you can install the extension manually.
