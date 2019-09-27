@@ -299,7 +299,13 @@ Main.prototype = {
           /**
            * @version 2.8
            */
-          notSaveNSFWWorkInHistory: false
+          notSaveNSFWWorkInHistory: false,
+
+          /**
+           * @version 3.1
+           */
+          novelIncludeDescription: false,
+          novelRenameFormat: ''
         });
 
         updater.removeSettings([
