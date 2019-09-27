@@ -259,5 +259,17 @@
    },
    "Star_it": {
        "message": "Star it"
+   },
+   "Novel": {
+       "message": "Novel"
+   },
+   "rename_novel": {
+       "message": "Rename novel"
+   },
+   "include_novel_description": {
+       "message": "Include novel description"
+   },
+   "include_novel_description_at_the_beginning": {
+       "message": "Include novel description at the beginning of the file"
    }
 }

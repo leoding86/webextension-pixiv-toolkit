@@ -259,5 +259,17 @@
    },
    "Star_it": {
        "message": "加个星"
+   },
+   "Novel": {
+       "message": "小说"
+   },
+   "rename_novel": {
+       "message": "重命名小说"
+   },
+   "include_novel_description": {
+       "message": "包含小说描述内容"
+   },
+   "include_novel_description_at_the_beginning": {
+       "message": "在小说开始部分包含描述内容"
    }
 }
