@@ -5,6 +5,7 @@ import UgoriaExtendDialog from '@@/components/options/UgoiraExtendDialog'
 import RenameUgoiraDialog from '@@/components/options/RenameUgoiraDialog';
 import RenameMangaDialog from '@@/components/options/RenameMangaDialog';
 import RenameMangaImageDialog from '@@/components/options/RenameMangaImageDialog';
+import RenameNovelDialog from '@@/components/options/RenameNovelDialog';
 import ThirdParty from '@@/components/ThirdParty';
 import Sponsors from '@@/components/Sponsors';
 import History from '@@/components/History';
@@ -40,6 +41,10 @@ export default new Router({
             path: 'download-relative-dialog',
             name: 'DownloadRelativeLocationDialog',
             component: DownloadRelativeLocationDialog
+          }, {
+            path: 'rename-novel',
+            name: "RenameNovel",
+            component: RenameNovelDialog
           }
       ]
     }, {
