@@ -8,12 +8,12 @@ export default (renameFormat, context, fallback) => {
       id: {
         content: i18n.getMessage('id'),
         key: 'illustId',
-        possibleKeys: ['illustId']
+        possibleKeys: ['illustId', 'novelId']
       },
       title: {
         content: i18n.getMessage('title'),
         key: 'illustTitle',
-        possibleKeys: ['illustTitle']
+        possibleKeys: ['illustTitle', 'novelTitle']
       },
       author: {
         content: i18n.getMessage('author'),
