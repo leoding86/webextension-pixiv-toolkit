@@ -1,5 +1,5 @@
 import Browser from '@/modules/Browser/Browser';
-import Novel189 from '@/content_scripts/novel/Novel189';
+import Novel from '@/content_scripts/novel/Novel';
 
 class NovelAdapter {
   constructor() {
@@ -42,7 +42,7 @@ class NovelAdapter {
       return this.novelTool;
     }
 
-    return this.novelTool = new Novel189(this.novelContext);
+    return this.novelTool = new Novel(this.novelContext);
   }
 }
 
