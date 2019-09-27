@@ -6,6 +6,8 @@
 
         <manga-options></manga-options>
 
+        <novel-options></novel-options>
+
         <download-options></download-options>
 
         <search-options></search-options>
@@ -20,6 +22,7 @@ import '@/mixins/SuperMixin';
 import Supports from '@@/components/Supports';
 import UgoiraOptions from '@@/components/options/UgoiraOptions';
 import MangaOptions from '@@/components/options/MangaOptions';
+import NovelOptions from '@@/components/options/NovelOptions';
 import DownloadOptions from '@@/components/options/DownloadOptions';
 import SearchOptions from '@@/components/options/SearchOptions';
 import OtherOptions from '@@/components/options/OtherOptions';
@@ -31,6 +34,7 @@ export default {
       supports: Supports,
       'ugoira-options': UgoiraOptions,
       'manga-options': MangaOptions,
+      'novel-options': NovelOptions,
       'download-options': DownloadOptions,
       'search-options': SearchOptions,
       'other-options': OtherOptions
