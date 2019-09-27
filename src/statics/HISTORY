@@ -6,6 +6,10 @@ If you are using version < 1.5, plz update it asap.
 Github:
 https://github.com/leoding86/webextension-pixiv-toolkit
 ----------------------------------------------
+v3.1
+Add settings about downloading novel;
+Minor fix.
+
 v3.0.1 beta
 Fix P* won't show up with some urls.
 
