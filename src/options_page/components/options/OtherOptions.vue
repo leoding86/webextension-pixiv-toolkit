@@ -13,25 +13,6 @@
             <v-switch v-model="autoActivateDownloadPanel"></v-switch>
           </v-list-tile-action>
         </v-list-tile>
-        <v-list-tile>
-          <v-list-tile-content>
-            <v-list-tile-title>Enable save visit history</v-list-tile-title>
-            <v-list-tile-sub-title>Enable/Disable save visit history</v-list-tile-sub-title>
-          </v-list-tile-content>
-          <v-list-tile-action>
-            <v-switch v-model="enableSaveVisitHistory"></v-switch>
-          </v-list-tile-action>
-        </v-list-tile>
-
-        <v-list-tile>
-          <v-list-tile-content>
-            <v-list-tile-title>Do not save NSFW work to history</v-list-tile-title>
-          </v-list-tile-content>
-          <v-list-tile-action>
-            <v-switch v-model="notSaveNSFWWorkInHistory"
-              :disabled="!enableSaveVisitHistory"></v-switch>
-          </v-list-tile-action>
-        </v-list-tile>
 
         <v-list-tile>
           <v-list-tile-content>
@@ -47,27 +28,21 @@
 </template>
 
 <script>
-import SuperMixin from '@/mixins/SuperMixin';
+import SuperMixin from "@/mixins/SuperMixin";
 
 export default {
-  mixins: [
-    SuperMixin
-  ],
+  mixins: [SuperMixin],
 
   data() {
     return {
       showHistoryWhenUpdateCompleted: true,
-      autoActivateDownloadPanel: false,
-      enableSaveVisitHistory: true,
-      notSaveNSFWWorkInHistory: false
+      autoActivateDownloadPanel: false
     };
   },
 
   beforeMount() {
     this.showHistoryWhenUpdateCompleted = this.browserItems.showHistoryWhenUpdateCompleted;
     this.autoActivateDownloadPanel = this.browserItems.autoActivateDownloadPanel;
-    this.enableSaveVisitHistory = this.browserItems.enableSaveVisitHistory;
-    this.notSaveNSFWWorkInHistory = this.browserItems.notSaveNSFWWorkInHistory;
   },
 
   watch: {
@@ -80,18 +55,6 @@ export default {
     showHistoryWhenUpdateCompleted(val) {
       browser.storage.local.set({
         showHistoryWhenUpdateCompleted: !!val
-      });
-    },
-
-    enableSaveVisitHistory(val) {
-      browser.storage.local.set({
-        enableSaveVisitHistory: !!val
-      });
-    },
-
-    notSaveNSFWWorkInHistory(val) {
-      browser.storage.local.set({
-        notSaveNSFWWorkInHistory: !!val
       });
     }
   }

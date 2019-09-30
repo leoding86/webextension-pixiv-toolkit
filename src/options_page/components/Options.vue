@@ -10,6 +10,8 @@
 
         <download-options></download-options>
 
+        <history-options></history-options>
+
         <search-options></search-options>
 
         <other-options></other-options>
@@ -24,6 +26,7 @@ import UgoiraOptions from '@@/components/options/UgoiraOptions';
 import MangaOptions from '@@/components/options/MangaOptions';
 import NovelOptions from '@@/components/options/NovelOptions';
 import DownloadOptions from '@@/components/options/DownloadOptions';
+import HistoryOptions from '@@/components/options/HistoryOptions';
 import SearchOptions from '@@/components/options/SearchOptions';
 import OtherOptions from '@@/components/options/OtherOptions';
 
@@ -36,6 +39,7 @@ export default {
       'manga-options': MangaOptions,
       'novel-options': NovelOptions,
       'download-options': DownloadOptions,
+      'history-options': HistoryOptions,
       'search-options': SearchOptions,
       'other-options': OtherOptions
     },
