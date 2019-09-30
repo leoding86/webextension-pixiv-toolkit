@@ -271,5 +271,20 @@
    },
    "include_novel_description_at_the_beginning": {
        "message": "Include novel description at the beginning of the file"
+   },
+   "clear_history_data": {
+       "message": "Clear history data"
+   },
+   "clear_history_data_cannot_be_reversed": {
+       "message": "This operation cannot be reversed"
+   },
+   "Clear": {
+       "message": "Clear"
+   },
+   "History":{
+       "message": "History"
+   },
+   "Cancel": {
+       "message": "Cancel"
    }
 }

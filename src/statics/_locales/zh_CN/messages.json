@@ -271,5 +271,20 @@
    },
    "include_novel_description_at_the_beginning": {
        "message": "在小说开始部分包含描述内容"
+   },
+   "clear_history_data": {
+       "message": "清空历史记录数据"
+   },
+   "clear_history_data_cannot_be_reversed": {
+       "message": "此操作不可恢复"
+   },
+   "Clear": {
+       "message": "清空"
+   },
+   "History":{
+       "message": "历史记录"
+   },
+   "Cancel": {
+       "message": "取消"
    }
 }
