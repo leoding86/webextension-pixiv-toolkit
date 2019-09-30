@@ -185,6 +185,10 @@ class IllustHistory {
       })
     })
   }
+
+  clearData() {
+    this.db.destroy();
+  }
 }
 
 export default IllustHistory
