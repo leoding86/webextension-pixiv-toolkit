@@ -141,12 +141,20 @@ export default {
         }
       })
 
-      this.ugoiraTool.apngGenerator.event.addListener("onFinish", blob => {
+      this.ugoiraTool.apngGenerator.event.addListener("onStart", () => {
+        vm.apngProgress = 1;
+      });
+
+      this.ugoiraTool.apngGenerator.event.addListener("onFinish", arrayBuffer => {
         vm.apngProgress = 1;
         vm.apngStatus = 2;
+
+        let blob = new Blob([arrayBuffer], {type: 'image/apng'});
         vm.apngUrl = URL.createObjectURL(blob);
 
-        console.log(vm.apngUrl);
+        if (thisApp.browserItems.ugoiraGenerateAndDownload) {
+          vm.downloadFile(vm.apngUrl, vm.getFilename() + '.apng');
+        }
       });
     })
 
@@ -159,6 +167,9 @@ export default {
 
     this.ugoiraTool.webMGenerator.event.removeEventListeners("onProgress")
     this.ugoiraTool.webMGenerator.event.removeEventListeners("onFinish")
+
+    this.ugoiraTool.apngGenerator.event.removeEventListeners("onStart");
+    this.ugoiraTool.apngGenerator.event.removeEventListeners("onFinish");
   },
 
   methods: {
