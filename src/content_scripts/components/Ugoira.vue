@@ -3,6 +3,7 @@
     <ptk-button :text="resourceDownloadText" ref="zipButton"></ptk-button>
     <template v-if="resourceProgress === 100">
       <ptk-button :text="gifGenerateText" @click="gifButtonClicked"></ptk-button>
+      <ptk-button :text="apngGenerateText" @click="apngButtonClicked"></ptk-button>
       <ptk-button :text="webGenerateText" @click="webmButtonClicked"
        v-if="!isBrowser('firefox')"></ptk-button>
     </template>
@@ -42,6 +43,10 @@ export default {
       gifStatus: 0,
       gifUrl: null,
 
+      apngProgress: null,
+      apngStatus: 0,
+      apngUrl: null,
+
       webmProgress: null,
       webmStatus: 0,
       webmUrl: null
@@ -54,7 +59,7 @@ export default {
         ? "Preparing"
         : this.resourceProgress === 100
         ? "Download Zip"
-        : 'Downloading ' + this.resourceProgress + "%"
+        : 'Downloading'
     },
 
     gifGenerateText() {
@@ -68,6 +73,15 @@ export default {
               ? " " + Math.round(this.gifProgress * 100) + "%"
               : "")
         : "Download GIF"
+    },
+
+    apngGenerateText() {
+      if (this.apngProgress === null) {
+        return 'Generate APNG';
+      }
+
+      return this.apngStatus !== 1
+        ? "Generateing APNG" : "Download APNG";
     },
 
     webGenerateText() {
@@ -87,14 +101,13 @@ export default {
   mounted() {
     let vm = this
 
-    this.ugoiraTool = this.tool
+    this.ugoiraTool = this.tool;
 
-    this.ugoiraTool.event.addListener(
-      "onProgress",
-      this.onResourceDownloadProgressHandle
-    )
+    this.resourceProgress = 1;
 
     this.ugoiraTool.init().then(blob => {
+      vm.resourceProgress = 100;
+
       vm.$refs.zipButton.$el.addEventListener('click', () => {
         vm.downloadFile(URL.createObjectURL(blob), vm.getFilename() + '.zip')
       })
@@ -107,8 +120,6 @@ export default {
         vm.gifProgress = 1
         vm.gifStatus = 2
         vm.gifUrl = URL.createObjectURL(blob)
-
-        let filename = formatName(thisApp.browserItems.ugoiraRenameFormat, this.ugoiraTool.context, this.ugoiraTool.context.illustId) + '.gif'
 
         if (thisApp.browserItems.ugoiraGenerateAndDownload) {
           vm.downloadFile(vm.gifUrl, vm.getFilename() + '.gif')
@@ -129,17 +140,20 @@ export default {
           vm.downloadFile(vm.webmUrl, vm.getFilename() + '.webm')
         }
       })
+
+      this.ugoiraTool.apngGenerator.event.addListener("onFinish", blob => {
+        vm.apngProgress = 1;
+        vm.apngStatus = 2;
+        vm.apngUrl = URL.createObjectURL(blob);
+
+        console.log(vm.apngUrl);
+      });
     })
 
     this.show = true
   },
 
   beforeDestroy() {
-    this.ugoiraTool.event.removeEventListener(
-      "onProgress",
-      this.onResourceDownloadProgressHandle
-    )
-
     this.ugoiraTool.gifGenerator.event.removeEventListeners("onProgress")
     this.ugoiraTool.gifGenerator.event.removeEventListeners("onFinish")
 
@@ -148,10 +162,6 @@ export default {
   },
 
   methods: {
-    onResourceDownloadProgressHandle(progress) {
-      this.resourceProgress = Math.round(progress * 100)
-    },
-
     gifButtonClicked() {
       if (this.gifStatus === 2) {
 
@@ -163,7 +173,19 @@ export default {
 
       this.gifStatus = 1
 
-      this.ugoiraTool.gifGenerator.generate()
+      this.ugoiraTool.gifGenerator.generate();
+    },
+
+    apngButtonClicked() {
+      if (this.apngStatus === 2) {
+        this.downloadFile(this.apngUrl, this.getFilename() + '.apng');
+        return;
+      } else if (this.apngStatus !== 0) {
+        return;
+      }
+
+      this.apngStatus = 1;
+      this.ugoiraTool.apngGenerator.generate();
     },
 
     webmButtonClicked() {
