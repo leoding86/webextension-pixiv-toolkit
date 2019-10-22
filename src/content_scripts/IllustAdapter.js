@@ -1,5 +1,6 @@
 import Browser from '@/modules/Browser/Browser';
 import IllustTool from '@/content_scripts/illust/Illust';
+import Request from '@/modules/Util/Request';
 
 class IllustAdapter {
   constructor() {
@@ -32,25 +33,27 @@ class IllustAdapter {
         r: context.xRestrict
       };
 
-      let xhr = new XMLHttpRequest();
+      let request = new Request();
 
-      xhr.open('GET', self.getMangaPagesUrl());
+      request.open('GET', self.getMangaPagesUrl());
 
-      xhr.onload = function () {
-          let response = JSON.parse(this.responseText);
-
-          if (response.error) {
-              reject();
-              return;
+      request.event.addListener('onload', response => {
+        response.json().then(json => {
+          if (json.error) {
+            reject();
+            return;
           }
 
           // Parse pages information here
-          self.illustContext.pages = response.body;
+          self.illustContext.pages = json.body;
 
           resolve(self.illustContext);
-      }
+        }).catch(error => {
+          reject();
+        });
+      });
 
-      xhr.send();
+      request.send();
     });
   }
 

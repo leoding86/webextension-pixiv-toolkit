@@ -1,3 +1,4 @@
+import Request from '@/modules/Util/Request';
 import Browser from '@/modules/Browser/Browser'
 import UgoiraTool from '@/content_scripts/ugoira/Ugoira'
 
@@ -36,15 +37,12 @@ class UgoiraAdapter {
         r: context.xRestrict
       };
 
-      let xhr = new XMLHttpRequest();
+      let request = new Request();
 
-      xhr.open('get', self.buildMetaUrl(self.illustContext.illustId));
+      request.open('get', self.buildMetaUrl(self.illustContext.illustId));
 
-      xhr.onreadystatechange = () => {
-
-        if (xhr.readyState === 4 && xhr.status === 200) {
-          let response = JSON.parse(xhr.responseText);
-
+      request.event.addListener('onload', response => {
+        response.json().then(response => {
           if (response.error) {
             reject();
             return;
@@ -64,10 +62,10 @@ class UgoiraAdapter {
           self.illustContext.illustDuration = duration;
 
           resolve(self.illustContext);
-        }
-      };
+        });
+      });
 
-      xhr.send();
+      request.send();
     });
   }
 

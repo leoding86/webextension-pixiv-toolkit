@@ -1,13 +1,15 @@
 import Event from '@/modules/Event'
+import Request from '@/modules/Util/Request';
 import GifGenerator from '@/modules/Generator/GifGenerator'
 import WebMGenerator from '@/modules/Generator/WebMGenerator'
+import APngGenerator from '@/modules/Generator/APngGenerator'
 
 class UgoiraTool {
   constructor(context) {
     this.context = context
     this.gifGenerator
     this.webMGenerator
-    this.xhr = new XMLHttpRequest()
+    this.request = new Request();
     this.zip
     this.event = new Event()
   }
@@ -17,7 +19,7 @@ class UgoiraTool {
 
     this.gifGenerator = null
     this.webMGenerator = null
-    this.xhr.abort()
+    this.request.abort()
     this.zip = new JSZip()
 
     return new Promise(resolve => {
@@ -39,6 +41,14 @@ class UgoiraTool {
           self.context.illustMimeType,
           self.context.illustFrames
         )
+
+        self.apngGenerator = new APngGenerator(
+          self.zip,
+          self.context.illustMimeType,
+          self.context.illustFrames
+        )
+
+        self.event.dispatch('onFinish');
 
         return self.zip.generateAsync({
           type: 'blob'
@@ -73,24 +83,17 @@ class UgoiraTool {
     let self = this
 
     return new Promise(resolve => {
-      self.xhr.open('GET', this.context.illustOriginalSrc)
+      self.request.open('GET', this.context.illustOriginalSrc);
 
-      self.xhr.onreadystatechange = () => {
-        if (self.xhr.readyState === 4 && self.xhr.status === 200) {
-          resolve(self.xhr.response)
-        }
-      }
-
-      self.xhr.addEventListener('progress', e => {
-        if (e.lengthComputable) {
-          let progress = e.loaded / e.total
-
-          self.event.dispatch('onProgress', [progress])
-        }
+      self.request.event.addListener('onload', response=> {
+        response.arrayBuffer().then(ab => {
+          resolve(ab);
+        });
       });
 
-      self.xhr.overrideMimeType('text/plain; charset=x-user-defined')
-      self.xhr.send()
+      self.request.send();
+
+      self.event.dispatch('onStart');
     })
   }
 

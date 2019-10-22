@@ -2,6 +2,7 @@ import UgoiraAdapter from './UgoiraAdapter';
 import MangaAdapter from './MangaAdapter';
 import IllustAdapter from './IllustAdapter'
 import NovelAdapter from './NovelAdapter';
+import Request from '@/modules/Util/Request';
 
 class Detector {
 
@@ -14,7 +15,7 @@ class Detector {
   static NOVEL_TYPE = 9;
 
   constructor() {
-    this.xhr = new XMLHttpRequest();
+    this.request = new Request();
     this.currentUrl;
     this.currentType;
     this.currentTool;
@@ -80,41 +81,31 @@ class Detector {
     return new Promise((resolve, reject) => {
       let matches;
 
-      self.xhr.open('GET', self.getIllustUrl(illustId));
+      self.request.open('GET', self.getIllustUrl(illustId));
 
       let json;
 
-      self.xhr.onreadystatechange = () => {
-        if (self.xhr.readyState === 4 && self.xhr.status === 200) {
-          json = JSON.parse(self.xhr.responseText);
-
+      self.request.event.addListener('onload', response => {
+        response.json().then(json => {
           if (json && json.body) {
             self.contextData = json.body;
-
-            resolve(json.body.illustType);
 
             browser.runtime.sendMessage({
               action: 'activeIcon'
             });
 
-            return;
+            resolve(json.body.illustType);
           }
-
+        }).catch(error => {
           browser.runtime.sendMessage({
             action: 'deactiveIcon'
           });
 
-          reject('Invalid illust page')
+          reject('Unkown illust type');
+        });
+      });
 
-          return;
-        }
-      }
-
-      self.xhr.onerror = () => {
-        return;
-      };
-
-      self.xhr.send();
+      self.request.send();
     });
   }
 
@@ -155,8 +146,8 @@ class Detector {
     let self = this;
 
     return new Promise((resolve, reject) => {
-      if (self.xhr) {
-        self.xhr.abort();
+      if (self.request) {
+        self.request.abort();
       }
 
       let matches, novelId;
@@ -168,14 +159,10 @@ class Detector {
         return;
       }
 
-      self.xhr.open('GET', self.getNovelUrl(novelId));
+      self.request.open('GET', self.getNovelUrl(novelId));
 
-      self.xhr.onreadystatechange = () => {
-        let json;
-
-        if (self.xhr.readyState === 4 && self.xhr.status === 200) {
-          json = JSON.parse(self.xhr.responseText);
-
+      self.request.event.addListener('onload', response => {
+        response.json().then(json => {
           if (json && json.body) {
             self.contextData = json.body;
 
@@ -186,15 +173,19 @@ class Detector {
             });
 
             return;
+          } else {
+            browser.runtime.sendMessage({
+              action: 'deactiveIcon'
+            });
           }
-        }
-
-        browser.runtime.sendMessage({
-          action: 'deactiveIcon'
+        }).catch(error => {
+          browser.runtime.sendMessage({
+            action: 'deactiveIcon'
+          });
         });
-      }
+      });
 
-      self.xhr.send();
+      self.request.send();
     });
   }
 
