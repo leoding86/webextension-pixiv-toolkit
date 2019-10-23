@@ -53,7 +53,7 @@ class Fetch {
 
   abort() {
     this.abortSignal = true;
-    self.event.dispatch('onabort');
+    this.event.dispatch('onabort');
   }
 
   send() {
