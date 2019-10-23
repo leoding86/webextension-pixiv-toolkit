@@ -2,6 +2,7 @@ import Event from '@/modules/Event'
 import UPNG from 'upng-js';
 import getImageSize from '@/modules/Util/getImageSize';
 import getCanvasFromDataURI from '@/modules/Util/getCanvasFromDataURI';
+import ApngGeneratorWorker from "worker-loader?inline=true,fallback=false!@/modules/Generator/ApngGeneratorWorker"
 
 class APngGenerator {
   constructor(zip, mimeType, frames) {
@@ -48,10 +49,18 @@ class APngGenerator {
 
       getImageSize(imageBase64).then(size => {
         self.getImagesData(size).then(() => {
-          let png = UPNG.encode(self.imagesData, size.width, size.height, 0, self.delays);
+          let worker = new ApngGeneratorWorker();
+          worker.postMessage({
+            imagesData: self.imagesData,
+            size: size,
+            delays: self.delays
+          });
 
-          this.status = 2;
-          self.event.dispatch('onFinish', [png]);
+          worker.onmessage = event => {
+            console.log(event);
+            self.status = 2;
+            self.event.dispatch('onFinish', [event.data.arrayBuffer]);
+          };
         });
       });
     });
