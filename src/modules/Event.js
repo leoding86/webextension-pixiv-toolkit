@@ -16,6 +16,15 @@ class Event {
     });
   }
 
+  addExclusiveListener (eventName, listener, thisArg) {
+    this.events[eventName] = [];
+
+    this.events[eventName].push({
+      caller: listener,
+      thisArg: !thisArg ? this.target : thisArg
+    });
+  }
+
   dispatch (eventName, args) {
     let newArgs = (Object.prototype.toString.call(args) === '[object Array]') ? args : [];
 
