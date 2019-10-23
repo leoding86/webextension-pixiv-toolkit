@@ -1,11 +1,15 @@
 You can use this extension to convert the ugoira on Pixiv to GIF or WebM file, or pack the images of manga to download or save novel as epub.
 
-Notice:
-If you are using version < 1.5, plz update it asap.
+You can submit a issue on GitHub if you have any questions.
 
 Github:
 https://github.com/leoding86/webextension-pixiv-toolkit
 ----------------------------------------------
+v3.2
+Add feature about generating apng;
+Remove download progress of downloading ugoira resource because Pixiv changes the method to get data;
+Minor fixes.
+
 v3.1
 Add settings about downloading novel;
 Add a setting to clear history data;
