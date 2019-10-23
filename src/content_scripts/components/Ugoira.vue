@@ -80,8 +80,8 @@ export default {
         return 'Generate APNG';
       }
 
-      return this.apngStatus !== 1
-        ? "Generateing APNG" : "Download APNG";
+      return this.apngStatus === 2
+        ? "Download APNG" : "Generating APNG";
     },
 
     webGenerateText() {
