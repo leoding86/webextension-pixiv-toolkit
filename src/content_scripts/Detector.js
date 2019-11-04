@@ -85,7 +85,7 @@ class Detector {
 
       let json;
 
-      self.request.event.addListener('onload', response => {
+      self.request.event.addExclusiveListener('onload', response => {
         response.json().then(json => {
           if (json && json.body) {
             self.contextData = json.body;
@@ -161,7 +161,7 @@ class Detector {
 
       self.request.open('GET', self.getNovelUrl(novelId));
 
-      self.request.event.addListener('onload', response => {
+      self.request.event.addExclusiveListener('onload', response => {
         response.json().then(json => {
           if (json && json.body) {
             self.contextData = json.body;

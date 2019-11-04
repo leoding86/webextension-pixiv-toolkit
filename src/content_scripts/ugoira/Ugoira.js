@@ -85,7 +85,7 @@ class UgoiraTool {
     return new Promise(resolve => {
       self.request.open('GET', this.context.illustOriginalSrc);
 
-      self.request.event.addListener('onload', response=> {
+      self.request.event.addExclusiveListener('onload', response=> {
         response.arrayBuffer().then(ab => {
           resolve(ab);
         });
