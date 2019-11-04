@@ -7,3 +7,5 @@ self.onmessage = event => {
     arrayBuffer: png
   });
 };
+
+export default {}
