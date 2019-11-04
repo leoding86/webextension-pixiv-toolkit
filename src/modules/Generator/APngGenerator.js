@@ -2,7 +2,8 @@ import Event from '@/modules/Event'
 import UPNG from 'upng-js';
 import getImageSize from '@/modules/Util/getImageSize';
 import getCanvasFromDataURI from '@/modules/Util/getCanvasFromDataURI';
-import ApngGeneratorWorker from "worker-loader?inline=true,fallback=false!./ApngGeneratorWorker.js"
+// import ApngGeneratorWorker from "worker-loader?inline=true,fallback=false!./ApngGeneratorWorker.js"
+import ApngGeneratorWorker from '@/modules/Workers/APngGenerator.worker';
 
 class APngGenerator {
   constructor(zip, mimeType, frames) {
