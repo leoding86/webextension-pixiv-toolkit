@@ -18,6 +18,13 @@ const config = {
         test: /\.js$/,
         loader: 'babel-loader',
         include: [utils.resolve('src')]
+      }, {
+        test: /\.worker\.js$/,
+        loader: 'worker-loader',
+        options: {
+          fallback: false,
+          inline: true
+        }
       }
     ]
   },
