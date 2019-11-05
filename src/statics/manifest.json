@@ -7,7 +7,8 @@
     },
     "browser_action": {
         "default_icon": "icon.png",
-        "default_title": "__MSG_extName__"
+        "default_title": "__MSG_extName__",
+        "default_popup": "popup_page/index.html"
     },
     "short_name": "PTK",
     "content_security_policy": "script-src 'self'; object-src 'self'",
@@ -65,7 +66,7 @@
             ]
         }
     ],
-    "version": "3.2.1",
-    "version_name": "3.2.1",
+    "version": "3.2.2",
+    "version_name": "3.2.2",
     "options_page": "options_page/index.html"
 }
