@@ -93,7 +93,7 @@ export default {
 
     downloadButtonClicked(buttonInfo) {
 			let vm = this
-			
+
 			if (buttonInfo.downloadStatus === 0) {
         buttonInfo.downloadStatus = 1
 
@@ -111,7 +111,9 @@ export default {
 						let url = URL.createObjectURL(result.blob)
 						let filename = result.targetName
 
-						vm.downloadFile(url, filename)
+						vm.downloadFile(url, filename, {
+              statType: 'illust',
+            });
 
 						vm.updateButtonInfo(buttonInfo, {
 							url: url,
@@ -128,7 +130,9 @@ export default {
 					})
 				}
       } else if (buttonInfo.downloadStatus === 2) {
-        this.downloadFile(buttonInfo.url, buttonInfo.filename)
+        this.downloadFile(buttonInfo.url, buttonInfo.filename, {
+          statType: 'illust',
+        });
       }
     },
 
@@ -165,7 +169,9 @@ export default {
         )
 
         if (thisApp.browserItems.mangaPackAndDownload) {
-          vm.downloadFile(buttonInfo.url, vm.getFilename(buttonInfo.chunk))
+          vm.downloadFile(buttonInfo.url, vm.getFilename(buttonInfo.chunk), {
+            statType: 'illust',
+          });
         }
       }
     },

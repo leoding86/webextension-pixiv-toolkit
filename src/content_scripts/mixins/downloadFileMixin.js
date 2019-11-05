@@ -1,11 +1,12 @@
 import {
   permissions as browserPermissions,
   downloads as browserDownloads
-} from '@/content_scripts/Browser'
+} from '@/content_scripts/Browser';
+import browser from '@/modules/Extension/browser';
 
 export default {
   methods: {
-    downloadFile(url, filename) {
+    downloadFile(url, filename, extra) {
       if (thisApp.browserItems.enableExtTakeOverDownloads) {
         browserPermissions.contains({
           permissions: ['downloads']
@@ -31,6 +32,13 @@ export default {
 
         a.click()
         a.remove()
+      }
+
+      if (extra && extra.statType) {
+        browser.runtime.sendMessage({
+          action: 'updateDownloadedStat',
+          args: extra.statType
+        });
       }
     }
   }

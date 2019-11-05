@@ -7,6 +7,7 @@ const browser = Browser.getBrowser();
 
 function Main() {
   // constructor
+  this.items = null;
   this.enableExtension = false;
   this.logs = [];
   this.logsMax = 200;
@@ -27,6 +28,7 @@ Main.prototype = {
 
     browser.storage.local.get(null, function (items) {
       // self.enableExtension = items.enableExtension;
+      self.items = items;
       self.enableExtension = true;
 
       self.update();
@@ -117,8 +119,8 @@ Main.prototype = {
     let self = this;
 
     browser.storage.onChanged.addListener(function (changes, areaName) {
-      if (changes.enableExtension) {
-        // self.enableExtension = changes.enableExtension.newValue;
+      for (let key in changes) {
+        self.items[key] = changes[key].newValue;
       }
     });
   },
@@ -216,6 +218,33 @@ Main.prototype = {
     });
   },
 
+  updateDownloadedStatAction: function (args) {
+    let type = args.message.args;
+    let key = '';
+
+    switch (type) {
+      case 'ugoira':
+        key = 'statUgoiraDownloaded';
+        break;
+      case 'illust':
+        key = 'statIllustDownloaded';
+        break;
+      case 'manga':
+        key = 'statMangaDownloaded';
+        break;
+      case 'novel':
+        key = 'statNovelDownloaded';
+        break;
+      default:
+        throw 'Unkown stat downloaded type "' + type + '"';
+    }
+
+    let data = {};
+    data[key] = typeof this.items[key] === 'number' ? ++this.items[key] : 0;
+
+    browser.storage.local.set(data);
+  },
+
   /**
    * Record logs
    * @param {Object} args
@@ -305,7 +334,15 @@ Main.prototype = {
            * @version 3.1
            */
           novelIncludeDescription: false,
-          novelRenameFormat: ''
+          novelRenameFormat: '',
+
+          /**
+           * @since 3.2.2
+           */
+          statUgoiraDownloaded: 0,
+          statMangaDownloaded: 0,
+          statNovelDownloaded: 0,
+          statIllustDownloaded: 0
         });
 
         updater.removeSettings([

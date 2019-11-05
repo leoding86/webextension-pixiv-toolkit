@@ -56,7 +56,9 @@ export default {
         this.tool.context.novelId + "_" + this.tool.context.novelTitle
       );
 
-      this.downloadFile(this.fileUrl, filename + '.epub');
+      this.downloadFile(this.fileUrl, filename + '.epub', {
+        statType: 'novel'
+      });
     }
   }
 };

@@ -81,7 +81,9 @@ export default {
           onDone: this.onDone(buttonInfo)
         })
       } else if (buttonInfo.downloadStatus === 2) {
-        this.downloadFile(buttonInfo.url, this.getFilename(buttonInfo.chunk))
+        this.downloadFile(buttonInfo.url, this.getFilename(buttonInfo.chunk), {
+          statType: 'manga'
+        });
       }
     },
 
@@ -118,7 +120,9 @@ export default {
         )
 
         if (thisApp.browserItems.mangaPackAndDownload) {
-          vm.downloadFile(buttonInfo.url, vm.getFilename(buttonInfo.chunk))
+          vm.downloadFile(buttonInfo.url, vm.getFilename(buttonInfo.chunk), {
+            statType: 'manga',
+          });
         }
       }
     },

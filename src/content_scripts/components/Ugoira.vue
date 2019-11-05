@@ -81,7 +81,7 @@ export default {
       }
 
       return this.apngStatus === 2
-        ? "Download APNG" : "Generating APNG";
+        ? "Download APNG" : ("Generating APNG " + Math.floor(this.apngProgress * 100) + '%');
     },
 
     webGenerateText() {
@@ -109,7 +109,9 @@ export default {
       vm.resourceProgress = 100;
 
       vm.$refs.zipButton.$el.addEventListener('click', () => {
-        vm.downloadFile(URL.createObjectURL(blob), vm.getFilename() + '.zip')
+        vm.downloadFile(URL.createObjectURL(blob), vm.getFilename() + '.zip', {
+          statType: 'ugoira',
+        });
       })
 
       this.ugoiraTool.gifGenerator.event.addListener("onProgress", progress => {
@@ -122,7 +124,9 @@ export default {
         vm.gifUrl = URL.createObjectURL(blob)
 
         if (thisApp.browserItems.ugoiraGenerateAndDownload) {
-          vm.downloadFile(vm.gifUrl, vm.getFilename() + '.gif')
+          vm.downloadFile(vm.gifUrl, vm.getFilename() + '.gif', {
+            statType: 'ugoira',
+          });
         }
       })
 
@@ -137,12 +141,19 @@ export default {
         vm.webmUrl = URL.createObjectURL(blob)
 
         if (thisApp.browserItems.ugoiraGenerateAndDownload) {
-          vm.downloadFile(vm.webmUrl, vm.getFilename() + '.webm')
+          vm.downloadFile(vm.webmUrl, vm.getFilename() + '.webm', {
+            statType: 'ugoira',
+          });
         }
       })
 
       this.ugoiraTool.apngGenerator.event.addListener("onStart", () => {
-        vm.apngProgress = 1;
+        vm.apngProgress = 0;
+      });
+
+      this.ugoiraTool.apngGenerator.event.addListener('onProgress', progress => {
+        console.log(progress);
+        vm.apngProgress = progress;
       });
 
       this.ugoiraTool.apngGenerator.event.addListener("onFinish", arrayBuffer => {
@@ -153,7 +164,9 @@ export default {
         vm.apngUrl = URL.createObjectURL(blob);
 
         if (thisApp.browserItems.ugoiraGenerateAndDownload) {
-          vm.downloadFile(vm.apngUrl, vm.getFilename() + '.apng');
+          vm.downloadFile(vm.apngUrl, vm.getFilename() + '.apng', {
+            statType: 'ugoira',
+          });
         }
       });
     })
@@ -176,7 +189,9 @@ export default {
     gifButtonClicked() {
       if (this.gifStatus === 2) {
 
-        this.downloadFile(this.gifUrl, this.getFilename() + '.gif')
+        this.downloadFile(this.gifUrl, this.getFilename() + '.gif', {
+          statType: 'ugoira',
+        });
         return
       } else if (this.gifStatus !== 0) {
         return
@@ -189,7 +204,9 @@ export default {
 
     apngButtonClicked() {
       if (this.apngStatus === 2) {
-        this.downloadFile(this.apngUrl, this.getFilename() + '.apng');
+        this.downloadFile(this.apngUrl, this.getFilename() + '.apng', {
+          statType: 'ugoira',
+        });
         return;
       } else if (this.apngStatus !== 0) {
         return;
@@ -201,7 +218,9 @@ export default {
 
     webmButtonClicked() {
       if (this.webmStatus === 2) {
-        this.downloadFile(this.webmUrl, this.getFilename() + '.webm')
+        this.downloadFile(this.webmUrl, this.getFilename() + '.webm', {
+          statType: 'ugoira',
+        });
         return
       } else if (this.webmStatus !== 0) {
         return
