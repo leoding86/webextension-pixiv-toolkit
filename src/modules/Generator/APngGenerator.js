@@ -58,9 +58,12 @@ class APngGenerator {
           });
 
           worker.onmessage = event => {
-            console.log(event);
-            self.status = 2;
-            self.event.dispatch('onFinish', [event.data.arrayBuffer]);
+            if (event.data.progress) {
+              self.event.dispatch('onProgress', [event.data.progress.currentProgress / event.data.progress.totalProgress]);
+            } else if (event.data.arrayBuffer) {
+              self.status = 2;
+              self.event.dispatch('onFinish', [event.data.arrayBuffer]);
+            }
           };
         });
       });
