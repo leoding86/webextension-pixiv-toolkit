@@ -6,8 +6,8 @@
       <v-list two-line>
         <v-list-tile>
           <v-list-tile-content>
-            <v-list-tile-title>Enable save visit history</v-list-tile-title>
-            <v-list-tile-sub-title>Enable/Disable save visit history</v-list-tile-sub-title>
+            <v-list-tile-title>{{ tl('Enable_save_visit_history') }}</v-list-tile-title>
+            <v-list-tile-sub-title>{{ tl('Enable_Disable_save_visit_history') }}</v-list-tile-sub-title>
           </v-list-tile-content>
           <v-list-tile-action>
             <v-switch v-model="enableSaveVisitHistory"></v-switch>
@@ -16,7 +16,7 @@
 
         <v-list-tile>
           <v-list-tile-content>
-            <v-list-tile-title>Do not save NSFW work to history</v-list-tile-title>
+            <v-list-tile-title>{{ tl('Do_not_save_NSFW_work_to_history') }}</v-list-tile-title>
           </v-list-tile-content>
           <v-list-tile-action>
             <v-switch v-model="notSaveNSFWWorkInHistory" :disabled="!enableSaveVisitHistory"></v-switch>

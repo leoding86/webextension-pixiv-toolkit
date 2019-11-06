@@ -6,8 +6,8 @@
       <v-list two-line>
         <v-list-tile>
           <v-list-tile-content>
-            <v-list-tile-title>Activate download panel automatically</v-list-tile-title>
-            <v-list-tile-sub-title>Download panel will show up automatically when page loaded</v-list-tile-sub-title>
+            <v-list-tile-title>{{ tl('Activate_download_panel_automatically') }}</v-list-tile-title>
+            <v-list-tile-sub-title>{{ tl('Download_panel_will_show_up_automatically_when_page_loaded') }}</v-list-tile-sub-title>
           </v-list-tile-content>
           <v-list-tile-action>
             <v-switch v-model="autoActivateDownloadPanel"></v-switch>

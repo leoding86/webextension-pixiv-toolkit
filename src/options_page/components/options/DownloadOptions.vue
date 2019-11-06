@@ -29,10 +29,10 @@
         <v-list-tile>
           <v-list-tile-content>
             <v-list-tile-title>
-              Ask where to save each file before downloading
+              {{ tl('Ask_where_to_save_each_file_before_downloading') }}
               <sup class="beta-notice">*</sup>
             </v-list-tile-title>
-            <v-list-tile-sub-title>This setting has no effect if the similar setting of your Chrome is on.</v-list-tile-sub-title>
+            <v-list-tile-sub-title>{{ tl('This_setting_has_no_effect_if_the_similar_setting_of_your_Chrome_is_on') }}</v-list-tile-sub-title>
           </v-list-tile-content>
           <v-list-tile-action>
             <v-switch

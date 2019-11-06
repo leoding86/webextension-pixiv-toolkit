@@ -24,7 +24,7 @@
             ripple
             @click="illustHistoryClickHandle">
             <v-list-tile-content>
-              <span>Illust History</span>
+              <span>{{ tl('Illust_History') }}</span>
             </v-list-tile-content>
           </v-list-tile>
 
@@ -58,8 +58,8 @@
           <v-icon
             dark>menu</v-icon>
         </v-btn>
-        <span class="title v-primary">
-          {{ tl('extName') }}
+        <span class="title v-primary header-title">
+          Pixiv<strong>Toolkit</strong>
           <span style="font-size:12px">{{ version }}</span>
         </span>
       </v-toolbar>
@@ -149,6 +149,14 @@ $primary-blue-text-color: #fff;
 
     .v-toolbar {
         min-height: 56px;
+    }
+
+    .header-title {
+      font-weight: 300;
+
+      strong {
+        font-weight: 700;
+      }
     }
 }
 </style>
