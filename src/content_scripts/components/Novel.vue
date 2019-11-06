@@ -46,6 +46,12 @@ export default {
       this.show = true;
       this.fileUrl = url;
     });
+
+    browser.runtime.onConnect.addListener(this.handleConnect);
+  },
+
+  unmounted() {
+    browser.runtime.onConnect.removeListener(this.handleConnect)
   },
 
   methods: {
@@ -59,6 +65,20 @@ export default {
       this.downloadFile(this.fileUrl, filename + '.epub', {
         statType: 'novel'
       });
+    },
+
+    handleConnect(port) {
+      let self = this;
+
+      if (port.name === 'popup') {
+        port.onMessage.addListener((message, sender, sendResponse) => {
+          if (message.type === 'fetch-info') {
+            port.postMessage({
+              info: self.tool.context
+            })
+          }
+        })
+      }
     }
   }
 };

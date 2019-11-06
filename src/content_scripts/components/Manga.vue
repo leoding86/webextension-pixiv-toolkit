@@ -61,7 +61,13 @@ export default {
 
     this.buttonsInfo = buttonsInfo
 
+    browser.runtime.onConnect.addListener(this.handleConnect);
+
     this.show = true
+  },
+
+  unmounted() {
+    browser.runtime.onConnect.removeListener(this.handleConnect)
   },
 
   methods: {
@@ -129,6 +135,20 @@ export default {
 
     getFilename(chunk) {
       return formatName(thisApp.browserItems.mangaRenameFormat, this.mangaTool.context, this.mangaTool.context.illustId) + '_' + chunk.start + '-' + chunk.end + '.zip'
+    },
+
+    handleConnect(port) {
+      let self = this;
+
+      if (port.name === 'popup') {
+        port.onMessage.addListener((message, sender, sendResponse) => {
+          if (message.type === 'fetch-info') {
+            port.postMessage({
+              info: self.mangaTool.context
+            })
+          }
+        })
+      }
     }
   }
 }

@@ -17,6 +17,7 @@ import {
   permissions as browserPermissions,
   downloads as browserDownloads
 } from "@/content_scripts/Browser"
+import browser from '@/modules/Extension/browser'
 import downloadFileMixin from "@/content_scripts/mixins/downloadFileMixin"
 
 export default {
@@ -172,6 +173,12 @@ export default {
     })
 
     this.show = true
+
+    browser.runtime.onConnect.addListener(this.handleConnect);
+  },
+
+  unmounted() {
+    browser.runtime.onConnect.removeListener(this.handleConnect)
   },
 
   beforeDestroy() {
@@ -239,6 +246,20 @@ export default {
       var regex = new RegExp(browser, 'i');
 
       return regex.test(navigator.userAgent);
+    },
+
+    handleConnect(port) {
+      let self = this;
+
+      if (port.name === 'popup') {
+        port.onMessage.addListener((message, sender, sendResponse) => {
+          if (message.type === 'fetch-info') {
+            port.postMessage({
+              info: self.ugoiraTool.context
+            })
+          }
+        })
+      }
     }
   }
 }
