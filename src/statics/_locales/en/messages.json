@@ -286,5 +286,74 @@
    },
    "Cancel": {
        "message": "Cancel"
+   },
+   "comment": {
+       "message": "Comment"
+   },
+   "description": {
+       "message": "Description"
+   },
+   "createDate": {
+       "message": "Create Date"
+   },
+   "uploadDate": {
+        "message": "Upload Date"
+   },
+   "type": {
+       "message": "Type"
+   },
+   "bookmarkCount": {
+       "message": "Bookmark Count"
+   },
+   "likeCount": {
+       "message": "Like Count"
+   },
+   "responseCount": {
+       "message": "Response Count"
+   },
+   "viewCount": {
+       "message": "View Count"
+   },
+   "Number_of_works_downloaded": {
+       "message": "Number of works downloaded"
+   },
+   "Infomation_of_current_work": {
+        "message": "Infomation of current work"
+   },
+   "work": {
+       "message": "work"
+   },
+   "works": {
+       "message": "works"
+   },
+   "Report_issue": {
+       "message": "Report issue"
+   },
+   "Settings": {
+       "message": "Settings"
+   },
+   "Ask_where_to_save_each_file_before_downloading": {
+       "message": "Ask where to save each file before downloading"
+   },
+   "This_setting_has_no_effect_if_the_similar_setting_of_your_Chrome_is_on": {
+       "message": "This setting has no effect if the similar setting of your Chrome is on"
+   },
+   "Enable_save_visit_history": {
+       "message": "Enable save visit history"
+   },
+   "Enable_Disable_save_visit_history": {
+       "message": "Enable/Disable save visit history"
+   },
+   "Do_not_save_NSFW_work_to_history": {
+       "message": "Do not save NSFW work to history"
+   },
+   "Activate_download_panel_automatically": {
+       "message": "Activate download panel automatically"
+   },
+   "Download_panel_will_show_up_automatically_when_page_loaded": {
+       "message": "Download panel will show up automatically when page loaded"
+   },
+   "Illust_History": {
+       "message": "Visit History"
    }
 }

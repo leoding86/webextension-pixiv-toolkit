@@ -286,5 +286,74 @@
    },
    "Cancel": {
        "message": "取消"
+   },
+   "comment": {
+       "message": "评论"
+   },
+   "description": {
+       "message": "描述"
+   },
+   "createDate": {
+       "message": "创建日期"
+   },
+   "uploadDate": {
+        "message": "上传日期"
+   },
+   "type": {
+       "message": "类型"
+   },
+   "bookmarkCount": {
+       "message": "收藏数"
+   },
+   "likeCount": {
+       "message": "点赞数"
+   },
+   "responseCount": {
+       "message": "评论数"
+   },
+   "viewCount": {
+       "message": "查看数"
+   },
+   "Number_of_works_downloaded": {
+       "message": "已下载的作品数量"
+   },
+   "Infomation_of_current_work": {
+        "message": "当前作品的信息"
+   },
+   "work": {
+       "message": "作品"
+   },
+   "works": {
+       "message": "作品"
+   },
+   "Report_issue": {
+       "message": "报告问题"
+   },
+   "Settings": {
+       "message": "设置"
+   },
+   "Ask_where_to_save_each_file_before_downloading": {
+       "message": "下载前询问文件保存位置"
+   },
+   "This_setting_has_no_effect_if_the_similar_setting_of_your_Chrome_is_on": {
+       "message": "如果浏览器相关设置为启用状态，此项无效"
+   },
+   "Enable_save_visit_history": {
+       "message": "启用保存浏览记录"
+   },
+   "Enable_Disable_save_visit_history": {
+       "message": "启用/禁止保存浏览记录"
+   },
+   "Do_not_save_NSFW_work_to_history": {
+       "message": "不保存NSFW作品到浏览记录"
+   },
+   "Activate_download_panel_automatically": {
+       "message": "自动激活下载面板"
+   },
+   "Download_panel_will_show_up_automatically_when_page_loaded": {
+       "message": "当目标页面被加载完成时，自动显示下载面板"
+   },
+   "Illust_History": {
+       "message": "浏览记录"
    }
 }
