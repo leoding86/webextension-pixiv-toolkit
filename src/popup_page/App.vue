@@ -2,53 +2,91 @@
   <div id="popup">
     <div class="top-header">
       <h1><span>Pixiv</span>Toolkit</h1>
-      <a href="#" @click="openGithub" class="starit"><img src="../options_page/assets/github.svg">Star It !</a>
+      <a href="#" @click="openGithub" class="starit"><img src="../options_page/assets/github.svg">{{ tl('Star_it') }} !</a>
     </div>
     <div class="header">
-      <h2>Number of works downloaded</h2>
+      <h2>{{ tl('Number_of_works_downloaded') }}</h2>
     </div>
     <div class="body">
-      <div class="downloaded-stat"
-        v-html="ugoiraDownloaded"></div>
-      <div class="downloaded-stat"
-        v-html="illustDownloaded"></div>
-      <div class="downloaded-stat"
-        v-html="mangaDownloaded"></div>
-      <div class="downloaded-stat"
-        v-html="novelDownloaded"></div>
+      <div class="card"
+        v-html="totalDownloaded">
+      </div>
+      <div class="work-info" v-if="properties">
+        <div class="header">
+          <h2>{{ tl('Infomation_of_current_work') }}</h2>
+        </div>
+        <div class="card">
+          <ul>
+            <li class="work-info__entity" v-for="property in displayProperties"
+              :key="property">
+              <span v-if="properties[property] !== undefined">
+                <span class="work-info__property">{{ tl(property) }}</span>
+                <strong class="work-info__proerty-value">{{ stripTags(properties[property]) }}</strong>
+              </span>
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
     <div class="footer">
-      <a href="#" @click="openReportIssue" class="button">Report issue</a>
-      <a href="#" @click="openOptionsPage" class="button">Settings</a>
+      <a href="#" @click="openReportIssue" class="button">{{ tl('Report_issue') }}</a>
+      <a href="#" @click="openOptionsPage" class="button">{{ tl('Settings') }}</a>
     </div>
   </div>
 </template>
 
 <script>
-import browser from '@/modules/Extension/browser';
+import SuperMixin from "@/mixins/SuperMixin";
 
 export default {
-  computed: {
-    ugoiraDownloaded() {
-      let count = this.$root.$data.browserItems.statUgoiraDownloaded;
+  mixins: [
+    SuperMixin
+  ],
 
-      return `<strong>${count}</strong>` + ' ugoira' + (count > 1 ? 's' : '');
-    },
+  data() {
+    return {
+      displayProperties: [
+        'id', 'title', 'comment', 'description', 'createDate', 'uploadDate', 'type',
+        'bookmarkCount', 'likeCount', 'responseCount', 'viewCount'
+      ],
 
-    illustDownloaded() {
-      let count = this.$root.$data.browserItems.statIllustDownloaded;
-      return `<strong>${count}</strong>` + ' illust' + (count > 1 ? 's' : '');
-    },
-
-    mangaDownloaded() {
-      let count = this.$root.$data.browserItems.statMangaDownloaded;
-      return `<strong>${count}</strong>` + ' manga' + (count > 1 ? 's' : '');
-    },
-
-    novelDownloaded() {
-      let count = this.$root.$data.browserItems.statNovelDownloaded;
-      return `<strong>${count}</strong>` + ' novel' + (count > 1 ? 's' : '');
+      properties: null
     }
+  },
+
+  computed: {
+    totalDownloaded() {
+      let count = parseInt(this.browserItems.statIllustDownloaded) +
+        parseInt(this.browserItems.statUgoiraDownloaded) +
+        parseInt(this.browserItems.statMangaDownloaded) +
+        parseInt(this.browserItems.statNovelDownloaded);
+
+      return `<strong>${count}</strong> ` + this.tl('work' + (count > 1 ? 's' : ''));
+    }
+  },
+
+  mounted() {
+    let self = this;
+
+    /**
+     * Fetch the current active tab
+     */
+    browser.tabs.query({
+      active: true,
+      currentWindow: true
+    }, tabs => {
+      let port = browser.tabs.connect(tabs[0].id, {
+        name: 'popup'
+      });
+
+      port.onMessage.addListener(message => {
+        self.properties = message.info;
+      });
+
+      port.postMessage({
+        type: 'fetch-info'
+      });
+    });
   },
 
   methods: {
@@ -72,7 +110,7 @@ export default {
 </script>
 
 <style lang="scss">
-html, body, div, h1, h2 {
+html, body, div, h1, h2, ul, li {
   margin: 0;
   padding: 0;
 }
@@ -82,7 +120,7 @@ body {
 }
 
 #popup {
-  width: 255px;
+  width: 290px;
   margin: auto 20px;
 
   .top-header {
@@ -128,7 +166,7 @@ body {
   }
 
   .header {
-    padding-top: 10px;
+    margin-top: 10px;
 
     h2 {
       font-size: 16px;
@@ -173,26 +211,41 @@ body {
   }
 }
 
-.downloaded-stat {
+.card {
   font-size: 12px;
+  margin: 15px 0;
   padding: 15px;
   box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
   color: #666;
   background: #fff;
-
-  &:first-child {
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
-  }
-
-  &:last-child {
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
-  }
+  border-radius: 5px;
 
   strong {
     color: #000;
     padding-right: 5px;
+  }
+}
+
+.work-info {
+  ul, li {
+    list-style: none;
+  }
+
+  .card {
+    max-height: 255px;
+    overflow-y: auto;
+  }
+
+  .work-info__entity {
+    margin: 5px 0;
+
+    &:first-child {
+      margin: 0;
+    }
+  }
+
+  .work-info__property {
+    display: block;
   }
 }
 </style>
