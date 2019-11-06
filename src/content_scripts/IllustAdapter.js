@@ -30,7 +30,19 @@ class IllustAdapter {
         userId: context.userId,
         userAcount: context.userAccount,
         urls: context.urls, // images
-        r: context.xRestrict
+        r: context.xRestrict,
+
+        id: context.illustId,
+        title: context.illustTitle,
+        comment: context.illustComment,
+        description: context.description,
+        createDate: context.createDate,
+        uploadDate: context.uploadDate,
+        type: 'Illust',
+        bookmarkCount: context.bookmarkCount,
+        likeCount: context.likeCount,
+        responseCount: context.responseCount,
+        viewCount: context.viewCount
       };
 
       let request = new Request();

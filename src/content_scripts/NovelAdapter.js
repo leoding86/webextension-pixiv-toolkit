@@ -33,6 +33,17 @@ class NovelAdapter {
       novelCover: context.coverUrl,
       userId: context.userId,
       userName: context.userName,
+
+      id: context.id,
+      title: context.title,
+      description: context.description,
+      createDate: context.createDate,
+      uploadDate: context.uploadDate,
+      type: 'Novel',
+      bookmarkCount: context.bookmarkCount,
+      likeCount: context.likeCount,
+      responseCount: context.responseCount,
+      viewCount: context.viewCount
     }
   }
 
