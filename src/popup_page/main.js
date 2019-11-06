@@ -4,6 +4,8 @@ import browser from '@/modules/Extension/browser';
 
 Vue.config.productionTip = false;
 
+window.browser = browser;
+
 browser.storage.local.get(null, items => {
   new Vue({
     el: '#app',
