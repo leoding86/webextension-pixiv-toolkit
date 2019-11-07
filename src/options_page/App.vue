@@ -62,6 +62,12 @@
           Pixiv<strong>Toolkit</strong>
           <span style="font-size:12px">{{ version }}</span>
         </span>
+
+        <v-spacer></v-spacer>
+
+        <supports style="margin-bottom:0"
+          :show-sponsors-link="false"
+          :show-inline-sponsors-link="true"></supports>
       </v-toolbar>
       <v-content style="padding-left:0;">
         <router-view />
@@ -76,6 +82,7 @@ import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
 import extConfig from '@@/../statics/manifest.json'
 import SuperMixin from '@/mixins/SuperMixin';
+import Supports from '@@/components/Supports';
 
 Vue.use(Vuetify)
 
@@ -85,6 +92,10 @@ export default {
   mixins: [
     SuperMixin
   ],
+
+  components: {
+    'supports': Supports
+  },
 
   data () {
     return {
