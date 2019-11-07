@@ -9,6 +9,20 @@ try {
   (function(browser) {
     window.browser = browser;
 
+    /**
+     * Update browser action badge
+     */
+    browser.browserAction.getBadgeText({}, function (text) {
+      if (text.toLowerCase() === 'new') {
+        /**
+         * If badge text is 'new', remove the badge text.
+         */
+        browser.browserAction.setBadgeText({
+          text: ''
+        });
+      }
+    });
+
     browser.storage.local.get(null, items => {
       /* eslint-disable no-new */
       new Vue({
