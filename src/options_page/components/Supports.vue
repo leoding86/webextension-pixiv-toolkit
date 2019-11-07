@@ -2,45 +2,56 @@
   <div id="supports">
     <v-btn
       small
+      round
+      depressed
       v-if="showPatreon" class="support-btn" @click="openInNewTab('https://www.patreon.com/leoding')">
       <img src="../assets/patreon.png">
-      {{ tl('Become_a_patron') }} !
+      <span class="button-text" v-show="largeWindow">{{ tl('Become_a_patron') }} !</span>
       <v-icon right>open_in_new</v-icon>
     </v-btn>
 
     <v-btn
       small
+      round
+      depressed
       class="support-btn"
       v-if="isChrome"
       @click="openInNewTab('https://chrome.google.com/webstore/detail/pixiv-toolkit/ajlcnbbeidbackfknkgknjefhmbngdnj')"
     >
       <img src="../assets/chrome-es.png">
-      {{ tl('Give_5_stars') }} !
+      <span class="button-text" v-show="largeWindow">{{ tl('Give_5_stars') }} !</span>
       <v-icon right>open_in_new</v-icon>
     </v-btn>
 
     <v-btn
       small
+      round
+      depressed
       class="support-btn"
       v-if="isFirefox"
       @click="openInNewTab('')">
       <img src="../assets/firefox-amo.png">
-      {{ tl('Give_5_stars') }} !
+      <span class="button-text" v-show="largeWindow">{{ tl('Give_5_stars') }} !</span>
       <v-icon right>open_in_new</v-icon>
     </v-btn>
 
     <v-btn
       small
+      round
+      depressed
       v-if="showPatreon" class="support-btn" @click="openInNewTab('https://github.com/leoding86/webextension-pixiv-toolkit')">
       <img src="../assets/github.svg">
-      {{ tl('Star_it') }} !
+      <span class="button-text" v-show="largeWindow">{{ tl('Star_it') }} !</span>
       <v-icon right>open_in_new</v-icon>
     </v-btn>
 
     <v-btn v-if="showInlineSponsorsLink"
-      small class="support-btn" @click="showSponsors"
+      small
+      depressed
+      round class="support-btn" @click="showSponsors"
       style="background:#fff;">
-      &nbsp;&nbsp;{{ tl('Sponsors') }} 😍&nbsp;&nbsp;
+      😍<span class="button-text" v-show="largeWindow">&nbsp;&nbsp;{{ tl('Sponsors') }}</span>
+      <v-icon>keyboard_arrow_right</v-icon>
     </v-btn>
 
     <!-- <v-btn
@@ -52,21 +63,6 @@
       {{ tl('Try_Manga_Toolkit') }}
       <v-icon right>open_in_new</v-icon>
     </v-btn> -->
-
-    <v-card v-if="showSponsorsLink">
-      <v-list>
-        <v-list-tile ripple @click="showSponsors">
-          <v-list-tile-content>
-            <v-list-tile-title>{{ tl('Sponsors') }}😍</v-list-tile-title>
-          </v-list-tile-content>
-          <v-list-tile-action>
-            <v-btn icon ripple>
-              <v-icon>keyboard_arrow_right</v-icon>
-            </v-btn>
-          </v-list-tile-action>
-        </v-list-tile>
-      </v-list>
-    </v-card>
   </div>
 </template>
 
@@ -95,16 +91,31 @@ export default {
   data() {
     return {
       isChrome: false,
-      isFirefox: false
+      isFirefox: false,
+      largeWindow: true
     };
   },
 
   mounted() {
+    let vm = this;
+
     if (common.isBrowser("chrome")) {
       this.isChrome = true;
     } else if (common.isBrowser("firefox")) {
       this.isFirefox = true;
     }
+
+    if (window.innerWidth < 900) {
+      this.largeWindow = false;
+    }
+
+    window.addEventListener('resize', () => {
+      if (window.innerWidth < 900) {
+        this.largeWindow = false;
+      } else {
+        this.largeWindow = true;
+      }
+    })
   },
 
   methods: {
@@ -131,14 +142,25 @@ export default {
   margin-bottom: 25px;
 
   .support-btn {
-    height: 40px;
+    height: 38px;
     font-size: 16px;
-    margin: 0 10px 10px 0;
 
     img {
       width: 30px;
-      margin-right: 10px;
     }
+
+    .button-text {
+      margin-left: 7px;
+    }
+  }
+
+  .v-btn--small {
+    padding: 0 5px;
+  }
+
+  .v-icon--right {
+    margin-left: 7px;
+    margin-right: 0;
   }
 }
 </style>
