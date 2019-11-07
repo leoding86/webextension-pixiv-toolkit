@@ -1,5 +1,5 @@
 <template>
-  <div :class="{'ptk__container': true, 'ptk__container--show': showContainer}" v-if="showApp">
+  <div :class="{'ptk__container': true}" v-if="showApp">
     <div :class="{'ptk__handler': true, 'ptk__handler--active': showContainer}"
       @click="handlerClickHandle"
     >P*</div>
@@ -9,12 +9,16 @@
       v-if="showSubscribe"
       :user-id="userId"></subscription-button>
 
-    <ugoira-tool v-if="isUgoira" :tool="tool">ugoira</ugoira-tool>
-    <manga-tool v-else-if="isManga" :tool="tool">manga</manga-tool>
-    <illust-tool v-else-if="isIllust" :tool="tool">illust</illust-tool>
-    <novel-tool v-else-if="isNovel" :tool="tool">novel</novel-tool>
-    <div v-else>
-      <p>Unsupported page</p>
+    <div class="ptk__container__body"
+      :class="{'ptk__container__body--show': showContainer}">
+      <div class="ptk__container__body-container"
+        :class="{'ptk__container__body-container--show': showContainer}">
+        <ugoira-tool v-if="isUgoira" :tool="tool" class="ptk-tool__component">ugoira</ugoira-tool>
+        <manga-tool v-else-if="isManga" :tool="tool" class="ptk-tool__component">manga</manga-tool>
+        <illust-tool v-else-if="isIllust" :tool="tool" class="ptk-tool__component">illust</illust-tool>
+        <novel-tool v-else-if="isNovel" :tool="tool" class="ptk-tool__component">novel</novel-tool>
+        <ptk-button v-else text="Unsupported page"></ptk-button>
+      </div>
     </div>
   </div>
 </template>
@@ -27,6 +31,7 @@ import Illust from '@/content_scripts/components/Illust'
 import Ugoira from '@/content_scripts/components/Ugoira'
 import SubscriptionButton from '@/content_scripts/components/sub/SubscriptionButton'
 import IllustHistoryPort from '@/modules/Ports/IllustHistoryPort'
+import Button from '@/content_scripts/components/Button'
 
 export default {
   components: {
@@ -34,7 +39,8 @@ export default {
     'manga-tool': Manga,
     'illust-tool': Illust,
     'ugoira-tool': Ugoira,
-    'subscription-button': SubscriptionButton
+    'subscription-button': SubscriptionButton,
+    'ptk-button': Button
   },
 
   data() {
@@ -74,7 +80,7 @@ export default {
 
     showContainer() {
       // console.log(this.browserItems)
-      return this.browserItems.autoActivateDownloadPanel || this.containerShowed
+      return this.containerShowed
     },
 
     userId() {
@@ -152,6 +158,9 @@ export default {
           vm.tool = tool;
           vm.pageType = vm.detector.currentType;
 
+          // show container
+          vm.containerShowed = vm.browserItems.autoActivateDownloadPanel;
+
           if (!vm.browserItems.enableSaveVisitHistory) {
             return;
           }
@@ -188,17 +197,46 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .ptk__container {
   position: fixed;
   width: 100%;
   height: 40px;
   bottom: -40px;
   overflow: visible;
-  z-index: 99999;
-  background: rgba(255, 255, 255, 0.8);
   // background: url(../assets/app-bg.png) repeat-x;
-  transition: all 0.3s;
+  z-index: 99999;
+
+  .ptk__container__body {
+    position: absolute;
+    overflow: visible;
+    display: inline-block;
+    right: 50%;
+    transition: all 0.5s;
+
+    .ptk__container__body-container {
+      display: inline-block;
+      position: relative;
+      top: 0;
+      left: 50%;
+      padding: 8px 12px;
+      background: #fff;
+      border-radius: 30px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.3);
+      overflow: hidden;
+      transition: all 0.5s;
+
+      .button {
+        &:last-child {
+          margin-right: 0;
+        }
+      }
+    }
+
+    .ptk__container__body-container--show {
+      top: -50px;
+    }
+  }
 
   .ptk__handler {
     position: absolute;
@@ -216,16 +254,15 @@ export default {
     text-align: center;
     font-size: 12px;
     font-weight: 700;
-    transition: all 0.3s;
+    transition: all 0.5s;
   }
 
   .ptk__handler--active {
     box-shadow: 0px -2px 5px rgba(0,0,0,0.3);
   }
-}
 
-.ptk__container--show {
-  bottom: 0;
-  box-shadow: 0 1px 10px rgba(255,255,255,0.5);
+  .ptk-tool__component {
+    display: inline-block;
+  }
 }
 </style>
