@@ -355,5 +355,17 @@
    },
    "Illust_History": {
        "message": "Visit History"
+   },
+   "Illustration": {
+       "message": "Illustration"
+   },
+   "Rename_illustration": {
+       "message": "Rename illustration"
+   },
+   "Rename_illustration_image": {
+       "message": "Rename illustration image"
+   },
+   "Download_file_if_everything_is_ready": {
+       "message": "Download file directly if everything is ready"
    }
 }

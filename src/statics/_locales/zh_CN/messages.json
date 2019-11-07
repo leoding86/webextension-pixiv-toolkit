@@ -355,5 +355,17 @@
    },
    "Illust_History": {
        "message": "浏览记录"
+   },
+   "Illustration": {
+       "message": "绘画"
+   },
+   "Rename_illustration": {
+       "message": "重命名绘画"
+   },
+   "Rename_illustration_image": {
+       "message": "重命名绘画图片"
+   },
+   "Download_file_if_everything_is_ready": {
+       "message": "准备完成直接下载"
    }
 }
