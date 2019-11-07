@@ -6,6 +6,8 @@ import RenameUgoiraDialog from '@@/components/options/RenameUgoiraDialog';
 import RenameMangaDialog from '@@/components/options/RenameMangaDialog';
 import RenameMangaImageDialog from '@@/components/options/RenameMangaImageDialog';
 import RenameNovelDialog from '@@/components/options/RenameNovelDialog';
+import RenameIllustrationDialog from '@@/components/options/RenameIllustrationDialog';
+import RenameIllustrationImageDialog from '@@/components/options/RenameIllustrationImageDialog';
 import ThirdParty from '@@/components/ThirdParty';
 import Sponsors from '@@/components/Sponsors';
 import History from '@@/components/History';
@@ -37,6 +39,14 @@ export default new Router({
               path: 'rename-manga-image',
               name: 'RenameMangaImage',
               component: RenameMangaImageDialog
+          }, {
+              path: 'rename-illustration',
+              name: 'RenameIllustration',
+              component: RenameIllustrationDialog
+          }, {
+              path: 'rename-illustration-image',
+              name: 'RenameIllustrationImage',
+              component: RenameIllustrationImageDialog
           }, {
             path: 'download-relative-dialog',
             name: 'DownloadRelativeLocationDialog',
