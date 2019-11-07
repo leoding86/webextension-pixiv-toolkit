@@ -43,9 +43,9 @@ export default {
     this.illustTool = this.tool
 
     this.illustTool.initOptions({
-      splitSize: window.thisApp.browserItems.mangaPagesInChunk,
-      mangaRenameFormat: window.thisApp.browserItems.mangaRenameFormat,
-      mangaImageRenameFormat: window.thisApp.browserItems.mangaImageRenameFormat
+      splitSize: 999,
+      illustrationRenameFormat: window.thisApp.browserItems.illustrationRenameFormat,
+      illustrationImageRenameFormat: window.thisApp.browserItems.illustrationImageRenameFormat
     }).init()
 
     this.chunks = this.illustTool.chunks
@@ -174,7 +174,7 @@ export default {
           })
         )
 
-        if (thisApp.browserItems.mangaPackAndDownload) {
+        if (thisApp.browserItems.illustrationDownloadIfReady) {
           vm.downloadFile(buttonInfo.url, vm.getFilename(buttonInfo.chunk), {
             statType: 'illust',
           });
@@ -183,7 +183,7 @@ export default {
     },
 
     getFilename(chunk) {
-      return formatName(thisApp.browserItems.mangaRenameFormat, this.illustTool.context, this.illustTool.context.illustId) + '_' + chunk.start + '-' + chunk.end + '.zip'
+      return formatName(thisApp.browserItems.illustrationRenameFormat, this.illustTool.context, this.illustTool.context.illustId) + '_' + chunk.start + '-' + chunk.end + '.zip'
     },
 
     handleConnect(port) {

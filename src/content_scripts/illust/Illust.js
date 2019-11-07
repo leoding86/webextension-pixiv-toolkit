@@ -28,8 +28,8 @@ class IllustTool {
 
   initOptions(options) {
     this.splitSize = options.splitSize;
-    this.mangaRenameFormat = options.mangaRenameFormat
-    this.mangaImageRenameFormat = options.mangaImageRenameFormat;
+    this.illustrationRenameFormat = options.illustrationRenameFormat
+    this.illustrationImageRenameFormat = options.illustrationImageRenameFormat;
 
     return this;
   }
@@ -60,10 +60,10 @@ class IllustTool {
       startIndex = chunk.end + 1;
     }
 
-    if (!self.mangaImageRenameFormat ||
-        self.mangaImageRenameFormat.indexOf('{pageNum}') < 0
+    if (!self.illustrationImageRenameFormat ||
+        self.illustrationImageRenameFormat.indexOf('{pageNum}') < 0
     ) {
-      self.mangaImageRenameFormat += '{pageNum}';
+      self.illustrationImageRenameFormat += '{pageNum}';
     }
   }
 
@@ -96,7 +96,7 @@ class IllustTool {
   }
 
   getFilename(chunk) {
-    return formatName(this.mangaRenameFormat, this.context, this.context.illustId) + '_' + this.getPageRange(chunk) + '.zip';
+    return formatName(this.illustrationRenameFormat, this.context, this.context.illustId) + '_' + this.getPageRange(chunk) + '.zip';
 	}
 
 	/**
@@ -130,7 +130,7 @@ class IllustTool {
 				self.context.pageNum = pageNum;
 
 				let filename = formatName(
-					self.mangaImageRenameFormat,
+					self.illustrationImageRenameFormat,
 					self.context,
 					pageNum
 				) + '.' + extName;
@@ -219,7 +219,7 @@ class IllustTool {
         self.context.pageNum = pageNum;
 
         let filename = formatName(
-          self.mangaImageRenameFormat,
+          self.illustrationImageRenameFormat,
           self.context,
           pageNum
         ) + '.' + extName;
@@ -247,7 +247,7 @@ class IllustTool {
         }
       }
 
-      Logger.notice('save manga image ' + url)
+      Logger.notice('save illustration image ' + url)
 
       xhr.send();
     });
