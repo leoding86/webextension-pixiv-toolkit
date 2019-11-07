@@ -1,8 +1,8 @@
 <template>
     <v-container style="max-width: 640px;">
-        <supports></supports>
-
         <ugoira-options></ugoira-options>
+
+        <illustration-options></illustration-options>
 
         <manga-options></manga-options>
 
@@ -21,8 +21,8 @@
 <script>
 import '@@/assets/global.scss'
 import '@/mixins/SuperMixin';
-import Supports from '@@/components/Supports';
 import UgoiraOptions from '@@/components/options/UgoiraOptions';
+import IllustrationOptions from '@@/components/options/IllustrationOptions';
 import MangaOptions from '@@/components/options/MangaOptions';
 import NovelOptions from '@@/components/options/NovelOptions';
 import DownloadOptions from '@@/components/options/DownloadOptions';
@@ -34,8 +34,8 @@ export default {
     name: 'Options',
 
     components: {
-      supports: Supports,
       'ugoira-options': UgoiraOptions,
+      'illustration-options': IllustrationOptions,
       'manga-options': MangaOptions,
       'novel-options': NovelOptions,
       'download-options': DownloadOptions,
@@ -56,7 +56,7 @@ export default {
 <style lang="scss">
 #app {
   .option-section {
-    margin: 30px 0;
+    margin-bottom: 30px;
 
     .option-card-title {
         display: block;

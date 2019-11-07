@@ -1,7 +1,5 @@
 <template>
   <v-container style="max-width: 640px;">
-    <supports :showSponsorsLink=false
-      :style="{marginBottom: '10px'}"></supports>
     <v-card>
       <v-card-text>
         <p style="font-size:14px;">{{ tl('sponsor_update_periodically') }} ~ヾ(＾∇＾)</p>

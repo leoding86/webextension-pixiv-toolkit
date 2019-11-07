@@ -1,9 +1,5 @@
 <template>
   <div class="container container--big">
-    <supports style="margin-bottom:0"
-      :show-sponsors-link="false"
-      :show-inline-sponsors-link="true"></supports>
-
     <v-alert
       :value="true"
       type="warning"
@@ -161,8 +157,7 @@ export default {
 
   components: {
     'page-title': PageTitle,
-    'cacheable-image': CacheableImage,
-    'supports': Supports
+    'cacheable-image': CacheableImage
   },
 
   data() {

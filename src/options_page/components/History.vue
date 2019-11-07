@@ -1,6 +1,5 @@
 <template>
   <v-container style="max-width: 640px;">
-    <supports></supports>
     <span class="card-title">{{ tl('Change_History') }}</span>
 
     <v-card>
@@ -22,17 +21,12 @@
 </template>
 
 <script>
-import Supports from '@@/components/Supports';
 import SuperMixin from '@/mixins/SuperMixin';
 
 export default {
   mixins: [
     SuperMixin
   ],
-
-  components: {
-    supports: Supports
-  },
 
   data () {
     return {
