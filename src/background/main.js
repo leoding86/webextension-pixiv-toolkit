@@ -32,7 +32,6 @@ Main.prototype = {
       self.enableExtension = true;
 
       self.update();
-      self.bindActionButton();
       self.listenStorageChanged();
       self.listenMessage();
       self.listenPortConnect();
@@ -90,29 +89,6 @@ Main.prototype = {
     if (typeof this[methodName] === 'function') {
       this[methodName].call(this, args);
     }
-  },
-
-  bindActionButton: function () {
-    browser.browserAction.onClicked.addListener(function () {
-      browser.browserAction.getBadgeText({}, function (text) {
-        let url = './options_page/index.html#/illust-history';
-
-        if (text.toLowerCase() === 'new') {
-          /**
-           * Override the page
-           */
-          url = './options_page/index.html#/history';
-
-          browser.browserAction.setBadgeText({
-            text: ''
-          });
-        }
-
-        browser.tabs.create({
-          url: browser.runtime.getURL(url)
-        });
-      });
-    });
   },
 
   listenStorageChanged: function () {
