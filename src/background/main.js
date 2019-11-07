@@ -342,7 +342,14 @@ Main.prototype = {
           statUgoiraDownloaded: 0,
           statMangaDownloaded: 0,
           statNovelDownloaded: 0,
-          statIllustDownloaded: 0
+          statIllustDownloaded: 0,
+
+          /**
+           * @since 3.3.2
+           */
+          illustrationRenameFormat: '',
+          illustrationImageRenameFormat: '',
+          illustrationDownloadIfReady: false
         });
 
         updater.removeSettings([
