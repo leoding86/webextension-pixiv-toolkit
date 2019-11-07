@@ -1,5 +1,5 @@
 <template>
-  <div v-if="show" style="padding: 6px 0 0 20px;text-align:center">
+  <div v-if="show">
     <ptk-button :text="resourceDownloadText" ref="zipButton"></ptk-button>
     <template v-if="resourceProgress === 100">
       <ptk-button :text="gifGenerateText" @click="gifButtonClicked"></ptk-button>

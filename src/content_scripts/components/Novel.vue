@@ -1,5 +1,5 @@
 <template>
-  <div v-if="show" style="padding: 6px 0 0 20px;text-align:center;">
+  <div v-if="show">
     <ptk-button :text="'Download'" @click="downloadNovel"></ptk-button>
   </div>
 </template>
