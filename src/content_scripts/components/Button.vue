@@ -16,13 +16,14 @@ export default {
 <style lang="scss" scoped>
   .button {
     display:inline-block;
-    margin-right: 10px;
-    padding: 5px 20px;
+    margin-right: 5px;
+    padding: 5px 15px;
     border-radius: 50px;
-    font-size: 14px;
+    font-size: 12px;
     background: rgb(0, 150, 250);
     color: #fff;
     font-weight: 700;
     cursor: pointer;
+    transition: all 0.3s;
   }
 </style>
