@@ -44,7 +44,7 @@ class GifGenerator {
 
     this.zip.file(self.frames[0].file).async('base64').then(base64 => {
       let imageBase64 = "data:" + self.mimeType + ';base64,' + base64,
-          quality = window.thisApp.browserItems.ugoiraQuanlity ||10
+          quality = $extension.browserItems.ugoiraQuanlity ||10
 
       getImageSize(imageBase64).then(size => {
         self.gif = new GIF({

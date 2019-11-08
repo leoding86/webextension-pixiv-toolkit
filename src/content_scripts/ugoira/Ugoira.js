@@ -24,7 +24,7 @@ class UgoiraTool {
 
     return new Promise(resolve => {
       self.downloadResource().then(zipData => {
-        if (thisApp.browserItems.enablePackUgoiraFramesInfo) {
+        if ($extension.browserItems.enablePackUgoiraFramesInfo) {
           self.zip.file('animation.json', JSON.stringify(self.context.illustFrames));
         }
 

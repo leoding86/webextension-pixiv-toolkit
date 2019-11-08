@@ -36,7 +36,7 @@ export default {
 
     this.tool.prepareProps();
 
-    if (thisApp.browserItems.novelIncludeDescription) {
+    if (this.browserItems.novelIncludeDescription) {
       this.tool.includeDescription();
     }
 
@@ -57,7 +57,7 @@ export default {
   methods: {
     downloadNovel() {
       let filename = formatName(
-        thisApp.browserItems.novelRenameFormat,
+        this.browserItems.novelRenameFormat,
         this.tool.context,
         this.tool.context.novelId + "_" + this.tool.context.novelTitle
       );

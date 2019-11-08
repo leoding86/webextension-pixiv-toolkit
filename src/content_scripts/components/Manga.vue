@@ -42,9 +42,9 @@ export default {
     this.mangaTool = this.tool
 
     this.mangaTool.initOptions({
-      splitSize: window.thisApp.browserItems.mangaPagesInChunk,
-      mangaRenameFormat: window.thisApp.browserItems.mangaRenameFormat,
-      mangaImageRenameFormat: window.thisApp.browserItems.mangaImageRenameFormat
+      splitSize: this.browserItems.mangaPagesInChunk,
+      mangaRenameFormat: this.browserItems.mangaRenameFormat,
+      mangaImageRenameFormat: this.browserItems.mangaImageRenameFormat
     }).init()
 
     this.chunks = this.mangaTool.chunks
@@ -125,7 +125,7 @@ export default {
           })
         )
 
-        if (thisApp.browserItems.mangaPackAndDownload) {
+        if (vm.browserItems.mangaPackAndDownload) {
           vm.downloadFile(buttonInfo.url, vm.getFilename(buttonInfo.chunk), {
             statType: 'manga',
           });
@@ -134,7 +134,7 @@ export default {
     },
 
     getFilename(chunk) {
-      return formatName(thisApp.browserItems.mangaRenameFormat, this.mangaTool.context, this.mangaTool.context.illustId) + '_' + chunk.start + '-' + chunk.end + '.zip'
+      return formatName(vm.browserItems.mangaRenameFormat, this.mangaTool.context, this.mangaTool.context.illustId) + '_' + chunk.start + '-' + chunk.end + '.zip'
     },
 
     handleConnect(port) {

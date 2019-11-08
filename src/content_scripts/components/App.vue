@@ -49,7 +49,6 @@ export default {
       currentUrl: null,
       tool: null,
       containerShowed: false,
-      browserItems: {}
     };
   },
 
@@ -75,11 +74,10 @@ export default {
     },
 
     showSubscribe() {
-      return (this.pageType === Detector.UGOIRA_TYPE || this.pageType === Detector.MANGA_TYPE || this.pageType === Detector.ILLUST_TYPE) && this.$root.plusVersion
+      return false;
     },
 
     showContainer() {
-      // console.log(this.browserItems)
       return this.containerShowed
     },
 
@@ -98,41 +96,34 @@ export default {
   },
 
   mounted() {
-    let vm = window.thisApp = this;
+    let vm = this;
 
-    browser.storage.onChanged.addListener((changes, namespace) => {
-      for (let key in changes) {
-        vm.browserItems[key] = changes[key].newValue;
+    let observer = new MutationObserver((mutationsList, observer) => {
+      /**
+       * If different page has been loaded, app should re-reject the page
+       */
+      if (window.location.href !== vm.currentUrl) {
+        vm.currentUrl = window.location.href;
+
+        // hide container
+        vm.containerShowed = false;
+
+        // set pageType to null for mounting tool component
+        vm.pageType = null;
+
+        vm.injectPage();
       }
     });
 
-    browser.storage.local.get(null, items => {
-      vm.browserItems = items;
-
-      let observer = new MutationObserver((mutationsList, observer) => {
-        if (window.location.href !== vm.currentUrl) {
-          vm.currentUrl = window.location.href;
-
-          // hide container
-          vm.containerShowed = false;
-
-          // set pageType to null for mounting tool component
-          vm.pageType = null;
-
-          vm.injectPage();
-        }
-      });
-
-      observer.observe(document.querySelector('body'), {
-        attributes: true,
-        childList: true,
-        subtree: true
-      });
-
-      this.currentUrl = window.location.href;
-
-      this.injectPage();
+    observer.observe(document.querySelector('body'), {
+      attributes: true,
+      childList: true,
+      subtree: true
     });
+
+    this.currentUrl = window.location.href;
+
+    this.injectPage();
   },
 
   methods: {
@@ -146,7 +137,7 @@ export default {
         })
         .then(tool => {
           window.setTimeout(() => {
-            if (!thisApp.browserItems.featureKnown) {
+            if (!vm.browserItems.featureKnown) {
               vm.containerShowed = true
 
               window.setTimeout(() => {

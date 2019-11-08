@@ -7,14 +7,16 @@ import browser from '@/modules/Extension/browser';
 export default {
   methods: {
     downloadFile(url, filename, extra) {
-      if (thisApp.browserItems.enableExtTakeOverDownloads) {
+      let vm = this;
+
+      if (this.browserItems.enableExtTakeOverDownloads) {
         browserPermissions.contains({
           permissions: ['downloads']
         }).then(result => {
           if (result) {
             browserDownloads.download({
               url: url,
-              filename: thisApp.browserItems.downloadRelativeLocation + filename
+              filename: vm.browserItems.downloadRelativeLocation + filename
             })
           } else {
             alert('You need grant download permission for downloading using downlads setting in extension')

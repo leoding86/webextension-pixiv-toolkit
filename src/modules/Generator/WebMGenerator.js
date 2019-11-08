@@ -35,10 +35,10 @@ class WebMGenerator {
           resolve(self.appendImagesToWebMFrame(size, index + 1, -(-currentDuration - self.frames[index].delay)))
         })
       } else {
-        if (window.thisApp.enableExtend === true &&
-          window.thisApp.browserItems.enableWhenUnderSeconds * 100 > self.duration &&
-          window.thisApp.browserItems.extendDuration &&
-          window.thisApp.browserItems.extendDuration * 1000 > currentDuration
+        if ($extension.enableExtend === true &&
+          $extension.browserItems.enableWhenUnderSeconds * 100 > self.duration &&
+          $extension.browserItems.extendDuration &&
+          $extension.browserItems.extendDuration * 1000 > currentDuration
         ) {
           index = 0
 

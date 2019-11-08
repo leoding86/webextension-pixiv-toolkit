@@ -17,7 +17,7 @@ import {
   permissions as browserPermissions,
   downloads as browserDownloads
 } from "@/content_scripts/Browser"
-import browser from '@/modules/Extension/browser'
+import Browser from '@/modules/Browser/Browser'
 import downloadFileMixin from "@/content_scripts/mixins/downloadFileMixin"
 
 export default {
@@ -124,7 +124,7 @@ export default {
         vm.gifStatus = 2
         vm.gifUrl = URL.createObjectURL(blob)
 
-        if (thisApp.browserItems.ugoiraGenerateAndDownload) {
+        if (vm.browserItems.ugoiraGenerateAndDownload) {
           vm.downloadFile(vm.gifUrl, vm.getFilename() + '.gif', {
             statType: 'ugoira',
           });
@@ -141,7 +141,7 @@ export default {
         vm.webmStatus = 2
         vm.webmUrl = URL.createObjectURL(blob)
 
-        if (thisApp.browserItems.ugoiraGenerateAndDownload) {
+        if (vm.browserItems.ugoiraGenerateAndDownload) {
           vm.downloadFile(vm.webmUrl, vm.getFilename() + '.webm', {
             statType: 'ugoira',
           });
@@ -164,7 +164,7 @@ export default {
         let blob = new Blob([arrayBuffer], {type: 'image/apng'});
         vm.apngUrl = URL.createObjectURL(blob);
 
-        if (thisApp.browserItems.ugoiraGenerateAndDownload) {
+        if (vm.browserItems.ugoiraGenerateAndDownload) {
           vm.downloadFile(vm.apngUrl, vm.getFilename() + '.apng', {
             statType: 'ugoira',
           });
@@ -239,7 +239,7 @@ export default {
     },
 
     getFilename() {
-      return formatName(thisApp.browserItems.ugoiraRenameFormat, this.ugoiraTool.context, this.ugoiraTool.context.illustId)
+      return formatName(this.browserItems.ugoiraRenameFormat, this.ugoiraTool.context, this.ugoiraTool.context.illustId)
     },
 
     isBrowser(browser) {

@@ -1,7 +1,7 @@
 export default {
   computed: {
     browserItems() {
-      return this.$root.$data.browserItems;
+      return this.$root.$data.globalBrowserItems || this.$root.$data.browserItems;
     }
   },
 

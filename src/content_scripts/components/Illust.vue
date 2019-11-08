@@ -44,8 +44,8 @@ export default {
 
     this.illustTool.initOptions({
       splitSize: 999,
-      illustrationRenameFormat: window.thisApp.browserItems.illustrationRenameFormat,
-      illustrationImageRenameFormat: window.thisApp.browserItems.illustrationImageRenameFormat
+      illustrationRenameFormat: this.browserItems.illustrationRenameFormat,
+      illustrationImageRenameFormat: this.browserItems.illustrationImageRenameFormat
     }).init()
 
     this.chunks = this.illustTool.chunks
@@ -174,7 +174,7 @@ export default {
           })
         )
 
-        if (thisApp.browserItems.illustrationDownloadIfReady) {
+        if (vm.browserItems.illustrationDownloadIfReady) {
           vm.downloadFile(buttonInfo.url, vm.getFilename(buttonInfo.chunk), {
             statType: 'illust',
           });
@@ -183,7 +183,7 @@ export default {
     },
 
     getFilename(chunk) {
-      return formatName(thisApp.browserItems.illustrationRenameFormat, this.illustTool.context, this.illustTool.context.illustId) + '_' + chunk.start + '-' + chunk.end + '.zip'
+      return formatName(this.browserItems.illustrationRenameFormat, this.illustTool.context, this.illustTool.context.illustId) + '_' + chunk.start + '-' + chunk.end + '.zip'
     },
 
     handleConnect(port) {
