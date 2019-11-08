@@ -2,8 +2,10 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import Browser from '@/modules/Browser/Browser'
+import RouterMixin from '@/mixins/RouterMixin'
 
 Vue.config.productionTip = false;
+Vue.mixin(RouterMixin);
 
 try {
   (function(browser) {
