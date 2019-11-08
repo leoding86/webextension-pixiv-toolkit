@@ -1,10 +1,10 @@
 import Vue from 'vue';
 import App from './App';
-import browser from '@/modules/Extension/browser';
+import Browser from '@/modules/Browser/Browser';
 
 Vue.config.productionTip = false;
 
-window.browser = browser;
+window.browser = Browser.getBrowser();
 
 browser.storage.local.get(null, items => {
   new Vue({
