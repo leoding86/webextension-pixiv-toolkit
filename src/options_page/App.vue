@@ -22,7 +22,7 @@
         <v-list dense>
           <v-list-tile
             ripple
-            @click="illustHistoryClickHandle">
+            @click="routeTo('IllustHistory')">
             <v-list-tile-content>
               <span>{{ tl('Illust_History') }}</span>
             </v-list-tile-content>
@@ -133,17 +133,11 @@ export default {
       }
     },
 
-      routeTo (name) {
-        this.$router.push({
-          name: name
-        })
-      },
-
-      illustHistoryClickHandle() {
-        this.$router.push({
-          name: 'IllustHistory'
-        });
-      }
+    routeTo (name) {
+      this.pushRoute({
+        name: name
+      })
+    }
   }
 }
 </script>
