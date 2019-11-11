@@ -19,7 +19,7 @@
       @click="openInNewTab('https://chrome.google.com/webstore/detail/pixiv-toolkit/ajlcnbbeidbackfknkgknjefhmbngdnj')"
     >
       <img src="../assets/chrome-es.png">
-      <span class="button-text" v-show="largeWindow">{{ tl('Give_5_stars') }} !</span>
+      <span class="button-text" v-show="largeWindow">{{ tl('Give_5_stars') }}</span>
       <v-icon right>open_in_new</v-icon>
     </v-btn>
 
@@ -31,7 +31,7 @@
       v-if="isFirefox"
       @click="openInNewTab('')">
       <img src="../assets/firefox-amo.png">
-      <span class="button-text" v-show="largeWindow">{{ tl('Give_5_stars') }} !</span>
+      <span class="button-text" v-show="largeWindow">{{ tl('Give_5_stars') }}</span>
       <v-icon right>open_in_new</v-icon>
     </v-btn>
 
@@ -41,7 +41,7 @@
       depressed
       v-if="showPatreon" class="support-btn" @click="openInNewTab('https://github.com/leoding86/webextension-pixiv-toolkit')">
       <img src="../assets/github.svg">
-      <span class="button-text" v-show="largeWindow">{{ tl('Star_it') }} !</span>
+      <span class="button-text" v-show="largeWindow">{{ tl('Star_it') }}</span>
       <v-icon right>open_in_new</v-icon>
     </v-btn>
 
@@ -50,7 +50,7 @@
       depressed
       round class="support-btn" @click="showSponsors"
       style="background:#fff;">
-      😍<span class="button-text" v-show="largeWindow">&nbsp;&nbsp;{{ tl('Sponsors') }}</span>
+      😍<span class="button-text" v-show="largeWindow">{{ tl('Sponsors') }}</span>
       <v-icon>keyboard_arrow_right</v-icon>
     </v-btn>
 
@@ -105,12 +105,12 @@ export default {
       this.isFirefox = true;
     }
 
-    if (window.innerWidth < 900) {
+    if (window.innerWidth < 950) {
       this.largeWindow = false;
     }
 
     window.addEventListener('resize', () => {
-      if (window.innerWidth < 900) {
+      if (window.innerWidth < 950) {
         this.largeWindow = false;
       } else {
         this.largeWindow = true;
@@ -142,15 +142,19 @@ export default {
   margin-bottom: 25px;
 
   .support-btn {
-    height: 38px;
-    font-size: 16px;
+    height: 32px;
+    font-size: 14px;
 
     img {
-      width: 30px;
+      width: 23px;
     }
 
     .button-text {
       margin-left: 7px;
+    }
+
+    .v-icon {
+      font-size: 20px;
     }
   }
 
