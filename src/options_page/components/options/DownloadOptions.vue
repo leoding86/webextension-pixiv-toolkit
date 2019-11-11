@@ -62,10 +62,14 @@ export default {
 
       enableExtTakeOverDownloads: false,
 
-      downloadRelativeLocation: null,
-
       downloadSaveAs: false
     };
+  },
+
+  computed: {
+    downloadRelativeLocation() {
+      return this.browserItems.downloadRelativeLocation;
+    }
   },
 
   watch: {
@@ -78,8 +82,6 @@ export default {
 
   beforeMount() {
     this.enableExtTakeOverDownloads = !!this.browserItems.enableExtTakeOverDownloads;
-
-    this.downloadRelativeLocation = this.browserItems.downloadRelativeLocation;
 
     this.downloadSaveAs = !!this.browserItems.downloadSaveAs;
   },
