@@ -134,7 +134,7 @@ export default {
     },
 
     getFilename(chunk) {
-      return formatName(vm.browserItems.mangaRenameFormat, this.mangaTool.context, this.mangaTool.context.illustId) + '_' + chunk.start + '-' + chunk.end + '.zip'
+      return formatName(this.browserItems.mangaRenameFormat, this.mangaTool.context, this.mangaTool.context.illustId) + '_' + chunk.start + '-' + chunk.end + '.zip'
     },
 
     handleConnect(port) {
