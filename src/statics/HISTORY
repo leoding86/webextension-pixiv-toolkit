@@ -5,6 +5,9 @@ You can submit a issue on GitHub if you have any questions.
 Github:
 https://github.com/leoding86/webextension-pixiv-toolkit
 ----------------------------------------------
+v3.3.3
+Fix issue that illustrations cannot be downloaded.
+
 v3.3.2
 Move support component to page header;
 Minor fixes.
