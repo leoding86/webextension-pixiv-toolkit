@@ -31,6 +31,7 @@
     <div class="footer">
       <a href="#" @click="openReportIssue" class="button">{{ tl('Report_issue') }}</a>
       <a href="#" @click="openOptionsPage" class="button">{{ tl('Settings') }}</a>
+      <a href="#" @click="openVisitHistory" class="button">{{ tl('illust_history') }}</a>
     </div>
   </div>
 </template>
@@ -91,7 +92,9 @@ export default {
 
   methods: {
     openOptionsPage() {
-      browser.runtime.openOptionsPage();
+      browser.tabs.create({
+        url: browser.runtime.getURL('options_page/index.html#/')
+      });
     },
 
     openReportIssue() {
@@ -103,6 +106,12 @@ export default {
     openGithub() {
       browser.tabs.create({
         url: 'https://github.com/leoding86/webextension-pixiv-toolkit'
+      });
+    },
+
+    openVisitHistory() {
+      browser.tabs.create({
+        url: browser.runtime.getURL('options_page/index.html#/illust-history')
       });
     }
   }
