@@ -3,17 +3,8 @@
     <span class="card-title">{{ tl('Change_History') }}</span>
 
     <v-card>
-      <v-list-tile>
-        <v-list-tile-content>
-          <v-list-tile-title>{{ tl('setting_show_history_when_update_completed') }}</v-list-tile-title>
-        </v-list-tile-content>
-        <v-list-tile-action>
-          <v-switch v-model="showHistoryWhenUpdateCompleted"></v-switch>
-        </v-list-tile-action>
-      </v-list-tile>
-      <v-divider></v-divider>
       <v-card-text>
-        <img src="@/statics/img/example.gif" style="width:100%;border-radius: 5px;box-shadow:0 1px 3px rgba(0,0,0,0.5);">
+        <img src="@/statics/img/example.gif" style="width:100%;border-radius: 5px;box-shadow:0 1px 3px rgba(0,0,0,0.5);margin-bottom:15px;">
         <div style="font-size:14px" v-html="history"></div>
       </v-card-text>
     </v-card>
@@ -31,27 +22,16 @@ export default {
   data () {
     return {
       xhr: null,
-      history: 'loading',
-      showHistoryWhenUpdateCompleted: true
+      history: 'loading'
     }
   },
 
   mounted () {
     let vm = this;
 
-    this.showHistoryWhenUpdateCompleted = this.browserItems.showHistoryWhenUpdateCompleted;
-
     this.loadHistory().then(history => {
       vm.history = history;
     });
-  },
-
-  watch: {
-    showHistoryWhenUpdateCompleted (val) {
-      browser.storage.local.set({
-        showHistoryWhenUpdateCompleted: val
-      });
-    }
   },
 
   methods: {

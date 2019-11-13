@@ -13,15 +13,6 @@
             <v-switch v-model="autoActivateDownloadPanel"></v-switch>
           </v-list-tile-action>
         </v-list-tile>
-
-        <v-list-tile>
-          <v-list-tile-content>
-            <v-list-tile-title>{{ tl('setting_show_history_when_update_completed') }}</v-list-tile-title>
-          </v-list-tile-content>
-          <v-list-tile-action>
-            <v-switch v-model="showHistoryWhenUpdateCompleted"></v-switch>
-          </v-list-tile-action>
-        </v-list-tile>
       </v-list>
     </v-card>
   </div>
@@ -35,13 +26,11 @@ export default {
 
   data() {
     return {
-      showHistoryWhenUpdateCompleted: true,
       autoActivateDownloadPanel: false
     };
   },
 
   beforeMount() {
-    this.showHistoryWhenUpdateCompleted = this.browserItems.showHistoryWhenUpdateCompleted;
     this.autoActivateDownloadPanel = this.browserItems.autoActivateDownloadPanel;
   },
 
@@ -49,12 +38,6 @@ export default {
     autoActivateDownloadPanel(val) {
       browser.storage.local.set({
         autoActivateDownloadPanel: !!val
-      });
-    },
-
-    showHistoryWhenUpdateCompleted(val) {
-      browser.storage.local.set({
-        showHistoryWhenUpdateCompleted: !!val
       });
     }
   }
