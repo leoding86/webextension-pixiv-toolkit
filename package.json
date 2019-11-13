@@ -20,6 +20,7 @@
     "vue-material": "^1.0.0-beta-10.2",
     "vue-router": "^3.1.2",
     "vue-sortable": "^0.1.3",
+    "vue-virtual-scroller": "^1.0.0-rc.2",
     "vuedraggable": "^2.23.0",
     "vuetify": "^1.5.17"
   },
