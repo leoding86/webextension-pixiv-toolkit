@@ -62,6 +62,10 @@ export default new Router({
       name: 'IllustHistory',
       component: () => import('@@/components/IllustHistory')
     }, {
+      path: '/visit-history',
+      name: 'VisitHistory',
+      component: () => import('@@/components/VisitHistory')
+    }, {
       path: '/third-party',
       name: 'ThirdParty',
       component: ThirdParty
