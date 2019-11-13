@@ -273,7 +273,12 @@ Main.prototype = {
            */
           enableExtTakeOverDownloads: false,
           downloadRelativeLocation: null,
-          showHistoryWhenUpdateCompleted: true,
+
+          /**
+           * @deprecated
+           * @since 3.3.4
+           */
+          // showHistoryWhenUpdateCompleted: true,
 
           /**
            * @version 2.0.5
@@ -332,23 +337,17 @@ Main.prototype = {
           'metasConfig',
           'mangaMetasConfig',
           'mangaImageNamePrefix',
-          'mangaImagesMetasConfig'
+          'mangaImagesMetasConfig',
+          'showHistoryWhenUpdateCompleted'
         ]);
 
         updater.mergeSettings(function () {
           updater.updateSetting({
             version: version
           }, function () {
-            // console.log('update complete. version: ' + version);
-          });
-
-          if (items.showHistoryWhenUpdateCompleted) {
-            // Open change history
-            browser.tabs.create({
-              url: browser.runtime.getURL('./options_page/index.html') + '#/history'
-            });
-          } else {
-            // Mark new on badge
+            /**
+             * Attach a badge with text 'NEW'
+             */
             browser.browserAction.setBadgeText({
               text: 'NEW'
             });
@@ -356,7 +355,7 @@ Main.prototype = {
             browser.browserAction.setBadgeBackgroundColor({
               color: '#FF0000'
             });
-          }
+          });
         });
       }
     });
