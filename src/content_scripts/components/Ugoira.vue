@@ -182,14 +182,21 @@ export default {
   },
 
   beforeDestroy() {
-    this.ugoiraTool.gifGenerator.event.removeEventListeners("onProgress")
-    this.ugoiraTool.gifGenerator.event.removeEventListeners("onFinish")
+    /**
+     * Check whether the tool is initialization before remove the related listeners,
+     * because when user navigate to other page before the page loaded will cause the tool
+     * has no time to complete initialization.
+     */
+    if (this.ugoiraTool) {
+      this.ugoiraTool.gifGenerator.event.removeEventListeners("onProgress")
+      this.ugoiraTool.gifGenerator.event.removeEventListeners("onFinish")
 
-    this.ugoiraTool.webMGenerator.event.removeEventListeners("onProgress")
-    this.ugoiraTool.webMGenerator.event.removeEventListeners("onFinish")
+      this.ugoiraTool.webMGenerator.event.removeEventListeners("onProgress")
+      this.ugoiraTool.webMGenerator.event.removeEventListeners("onFinish")
 
-    this.ugoiraTool.apngGenerator.event.removeEventListeners("onStart");
-    this.ugoiraTool.apngGenerator.event.removeEventListeners("onFinish");
+      this.ugoiraTool.apngGenerator.event.removeEventListeners("onStart");
+      this.ugoiraTool.apngGenerator.event.removeEventListeners("onFinish");
+    }
   },
 
   methods: {
