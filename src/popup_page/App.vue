@@ -111,7 +111,7 @@ export default {
 
     openVisitHistory() {
       browser.tabs.create({
-        url: browser.runtime.getURL('options_page/index.html#/illust-history')
+        url: browser.runtime.getURL('options_page/index.html#/visit-history')
       });
     }
   }
