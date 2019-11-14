@@ -22,7 +22,7 @@
         <v-list dense>
           <v-list-tile
             ripple
-            @click="routeTo('IllustHistory')">
+            @click="routeTo('VisitHistory')">
             <v-list-tile-content>
               <span>{{ tl('Illust_History') }}</span>
             </v-list-tile-content>
