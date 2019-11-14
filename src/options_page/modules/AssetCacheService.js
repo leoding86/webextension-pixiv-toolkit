@@ -13,6 +13,8 @@ export default class AssetCacheService {
 
   constructor() {
     this.assetCacheRepo = new AssetCacheRepo();
+    this.cachedAssets = new Map();
+    this.cachedLimit = 1000;
   }
 
   /**
@@ -21,7 +23,22 @@ export default class AssetCacheService {
    */
   getCache(url) {
     return new Promise(resolve => {
+      if (this.cachedAssets.size > this.cachedLimit) {
+        this.cachedAssets.delete(this.cachedAssets.entries().next());
+      }
+
+      if (this.cachedAssets.has(url)) {
+        // console.log(`Get cache asset '${url}'`);
+        resolve(this.cachedAssets.get(url));
+        return;
+      }
+
       this.assetCacheRepo.retrieveAsset(url).then(doc => {
+        if (!this.cachedAssets.has(url)) {
+          // console.log(`Cache asset '${url}'`);
+          this.cachedAssets.set(url, doc.asset.data);
+        }
+
         resolve(doc.asset.data);
       }).catch(err => {
         console.log(err); // Output error infomation
