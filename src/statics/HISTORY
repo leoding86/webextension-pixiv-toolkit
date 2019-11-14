@@ -5,9 +5,11 @@ You can submit a issue on GitHub if you have any questions.
 Github:
 https://github.com/leoding86/webextension-pixiv-toolkit
 ----------------------------------------------
-v3.3.4
-Remove setting of open change history page after updated;
+v3.4
+Whole NEW visit history UI;
+Add reload extension setting;
 Add "Visit History" on popup page;
+Remove setting of open change history page after updated;
 Minor fixes.
 
 v3.3.3
