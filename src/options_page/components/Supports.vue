@@ -4,9 +4,9 @@
       small
       round
       depressed
-      v-if="showPatreon" class="support-btn" @click="openInNewTab('https://www.patreon.com/leoding')">
-      <img src="../assets/patreon.png">
-      <span class="button-text" v-show="largeWindow">{{ tl('Become_a_patron') }} !</span>
+      v-if="showPatreon" class="support-btn" @click="openInNewTab('https://github.com/leoding86/webextension-pixiv-toolkit')">
+      <img src="../assets/github.svg">
+      <span class="button-text" v-show="largeWindow">{{ tl('Star_it') }}</span>
       <v-icon right>open_in_new</v-icon>
     </v-btn>
 
@@ -39,9 +39,9 @@
       small
       round
       depressed
-      v-if="showPatreon" class="support-btn" @click="openInNewTab('https://github.com/leoding86/webextension-pixiv-toolkit')">
-      <img src="../assets/github.svg">
-      <span class="button-text" v-show="largeWindow">{{ tl('Star_it') }}</span>
+      v-if="showPatreon" class="support-btn" @click="openInNewTab('https://www.patreon.com/leoding')">
+      <img src="../assets/patreon.png">
+      <span class="button-text" v-show="largeWindow">{{ tl('Become_a_patron') }} !</span>
       <v-icon right>open_in_new</v-icon>
     </v-btn>
 
