@@ -1,11 +1,11 @@
 <template>
-  <div class="container container--big">
+  <div class="container container--small page-history">
     <v-alert
       :value="true"
       type="warning"
       v-if="!enableSaveVisitHistory">Save visit history has been disabled</v-alert>
 
-    <div class="visit-history__header">
+    <div class="history__header">
       <!-- Searchbar -->
       <v-text-field class="search-panel"
         label="Solo"
@@ -18,12 +18,19 @@
       <!-- /Searchbar -->
     </div>
 
-    <div class="dataset-head-actions-wrap">
+    <div class="history__header-action">
       <v-btn
         class="text-none"
         style="margin-left:0;"
+        flat
+        @click="pushRoute({name: 'IllustHistory'})"
+      >Return old style</v-btn>
+
+      <v-btn
+        class="text-none"
         depressed
-        flat>Total {{ total }} Records</v-btn>
+        flat
+      >Total {{ total }} Records</v-btn>
 
       <v-switch v-model="disableBlurOnR" label="Disable mask"></v-switch>
 
@@ -31,7 +38,7 @@
     </div>
 
     <v-layout row wrap
-      class="illust-history-wrap"
+      class="history-items"
       v-if="illusts.length > 0"
     >
       <recycle-scroller
@@ -42,26 +49,26 @@
         key-field="id"
         v-slot="{ item }"
       >
-        <div class="illust-content">
-          <div class="illust-content__thumb-content"
+        <div class="history-item">
+          <div class="history-item__thumb"
             @click="openInNew(item)"
           >
-            <cacheable-image class="illust-content__thumb"
-              :class="{'illust-content__thumb--blur': item.r && !disableBlurOnR}"
+            <cacheable-image class="history-item__thumb-body"
+              :class="{'history-item__thumb-body--blur': item.r && !disableBlurOnR}"
               :src="item.images.thumb"
               mode="background"
             ></cacheable-image>
           </div>
-          <div class="illust-content__info">
-            <div class="illust-content__info-entity illust-content__info-entity--blod"><span class="illust-content__badge" :class="`illust-content__badge--type${item.type}`">{{ caseWorkType(item.type) }}</span>{{ item.title }}</div>
-            <div class="illust-content__info-entity">{{ caseDate(item.viewed_at) }}</div>
-            <div class="illust-content__info-entity illust-content__info-entity--sub">
+          <div class="history-item__info">
+            <div class="history-item__info-entity history-item__info-entity--blod"><span class="history-item__info-badge" :class="`history-item__info-badge--type${item.type}`">{{ caseWorkType(item.type) }}</span>{{ item.title }}</div>
+            <div class="history-item__info-entity">{{ caseDate(item.viewed_at) }}</div>
+            <div class="history-item__info-entity history-item__info-entity--sub">
               <a :href="caseWorkUrl(item.id)">{{ caseWorkUrl(item.id) }}</a>
             </div>
           </div>
-          <div class="illust-content__actions">
+          <div class="history-item__actions">
             <v-btn
-              class="illust-content__actions-btn"
+              class="history-item__actions-btn"
               flat
               icon
               @click="deleteOne(item)"
@@ -74,7 +81,7 @@
     </v-layout>
 
     <p v-if="statusNotice"
-      class="visit-history__status-notice"
+      class="history__status-notice"
     >
       {{ statusNotice }}
     </p>
@@ -112,10 +119,12 @@ import IllustHistory from '@/repositories/IllustHistory'
 import CacheableImage from '@@/components/CacheableImage';
 import Supports from '@@/components/Supports';
 import SuperMixin from '@/mixins/SuperMixin';
+import RouterMixin from '@/mixins/RouterMixin';
 
 export default {
   mixins: [
     SuperMixin,
+    RouterMixin
   ],
 
   components: {
@@ -275,7 +284,7 @@ export default {
     },
 
     openInNew(illust) {
-      window.open('https://www.pixiv.net/member_illust.php?mode=medium&illust_id=' + illust.id)
+      window.open(this.caseWorkUrl(illust.id))
     },
 
     deleteOne(illust) {
@@ -360,173 +369,162 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-.container {
-  max-width: 800px;
-  margin: 0 auto;
-}
+<style lang="scss">
+.page-history {
+  .history__header-action {
+    .v-input--selection-controls {
+      display: inline-block;
+      box-sizing: border-box;
+      margin-top: 5px;
+      padding-top: 0px;
+      height: 36px;
+      position: relative;
+      top: 4px;
+      left: 10px;
+    }
+  }
 
-.dataset-head-actions-wrap {
-  .v-input--selection-controls {
-    display: inline-block;
-    box-sizing: border-box;
-    margin-top: 5px;
-    padding-top: 0px;
-    height: 36px;
+  .history__header {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 80px;
+    z-index: 9;
+
+    .v-input__slot {
+      box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
+    }
+
+    .v-text-field__details {
+      display: none;
+    }
+  }
+
+  .history-items {
     position: relative;
-    top: 4px;
-    left: 10px;
+    margin-top: 20px;
+    box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
+    background: #fff;
+
+    .scroller {
+      width: 100%;
+      height: 100%;
+    }
+
+    .history-item {
+      display: flex;
+      flex-direction: row;
+      box-sizing: border-box;
+      height: 90px;
+      border-bottom: 1px solid #ccc;
+      background: #fff;
+
+      &:hover {
+        background: #f6f6f6;
+
+        .history-item__actions {
+          width: 120px;
+        }
+      }
+    }
+
+    .history-item__thumb{
+      position: relative;
+      width: 120px;
+      height: 89px;
+      cursor: pointer;
+      overflow: hidden;
+      background: url(../../statics/img/rthumb.png) center center no-repeat;
+    }
+
+    .history-item__thumb-body {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      transition: opacity 0.5s;
+    }
+
+    .history-item__thumb-body--blur {
+      opacity: 0;
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+
+    .history-item__info {
+      flex: auto;
+    }
+
+    .history-item__info-entity {
+      font-size: 12px;
+      padding: 6px 0 0 8px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+
+      a {
+        text-decoration: none;
+        color: #999;
+
+        &:hover {
+          color: #333;
+        }
+      }
+    }
+
+    .history-item__info-entity--blod {
+      font-weight: 700;
+    }
+
+    .history-item__info-entity--sub {
+      color: #999;
+    }
+
+    .history-item__info-badge {
+      position: relative;
+      margin-right: 5px;
+      padding: 3px;
+      background: #ccc;
+      font-weight: 300;
+    }
+
+    .history-item__info-badge--type0 {
+      color: #fff;
+      background:brown;
+    }
+
+    .history-item__info-badge--type1 {
+      color: #fff;
+      background:cadetblue;
+    }
+
+    .history-item__info-badge--type2 {
+      color: #fff;
+      background:coral;
+    }
+
+    .history-item__actions {
+      width: 0;
+      text-align: right;
+      overflow: hidden;
+    }
+
+    .history-item__actions-btn {
+      margin: 27px 10px;
+      color: rgb(88, 88, 88);
+    }
+  }
+
+  .history__status-notice {
+    font-size: 14px;
+    text-align: center;
+    line-height: 4;
+    color: #ababab;
+    text-shadow: 0 -1px 0 #ccc;
   }
 }
 
 .search-panel {
   margin: 10px 0;
-}
-</style>
-
-<style lang="scss">
-.illust-history-wrap {
-  position: relative;
-  margin-top: 20px;
-  box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
-  background: #fff;
-
-  .scroller {
-    width: 100%;
-    height: 100%;
-  }
-
-  .illust-content {
-    display: flex;
-    flex-direction: row;
-    box-sizing: border-box;
-    height: 90px;
-    border-bottom: 1px solid #eee;
-    background: #fff;
-
-    &:hover {
-      background: #f6f6f6;
-
-      .illust-content__actions {
-        width: 120px;
-      }
-    }
-  }
-
-  .illust-content__thumb-content {
-    position: relative;
-    width: 120px;
-    height: 90px;
-    cursor: pointer;
-    overflow: hidden;
-    background: url(../assets/mask.gif) repeat;
-  }
-
-  .illust-content__thumb {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    transition: opacity 0.5s;
-  }
-
-  .illust-content__thumb--blur {
-    opacity: 0;
-
-    &:hover {
-      opacity: 1;
-    }
-  }
-
-  .illust-content__info {
-    flex: auto;
-  }
-
-  .illust-content__info-entity {
-    font-size: 12px;
-    padding: 5px 0 0 5px;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
-
-    a {
-      text-decoration: none;
-      color: #999;
-
-      &:hover {
-        color: #333;
-      }
-    }
-  }
-
-  .illust-content__info-entity--blod {
-    font-weight: 700;
-  }
-
-  .illust-content__info-entity--sub {
-    color: #999;
-  }
-
-  .illust-content__badge {
-    position: relative;
-    margin-right: 5px;
-    padding: 3px;
-    background: #ccc;
-    font-weight: 300;
-  }
-
-  .illust-content__badge--type0 {
-    color: #fff;
-    background:brown;
-  }
-
-  .illust-content__badge--type1 {
-    color: #fff;
-    background:cadetblue;
-  }
-
-  .illust-content__badge--type2 {
-    color: #fff;
-    background:coral;
-  }
-
-  .illust-content__actions {
-    width: 0;
-    text-align: right;
-    overflow: hidden;
-  }
-
-  .illust-content__actions-btn {
-    margin: 27px 10px;
-    color: rgb(88, 88, 88);
-  }
-}
-
-.visit-history__header {
-  position: -webkit-sticky;
-  position: sticky;
-  top: 80px;
-  z-index: 9;
-
-  .v-input__slot {
-    box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
-  }
-
-  .v-text-field__details {
-    display: none;
-  }
-}
-
-.visit-history__status-notice {
-  font-size: 14px;
-  text-align: center;
-  line-height: 4;
-  color: #ababab;
-  text-shadow: 0 -1px 0 #ccc;
-}
-
-.visit-content__menu {
-  position: absolute;
-  background: #fff;
-  box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
 }
 </style>
