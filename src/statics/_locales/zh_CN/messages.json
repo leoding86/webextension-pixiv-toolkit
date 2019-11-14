@@ -367,5 +367,14 @@
    },
    "Download_file_if_everything_is_ready": {
        "message": "准备完成直接下载"
+   },
+   "Reload_extension": {
+       "message": "重新加载插件"
+   },
+   "Reload_extension_if_there_is_something_wrong": {
+       "message": "如果发现任何问题，可以尝试重新加载插件"
+   },
+   "Reload": {
+       "message": "重新加载"
    }
 }

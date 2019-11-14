@@ -367,5 +367,14 @@
    },
    "Download_file_if_everything_is_ready": {
        "message": "Download file directly if everything is ready"
+   },
+   "Reload_extension": {
+       "message": "Reload extension"
+   },
+   "Reload_extension_if_there_is_something_wrong": {
+       "message": "Reload extension if there is something wrong"
+   },
+   "Reload": {
+       "message": "Reload"
    }
 }
