@@ -14,6 +14,18 @@
           </v-list-tile-action>
         </v-list-tile>
       </v-list>
+
+      <v-list two-line>
+        <v-list-tile>
+          <v-list-tile-content>
+            <v-list-tile-title>{{ tl('Reload_extension') }}</v-list-tile-title>
+            <v-list-tile-sub-title>{{ tl('Reload_extension_if_there_is_something_wrong') }}</v-list-tile-sub-title>
+          </v-list-tile-content>
+          <v-list-tile-action>
+            <v-btn depressed @click="reload">{{ tl('Reload') }}</v-btn>
+          </v-list-tile-action>
+        </v-list-tile>
+      </v-list>
     </v-card>
   </div>
 </template>
@@ -39,6 +51,12 @@ export default {
       browser.storage.local.set({
         autoActivateDownloadPanel: !!val
       });
+    }
+  },
+
+  methods: {
+    reload() {
+      browser.runtime.reload();
     }
   }
 };
