@@ -9,7 +9,7 @@ class AssetCache {
       revs_limit: 1
     });
 
-    this.maxLimit = 150;
+    this.maxLimit = 2000;
 
     this.init();
   }
