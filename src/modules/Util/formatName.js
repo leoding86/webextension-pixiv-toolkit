@@ -1,6 +1,35 @@
 import I18n from "../Browser/I18n";
+import browser from '@/modules/Extension/browser';
 
 export default (renameFormat, context, fallback) => {
+  let specials = {
+    win: {
+      illegals: [
+        '<', '>', ':', '"', '/', '\\', '|', '?', '*'
+      ],
+      /**
+      illegalNames: [
+        "con","aux","nul","prn","com0","com1","com2","com3","com4","com5","com6","com7","com8","com9","lpt0","lpt1","lpt2","lpt3","lpt4","lpt5","lpt6","lpt7","lpt8","lpt9"
+      ],
+      */
+      max: 200 // full path limitation is 258
+    },
+    linux: {
+      illegals: [
+        '/', /** not suggest to use */ '@', '#', '$', '&', '\'', 
+      ],
+      max: 256
+    },
+    unix: {
+      illegals: [
+        '/', ' '
+      ],
+      max: 256
+    }
+  };
+
+  let filename = '';
+
   function getContextMetaValue(context, key) {
     let i18n = I18n.getI18n();
 
@@ -52,24 +81,36 @@ export default (renameFormat, context, fallback) => {
   fallback += '';
 
   if (!renameFormat) {
-    return fallback.replace('/', '\/');
+    filename = fallback;
+  } else {
+    var matches = renameFormat.match(/\{[a-z]+\}/ig);
+    var name = renameFormat;
+  
+    if (matches && matches.length > 0) {
+      matches.forEach(function (match) {
+        var key = match.slice(1, -1);
+        var val = getContextMetaValue(context, key);
+  
+        if (val !== undefined) {
+          name = name.replace(match, val);
+        }
+      });
+    }
+  
+    filename = !!name ? name : fallback;
   }
 
-  var matches = renameFormat.match(/\{[a-z]+\}/ig);
-  var name = renameFormat;
+  /**
+   * Because chrome.runtime.getPlatformInfo is a async operation, for the sake of simplicity, we
+   * use Windows rule to filter filename.
+   **/
+  let rule = specials.win;
 
-  if (matches && matches.length > 0) {
-    matches.forEach(function (match) {
-      var key = match.slice(1, -1);
-      var val = getContextMetaValue(context, key);
+  rule.illegals.forEach(char => {
+    filename = filename.replace(char, '_');
+  });
 
-      if (val !== undefined) {
-        name = name.replace(match, val);
-      }
-    });
-  }
+  filename = filename.substr(0, max);
 
-  let filename = !!name ? name : fallback;
-
-  return filename.replace('/', '_')
+  return filename;
 };
