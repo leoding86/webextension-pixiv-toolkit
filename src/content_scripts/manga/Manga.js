@@ -57,6 +57,10 @@ class MangaTool {
     return this.context.userId
   }
 
+  getUserName() {
+    return this.context.userName
+  }
+
   getId() {
     return this.context.illustId
   }
