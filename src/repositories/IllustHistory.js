@@ -11,7 +11,7 @@ class IllustHistory {
 
     this.maxLimit = 10000;
 
-    this.properties = ['id', 'title', 'type', 'r', 'images', 'viewed_at'];
+    this.properties = ['id', 'title', 'userId', 'userName', 'type', 'r', 'images', 'viewed_at'];
 
     this.init();
   }
