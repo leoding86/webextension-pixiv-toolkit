@@ -16,7 +16,7 @@ export default (renameFormat, context, fallback) => {
     },
     linux: {
       illegals: [
-        '/', /** not suggest to use */ '@', '#', '$', '&', '\'', 
+        '/', /** not suggest to use */ '@', '#', '$', '&', '\'',
       ],
       max: 256
     },
@@ -85,18 +85,18 @@ export default (renameFormat, context, fallback) => {
   } else {
     var matches = renameFormat.match(/\{[a-z]+\}/ig);
     var name = renameFormat;
-  
+
     if (matches && matches.length > 0) {
       matches.forEach(function (match) {
         var key = match.slice(1, -1);
         var val = getContextMetaValue(context, key);
-  
+
         if (val !== undefined) {
           name = name.replace(match, val);
         }
       });
     }
-  
+
     filename = !!name ? name : fallback;
   }
 
@@ -110,7 +110,7 @@ export default (renameFormat, context, fallback) => {
     filename = filename.replace(char, '_');
   });
 
-  filename = filename.substr(0, max);
+  filename = filename.substr(0, rule.max);
 
   return filename;
 };
