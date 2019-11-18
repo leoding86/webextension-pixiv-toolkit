@@ -61,10 +61,14 @@
           </div>
           <div class="history-item__info">
             <div class="history-item__info-entity history-item__info-entity--blod"><span class="history-item__info-badge" :class="`history-item__info-badge--type${item.type}`">{{ caseWorkType(item.type) }}</span>{{ item.title }}</div>
-            <div class="history-item__info-entity">{{ caseDate(item.viewed_at) }}</div>
-            <div class="history-item__info-entity history-item__info-entity--sub">
-              <a :href="caseWorkUrl(item.id)">{{ caseWorkUrl(item.id) }}</a>
+            <div class="history-item__info-entity history-item__info-entity--blod">
+              <a :href="caseUserUrl(item.userId)"
+                target="_blank"
+                v-if="item.userId"
+              >{{ item.userName}}</a>
+              <span v-else>-</span>
             </div>
+            <div class="history-item__info-entity history-item__info-entity--sub">{{ caseDate(item.viewed_at) }}<span style="margin-left:15px;">{{ caseWorkUrl(item.id) }}</span></div>
           </div>
           <div class="history-item__actions">
             <v-btn
@@ -259,6 +263,10 @@ export default {
       } else {
         return "Unkown";
       }
+    },
+
+    caseUserUrl(userId) {
+      return `https://www.pixiv.net/member.php?id=${userId}`;
     },
 
     handleScroll() {
