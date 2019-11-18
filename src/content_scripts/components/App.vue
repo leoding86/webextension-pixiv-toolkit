@@ -167,6 +167,8 @@ export default {
               title: vm.tool.getTitle(),
               images: vm.tool.getImages(),
               type: vm.pageType,
+              userId: vm.tool.getUserId(),
+              userName: vm.tool.getUserName(),
               viewed_at: Math.round(Date.now() / 1000),
               r: vm.tool.isR()
             });
