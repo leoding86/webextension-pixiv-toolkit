@@ -5,6 +5,9 @@ You can submit a issue on GitHub if you have any questions.
 Github:
 https://github.com/leoding86/webextension-pixiv-toolkit
 ----------------------------------------------
+v3.4.2 - 19112710
+Fix cannot save file while filename include '~'.
+
 v3.4.1 - 19111810
 Add username in visit history;
 Fix issue about work cannot be saved if work title or username has illegal chars.
