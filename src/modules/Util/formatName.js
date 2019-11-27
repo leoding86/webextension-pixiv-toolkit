@@ -1,5 +1,4 @@
 import I18n from "../Browser/I18n";
-import browser from '@/modules/Extension/browser';
 
 export default (renameFormat, context, fallback) => {
   let specials = {
@@ -22,7 +21,7 @@ export default (renameFormat, context, fallback) => {
     },
     unix: {
       illegals: [
-        '/', ' '
+        '/'
       ],
       max: 256
     }
@@ -102,15 +101,22 @@ export default (renameFormat, context, fallback) => {
 
   /**
    * Because chrome.runtime.getPlatformInfo is a async operation, for the sake of simplicity, we
-   * use Windows rule to filter filename.
+   * use merged rule to filter filename.
    **/
-  let rule = specials.win;
+  let illegals = specials.win.illegals.concat(
+    specials.linux.illegals,
+    specials.unix.illegals,
+    '~' // chrome do not allow it
+  );
 
-  rule.illegals.forEach(char => {
+  illegals.forEach(char => {
     filename = filename.replace(char, '_');
   });
 
-  filename = filename.substr(0, rule.max);
+  /**
+   * Use window rule to truncate string
+   */
+  filename = filename.substr(0, specials.win.max);
 
   return filename;
 };
