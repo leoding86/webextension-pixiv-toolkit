@@ -20,37 +20,15 @@
       <v-btn
         class="text-none"
         style="margin-left:0;"
-        depressed
-        flat>Total {{ total }} Records</v-btn>
-
-      <v-btn @click="exportIllustHistory"
-        depressed
-        color="#eee">
-        Export
-        <v-progress-circular
-          indeterminate
-          color="primary"
-          v-if="exporting"
-          size="20"
-          width="3"
-          style="margin-left:5px"
-        ></v-progress-circular>
-      </v-btn>
+        flat
+        @click="pushRoute({name: 'VisitHistory'})"
+      >Go to new style</v-btn>
 
       <v-btn
-        @click="importIllustHistory"
+        class="text-none"
+        style="margin-left:0;"
         depressed
-        color="#eee">
-        Import <span v-if="importTotal > 0">({{ importedCount }} / {{ importTotal }})</span>
-        <v-progress-circular
-          indeterminate
-          color="primary"
-          v-if="importing"
-          size="20"
-          width="3"
-          style="margin-left:5px"
-        ></v-progress-circular>
-      </v-btn>
+        flat>Total {{ total }} Records</v-btn>
 
       <v-switch v-model="disableBlurOnR" label="Disable mask"></v-switch>
 
@@ -171,11 +149,7 @@ export default {
       loading: false,
       confirmDialog: false,
       illustDeleteReady: null,
-      exporting: false,
-      importing: false,
       pages: 0,
-      importTotal: 0,
-      importedCount: 0,
       searchQuery: '',
       searchTimeout: null,
       enableSaveVisitHistory: true
@@ -183,6 +157,13 @@ export default {
   },
 
   beforeMount() {
+    /**
+     * Store visit history type
+     */
+    browser.storage.local.set({
+      visitHistoryType: 'grid'
+    });
+
     let vm = this;
 
     this.loading = true;
@@ -412,94 +393,6 @@ export default {
         })
         xhr.send()
       })
-    },
-
-    exportIllustHistory() {
-      if (this.exporting || this.importing) {
-        return
-      }
-
-      this.exporting = true
-
-      let json = ''
-      let vm = this
-
-      this.illustHistory.getIllusts({
-        limit: null
-      }).then(docs => {
-        let blob = new Blob([JSON.stringify(docs)], {type: 'application/json'})
-
-        let a = document.createElement('a')
-        a.href = URL.createObjectURL(blob)
-        a.download = 'illust_histories-' + Date.now() + '.json'
-        document.body.appendChild(a);
-        a.click()
-        a.remove();
-        vm.exporting = false
-      })
-    },
-
-    importIllustHistory() {
-      if (this.exporting || this.importing) {
-        return
-      }
-
-      let input = document.createElement('input')
-      let vm = this
-
-      input.type = 'file'
-      input.addEventListener('change', (e) => {
-        const files = e.target.files
-
-        let fileReader = new FileReader()
-
-        vm.importing = true
-
-        fileReader.addEventListener('load', () => {
-          let items
-
-          try {
-            items = JSON.parse(fileReader.result)
-
-            vm.importTotal = items.length
-
-            let worker = new Worker('./import_illust_history_worker.js')
-
-            worker.onmessage = e => {
-              vm.importedCount = e.data.importedCount
-
-              if (e.data.imported) {
-                vm.importedCount = items.length
-
-                vm.importTotal = 0 // disable displaying import progress
-
-                vm.importing = false
-
-                alert('Import complete, please reload the page.')
-              }
-            }
-
-            worker.postMessage({
-              items: items
-            })
-
-            // vm.importTotal = items.length
-
-            // vm.importIllustItems(items).then(() => {
-            //   alert('Import complete')
-            //   window.location.reload()
-            // })
-          } catch (e) {
-            console.log(e)
-          }
-        })
-
-        fileReader.readAsText(files[0])
-      })
-
-      if (window.confirm('Import history data will take a long time, after import completed, it will take a long time to rebuild indexes (based on the data size). The existing data will not be overwritten. Are you sure? ')) {
-        input.click()
-      }
     }
   }
 };

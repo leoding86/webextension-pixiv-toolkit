@@ -330,7 +330,12 @@ Main.prototype = {
            */
           illustrationRenameFormat: '',
           illustrationImageRenameFormat: '',
-          illustrationDownloadIfReady: false
+          illustrationDownloadIfReady: false,
+
+          /**
+           * @since 3.4.3
+           */
+          visitHistoryType: 'list' // list || grid
         });
 
         updater.removeSettings([

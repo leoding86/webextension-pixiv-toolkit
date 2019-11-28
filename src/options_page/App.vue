@@ -22,7 +22,7 @@
         <v-list dense>
           <v-list-tile
             ripple
-            @click="routeTo('VisitHistory')">
+            @click="goToVisitHistory()">
             <v-list-tile-content>
               <span>{{ tl('Illust_History') }}</span>
             </v-list-tile-content>
@@ -130,6 +130,14 @@ export default {
           this.drawerTemporary = false
           this.drawer = true
         }
+      }
+    },
+
+    goToVisitHistory() {
+      if (this.browserItems['visitHistoryType'] === 'grid') {
+        this.routeTo('IllustHistory');
+      } else {
+        this.routeTo('VisitHistory');
       }
     },
 

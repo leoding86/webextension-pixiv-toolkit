@@ -155,6 +155,13 @@ export default {
   },
 
   beforeMount() {
+    /**
+     * Store visit history type
+     */
+    browser.storage.local.set({
+      visitHistoryType: 'list'
+    });
+
     let vm = this;
 
     this.illustHistory = new IllustHistory();
