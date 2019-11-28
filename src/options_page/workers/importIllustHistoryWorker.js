@@ -1,3 +1,4 @@
+import './global';
 import IllustHistory from '@/repositories/IllustHistory'
 
 let illustHistory = new IllustHistory(),
