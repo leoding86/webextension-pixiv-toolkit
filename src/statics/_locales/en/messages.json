@@ -376,5 +376,17 @@
    },
    "Reload": {
        "message": "Reload"
+   },
+   "Export_visit_history": {
+       "message": "Export visit history"
+   },
+   "Export": {
+       "message": "Export"
+   },
+   "Import_visit_history": {
+       "message": "Import visit history"
+   },
+   "Import": {
+       "message": "Import"
    }
 }
