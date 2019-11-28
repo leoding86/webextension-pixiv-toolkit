@@ -21,6 +21,7 @@
           </v-list-tile-content>
           <v-list-tile-action>
             <v-btn
+              depressed
               :disabled="!enableExtTakeOverDownloads"
               @click="showDownloadRelativeLocationDialog()"
             >{{ tl('Change') }}</v-btn>
