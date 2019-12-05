@@ -5,6 +5,11 @@ You can submit a issue on GitHub if you have any questions.
 Github:
 https://github.com/leoding86/webextension-pixiv-toolkit
 ----------------------------------------------
+v3.4.4 - 19120512
+Added the ability to retry downloading ugoira resources, you don't have to refresh the page;
+Add a setting for displaying download ugoira resource progress;
+Minor fixes.
+
 v3.4.3 - 19112809
 Moved export/import history data function to settings;
 Added ability to permanently change between history styles;
