@@ -114,9 +114,11 @@ export default (renameFormat, context, fallback) => {
   });
 
   /**
-   * Use window rule to truncate string
+   * Remove dots at end of the filename
    */
-  filename = filename.substr(0, specials.win.max);
+  filename = filename.replace(/\.*$/, '');
 
-  return filename;
+  filename = filename.substr(0, rule.max);
+
+  return filename.length === 0 ? `file_${Date.now()}` : filename;
 };
