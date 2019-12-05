@@ -335,7 +335,14 @@ Main.prototype = {
           /**
            * @since 3.4.3
            */
-          visitHistoryType: 'list' // list || grid
+          visitHistoryType: 'list', // list || grid
+
+          /**
+           * @since 3.4.4
+           * There is a downside when ugoiraDisplayDownloadProgress setting is on, the images on the pages will be
+           * blocked (UI will not been blocked only block images loadings) until the resources has been downloaded.
+           */
+          ugoiraDisplayDownloadProgress: false
         });
 
         updater.removeSettings([
