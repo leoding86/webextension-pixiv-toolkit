@@ -1,6 +1,6 @@
 <template>
   <a class="button" :href="href" :download="download"
-    @click="$emit('click')">{{ text }}</a>
+    @click="$emit('click')"><slot>{{ text }}</slot></a>
 </template>
 
 <script>
