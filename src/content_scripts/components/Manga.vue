@@ -4,7 +4,11 @@
       v-for="buttonInfo in buttonsInfo"
       :key="buttonInfo.index"
       :text="buttonInfo.text"
-      @click="downloadButtonClicked(buttonInfo)"></ptk-button>
+      @click="downloadButtonClicked(buttonInfo)"
+    ></ptk-button>
+    <ptk-button @click="createDownloadToPixivOmina">
+      Pixiv Omina
+    </ptk-button>
   </div>
 </template>
 
@@ -149,6 +153,10 @@ export default {
           }
         })
       }
+    },
+
+    createDownloadToPixivOmina() {
+      window.location.assign(`pixiv-omina://create-download?url=${encodeURIComponent(window.location.href)}`);
     }
   }
 }

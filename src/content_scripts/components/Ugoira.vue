@@ -1,12 +1,17 @@
 <template>
   <div v-if="show">
-    <ptk-button :text="resourceDownloadText" ref="zipButton"></ptk-button>
+    <ptk-button :text="resourceDownloadText"
+      @click="resourceButtonClicked"
+    ></ptk-button>
     <template v-if="resourceProgress === 100">
       <ptk-button :text="gifGenerateText" @click="gifButtonClicked"></ptk-button>
       <ptk-button :text="apngGenerateText" @click="apngButtonClicked"></ptk-button>
       <ptk-button :text="webGenerateText" @click="webmButtonClicked"
        v-if="!isBrowser('firefox')"></ptk-button>
     </template>
+    <ptk-button @click="createDownloadToPixivOmina">
+      Pixiv Omina
+    </ptk-button>
   </div>
 </template>
 
@@ -56,11 +61,15 @@ export default {
 
   computed: {
     resourceDownloadText() {
-      return this.resourceProgress === 0
-        ? "Preparing"
-        : this.resourceProgress === 100
-        ? "Download Zip"
-        : 'Downloading'
+      return this.resourceProgress === -1 ?
+        "Interrupted, Click to retry" :
+        this.resourceProgress === 0 ?
+          "Preparing" :
+          this.resourceProgress === 100 ?
+            "Download Zip" :
+            this.browserItems.ugoiraDisplayDownloadProgress ?
+              "Downloading" + ` ${this.resourceProgress}%` :
+              "Downloading"
     },
 
     gifGenerateText() {
@@ -104,73 +113,13 @@ export default {
 
     this.ugoiraTool = this.tool;
 
+    this.ugoiraTool.event.addExclusiveListener('onProgress', progress => {
+      vm.resourceProgress = Math.round(progress * 100);
+    });
+
     this.resourceProgress = 1;
 
-    this.ugoiraTool.init().then(blob => {
-      vm.resourceProgress = 100;
-
-      vm.$refs.zipButton.$el.addEventListener('click', () => {
-        vm.downloadFile(URL.createObjectURL(blob), vm.getFilename() + '.zip', {
-          statType: 'ugoira',
-        });
-      })
-
-      this.ugoiraTool.gifGenerator.event.addListener("onProgress", progress => {
-        vm.gifProgress = progress
-      })
-
-      this.ugoiraTool.gifGenerator.event.addListener("onFinish", blob => {
-        vm.gifProgress = 1
-        vm.gifStatus = 2
-        vm.gifUrl = URL.createObjectURL(blob)
-
-        if (vm.browserItems.ugoiraGenerateAndDownload) {
-          vm.downloadFile(vm.gifUrl, vm.getFilename() + '.gif', {
-            statType: 'ugoira',
-          });
-        }
-      })
-
-      this.ugoiraTool.webMGenerator.event.addListener("onProgress", progress => {
-          vm.webmProgress = progress
-        }
-      )
-
-      this.ugoiraTool.webMGenerator.event.addListener("onFinish", blob => {
-        vm.webmProgress = 1
-        vm.webmStatus = 2
-        vm.webmUrl = URL.createObjectURL(blob)
-
-        if (vm.browserItems.ugoiraGenerateAndDownload) {
-          vm.downloadFile(vm.webmUrl, vm.getFilename() + '.webm', {
-            statType: 'ugoira',
-          });
-        }
-      })
-
-      this.ugoiraTool.apngGenerator.event.addListener("onStart", () => {
-        vm.apngProgress = 0;
-      });
-
-      this.ugoiraTool.apngGenerator.event.addListener('onProgress', progress => {
-        console.log(progress);
-        vm.apngProgress = progress;
-      });
-
-      this.ugoiraTool.apngGenerator.event.addListener("onFinish", arrayBuffer => {
-        vm.apngProgress = 1;
-        vm.apngStatus = 2;
-
-        let blob = new Blob([arrayBuffer], {type: 'image/apng'});
-        vm.apngUrl = URL.createObjectURL(blob);
-
-        if (vm.browserItems.ugoiraGenerateAndDownload) {
-          vm.downloadFile(vm.apngUrl, vm.getFilename() + '.apng', {
-            statType: 'ugoira',
-          });
-        }
-      });
-    })
+    this.initTool();
 
     this.show = true
 
@@ -200,6 +149,91 @@ export default {
   },
 
   methods: {
+    initTool() {
+      if (this.browserItems.ugoiraDisplayDownloadProgress) {
+        this.ugoiraTool.enableDisplayDownloadProgress();
+      }
+
+      let vm = this;
+
+      this.resourceProgress = 1;
+
+      /**
+       * Init ugoira tool will reset the generators instance, so feel free and must to add listeners to gererators again
+       */
+      this.ugoiraTool.init().then(blob => {
+        vm.resourceProgress = 100;
+
+        this.ugoiraTool.gifGenerator.event.addListener("onProgress", progress => {
+          vm.gifProgress = progress
+        })
+
+        this.ugoiraTool.gifGenerator.event.addListener("onFinish", blob => {
+          vm.gifProgress = 1
+          vm.gifStatus = 2
+          vm.gifUrl = URL.createObjectURL(blob)
+
+          if (vm.browserItems.ugoiraGenerateAndDownload) {
+            vm.downloadFile(vm.gifUrl, vm.getFilename() + '.gif', {
+              statType: 'ugoira',
+            });
+          }
+        })
+
+        this.ugoiraTool.webMGenerator.event.addListener("onProgress", progress => {
+            vm.webmProgress = progress
+          }
+        )
+
+        this.ugoiraTool.webMGenerator.event.addListener("onFinish", blob => {
+          vm.webmProgress = 1
+          vm.webmStatus = 2
+          vm.webmUrl = URL.createObjectURL(blob)
+
+          if (vm.browserItems.ugoiraGenerateAndDownload) {
+            vm.downloadFile(vm.webmUrl, vm.getFilename() + '.webm', {
+              statType: 'ugoira',
+            });
+          }
+        })
+
+        this.ugoiraTool.apngGenerator.event.addListener("onStart", () => {
+          vm.apngProgress = 0;
+        });
+
+        this.ugoiraTool.apngGenerator.event.addListener('onProgress', progress => {
+          vm.apngProgress = progress;
+        });
+
+        this.ugoiraTool.apngGenerator.event.addListener("onFinish", arrayBuffer => {
+          vm.apngProgress = 1;
+          vm.apngStatus = 2;
+
+          let blob = new Blob([arrayBuffer], {type: 'image/apng'});
+          vm.apngUrl = URL.createObjectURL(blob);
+
+          if (vm.browserItems.ugoiraGenerateAndDownload) {
+            vm.downloadFile(vm.apngUrl, vm.getFilename() + '.apng', {
+              statType: 'ugoira',
+            });
+          }
+        });
+      }).catch(error => {
+        vm.resourceProgress = -1;
+        throw error;
+      });
+    },
+
+    resourceButtonClicked() {
+      if (this.resourceProgress === -1) {
+        this.initTool();
+      } else if (this.tool.zipBlob) {
+        this.downloadFile(URL.createObjectURL(this.tool.zipBlob), this.getFilename() + '.zip', {
+          statType: 'ugoira',
+        });
+      }
+    },
+
     gifButtonClicked() {
       if (this.gifStatus === 2) {
 
@@ -267,6 +301,10 @@ export default {
           }
         })
       }
+    },
+
+    createDownloadToPixivOmina() {
+      window.location.assign(`pixiv-omina://create-download?url=${encodeURIComponent(window.location.href)}`);
     }
   }
 }
