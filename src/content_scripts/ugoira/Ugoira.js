@@ -10,7 +10,8 @@ class UgoiraTool {
     this.gifGenerator
     this.webMGenerator
     this.request = new Request();
-    this.zip
+    this.zip;
+    this.zipBlob;
     this.event = new Event()
   }
 
@@ -21,42 +22,47 @@ class UgoiraTool {
     this.webMGenerator = null
     this.request.abort()
     this.zip = new JSZip()
+    this.zipBlob = null
 
-    return new Promise(resolve => {
-      self.downloadResource().then(zipData => {
-        if ($extension.browserItems.enablePackUgoiraFramesInfo) {
-          self.zip.file('animation.json', JSON.stringify(self.context.illustFrames));
-        }
+    return self.downloadResource().then(zipData => {
+      if ($extension.browserItems.enablePackUgoiraFramesInfo) {
+        self.zip.file('animation.json', JSON.stringify(self.context.illustFrames));
+      }
 
-        return self.zip.loadAsync(zipData)
-      }).then(() => {
-        self.gifGenerator = new GifGenerator(
-          self.zip,
-          self.context.illustMimeType,
-          self.context.illustFrames
-        )
+      return self.zip.loadAsync(zipData)
+    }).then(() => {
+      self.gifGenerator = new GifGenerator(
+        self.zip,
+        self.context.illustMimeType,
+        self.context.illustFrames
+      )
 
-        self.webMGenerator = new WebMGenerator(
-          self.zip,
-          self.context.illustMimeType,
-          self.context.illustFrames
-        )
+      self.webMGenerator = new WebMGenerator(
+        self.zip,
+        self.context.illustMimeType,
+        self.context.illustFrames
+      )
 
-        self.apngGenerator = new APngGenerator(
-          self.zip,
-          self.context.illustMimeType,
-          self.context.illustFrames
-        )
+      self.apngGenerator = new APngGenerator(
+        self.zip,
+        self.context.illustMimeType,
+        self.context.illustFrames
+      )
 
-        self.event.dispatch('onFinish');
+      self.event.dispatch('onFinish');
 
-        return self.zip.generateAsync({
-          type: 'blob'
-        })
-      }).then(blob => {
-        resolve(blob)
+      return self.zip.generateAsync({
+        type: 'blob'
       })
-    })
+    }).then(blob => {
+      this.zipBlob = blob
+
+      return blob
+    });
+  }
+
+  enableDisplayDownloadProgress() {
+    this.request.readAsStream();
   }
 
   getUserId() {
@@ -86,13 +92,33 @@ class UgoiraTool {
   downloadResource() {
     let self = this
 
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       self.request.open('GET', this.context.illustOriginalSrc);
 
-      self.request.event.addExclusiveListener('onload', response=> {
-        response.arrayBuffer().then(ab => {
-          resolve(ab);
+      if (self.request.isReadAsStream()) {
+        let body = [];
+
+        self.request.event.addExclusiveListener('ondata', data => {
+          data.forEach(char => {
+            body.push(char);
+          });
         });
+
+        self.request.event.addExclusiveListener('onprogress', progress => {
+          self.event.dispatch('onProgress', [progress]);
+        });
+
+        self.request.event.addExclusiveListener('onfinish', () => {
+          resolve((new Uint8Array(body)).buffer);
+        });
+      } else {
+        self.request.event.addExclusiveListener('onload', response=> {
+          resolve(response.arrayBuffer());
+        });
+      }
+
+      self.request.event.addExclusiveListener('onerror', error => {
+        reject(error);
       });
 
       self.request.send();
