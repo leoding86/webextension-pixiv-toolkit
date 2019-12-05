@@ -388,5 +388,11 @@
    },
    "Import": {
        "message": "Import"
+   },
+   "_display_ugoira_download_progress": {
+        "message": "Display ugoira download progress"
+   },
+   "_display_download_progress_will_block_images_loadings_on_the_page_until_the_download_complete": {
+       "message": "Display download progress will may block images loadings on the page (do not block UI process) until the download complete."
    }
 }
