@@ -7,6 +7,19 @@ class Request {
     this.event = new Event();
     this.fetch = null;
     this.requestSended = false;
+    this.readAsStream_ = false;
+  }
+
+  readAsStream() {
+    if (window && window.ReadableStream) {
+      this.readAsStream_ = true;
+    }
+
+    return this.readAsStream_;
+  }
+
+  isReadAsStream() {
+    return this.readAsStream_;
   }
 
   open(method, url) {
@@ -38,22 +51,53 @@ class Request {
       init.body = data;
     }
 
-    this.fetch = new Fetch(this.url, init, this.event);
+    this.fetch = new Fetch(this.url, init, this.event, { readAsStream: this.readAsStream_ });
     this.fetch.send();
   }
 }
 
 class Fetch {
-  constructor(url, init, event) {
+  constructor(url, init, event, options) {
     this.url = url;
     this.init = init;
     this.event = event;
     this.abortSignal = false;
+    this.totalSize = undefined;
+    this.responseCompletedSize = undefined;
+    this.responseTotalSize = undefined;
+    this.options = options;
   }
 
   abort() {
     this.abortSignal = true;
     this.event.dispatch('onabort');
+  }
+
+  readData(reader) {
+    setTimeout(() => {
+      reader.read().then(({done, value}) => {
+        if (done) {
+          this.event.dispatch('onfinish');
+          return;
+        }
+
+        this.responseCompletedSize += value.length;
+
+        this.event.dispatch('ondata', [value]);
+
+        this.event.dispatch('onprogress', [this.responseCompletedSize / this.responseTotalSize]);
+
+        this.readData(reader);
+      }).catch(error => {
+        this.event.dispatch('onerror', [error]);
+      });
+    });
+  }
+
+  readDataFromResponse(response) {
+    const reader = response.body.getReader();
+
+    this.readData(reader);
   }
 
   send() {
@@ -66,7 +110,18 @@ class Fetch {
       }
 
       if (!self.abortSignal) {
-        self.event.dispatch('onload', [response]);
+        if (this.options.readAsStream) {
+          const contentLength = response.headers.get('Content-Length');
+
+          if (contentLength) {
+            this.responseTotalSize = parseInt(contentLength.indexOf(',') ? contentLength.split(',')[0] : contentLength);
+          }
+
+          this.responseCompletedSize = 0;
+          this.readDataFromResponse(response);
+        } else {
+            self.event.dispatch('onload', [response]);
+        }
       }
     }).catch(error => {
       self.event.dispatch('onerror', [error]);
