@@ -60,6 +60,15 @@
             </v-btn>
           </v-list-tile-action>
         </v-list-tile>
+
+        <v-list-tile>
+          <v-list-tile-content>
+            <v-list-tile-title>{{ tl('_display_ugoira_download_progress') }}</v-list-tile-title>
+          </v-list-tile-content>
+          <v-list-tile-action>
+            <v-switch v-model="ugoiraDisplayDownloadProgress"></v-switch>
+          </v-list-tile-action>
+        </v-list-tile>
       </v-list>
     </v-card>
 
@@ -96,13 +105,16 @@ export default {
 
       enablePackUgoiraFramesInfo: true,
 
-      ugoiraGenerateAndDownload: false
+      ugoiraGenerateAndDownload: false,
+
+      ugoiraDisplayDownloadProgress: true
     };
   },
 
   beforeMount() {
     this.ugoiraQuanlity = this.browserItems.ugoiraQuanlity || 10;
     this.ugoiraRenameFormat = this.browserItems.ugoiraRenameFormat;
+    this.ugoiraDisplayDownloadProgress = this.browserItems.ugoiraDisplayDownloadProgress;
   },
 
   computed: {
@@ -119,6 +131,16 @@ export default {
     ugoiraGenerateAndDownload(val) {
       browser.storage.local.set({
         ugoiraGenerateAndDownload: val
+      });
+    },
+
+    ugoiraDisplayDownloadProgress(val) {
+      if (val) {
+        window.alert(this.tl('_display_download_progress_will_block_images_loadings_on_the_page_until_the_download_complete'));
+      }
+
+      browser.storage.local.set({
+        ugoiraDisplayDownloadProgress: val
       });
     }
   },
