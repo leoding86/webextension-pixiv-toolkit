@@ -1,5 +1,8 @@
 <template>
-  <a class="button" :href="href" :download="download"
+  <a class="button"
+    :href="href"
+    :download="download"
+    :title="title"
     @click="$emit('click')"><slot>{{ text }}</slot></a>
 </template>
 
@@ -8,7 +11,8 @@ export default {
   props: {
     text: [String, Number],
     href: String,
-    download: String
+    download: String,
+    title: String
   }
 }
 </script>
