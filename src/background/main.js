@@ -342,7 +342,7 @@ Main.prototype = {
            * There is a downside when ugoiraDisplayDownloadProgress setting is on, the images on the pages will be
            * blocked (UI will not been blocked only block images loadings) until the resources has been downloaded.
            */
-          ugoiraDisplayDownloadProgress: false
+          ugoiraDisplayDownloadProgress: true
         });
 
         updater.removeSettings([
