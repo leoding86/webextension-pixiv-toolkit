@@ -1,10 +1,16 @@
 You can use this extension to convert the ugoira on Pixiv to GIF or WebM file, or pack the images of manga to download or save novel as epub.
 
-You can submit a issue on GitHub if you have any questions.
+You can feel free to open issue on GitHub if you have any questions.
+
+There is a power Pixiv downloader Pixiv Omina has been released! It's easy to use and it has plenty features, you should give it a try.
 
 Github:
-https://github.com/leoding86/webextension-pixiv-toolkit
+Pixiv Toolkit: https://github.com/leoding86/webextension-pixiv-toolkit
+Pixiv Omina: https://github.com/leoding86/pixiv-omina
 ----------------------------------------------
+v3.5 - 19120821
+Added Pixiv Omina click-to-download support
+
 v3.4.4 - 19120512
 Added the ability to retry downloading ugoira resources, you don't have to refresh the page;
 Add a setting for displaying download ugoira resource progress;
