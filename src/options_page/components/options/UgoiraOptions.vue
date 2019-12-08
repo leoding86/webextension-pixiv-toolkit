@@ -64,6 +64,7 @@
         <v-list-tile>
           <v-list-tile-content>
             <v-list-tile-title>{{ tl('_display_ugoira_download_progress') }}</v-list-tile-title>
+            <v-list-tile-sub-title>{{ tl('_Enable_this_may_cause_issue_about_loading_images') }}</v-list-tile-sub-title>
           </v-list-tile-content>
           <v-list-tile-action>
             <v-switch v-model="ugoiraDisplayDownloadProgress"></v-switch>
