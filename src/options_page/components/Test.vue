@@ -8,20 +8,31 @@
     <div>
       <button @click="resetVersionNumber">Reset version number</button>
     </div>
+    <div>
+      <app-suggest :icon="pixivOminaIcon"
+        title="Pixiv Omina"
+        subTitle="Sub title"
+        link="https://www.github.com">
+      </app-suggest>
+    </div>
   </div>
 </template>
 
 <script>
 import CacheableImage from './CacheableImage';
+import AppSuggest from './AppSuggest';
+import pixivOminaIcon from '@/statics/img/pixiv-omina.png';
 
 export default {
   components: {
-    'cacheable-image': CacheableImage
+    'cacheable-image': CacheableImage,
+    'app-suggest': AppSuggest
   },
 
   data() {
     return {
-      image: 'https://s.pximg.net/www/images/logo/pixiv-logo.svg'
+      image: 'https://s.pximg.net/www/images/logo/pixiv-logo.svg',
+      pixivOminaIcon: pixivOminaIcon
     }
   },
 
