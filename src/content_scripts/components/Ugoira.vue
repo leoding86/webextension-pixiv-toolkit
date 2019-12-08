@@ -9,9 +9,6 @@
       <ptk-button :text="webGenerateText" @click="webmButtonClicked"
        v-if="!isBrowser('firefox')"></ptk-button>
     </template>
-    <ptk-button @click="createDownloadToPixivOmina">
-      Pixiv Omina
-    </ptk-button>
   </div>
 </template>
 
@@ -301,10 +298,6 @@ export default {
           }
         })
       }
-    },
-
-    createDownloadToPixivOmina() {
-      window.location.assign(`pixiv-omina://create-download?url=${encodeURIComponent(window.location.href)}`);
     }
   }
 }
