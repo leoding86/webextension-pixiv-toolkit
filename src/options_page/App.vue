@@ -50,7 +50,14 @@
               <v-list-tile-title>{{ tl('Third_Party') }}</v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
+          <v-divider light></v-divider>
         </v-list>
+
+        <app-suggest :icon="pixivOminaIcon"
+          title="Pixiv Omina"
+          subTitle="A Pixiv works downloader"
+          link="https://github.com/leoding86/pixiv-omina"
+        ></app-suggest>
       </v-navigation-drawer>
       <v-toolbar class="v-primary" app fixed clipped-left height="56">
         <v-btn flat dark icon
@@ -83,6 +90,8 @@ import 'vuetify/dist/vuetify.min.css'
 import extConfig from '@@/../statics/manifest.json'
 import SuperMixin from '@/mixins/SuperMixin';
 import Supports from '@@/components/Supports';
+import AppSuggest from '@@/components/AppSuggest';
+import pixivOminaIcon from '@/statics/img/pixiv-omina.png';
 
 Vue.use(Vuetify)
 
@@ -94,13 +103,15 @@ export default {
   ],
 
   components: {
-    'supports': Supports
+    'supports': Supports,
+    'app-suggest': AppSuggest
   },
 
   data () {
     return {
       drawer: true,
-      drawerTemporary: false
+      drawerTemporary: false,
+      pixivOminaIcon: pixivOminaIcon
     }
   },
 
