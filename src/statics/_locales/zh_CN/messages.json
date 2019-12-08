@@ -394,5 +394,11 @@
    },
    "_display_download_progress_will_block_images_loadings_on_the_page_until_the_download_complete": {
        "message": "显示下载资源进度可能会阻止页面图片的加载知道资源下载完成（不会阻塞界面进程）。"
+   },
+   "_you_need_to_download_Pixiv_Omina_for_the_button_to_work": {
+       "message": "你需要下载Pixiv Omina来使得这个按钮正常工作"
+   },
+   "_Enable_this_may_cause_issue_about_loading_images": {
+       "message": "启用此项可能会导致加载页面问题"
    }
 }
