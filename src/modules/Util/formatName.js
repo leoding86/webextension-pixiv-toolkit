@@ -118,7 +118,7 @@ export default (renameFormat, context, fallback) => {
    */
   filename = filename.replace(/\.*$/, '');
 
-  filename = filename.substr(0, rule.max);
+  filename = filename.substr(0, specials.win.max);
 
   return filename.length === 0 ? `file_${Date.now()}` : filename;
 };
