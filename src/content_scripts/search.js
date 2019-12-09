@@ -61,7 +61,12 @@ browserStorage.get(null).then(items => {
        */
       let searchCategory = document.createElement('div');
       searchCategory.className = '__ptk-search-addon';
-      searchCategory.innerHTML = '<a href="javascript:void(0)">PTK Search</a>';
+
+      let a_ = document.createElement('a');
+      a_.href = 'javascript:void(0)';
+      a_.textContent = 'PTK Search';
+
+      searchCategory.appendChild(a_);
 
       /**
        * Create a archer
