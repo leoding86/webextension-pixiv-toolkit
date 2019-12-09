@@ -7,8 +7,7 @@
 <script>
 import Button from "@/content_scripts/components/Button";
 import formatName from "@/modules/Util/formatName";
-import downloadFileMixin from '@/content_scripts/mixins/downloadFileMixin'
-import { format } from "path";
+import downloadFileMixin from '@/content_scripts/mixins/downloadFileMixin';
 
 export default {
   mixins: [
