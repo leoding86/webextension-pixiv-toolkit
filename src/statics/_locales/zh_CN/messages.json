@@ -225,7 +225,7 @@
      "message": "保存相对位置"
    },
    "relative_location_hint": {
-     "message": "此位置将作为浏览器下载设置路径的后缀。<br>例如, 浏览器下载地址设置为 \"D:/downloads/\" ，那么插件将会把文件保存到 \"D:/downloads/{{downloadRelativeLocation}}\""
+     "message": "此位置将作为浏览器下载设置路径的后缀。例如, 浏览器下载地址设置为 \"D:/downloads/\" ，那么插件将会把文件保存到 \"D:/downloads/{{downloadRelativeLocation}}\""
    },
    "Change": {
      "message": "修改"
@@ -329,7 +329,7 @@
    "Report_issue": {
        "message": "报告问题"
    },
-   "Settings": {
+   "_settings": {
        "message": "设置"
    },
    "Ask_where_to_save_each_file_before_downloading": {

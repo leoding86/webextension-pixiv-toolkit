@@ -225,7 +225,7 @@
      "message": "Relative location"
    },
    "relative_location_hint": {
-     "message": "The location will be the suffix of the Chrome downloads location<br>For example, Chrome download location is \"D:/downloads/\" then the full download location will be \"D:/downloads/{{downloadRelativeLocation}}\""
+     "message": "The location will be the suffix of the Chrome downloads location. For example, Chrome download location is \"D:/downloads/\" then the full download location will be \"D:/downloads/{{downloadRelativeLocation}}\""
    },
    "Change": {
      "message": "Change"
@@ -329,7 +329,7 @@
    "Report_issue": {
        "message": "Report issue"
    },
-   "Settings": {
+   "_settings": {
        "message": "Settings"
    },
    "Ask_where_to_save_each_file_before_downloading": {
