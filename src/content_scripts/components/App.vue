@@ -21,10 +21,10 @@
             @click="handlerClickHandle"
           >
             <svg viewBox="0 0 222 40" id="ptk__new-handler-bg" width="222" height="40" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
-              <path d="M0 40 C 25 40, 43 27, 65 15 C 82 4, 93 0, 111 0, C 131 0, 142 4, 161 15, C 180 27, 198 40, 222 40, Z" stroke-width="0" fill="#0096fa"/>
+              <path d="M0 40 C 25 40, 43 27, 65 15 C 82 4, 93 0, 111 0 C 131 0, 142 4, 161 15 C 180 27, 198 40, 222 40 Z" stroke-width="0" fill="#0096fa" />
             </svg>
             <svg viewBox="0 0 40 15" id="ptk__new-handler-arrow" width="40" height="25" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
-              <path d="M 0 15, L 20 0, L 40 15" stroke="#ffffff" stroke-width="6" fill="transparent"/>
+              <path d="M 0 15 L 20 0 L 40 15" stroke="#ffffff" stroke-width="6" fill="transparent"/>
               <circle cx="0" cy="15" r="3" stroke-width="0" fill="#ffffff"/>
               <circle cx="40" cy="15" r="3" stroke-width="0" fill="#ffffff"/>
             </svg>
@@ -222,15 +222,12 @@ export default {
   height: 40px;
   bottom: -40px;
   overflow: visible;
-  // background: url(../assets/app-bg.png) repeat-x;
   z-index: 99999;
 
   .ptk__container__body {
     position: absolute;
     width: 100%;
     overflow: visible;
-    // display: inline-block;
-    // right: 50%;
     text-align: center;
     transition: all 0.5s;
 
@@ -238,11 +235,9 @@ export default {
       display: inline-block;
       position: relative;
       top: 0;
-      // left: 50%;
-      // padding: 8px 12px;
       background: #fff;
       border-radius: 30px;
-      box-shadow: 0 0 8px rgba(0,0,0,0.3);
+      box-shadow: 0 -5px 8px rgba(0,0,0,0.3);
       overflow: hidden;
       transition: all 0.5s;
       box-sizing: border-box;
@@ -257,6 +252,7 @@ export default {
 
     .ptk__container__body-container--show {
       top: -50px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.3);
 
       #ptk__new-handler-arrow {
         transform: rotate(180deg);
@@ -341,7 +337,6 @@ export default {
   .ptk-pixiv-omina-content {
     display: inline-block;
     padding-right: 12px;
-    // border-left: 2px solid #dcdcdc;
   }
 }
 </style>
