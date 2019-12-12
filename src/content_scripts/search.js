@@ -65,6 +65,7 @@ browserStorage.get(null).then(items => {
       let a_ = document.createElement('a');
       a_.href = 'javascript:void(0)';
       a_.textContent = 'PTK Search';
+      a_.style.color = '#FFF';
 
       searchCategory.appendChild(a_);
 
