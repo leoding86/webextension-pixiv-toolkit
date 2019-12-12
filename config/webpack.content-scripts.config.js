@@ -1,12 +1,13 @@
 'use strict'
 
-const baseConfig = require('./webpack.base.config');
+const baseConfig = require('./webpack.base.config')();
 const utils = require('./utils');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const merge = require('webpack-merge');
 const vueLoaderConfig = require('./vue-loader.config');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 const isProduction = process.env.NODE_ENV === 'production' ?
   !0 : !!0;
@@ -64,6 +65,11 @@ module.exports = env => {
       })
     }),
     plugins: [
+      new BundleAnalyzerPlugin({
+        analyzerMode: isProduction ? 'static' : 'disabled',
+        reportFilename: 'content-script.html'
+      }),
+
       // extract css into its own file
       new ExtractTextPlugin({
         filename: utils.assetsPath('css/[name].css'),

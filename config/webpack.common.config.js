@@ -1,6 +1,6 @@
 'use strict'
 
-const baseConfig = require('./webpack.base.config');
+const baseConfig = require('./webpack.base.config')();
 const utils = require('./utils');
 
 module.exports = env => {
@@ -8,11 +8,11 @@ module.exports = env => {
 
   return Object.assign({}, baseConfig, {
     entry: {
-      common: './src/content_scripts/common.js'
+      common: './src/common/common.js'
     },
     output: {
       library: 'common',
-      path: utils.resolve(`dist/${platform}/content_scripts`),
+      path: utils.resolve(`dist/${platform}/common`),
       filename: '[name].js'
     }
   });

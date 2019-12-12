@@ -1,6 +1,6 @@
 'use strict'
 
-const baseConfig = require('./webpack.base.config');
+const baseConfig = require('./webpack.base.config')();
 const utils = require('./utils');
 
 module.exports = env => {
