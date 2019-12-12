@@ -4,7 +4,8 @@
 
     <v-card>
       <v-card-text>
-        <img src="@/statics/img/example.gif" style="width:100%;border-radius: 5px;box-shadow:0 1px 3px rgba(0,0,0,0.5);margin-bottom:15px;">
+        <img src="https://raw.githubusercontent.com/leoding86/webextension-pixiv-toolkit/master/src/statics/remote/img/example.gif"
+          style="width:100%;border-radius: 5px;box-shadow:0 1px 3px rgba(0,0,0,0.5);margin-bottom:15px;">
         <div style="font-size:14px" v-html="history"></div>
       </v-card-text>
     </v-card>
@@ -47,7 +48,7 @@ export default {
 
         this.xhr.onload = () => {
           let parts = this.xhr.responseText.split(/-{46}/);
-          resolve(parts[1].trim().replace(/[\r\n|\r|\n]/g, '<br>'));
+          resolve(parts[1].trim().replace(/\r\n|\r|\n/g, '<br>'));
         };
 
         this.xhr.send();

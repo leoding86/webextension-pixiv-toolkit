@@ -21,7 +21,6 @@
 <script>
 import CacheableImage from './CacheableImage';
 import AppSuggest from './AppSuggest';
-import pixivOminaIcon from '@/statics/img/pixiv-omina.png';
 
 export default {
   components: {
@@ -32,7 +31,7 @@ export default {
   data() {
     return {
       image: 'https://s.pximg.net/www/images/logo/pixiv-logo.svg',
-      pixivOminaIcon: pixivOminaIcon
+      pixivOminaIcon: 'https://raw.githubusercontent.com/leoding86/webextension-pixiv-toolkit/master/src/statics/remote/img/pixiv-omina.png'
     }
   },
 

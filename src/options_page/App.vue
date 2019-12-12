@@ -53,7 +53,7 @@
           <v-divider light></v-divider>
         </v-list>
 
-        <app-suggest :icon="pixivOminaIcon"
+        <app-suggest icon="https://raw.githubusercontent.com/leoding86/webextension-pixiv-toolkit/master/src/statics/remote/img/pixiv-omina.png"
           title="Pixiv Omina"
           subTitle="A Pixiv works downloader"
           link="https://github.com/leoding86/pixiv-omina"
@@ -91,7 +91,6 @@ import extConfig from '@@/../statics/manifest.json'
 import SuperMixin from '@/mixins/SuperMixin';
 import Supports from '@@/components/Supports';
 import AppSuggest from '@@/components/AppSuggest';
-import pixivOminaIcon from '@/statics/img/pixiv-omina.png';
 
 Vue.use(Vuetify)
 
@@ -110,8 +109,7 @@ export default {
   data () {
     return {
       drawer: true,
-      drawerTemporary: false,
-      pixivOminaIcon: pixivOminaIcon
+      drawerTemporary: false
     }
   },
 
