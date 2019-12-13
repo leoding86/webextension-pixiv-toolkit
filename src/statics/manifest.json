@@ -2,6 +2,7 @@
     "background": {
         "scripts": [
             "lib/babel-polyfill.min.js",
+            "lib/pouchdb.js",
             "backgrounds/background.js"
         ]
     },
@@ -41,6 +42,7 @@
             ],
             "js": [
                 "lib/babel-polyfill.min.js",
+                "lib/pouchdb.js",
                 "content_scripts/search.js"
             ]
         },
@@ -63,6 +65,7 @@
                 "lib/js-epub-maker/js-epub-maker.js",
                 "lib/gifjs/gif.js",
                 "lib/whammy.js",
+                "lib/pouchdb.js",
                 "content_scripts/app.js"
             ]
         }
