@@ -81,6 +81,7 @@
 <script>
 import SuperMixin from "@/mixins/SuperMixin";
 import IllustHistory from "@/repositories/IllustHistory";
+import importIllustHistoryWorker from "worker-loader?inline=true,fallback=false!@/options_page/workers/importIllustHistoryWorker.js"
 
 export default {
   mixins: [SuperMixin],
@@ -173,7 +174,7 @@ export default {
 
             vm.importTotal = items.length
 
-            let worker = new Worker('./import_illust_history_worker.js')
+            let worker = new importIllustHistoryWorker();
 
             worker.onmessage = e => {
               vm.importedCount = e.data.importedCount
