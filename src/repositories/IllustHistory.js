@@ -1,7 +1,7 @@
 import PouchDB from 'pouchdb'
 import PouchDBFind from 'pouchdb-find'
 
-PouchDB.plugin(PouchDBFind)
+PouchDB.plugin(PouchDBFind);
 
 class IllustHistory {
   constructor() {
