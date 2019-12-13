@@ -76,6 +76,10 @@ export default {
       active: true,
       currentWindow: true
     }, tabs => {
+      if (!tabs[0].url || !/^https?:\/{2}www\.pixiv\.net/.test(tabs[0].url)) {
+        return;
+      }
+
       let port = browser.tabs.connect(tabs[0].id, {
         name: 'popup'
       });
