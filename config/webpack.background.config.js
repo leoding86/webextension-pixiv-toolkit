@@ -23,7 +23,7 @@ module.exports = env => {
     plugins: [
       new BundleAnalyzerPlugin({
         analyzerMode: isProduction ? 'static' : 'disabled',
-        reportFilename: 'background.html'
+        reportFilename: '../bundleAnalyzer/background.html'
       }),
 
       new CopyPlugin([

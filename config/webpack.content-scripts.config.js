@@ -67,7 +67,7 @@ module.exports = env => {
     plugins: [
       new BundleAnalyzerPlugin({
         analyzerMode: isProduction ? 'static' : 'disabled',
-        reportFilename: 'content-script.html'
+        reportFilename: '../bundleAnalyzer/content-script.html'
       }),
 
       // extract css into its own file

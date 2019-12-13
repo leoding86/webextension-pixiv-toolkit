@@ -17,8 +17,7 @@ module.exports = env => {
 
   return merge.smart(baseConfig, {
     entry: {
-      app: './src/options_page/main.js',
-      import_illust_history_worker: './src/options_page/workers/importIllustHistoryWorker.js'
+      app: './src/options_page/main.js'
     },
     output: {
       path: utils.resolve(`dist/${platform}/options_page`),
@@ -67,7 +66,7 @@ module.exports = env => {
     plugins: [
       new BundleAnalyzerPlugin({
         analyzerMode: isProduction ? 'static' : 'disabled',
-        reportFilename: 'options-page.html'
+        reportFilename: '../bundleAnalyzer/options-page.html'
       }),
 
       // extract css into its own file
