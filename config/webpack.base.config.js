@@ -33,7 +33,9 @@ module.exports = env => {
       ]
     },
     externals: {
-      vue: 'Vue'
+      vue: 'Vue',
+      pouchdb: 'PouchDB',
+      'pouchdb-find': 'PouchDBFind'
     },
     node: {
       // prevent webpack from injecting useless setImmediate polyfill because Vue
@@ -52,7 +54,7 @@ module.exports = env => {
   });
 
   let _config;
-  
+
   if (process.env.NODE_ENV === 'production') {
     _config = Object.assign({}, config, {
       plugins: [
