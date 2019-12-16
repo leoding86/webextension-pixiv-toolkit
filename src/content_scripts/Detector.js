@@ -36,6 +36,8 @@ class Detector {
         self.currentType = type;
 
         resolve();
+      }).catch(error => {
+        reject(error);
       });
     });
   }
@@ -103,6 +105,10 @@ class Detector {
 
           reject('Unkown illust type');
         });
+      });
+
+      self.request.event.addExclusiveListener('onerror', error => {
+        reject(error);
       });
 
       self.request.send();

@@ -1,6 +1,6 @@
 <template>
-  <div :class="{'ptk__container': true}" v-if="showApp">
-    <div :class="{'ptk__handler': true, 'ptk__handler--active': showContainer}"
+  <div :class="{'ptk__container': true}">
+    <div :class="{'ptk__handler': true, 'ptk__handler--active': showContainer, 'ptk__handler--error': hasError}"
       @click="handlerClickHandle"
     >P*</div>
 
@@ -10,7 +10,8 @@
       :user-id="userId"
     ></subscription-button>
 
-    <div class="ptk__container__body"
+    <div v-if="showApp"
+      class="ptk__container__body"
       :class="{'ptk__container__body--show': showContainer}"
     >
       <div class="ptk__container__body-container"
@@ -70,12 +71,17 @@ export default {
       currentUrl: null,
       tool: null,
       containerShowed: false,
+      lastError: null
     };
   },
 
   computed: {
     showApp() {
       return this.pageType !== null;
+    },
+
+    hasError() {
+      return this.lastError !== null;
     },
 
     isUgoira() {
@@ -131,6 +137,8 @@ export default {
 
         // set pageType to null for mounting tool component
         vm.pageType = null;
+
+        vm.lastError = null;
 
         vm.injectPage();
       }
@@ -196,11 +204,20 @@ export default {
           }
         })
         .catch(e => {
-          return;
+          if (typeof e === 'string') {
+            this.lastError = e;
+          } else {
+            this.lastError = e.message;
+          }
         });
     },
 
     handlerClickHandle() {
+      if (this.hasError) {
+        alert(`Error: ${this.lastError}, try refresh.`);
+        return;
+      }
+
       this.containerShowed = !this.containerShowed
 
       browser.storage.local.set({
@@ -286,6 +303,10 @@ export default {
 
   .ptk__handler--active {
     box-shadow: 0px -2px 5px rgba(0,0,0,0.3);
+  }
+
+  .ptk__handler--error {
+    background:rgb(243, 54, 54);
   }
 
   #ptk__new-handler__wrapper {
