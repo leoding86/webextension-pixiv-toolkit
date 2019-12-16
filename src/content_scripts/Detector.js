@@ -3,8 +3,11 @@ import MangaAdapter from './MangaAdapter';
 import IllustAdapter from './IllustAdapter'
 import NovelAdapter from './NovelAdapter';
 import Request from '@/modules/Util/Request';
+import InvalidPageError from '@/content_scripts/errors/InvalidPageError';
 
 class Detector {
+
+  static UNDETERMINED_TYPE = -99;
 
   static ILLUST_TYPE = 0;
 
@@ -73,7 +76,7 @@ class Detector {
         return;
       }
 
-      reject('Invalid page');
+      reject(new InvalidPageError('invalid_page'));
     });
   }
 
@@ -161,7 +164,7 @@ class Detector {
       if (matches = self.currentUrl.match(/novel\/show\.php\?id=(\d+)/)) {
         novelId = matches[1];
       } else {
-        reject('Invalid novel page');
+        reject(new InvalidPageError('invalid_novel_page'));
         return;
       }
 

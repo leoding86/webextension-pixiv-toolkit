@@ -1,33 +1,43 @@
 <template>
   <div :class="{'ptk__container': true}">
-    <div :class="{'ptk__handler': true, 'ptk__handler--active': showContainer, 'ptk__handler--error': hasError}"
-      @click="handlerClickHandle"
-    >P*</div>
-
     <subscription-button class="ptk__handler"
       style="right:180px;"
       v-if="showSubscribe"
       :user-id="userId"
     ></subscription-button>
 
-    <div v-if="showApp"
-      class="ptk__container__body"
-      :class="{'ptk__container__body--show': showContainer}"
-    >
+    <div class="ptk__container__body">
       <div class="ptk__container__body-container"
-        :class="{'ptk__container__body-container--show': showContainer}"
+        :class="{'ptk__container__body-container--show': showContainer, 'ptk__container__body-container--hide': !showApp}"
       >
+        <div v-if="showApp && !isUndetermined && !browserItems.guideShowed"
+          class="ptk__guide">
+          <div class="ptk__guide-body">
+            <ptk-button style="display: block">Pixiv Toolkit</ptk-button>
+            <svg viewBox="0 0 10 15" id="ptk__guide-arrow" width="10" height="15" style="position: relative; top: 3px" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+              <path d="M5 0 L5 15 L10 10 M5 15 L0 10" stroke="#333" stroke-width="2" fill="transparent" />
+            </svg>
+          </div>
+        </div>
         <div id="ptk__new-handler__wrapper">
           <div id="ptk__new-handler"
             @click="handlerClickHandle"
           >
             <svg viewBox="0 0 222 40" id="ptk__new-handler-bg" width="222" height="40" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
-              <path d="M0 40 C 25 40, 43 27, 65 15 C 82 4, 93 0, 111 0 C 131 0, 142 4, 161 15 C 180 27, 198 40, 222 40 Z" stroke-width="0" fill="#0096fa" />
+              <path d="M0 40 C 25 40, 43 27, 65 15 C 82 4, 93 0, 111 0 C 131 0, 142 4, 161 15 C 180 27, 198 40, 222 40 Z" stroke-width="0" :fill="hasError ? '#ff3b3b' : '#0096fa'" />
             </svg>
-            <svg viewBox="0 0 40 15" id="ptk__new-handler-arrow" width="40" height="25" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+            <svg v-if="!hasError" viewBox="0 0 40 15" id="ptk__new-handler-arrow" width="40" height="25" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
               <path d="M 0 15 L 20 0 L 40 15" stroke="#ffffff" stroke-width="6" fill="transparent"/>
               <circle cx="0" cy="15" r="3" stroke-width="0" fill="#ffffff"/>
               <circle cx="40" cy="15" r="3" stroke-width="0" fill="#ffffff"/>
+            </svg>
+            <svg v-if="hasError" viewBox="0 0 40 40" id="ptk__new-handler-cross" width="40" height="40" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+              <path d="M0 0 L40 40" stroke="#ffffff" stroke-width="10" fill="transparent"/>
+              <path d="M0 40 L40 0" stroke="#ffffff" stroke-width="10" fill="transparent"/>
+              <circle cx="0" cy="0" r="5" stroke-width="0" fill="#ffffff"/>
+              <circle cx="40" cy="40" r="5" stroke-width="0" fill="#ffffff"/>
+              <circle cx="40" cy="0" r="5" stroke-width="0" fill="#ffffff"/>
+              <circle cx="0" cy="40" r="5" stroke-width="0" fill="#ffffff"/>
             </svg>
           </div>
         </div>
@@ -35,7 +45,9 @@
         <manga-tool v-else-if="isManga" :tool="tool" class="ptk-tool__component">manga</manga-tool>
         <illust-tool v-else-if="isIllust" :tool="tool" class="ptk-tool__component">illust</illust-tool>
         <novel-tool v-else-if="isNovel" :tool="tool" class="ptk-tool__component">novel</novel-tool>
-        <ptk-button v-else text="Unsupported page"></ptk-button>
+        <div class="ptk-tool__component" v-else>
+          <ptk-button text="Parsing information"></ptk-button>
+        </div>
         <div class="ptk-pixiv-omina-content" v-if="isUgoira || isManga || isIllust">
           <ptk-button @click="passToPixivOmina"
             :title="tl('_you_need_to_download_Pixiv_Omina_for_the_button_to_work')">Pixiv Omina</ptk-button>
@@ -54,6 +66,7 @@ import Ugoira from '@/content_scripts/components/Ugoira'
 import SubscriptionButton from '@/content_scripts/components/sub/SubscriptionButton'
 import IllustHistoryPort from '@/modules/Ports/IllustHistoryPort'
 import Button from '@/content_scripts/components/Button'
+import InvalidPageError from '@/content_scripts/errors/InvalidPageError'
 
 export default {
   components: {
@@ -84,6 +97,10 @@ export default {
       return this.lastError !== null;
     },
 
+    isUndetermined() {
+      return Detector.UNDETERMINED_TYPE === this.pageType
+    },
+
     isUgoira() {
       return Detector.UGOIRA_TYPE === this.pageType;
     },
@@ -98,6 +115,10 @@ export default {
 
     isNovel() {
       return Detector.NOVEL_TYPE === this.pageType;
+    },
+
+    iconContent() {
+      return this.isUndetermined ? 'P?' : 'P*';
     },
 
     showSubscribe() {
@@ -136,7 +157,7 @@ export default {
         vm.containerShowed = false;
 
         // set pageType to null for mounting tool component
-        vm.pageType = null;
+        vm.pageType = Detector.UNDETERMINED_TYPE;
 
         vm.lastError = null;
 
@@ -165,16 +186,6 @@ export default {
           return vm.detector.injectPage();
         })
         .then(tool => {
-          window.setTimeout(() => {
-            if (!vm.browserItems.featureKnown) {
-              vm.containerShowed = true
-
-              window.setTimeout(() => {
-                vm.containerShowed = false
-              }, 1000)
-            }
-          }, 200);
-
           vm.tool = tool;
           vm.pageType = vm.detector.currentType;
 
@@ -204,9 +215,14 @@ export default {
           }
         })
         .catch(e => {
+          console.log(e);
           if (typeof e === 'string') {
             this.lastError = e;
-          } else {
+          } else if (e instanceof Error) {
+            if (e.name === 'InvalidPageError') {
+              this.pageType = null;
+            }
+
             this.lastError = e.message;
           }
         });
@@ -221,7 +237,7 @@ export default {
       this.containerShowed = !this.containerShowed
 
       browser.storage.local.set({
-        featureKnown: true
+        guideShowed: true
       })
     },
 
@@ -279,6 +295,10 @@ export default {
         top: -18px;
         height: 18px;
       }
+    }
+
+    .ptk__container__body-container--hide {
+      top: 15px;
     }
   }
 
@@ -340,7 +360,8 @@ export default {
       height: 100%;
   }
 
-  #ptk__new-handler-arrow {
+  #ptk__new-handler-arrow,
+  #ptk__new-handler-cross {
       width: 13px;
       height: 8px;
       position: absolute;
@@ -358,6 +379,34 @@ export default {
   .ptk-pixiv-omina-content {
     display: inline-block;
     padding-right: 12px;
+  }
+
+  .ptk__guide {
+    position: absolute;
+    width: 100%;
+    top: -70px;
+    animation-name: guide;
+    animation-iteration-count: infinite;
+    animation-duration: 1s;
+  }
+
+  .ptk__guide-body {
+    width: 120px;
+    margin: 0 auto;
+  }
+
+  @keyframes guide {
+    0% {
+      top: -70px;
+    }
+
+    50% {
+      top: -65px
+    }
+
+    100% {
+      top: -70px;
+    }
   }
 }
 </style>
