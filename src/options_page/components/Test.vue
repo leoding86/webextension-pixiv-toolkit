@@ -38,7 +38,8 @@ export default {
   methods: {
     resetVersionNumber() {
       browser.storage.local.set({
-        version: '0.0.1'
+        version: '0.0.1',
+        guideShowed: false
       }, () => {
         browser.storage.local.get(null, items => {
           console.log(items);
