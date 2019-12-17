@@ -8,8 +8,11 @@ Github:
 Pixiv Toolkit: https://github.com/leoding86/webextension-pixiv-toolkit
 Pixiv Omina: https://github.com/leoding86/pixiv-omina
 ----------------------------------------------
-v3.5.1 - 19121306
-Reduce the extension size
+v3.6
+Added guide for new installation;
+Updated extension UI on Pixiv;
+Fixed issue about downloading novel;
+Reduced the extension size.
 
 v3.5 - 19120821
 Added Pixiv Omina click-to-download support
