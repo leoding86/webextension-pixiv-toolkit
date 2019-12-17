@@ -33,6 +33,7 @@ class NovelAdapter {
       novelCover: context.coverUrl,
       userId: context.userId,
       userName: context.userName,
+      r: context.xRestrict,
 
       id: context.id,
       title: context.title,

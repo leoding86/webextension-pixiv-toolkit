@@ -1,6 +1,6 @@
 <template>
   <div v-if="show">
-    <ptk-button :text="'Download'" @click="downloadNovel"></ptk-button>
+    <ptk-button @click="downloadNovel">Download Novel</ptk-button>
   </div>
 </template>
 

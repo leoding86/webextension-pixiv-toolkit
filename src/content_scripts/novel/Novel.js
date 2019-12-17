@@ -29,6 +29,10 @@ class Novel {
   generateNovel() {
     return this.novelGenerator.makeEpub();
   }
+
+  isR() {
+    return !!this.context.r
+  }
 }
 
 export default Novel;
