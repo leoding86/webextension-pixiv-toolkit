@@ -1,21 +1,21 @@
 <template>
-    <v-container style="max-width: 640px;">
-        <ugoira-options></ugoira-options>
+  <v-container style="max-width: 640px;">
+    <ugoira-options></ugoira-options>
 
-        <illustration-options></illustration-options>
+    <illustration-options></illustration-options>
 
-        <manga-options></manga-options>
+    <manga-options></manga-options>
 
-        <novel-options></novel-options>
+    <novel-options></novel-options>
 
-        <download-options></download-options>
+    <download-options v-if="!isFirefox"></download-options>
 
-        <history-options></history-options>
+    <history-options></history-options>
 
-        <search-options></search-options>
+    <search-options></search-options>
 
-        <other-options></other-options>
-    </v-container>
+    <other-options></other-options>
+  </v-container>
 </template>
 
 <script>
@@ -29,27 +29,25 @@ import DownloadOptions from '@@/components/options/DownloadOptions';
 import HistoryOptions from '@@/components/options/HistoryOptions';
 import SearchOptions from '@@/components/options/SearchOptions';
 import OtherOptions from '@@/components/options/OtherOptions';
+import SuperMixin from '@/mixins/SuperMixin';
 
 export default {
-    name: 'Options',
+  mixins: [
+    SuperMixin,
+  ],
 
-    components: {
-      'ugoira-options': UgoiraOptions,
-      'illustration-options': IllustrationOptions,
-      'manga-options': MangaOptions,
-      'novel-options': NovelOptions,
-      'download-options': DownloadOptions,
-      'history-options': HistoryOptions,
-      'search-options': SearchOptions,
-      'other-options': OtherOptions
-    },
+  name: 'Options',
 
-    data () {
-        return {
-
-            isChrome: false,
-        }
-    }
+  components: {
+    'ugoira-options': UgoiraOptions,
+    'illustration-options': IllustrationOptions,
+    'manga-options': MangaOptions,
+    'novel-options': NovelOptions,
+    'download-options': DownloadOptions,
+    'history-options': HistoryOptions,
+    'search-options': SearchOptions,
+    'other-options': OtherOptions
+  }
 }
 </script>
 
@@ -59,9 +57,9 @@ export default {
     margin-bottom: 30px;
 
     .option-card-title {
-        display: block;
-        font-size: 18px;
-        margin-bottom: 10px;
+      display: block;
+      font-size: 18px;
+      margin-bottom: 10px;
     }
   }
 }
