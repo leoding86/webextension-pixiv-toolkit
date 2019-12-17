@@ -31,7 +31,8 @@ browser.storage.local.get(null, items => {
 
     data() {
       return {
-        globalBrowserItems: items
+        globalBrowserItems: items,
+        isFirefox_: navigator.userAgent.toLowerCase().indexOf('firefox') > -1
       }
     },
 
