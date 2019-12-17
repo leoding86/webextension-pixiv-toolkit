@@ -2,6 +2,10 @@ export default {
   computed: {
     browserItems() {
       return this.$root.globalBrowserItems || this.$root.browserItems;
+    },
+
+    isFirefox() {
+      return this.$root.isFirefox_;
     }
   },
 
