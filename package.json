@@ -1,17 +1,17 @@
 {
   "name": "pixiv-toolkits",
-  "version": "3.5.2",
+  "version": "3.6",
   "description": "A web extension for adding features on Pixiv",
   "author": "leoding86 <leoding86@msn.com>",
   "private": true,
   "scripts": {
-    "dev": "webpack --watch --progress --config webpack.config.js",
-    "dev:firefox": "webpack --watch --progress --config webpack.config.js --env.platform=firefox",
+    "dev": "cross-env PLATFORM_ENV=chrome webpack --watch --progress --config webpack.config.js",
+    "dev:firefox": "cross-env PLATFORM_ENV=firefox webpack --watch --progress --config webpack.config.js --env.platform=firefox",
     "dev:cs": "webpack --watch --progress --config config/webpack.content-scripts.config.js",
     "dev:op": "webpack --watch --progress --config config/webpack.options-page.config.js",
     "dev:bg": "webpack --watch --progress --config config/webpack.background.config.js",
-    "build": "cross-env NODE_ENV=production webpack --config webpack.config.js",
-    "build:firefox": "cross-env NODE_ENV=production webpack --config webpack.config.js --env.platform=firefox"
+    "build": "cross-env NODE_ENV=production PLATFORM_ENV=chrome webpack --config webpack.config.js",
+    "build:firefox": "cross-env NODE_ENV=production PLATFORM_ENV=firefox webpack --config webpack.config.js --env.platform=firefox"
   },
   "dependencies": {
     "pouchdb": "^7.0.0",
