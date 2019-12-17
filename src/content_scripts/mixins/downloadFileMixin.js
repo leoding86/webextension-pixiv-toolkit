@@ -9,7 +9,10 @@ export default {
     downloadFile(url, filename, extra) {
       let vm = this;
 
-      if (this.browserItems.enableExtTakeOverDownloads) {
+      /**
+       * Because some sercurity reason of Firefox, the background script cannot download blob url from other sites.
+       */
+      if (!this.isFirefox && this.browserItems.enableExtTakeOverDownloads) {
         browserPermissions.contains({
           permissions: ['downloads']
         }).then(result => {
