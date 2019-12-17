@@ -37,7 +37,8 @@ try {
         data() {
           return {
             plusVersion: null, // deprecated
-            browserItems: items
+            browserItems: items,
+            isFirefox_: navigator.userAgent.toLocaleLowerCase().indexOf('firefox') > -1
           }
         },
 
