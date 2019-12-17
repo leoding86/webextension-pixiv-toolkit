@@ -382,8 +382,10 @@ export default {
   }
 
   .ptk__guide {
-    position: absolute;
     width: 100%;
+    height: 0px;
+    overflow: visible;
+    position: absolute;
     top: -70px;
     animation-name: guide;
     animation-iteration-count: infinite;
