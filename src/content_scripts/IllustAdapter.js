@@ -1,6 +1,7 @@
 import Browser from '@/modules/Browser/Browser';
 import IllustTool from '@/content_scripts/illust/Illust';
 import Request from '@/modules/Util/Request';
+import DateFormatter from '@/modules/Util/DateFormatter';
 
 class IllustAdapter {
   constructor() {
@@ -22,6 +23,8 @@ class IllustAdapter {
   parseContext(context) {
     let self = this;
 
+    let dateFormatter = DateFormatter.getDefault(context.createDate);
+
     return new Promise((resolve, reject) => {
       self.illustContext = {
         illustId: context.illustId,
@@ -42,7 +45,12 @@ class IllustAdapter {
         bookmarkCount: context.bookmarkCount,
         likeCount: context.likeCount,
         responseCount: context.responseCount,
-        viewCount: context.viewCount
+        viewCount: context.viewCount,
+
+        // contexts from parsed
+        year: dateFormatter.getYear(),
+        month: dateFormatter.getMonth(),
+        day: dateFormatter.getDay()
       };
 
       let request = new Request();

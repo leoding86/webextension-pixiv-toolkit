@@ -1,6 +1,7 @@
 import Browser from '@/modules/Browser/Browser';
 import MangaTool from '@/content_scripts/manga/Manga';
 import Request from '@/modules/Util/Request';
+import DateFormatter from '@/modules/Util/DateFormatter';
 
 class MangaAdapter {
   constructor() {
@@ -22,6 +23,8 @@ class MangaAdapter {
   parseContext(context) {
     let self = this;
 
+    let dateFormatter = DateFormatter.getDefault(context.createDate);
+
     return new Promise((resolve, reject) => {
       self.illustContext = {
         illustId: context.illustId,
@@ -42,7 +45,12 @@ class MangaAdapter {
         bookmarkCount: context.bookmarkCount,
         likeCount: context.likeCount,
         responseCount: context.responseCount,
-        viewCount: context.viewCount
+        viewCount: context.viewCount,
+
+        // contexts from parsed
+        year: dateFormatter.getYear(),
+        month: dateFormatter.getMonth(),
+        day: dateFormatter.getDay()
       };
 
       let request = new Request();

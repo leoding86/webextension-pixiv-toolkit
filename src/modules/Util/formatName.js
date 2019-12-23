@@ -57,6 +57,21 @@ export default (renameFormat, context, fallback) => {
         content: i18n.getMessage('page_num'),
         key: 'pageNum',
         possibleKeys: ['pageNum']
+      },
+      year: {
+        content: i18n.getMessage('year'),
+        key: 'year',
+        possibleKeys: ['year']
+      },
+      month: {
+        content: i18n.getMessage('month'),
+        key: 'month',
+        possibleKeys: ['month']
+      },
+      day: {
+        content: i18n.getMessage('day'),
+        key: 'day',
+        possibleKeys: ['day']
       }
     };
 

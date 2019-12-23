@@ -1,5 +1,6 @@
 import Browser from '@/modules/Browser/Browser';
 import Novel from '@/content_scripts/novel/Novel';
+import DateFormatter from '@/modules/Util/DateFormatter';
 
 class NovelAdapter {
   constructor() {
@@ -25,6 +26,8 @@ class NovelAdapter {
       return newContent;
     });
 
+    let dateFormatter = DateFormatter.getDefault(context.createDate);
+
     this.novelContext = {
       novelId: context.id,
       novelTitle: context.title,
@@ -44,7 +47,12 @@ class NovelAdapter {
       bookmarkCount: context.bookmarkCount,
       likeCount: context.likeCount,
       responseCount: context.responseCount,
-      viewCount: context.viewCount
+      viewCount: context.viewCount,
+
+      // contexts from parsed
+      year: dateFormatter.getYear(),
+      month: dateFormatter.getMonth(),
+      day: dateFormatter.getDay()
     }
   }
 

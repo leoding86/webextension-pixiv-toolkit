@@ -65,6 +65,18 @@ export default {
         {
           title: this.tl("author"),
           holder: '{author}'
+        },
+        {
+          title: this.tl("year"),
+          holder: "{year}"
+        },
+        {
+          title: this.tl("month"),
+          holder: "{month}"
+        },
+        {
+          title: this.tl("day"),
+          holder: "{day}"
         }
       ]
     };
