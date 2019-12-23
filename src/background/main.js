@@ -236,7 +236,12 @@ Main.prototype = {
       this.logs.pop();
     }
 
-    this.logs.push(args.error.message);
+    let errorMsg = args.error
+      ? args.error.message
+        ? args.error.message : args.message
+      : args.message;
+
+    this.logs.push(errorMsg);
   },
 
   update: function () {
