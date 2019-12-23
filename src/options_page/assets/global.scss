@@ -31,6 +31,20 @@ $side-width: 300px;
   max-width: 700px;
 }
 
+a.maintitle {
+  text-decoration: none;
+  color: #333;
+
+  &:hover {
+    color: #333;
+  }
+}
+
+a.subtitle {
+  @extend a.maintitle;
+  color: #999;
+}
+
 @media (max-width: 1300px) {
   .container--big {
     margin-left: 0;

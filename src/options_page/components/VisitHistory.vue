@@ -60,9 +60,12 @@
             ></cacheable-image>
           </div>
           <div class="history-item__info">
-            <div class="history-item__info-entity history-item__info-entity--blod"><span class="history-item__info-badge" :class="`history-item__info-badge--type${item.type}`">{{ caseWorkType(item.type) }}</span>{{ item.title }}</div>
             <div class="history-item__info-entity history-item__info-entity--blod">
-              <a :href="caseUserUrl(item.userId)"
+              <span class="history-item__info-badge" :class="`history-item__info-badge--type${item.type}`">{{ caseWorkType(item.type) }}</span>
+              <a class="maintitle" :href="caseWorkUrl(item.id)" target="_blank">{{ item.title }}</a>
+            </div>
+            <div class="history-item__info-entity history-item__info-entity--blod">
+              <a class="subtitle" :href="caseUserUrl(item.userId)"
                 target="_blank"
                 v-if="item.userId"
               >{{ item.userName}}</a>
@@ -403,7 +406,7 @@ export default {
     position: -webkit-sticky;
     position: sticky;
     top: 80px;
-    z-index: 9;
+    z-index: 5;
 
     .v-input__slot {
       box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
@@ -426,6 +429,7 @@ export default {
     }
 
     .history-item {
+      position: relative;
       display: flex;
       flex-direction: row;
       box-sizing: border-box;
@@ -476,15 +480,6 @@ export default {
       white-space: nowrap;
       text-overflow: ellipsis;
       overflow: hidden;
-
-      a {
-        text-decoration: none;
-        color: #999;
-
-        &:hover {
-          color: #333;
-        }
-      }
     }
 
     .history-item__info-entity--blod {
@@ -501,21 +496,21 @@ export default {
       padding: 3px;
       background: #ccc;
       font-weight: 300;
-    }
 
-    .history-item__info-badge--type0 {
-      color: #fff;
-      background:brown;
-    }
+      &--type0 {
+        color: #fff;
+        background:brown;
+      }
 
-    .history-item__info-badge--type1 {
-      color: #fff;
-      background:cadetblue;
-    }
+      &--type1 {
+        color: #fff;
+        background:cadetblue;
+      }
 
-    .history-item__info-badge--type2 {
-      color: #fff;
-      background:coral;
+      &--type2 {
+        color: #fff;
+        background:coral;
+      }
     }
 
     .history-item__actions {
@@ -541,5 +536,14 @@ export default {
 
 .search-panel {
   margin: 10px 0;
+}
+
+// override
+.cacheable-image-bg {
+  transition: transform 300ms;
+
+  &:hover {
+    transform: scale(1.2);
+  }
 }
 </style>
