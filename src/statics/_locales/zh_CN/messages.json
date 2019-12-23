@@ -400,5 +400,14 @@
    },
    "_Enable_this_may_cause_issue_about_loading_images": {
        "message": "启用此项可能会导致加载页面问题"
+   },
+   "year": {
+       "message": "年"
+   },
+   "month": {
+       "message": "月"
+   },
+   "day": {
+       "message": "日"
    }
 }

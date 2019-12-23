@@ -400,5 +400,14 @@
    },
    "_Enable_this_may_cause_issue_about_loading_images": {
        "message": "Enable this may cause issue about loading images"
+   },
+   "year": {
+       "message": "year"
+   },
+   "month": {
+       "message": "month"
+   },
+   "day": {
+       "message": "day"
    }
 }
