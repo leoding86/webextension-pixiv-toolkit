@@ -48,6 +48,7 @@ module.exports = env => {
 
               json.options_ui = {};
               json.options_ui.page = json.options_page;
+              json.options_ui.open_in_tab = true;
               delete json.options_page;
 
               console.log(`remove version_name property from manifest`);
