@@ -18,7 +18,7 @@ If you are using Chrome, you can download it from [Chrome web store](https://chr
 
 If you are using Firefox, you can download it from [Firefox Add-ons](https://addons.mozilla.org/addon/pixiv-toolkit/).
 
-If you are not using Chrome, you can try clone the project to your local machine, and build the extension by yourself.
+If you are not using Chrome or Firefox, you can try clone the project to your local machine, and build the extension by yourself.
 
 ## How to build
 To build the extension, you need these tools below:
@@ -38,7 +38,7 @@ Then you can install the extension manually.
 
 ## How to use
 
-There is a 'P*' will appear at the right bottom of the page if the page has available content. Click the 'P*' to active the action panel, then enjoy.
+There is a layer with a arrow will appear at the center bottom of the page if the page has available content. Click the arrow to active the action panel, then enjoy.
 
 <p><img src="https://raw.githubusercontent.com/leoding86/webextension-pixiv-toolkit/master/src/statics/img/example.gif"></p>
 
