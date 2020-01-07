@@ -113,7 +113,13 @@ export default {
 							vm.updateButtonInfo(buttonInfo, {
 								text: 'DL ' + Math.floor(evt.loaded / evt.total) * 100 + '%'
 							})
-						}
+            },
+
+            onRename({renameFormat, context, pageNum, extName}) {
+              renameFormat = renameFormat.replace(/[_-\s]?{pageNum}/, '');
+
+              return formatName(renameFormat, context, context.illustId) + `.${extName}`;
+            }
 					}).then(result => {
 						let url = URL.createObjectURL(result.blob)
 						let filename = result.targetName

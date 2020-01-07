@@ -115,11 +115,11 @@ class IllustTool {
 	/**
 	 * Download file
 	 * @param {string} url
-	 * @param {object} [events={}]
+	 * @param {object} [options={}]
 	 *
 	 * @returns {Promise<{blob: Blob, targetName: string}>}
 	 */
-	downloadFile(url, events = {}) {
+	downloadFile(url, options = {}) {
 		let self = this,
 				xhr = new XMLHttpRequest()
 
@@ -131,13 +131,24 @@ class IllustTool {
 						pageNum = parts[1],
 						extName = parts[2];
 
-				self.context.pageNum = pageNum;
+        self.context.pageNum = pageNum;
 
-				let filename = formatName(
-					self.illustrationImageRenameFormat,
-					self.context,
-					pageNum
-				) + '.' + extName;
+        let filename = null;
+
+        if (options.onRename && typeof options.onRename === 'function') {
+          filename = options.onRename({
+            renameFormat: self.illustrationImageRenameFormat,
+            context: self.context,
+            pageNum: pageNum,
+            extName: extName
+          });
+        } else {
+          filename = formatName(
+            self.illustrationImageRenameFormat,
+            self.context,
+            pageNum
+          ) + '.' + extName;
+        }
 
 				let byteArray = new Uint8Array(xhr.responseText.length)
 
@@ -163,8 +174,8 @@ class IllustTool {
 			}
 
 			xhr.onprogress = (evt) => {
-				if (typeof events.onProgress === 'function') {
-					events.onProgress.call(xhr, evt)
+				if (typeof options.onProgress === 'function') {
+					options.onProgress.call(xhr, evt)
 				}
 			}
 
