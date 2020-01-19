@@ -8,6 +8,13 @@ Github:
 Pixiv Toolkit: https://github.com/leoding86/webextension-pixiv-toolkit
 Pixiv Omina: https://github.com/leoding86/pixiv-omina
 ----------------------------------------------
+v3.7.2
+Remove page number in filename when downloading illustation has only one image;
+Minor fixes.
+
+v3.7.1 - 20010612
+Disable open options page in addons page in Firefox.
+
 v3.7 - 19122311
 Added new rename holders {years}, {month} and {day};
 Added a effect when mouse point the thumbnail which in view history;
