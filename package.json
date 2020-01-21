@@ -1,6 +1,6 @@
 {
   "name": "pixiv-toolkits",
-  "version": "3.7.2",
+  "version": "3.7.3",
   "description": "A web extension for adding features on Pixiv",
   "author": "leoding86 <leoding86@msn.com>",
   "private": true,
