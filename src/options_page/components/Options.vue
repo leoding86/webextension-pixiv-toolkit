@@ -15,12 +15,20 @@
     <search-options></search-options>
 
     <other-options></other-options>
+
+    <div class="no-margin-buttons">
+      <v-btn
+        depressed
+        color="info"
+        @click="copySettings"
+      >{{ tl('_copy_Settings') }}</v-btn>
+    </div>
   </v-container>
 </template>
 
 <script>
-import '@@/assets/global.scss'
-import '@/mixins/SuperMixin';
+import '@@/assets/global.scss';
+import CopyStr from '@/modules/Util/CopyStr';
 import UgoiraOptions from '@@/components/options/UgoiraOptions';
 import IllustrationOptions from '@@/components/options/IllustrationOptions';
 import MangaOptions from '@@/components/options/MangaOptions';
@@ -47,6 +55,13 @@ export default {
     'history-options': HistoryOptions,
     'search-options': SearchOptions,
     'other-options': OtherOptions
+  },
+
+  methods: {
+    copySettings() {
+      CopyStr.copy(JSON.stringify(this.browserItems));
+      alert('Copied');
+    }
   }
 }
 </script>
