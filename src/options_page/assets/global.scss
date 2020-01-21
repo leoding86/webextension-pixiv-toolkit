@@ -45,6 +45,12 @@ a.subtitle {
   color: #999;
 }
 
+.no-margin-buttons {
+  .v-btn {
+    margin: 0;
+  }
+}
+
 @media (max-width: 1300px) {
   .container--big {
     margin-left: 0;
