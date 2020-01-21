@@ -15,6 +15,7 @@
             </v-btn>
           </v-list-tile-action>
         </v-list-tile>
+
         <v-list-tile @click="showRenameImageDialog()">
           <v-list-tile-content>
             <v-list-tile-title>{{ tl('Rename_illustration_image') }}</v-list-tile-title>
@@ -24,6 +25,16 @@
             <v-btn icon ripple>
               <v-icon>keyboard_arrow_right</v-icon>
             </v-btn>
+          </v-list-tile-action>
+        </v-list-tile>
+
+        <v-list-tile>
+          <v-list-tile-content>
+            <v-list-tile-title>{{ tl('_keep_page_number') }}</v-list-tile-title>
+            <v-list-tile-sub-title>{{ tl('_keep_page_number_even_if_the_illustration_only_has_one_image') }}</v-list-tile-sub-title>
+          </v-list-tile-content>
+          <v-list-tile-action>
+            <v-switch v-model="keepPageNumber"></v-switch>
           </v-list-tile-action>
         </v-list-tile>
 
@@ -54,7 +65,9 @@ export default {
 
       imageRenameFormat: "",
 
-      downloadIfReady: false
+      downloadIfReady: false,
+
+      keepPageNumber: false
     };
   },
 
@@ -81,11 +94,18 @@ export default {
       browser.storage.local.set({
         illustrationDownloadIfReady: val
       });
+    },
+
+    keepPageNumber(val) {
+      browser.storage.local.set({
+        illustrationKeepPageNumber: val
+      });
     }
   },
 
   beforeMount() {
     this.downloadIfReady = this.browserItems.illustrationDownloadIfReady;
+    this.keepPageNumber = this.browserItems.illustrationKeepPageNumber;
   },
 
   methods: {

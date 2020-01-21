@@ -116,7 +116,9 @@ export default {
             },
 
             onRename({renameFormat, context, pageNum, extName}) {
-              renameFormat = renameFormat.replace(/[_-\s]?{pageNum}/, '');
+              if (!vm.browserItems.illustrationKeepPageNumber) {
+                renameFormat = renameFormat.replace(/}[^}]*{pageNum}/, '}');
+              }
 
               return formatName(renameFormat, context, context.illustId) + `.${extName}`;
             }
