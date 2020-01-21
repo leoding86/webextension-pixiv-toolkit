@@ -108,5 +108,10 @@ export default Object.assign({}, {
     /**
      * @since 3.6
      */
-    guideShowed: false
+    guideShowed: false,
+
+    /**
+     * @since 3.7.3
+     */
+    illustrationKeepPageNumber: false
   });
