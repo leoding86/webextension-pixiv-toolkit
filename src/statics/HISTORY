@@ -8,6 +8,11 @@ Github:
 Pixiv Toolkit: https://github.com/leoding86/webextension-pixiv-toolkit
 Pixiv Omina: https://github.com/leoding86/pixiv-omina
 ----------------------------------------------
+v3.7.3 - 20012112
+Added a "Keep page number" option for renaming illustration images;
+Added a copy settings button on the bottom of options page;
+Improved replace rule for removing "pageNum" if the illustration has only one image.
+
 v3.7.2
 Remove page number in filename when downloading illustation has only one image;
 Minor fixes.
