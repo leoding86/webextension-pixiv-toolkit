@@ -409,5 +409,14 @@
    },
    "day": {
        "message": "day"
+   },
+   "_keep_page_number": {
+       "message": "Keep page number"
+   },
+   "_keep_page_number_even_if_the_illustration_only_has_one_image": {
+       "message": "Keep page number even if the illustration only has one image"
+   },
+   "_copy_settings": {
+       "message": "Copy settings"
    }
 }

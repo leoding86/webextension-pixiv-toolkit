@@ -409,5 +409,14 @@
    },
    "day": {
        "message": "日"
+   },
+   "_keep_page_number": {
+       "message": "保留页码"
+   },
+   "_keep_page_number_even_if_the_illustration_only_has_one_image": {
+       "message": "即使图集只有一张图片也保留页码"
+   },
+   "_copy_settings": {
+       "message": "复制设置"
    }
 }
