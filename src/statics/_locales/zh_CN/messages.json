@@ -418,5 +418,11 @@
    },
    "_copy_settings": {
        "message": "复制设置"
+   },
+   "_export_settings": {
+       "message": "导出设置"
+   },
+   "_import_settings": {
+       "message": "导入设置"
    }
 }

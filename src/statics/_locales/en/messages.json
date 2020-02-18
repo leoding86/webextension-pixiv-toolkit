@@ -418,5 +418,11 @@
    },
    "_copy_settings": {
        "message": "Copy settings"
+   },
+   "_export_settings": {
+       "message": "Export settings"
+   },
+   "_import_settings": {
+       "message": "Import settings"
    }
 }
