@@ -6,6 +6,7 @@ export default Object.assign({}, {
     extendDuration: 3,
 
     ugoiraRenameFormat: '',
+    ugoiraQuanlity: 10,
     mangaRenameFormat: '',
     mangaImageRenameFormat: '',
 
