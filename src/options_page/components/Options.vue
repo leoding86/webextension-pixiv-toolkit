@@ -20,8 +20,14 @@
       <v-btn
         depressed
         color="info"
-        @click="copySettings"
-      >{{ tl('_copy_Settings') }}</v-btn>
+        @click="exportSettings"
+      >{{ tl('_export_settings') }}</v-btn>
+
+      <v-btn
+        depressed
+        color="info"
+        @click="importSettings"
+      >{{ tl('_import_settings') }}</v-btn>
     </div>
   </v-container>
 </template>
@@ -38,6 +44,7 @@ import HistoryOptions from '@@/components/options/HistoryOptions';
 import SearchOptions from '@@/components/options/SearchOptions';
 import OtherOptions from '@@/components/options/OtherOptions';
 import SuperMixin from '@/mixins/SuperMixin';
+import defaultSettings from '@/config/default';
 
 export default {
   mixins: [
@@ -61,6 +68,58 @@ export default {
     copySettings() {
       CopyStr.copy(JSON.stringify(this.browserItems));
       alert('Copied');
+    },
+
+    exportSettings() {
+      let blob = new Blob([JSON.stringify(this.browserItems)], {type: 'application/json'})
+
+      let a = document.createElement('a')
+      a.href = URL.createObjectURL(blob)
+      a.download = 'pixiv_toolkit_settings-' + Date.now() + '.json'
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    },
+
+    importSettings() {
+      let input = document.createElement('input');
+
+      input.type = 'file'
+      input.addEventListener('change', (e) => {
+        const files = e.target.files
+
+        let fileReader = new FileReader()
+
+        fileReader.addEventListener('load', () => {
+          try {
+            let importSettings = JSON.parse(fileReader.result);
+
+            if (importSettings) {
+              let setting;
+
+              Object.keys(defaultSettings).forEach(key => {
+                if (importSettings[key] &&
+                  (typeof defaultSettings[key] === typeof importSettings[key] || typeof importSettings[key] === 'string') // checking logical need improve
+                ) {
+                  defaultSettings[key] = importSettings[key];
+                }
+              });
+
+              browser.storage.local.set(defaultSettings);
+
+              alert('Settings imported');
+
+              window.location.reload();
+            }
+          } catch (e) {
+            console.log(e)
+          }
+        });
+
+        fileReader.readAsText(files[0])
+      });
+
+      input.click();
     }
   }
 }
