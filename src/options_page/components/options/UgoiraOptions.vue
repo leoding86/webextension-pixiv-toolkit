@@ -116,6 +116,8 @@ export default {
     this.ugoiraQuanlity = this.browserItems.ugoiraQuanlity || 10;
     this.ugoiraRenameFormat = this.browserItems.ugoiraRenameFormat;
     this.ugoiraDisplayDownloadProgress = this.browserItems.ugoiraDisplayDownloadProgress;
+    this.ugoiraGenerateAndDownload = this.browserItems.ugoiraGenerateAndDownload;
+    this.enablePackUgoiraFramesInfo = this.browserItems.enablePackUgoiraFramesInfo;
   },
 
   computed: {
