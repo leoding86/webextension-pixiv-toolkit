@@ -114,5 +114,12 @@ export default Object.assign({}, {
     /**
      * @since 3.7.3
      */
-    illustrationKeepPageNumber: false
+    illustrationKeepPageNumber: false,
+
+    /**
+     * @since 3.8.2
+     */
+    illustrationPageNumberStartWithOne: false,
+
+    MangaPageNumberStartWithOne: false
   });
