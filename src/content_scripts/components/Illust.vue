@@ -41,12 +41,16 @@ export default {
     let vm = this,
         buttonsInfo = {}
 
+    /**
+     * @var {IllustTool}
+     */
     this.illustTool = this.tool
 
     this.illustTool.initOptions({
       splitSize: 999,
       illustrationRenameFormat: this.browserItems.illustrationRenameFormat,
-      illustrationImageRenameFormat: this.browserItems.illustrationImageRenameFormat
+      illustrationImageRenameFormat: this.browserItems.illustrationImageRenameFormat,
+      pageNumberStartWithOne: this.browserItems.illustrationPageNumberStartWithOne
     }).init()
 
     this.chunks = this.illustTool.chunks
@@ -75,7 +79,7 @@ export default {
 
 				buttonsInfo[i] = {
 					index: i,
-					text: isSingle ? 'DL Illust' : vm.getChunkTitle(chunk),
+					text: isSingle ? 'DL image' : vm.getChunkTitle(chunk),
 					filename: vm.illustTool.getFilename(chunk),
 					downloadStatus: 0,
 					chunk: chunk,
@@ -95,7 +99,7 @@ export default {
 		},
 
     getChunkTitle(chunk) {
-      return 'DL ' + (chunk.start) + '-' + (chunk.end)
+      return 'DL images ' + (chunk.start - 0 + 1) + '-' + (chunk.end - 0 + 1);
     },
 
     downloadButtonClicked(buttonInfo) {
@@ -117,7 +121,7 @@ export default {
 
             onRename({renameFormat, context, pageNum, extName}) {
               if (!vm.browserItems.illustrationKeepPageNumber) {
-                renameFormat = renameFormat.replace(/}[^}]*{pageNum}/, '}');
+                renameFormat = renameFormat.replace(/[_-\s]*{pageNum}/, '');
               }
 
               return formatName(renameFormat, context, context.illustId) + `.${extName}`;
@@ -132,7 +136,7 @@ export default {
 
 						vm.updateButtonInfo(buttonInfo, {
 							url: url,
-							text: 'Save Illust',
+							text: 'Save image',
 							filename: filename,
 							downloadStatus: 2
 						})
@@ -171,7 +175,7 @@ export default {
       let vm = this
 
       return blob => {
-        let text = 'Save chunk ' + buttonInfo.chunk.start + '-' + buttonInfo.chunk.end
+        let text = 'Save images ' + (buttonInfo.chunk.start - 0 + 1) + '-' + (buttonInfo.chunk.end - 0 + 1);
 
         vm.$set(
           vm.buttonsInfo,

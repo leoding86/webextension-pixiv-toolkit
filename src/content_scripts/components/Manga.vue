@@ -45,7 +45,8 @@ export default {
     this.mangaTool.initOptions({
       splitSize: this.browserItems.mangaPagesInChunk,
       mangaRenameFormat: this.browserItems.mangaRenameFormat,
-      mangaImageRenameFormat: this.browserItems.mangaImageRenameFormat
+      mangaImageRenameFormat: this.browserItems.mangaImageRenameFormat,
+      pageNumberStartWithOne: this.browserItems.mangaPageNumberStartWithOne
     }).init()
 
     this.chunks = this.mangaTool.chunks
@@ -73,7 +74,7 @@ export default {
 
   methods: {
     getChunkTitle(chunk) {
-      return 'DL ' + (chunk.start) + '-' + (chunk.end)
+      return 'DL pages ' + (chunk.start - 0 + 1) + '-' + (chunk.end - 0 + 1);
     },
 
     downloadButtonClicked(buttonInfo) {
@@ -114,7 +115,7 @@ export default {
       let vm = this
 
       return blob => {
-        let text = 'Save chunk ' + buttonInfo.chunk.start + '-' + buttonInfo.chunk.end
+        let text = 'Save pages ' + (buttonInfo.chunk.start - 0 + 1) + '-' + (buttonInfo.chunk.end - 0 + 1)
 
         vm.$set(
           vm.buttonsInfo,
@@ -135,7 +136,7 @@ export default {
     },
 
     getFilename(chunk) {
-      return formatName(this.browserItems.mangaRenameFormat, this.mangaTool.context, this.mangaTool.context.illustId) + '_' + chunk.start + '-' + chunk.end + '.zip'
+      return formatName(this.browserItems.mangaRenameFormat, this.mangaTool.context, this.mangaTool.context.illustId) + '_' + (chunk.start - 0 + 1) + '-' + (chunk.end - 0 + 1) + '.zip'
     },
 
     handleConnect(port) {
