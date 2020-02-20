@@ -40,6 +40,16 @@
 
         <v-list-tile>
           <v-list-tile-content>
+            <v-list-tile-title>Page number start with 1</v-list-tile-title>
+            <v-list-tile-sub-title>Page number start with 1 otherwise start with 0</v-list-tile-sub-title>
+          </v-list-tile-content>
+          <v-list-tile-action>
+            <v-switch v-model="pageNumberStartWithOne"></v-switch>
+          </v-list-tile-action>
+        </v-list-tile>
+
+        <v-list-tile>
+          <v-list-tile-content>
             <v-list-tile-title>{{ tl('Download_file_if_everything_is_ready') }}</v-list-tile-title>
           </v-list-tile-content>
           <v-list-tile-action>
@@ -67,7 +77,9 @@ export default {
 
       downloadIfReady: false,
 
-      keepPageNumber: false
+      keepPageNumber: false,
+
+      pageNumberStartWithOne: false
     };
   },
 
@@ -100,12 +112,19 @@ export default {
       browser.storage.local.set({
         illustrationKeepPageNumber: val
       });
+    },
+
+    pageNumberStartWithOne(val) {
+      browser.storage.local.set({
+        illustrationPageNumberStartWithOne: val
+      });
     }
   },
 
   beforeMount() {
     this.downloadIfReady = this.browserItems.illustrationDownloadIfReady;
     this.keepPageNumber = this.browserItems.illustrationKeepPageNumber;
+    this.pageNumberStartWithOne = this.browserItems.illustrationPageNumberStartWithOne;
   },
 
   methods: {
