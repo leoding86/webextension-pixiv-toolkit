@@ -12,10 +12,16 @@ class MangaTool {
     this.zips;
   }
 
-  initOptions(options) {
-    this.splitSize = options.splitSize;
-    this.mangaRenameFormat = options.mangaRenameFormat
-    this.mangaImageRenameFormat = options.mangaImageRenameFormat;
+  initOptions({
+    splitSize,
+    mangaRenameFormat,
+    mangaImageRenameFormat,
+    pageNumberStartWithOne
+  }) {
+    this.splitSize = splitSize;
+    this.mangaRenameFormat = mangaRenameFormat;
+    this.mangaImageRenameFormat = mangaImageRenameFormat;
+    this.pageNumberStartWithOne = pageNumberStartWithOne;
 
     return this;
   }
@@ -112,19 +118,22 @@ class MangaTool {
     }
 
     for (let i = chunk.start; i <= chunk.end; i++) {
-      queue.add(self.context.pages[i].urls.original);
+      queue.add({
+        url: self.context.pages[i].urls.original,
+        pageIndex: i
+      });
     }
 
-    queue.start(url => {
+    queue.start(({url, pageIndex}) => {
       return new Promise((resolve) => {
-        self.saveImage(xhr, url, zip).then(() => {
+        self.saveImage({xhr, url, zip, pageIndex}).then(() => {
           resolve();
         });
       });
     });
   }
 
-  saveImage(xhr, url, zip) {
+  saveImage({xhr, url, zip, pageIndex}) {
     let self = this;
 
     return new Promise((resolve, reject) => {
@@ -132,7 +141,7 @@ class MangaTool {
       xhr.overrideMimeType('text/plain; charset=x-user-defined');
       xhr.onload = () => {
         let parts = url.match(/(\d+)\.([^.]+)$/),
-            pageNum = parts[1],
+            pageNum = pageIndex - 0 + (self.pageNumberStartWithOne ? 1 : 0),
             extName = parts[2];
 
         self.context.pageNum = pageNum;
