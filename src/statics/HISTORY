@@ -8,7 +8,11 @@ Github:
 Pixiv Toolkit: https://github.com/leoding86/webextension-pixiv-toolkit
 Pixiv Omina: https://github.com/leoding86/pixiv-omina
 ----------------------------------------------
-3.8.1-2020021811
+v3.8.2-2020022112
+Fix issue about renaming while download single illustration image;
+Minor fixes.
+
+v3.8.1-2020021811
 Add export settings and import settings features;
 Remove copy setting feature;
 Fix issue about some switch settings are not working.
