@@ -1,5 +1,6 @@
 <template>
   <a class="button"
+    :class="buttonColor"
     :href="href"
     :download="download"
     :title="title"
@@ -12,7 +13,21 @@ export default {
     text: [String, Number],
     href: String,
     download: String,
-    title: String
+    title: String,
+    type: {
+      required: false,
+      type: String
+    }
+  },
+
+  computed: {
+    buttonColor() {
+      if (this.type) {
+        return `button--${this.type}`;
+      } else {
+        return null;
+      }
+    }
   }
 }
 </script>
@@ -29,5 +44,9 @@ export default {
     font-weight: 700;
     cursor: pointer;
     transition: all 0.3s;
+  }
+
+  .button--success {
+    background: #00dc68;
   }
 </style>
