@@ -238,12 +238,22 @@ class IllustTool {
     });
   }
 
-  saveImage({xhr, url, zip, pageIndex}) {
+  /**
+   * Download image and save it to zip object
+   * @param {object} options
+   * @param {XMLHttpRequest} options.xhr
+   * @param {string} options.url
+   * @param {JSZip} options.zip
+   * @param {number} options.pageIndex
+   * @param {object} options.events
+   */
+  saveImage({xhr, url, zip, pageIndex, events = {}}) {
     let self = this;
 
     return new Promise((resolve, reject) => {
       xhr.open('get', url);
       xhr.overrideMimeType('text/plain; charset=x-user-defined');
+
       xhr.onload = () => {
         let parts = url.match(/(\d+)\.([^.]+)$/),
             pageNum = pageIndex - 0 + (self.pageNumberStartWithOne ? 1 : 0),
@@ -269,7 +279,7 @@ class IllustTool {
         });
 
         resolve();
-      }
+      };
 
       xhr.onerror = () => {
         if (!self.retryTicker.reachLimit()) {
@@ -278,9 +288,9 @@ class IllustTool {
           self.retryTicker.reset();
           reject();
         }
-      }
+      };
 
-      Logger.notice('save illustration image ' + url)
+      Logger.notice('save illustration image ' + url);
 
       xhr.send();
     });
