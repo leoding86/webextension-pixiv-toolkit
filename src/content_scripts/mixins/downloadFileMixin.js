@@ -19,10 +19,10 @@ export default {
           if (result) {
             browserDownloads.download({
               url: url,
-              filename: vm.browserItems.downloadRelativeLocation + filename
-            })
+              filename: vm.browserItems.downloadRelativeLocation ? vm.browserItems.downloadRelativeLocation : '' + filename
+            });
           } else {
-            alert('You need grant download permission for downloading using downlads setting in extension')
+            alert('You need grant download permission for downloading using downlads setting in extension');
           }
         })
       } else {
