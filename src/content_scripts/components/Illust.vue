@@ -115,8 +115,8 @@ export default {
 					this.illustTool.downloadFile(url, {
 						onProgress(evt) {
 							vm.updateButtonInfo(buttonInfo, {
-								text: 'DL ' + Math.floor(evt.loaded / evt.total) * 100 + '%'
-							})
+								text: 'DL ' + Math.floor(evt.loaded * 100 / evt.total) + '%'
+							});
             },
 
             onRename({renameFormat, context, pageNum, extName}) {
