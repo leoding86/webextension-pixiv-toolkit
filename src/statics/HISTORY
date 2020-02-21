@@ -9,6 +9,7 @@ Pixiv Toolkit: https://github.com/leoding86/webextension-pixiv-toolkit
 Pixiv Omina: https://github.com/leoding86/pixiv-omina
 ----------------------------------------------
 v3.8.2-2020022112
+Change button color when download start;
 Fix issue about renaming while download single illustration image;
 Minor fixes.
 
