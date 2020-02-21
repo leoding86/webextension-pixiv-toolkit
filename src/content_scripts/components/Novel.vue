@@ -1,6 +1,9 @@
 <template>
   <div v-if="show">
-    <ptk-button @click="downloadNovel">Download Novel</ptk-button>
+    <ptk-button
+      @click="downloadNovel"
+      :type="downloadNovelType"
+    >Download Novel</ptk-button>
   </div>
 </template>
 
@@ -26,7 +29,8 @@ export default {
     return {
       novelTool: null,
       show: false,
-      fileUrl: null
+      fileUrl: null,
+      downloadNovelType: ''
     };
   },
 
@@ -60,6 +64,8 @@ export default {
         this.tool.context,
         this.tool.context.novelId + "_" + this.tool.context.novelTitle
       );
+
+      this.downloadNovelType = 'success';
 
       this.downloadFile(this.fileUrl, filename + '.epub', {
         statType: 'novel'

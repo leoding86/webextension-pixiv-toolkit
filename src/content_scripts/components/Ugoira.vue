@@ -1,13 +1,27 @@
 <template>
   <div v-if="show">
-    <ptk-button :text="resourceDownloadText"
+    <ptk-button
+      :text="resourceDownloadText"
       @click="resourceButtonClicked"
+      :type="resourceButtonType"
     ></ptk-button>
     <template v-if="resourceProgress === 100">
-      <ptk-button :text="gifGenerateText" @click="gifButtonClicked"></ptk-button>
-      <ptk-button :text="apngGenerateText" @click="apngButtonClicked"></ptk-button>
-      <ptk-button :text="webGenerateText" @click="webmButtonClicked"
-       v-if="!isBrowser('firefox')"></ptk-button>
+      <ptk-button
+        :text="gifGenerateText"
+        @click="gifButtonClicked"
+        :type="gifButtonType"
+      ></ptk-button>
+      <ptk-button
+        :text="apngGenerateText"
+        @click="apngButtonClicked"
+        :type="apngButtonType"
+      ></ptk-button>
+      <ptk-button
+        :text="webGenerateText"
+        @click="webmButtonClicked"
+        :type="webmButtonType"
+        v-if="!isBrowser('firefox')"
+      ></ptk-button>
     </template>
   </div>
 </template>
@@ -41,18 +55,22 @@ export default {
       show: false,
 
       resourceProgress: 0,
+      resourceButtonType: '',
 
       gifProgress: null,
       gifStatus: 0,
       gifUrl: null,
+      gifButtonType: '',
 
       apngProgress: null,
       apngStatus: 0,
       apngUrl: null,
+      apngButtonType: '',
 
       webmProgress: null,
       webmStatus: 0,
-      webmUrl: null
+      webmUrl: null,
+      webmButtonType: ''
     }
   },
 
@@ -171,6 +189,8 @@ export default {
           vm.gifUrl = URL.createObjectURL(blob)
 
           if (vm.browserItems.ugoiraGenerateAndDownload) {
+            vm.gifButtonType = 'success';
+
             vm.downloadFile(vm.gifUrl, vm.getFilename() + '.gif', {
               statType: 'ugoira',
             });
@@ -188,6 +208,8 @@ export default {
           vm.webmUrl = URL.createObjectURL(blob)
 
           if (vm.browserItems.ugoiraGenerateAndDownload) {
+            vm.webmButtonType = 'success';
+
             vm.downloadFile(vm.webmUrl, vm.getFilename() + '.webm', {
               statType: 'ugoira',
             });
@@ -210,6 +232,8 @@ export default {
           vm.apngUrl = URL.createObjectURL(blob);
 
           if (vm.browserItems.ugoiraGenerateAndDownload) {
+            vm.apngButtonType = 'success';
+
             vm.downloadFile(vm.apngUrl, vm.getFilename() + '.apng', {
               statType: 'ugoira',
             });
@@ -225,6 +249,8 @@ export default {
       if (this.resourceProgress === -1) {
         this.initTool();
       } else if (this.tool.zipBlob) {
+        this.resourceButtonType = 'success';
+
         this.downloadFile(URL.createObjectURL(this.tool.zipBlob), this.getFilename() + '.zip', {
           statType: 'ugoira',
         });
@@ -233,6 +259,7 @@ export default {
 
     gifButtonClicked() {
       if (this.gifStatus === 2) {
+        this.gifButtonType = 'success';
 
         this.downloadFile(this.gifUrl, this.getFilename() + '.gif', {
           statType: 'ugoira',
@@ -249,6 +276,8 @@ export default {
 
     apngButtonClicked() {
       if (this.apngStatus === 2) {
+        this.apngButtonType = 'success';
+
         this.downloadFile(this.apngUrl, this.getFilename() + '.apng', {
           statType: 'ugoira',
         });
@@ -263,6 +292,8 @@ export default {
 
     webmButtonClicked() {
       if (this.webmStatus === 2) {
+        this.webmButtonType = 'success';
+
         this.downloadFile(this.webmUrl, this.getFilename() + '.webm', {
           statType: 'ugoira',
         });

@@ -4,6 +4,7 @@
       v-for="buttonInfo in buttonsInfo"
       :key="buttonInfo.index"
       :text="buttonInfo.text"
+      :type="buttonInfo.type"
       @click="downloadButtonClicked(buttonInfo)"
     ></ptk-button>
   </div>
@@ -83,7 +84,8 @@ export default {
 					filename: vm.illustTool.getFilename(chunk),
 					downloadStatus: 0,
 					chunk: chunk,
-					isSingle: isSingle
+          isSingle: isSingle,
+          type: ''
 				}
 			})
 
@@ -127,19 +129,25 @@ export default {
               return formatName(renameFormat, context, context.illustId) + `.${extName}`;
             }
 					}).then(result => {
-						let url = URL.createObjectURL(result.blob)
-						let filename = result.targetName
-
-						vm.downloadFile(url, filename, {
-              statType: 'illust',
-            });
+						let url = URL.createObjectURL(result.blob);
+						let filename = result.targetName;
 
 						vm.updateButtonInfo(buttonInfo, {
 							url: url,
 							text: 'Save image',
 							filename: filename,
-							downloadStatus: 2
-						})
+              downloadStatus: 2
+						});
+
+            if (vm.browserItems.illustrationDownloadIfReady) {
+              vm.downloadFile(url, filename, {
+                statType: 'illust',
+              });
+
+              this.updateButtonInfo(buttonInfo, {
+                type: 'success'
+              });
+            }
 					})
 				} else {
 					this.illustTool.downloadChunk(buttonInfo.chunk, {
@@ -149,6 +157,10 @@ export default {
 					})
 				}
       } else if (buttonInfo.downloadStatus === 2) {
+        this.updateButtonInfo(buttonInfo, {
+          type: 'success'
+        });
+
         this.downloadFile(buttonInfo.url, buttonInfo.filename, {
           statType: 'illust',
         });
@@ -185,9 +197,13 @@ export default {
             url: URL.createObjectURL(blob),
             downloadStatus: 2
           })
-        )
+        );
 
         if (vm.browserItems.illustrationDownloadIfReady) {
+          this.updateButtonInfo(buttonInfo, {
+            type: 'success'
+          });
+
           vm.downloadFile(buttonInfo.url, vm.getFilename(buttonInfo.chunk), {
             statType: 'illust',
           });
