@@ -50,6 +50,18 @@ try {
               vm.browserItems[key] = items[key].newValue;
             }
           });
+
+          /**
+           * Check if the extension has the downloads permission
+           */
+          browser.permissions.getAll(permissions => {
+            let settings = {};
+
+            settings.enableExtTakeOverDownloads = permissions.permissions.indexOf('downloads') > -1
+            settings.accessTechorusCdn = permissions.origins.indexOf('*://*.techorus-cdn/*') > -1;
+
+            browser.storage.local.set(settings);
+          });
         }
       })
     });
