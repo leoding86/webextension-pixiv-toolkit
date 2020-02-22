@@ -6,6 +6,28 @@
       <v-list two-line>
         <v-list-tile>
           <v-list-tile-content>
+            <v-list-tile-title>{{ tl('_grant_the_extension_to_access') }} <strong>techorus-cdn.com</strong></v-list-tile-title>
+            <v-list-tile-sub-title>{{ tl('_some_user_find_some_resources_of_pixiv_are_store_at') }} <strong>techorus-cdn.com</strong></v-list-tile-sub-title>
+          </v-list-tile-content>
+          <v-list-tile-action>
+            <v-btn
+              depressed
+              @click="accessTechorusCdnClickHandle"
+            >{{ !accessTechorusCdn ? 'Grant' : 'Remove' }}</v-btn>
+          </v-list-tile-action>
+        </v-list-tile>
+
+        <v-list-tile>
+          <v-list-tile-content>
+            <v-list-tile-title>{{ tl('_ask_whether_to_download_the_work_may_has_been_downloaded') }}</v-list-tile-title>
+          </v-list-tile-content>
+          <v-list-tile-action>
+            <v-switch v-model="askDownloadSavedWork"></v-switch>
+          </v-list-tile-action>
+        </v-list-tile>
+
+        <v-list-tile>
+          <v-list-tile-content>
             <v-list-tile-title>{{ tl('setting_ext_take_over_downloads') }}</v-list-tile-title>
             <v-list-tile-sub-title>{{ tl('setting_ext_take_over_downloads_desc') }}</v-list-tile-sub-title>
           </v-list-tile-content>
@@ -59,11 +81,15 @@ export default {
 
   data() {
     return {
+      askDownloadSavedWork: true,
+
       hasDownloadsPermission: false,
 
       enableExtTakeOverDownloads: false,
 
-      downloadSaveAs: false
+      downloadSaveAs: false,
+
+      accessTechorusCdn: false
     };
   },
 
@@ -78,13 +104,23 @@ export default {
       browser.storage.local.set({
         downloadSaveAs: val
       });
+    },
+
+    askDownloadSavedWork(val) {
+      browser.storage.local.set({
+        askDownloadSavedWork: val
+      });
     }
   },
 
   beforeMount() {
+    this.askDownloadSavedWork = !!this.browserItems.askDownloadSavedWork;
+
     this.enableExtTakeOverDownloads = !!this.browserItems.enableExtTakeOverDownloads;
 
     this.downloadSaveAs = !!this.browserItems.downloadSaveAs;
+
+    this.accessTechorusCdn = !!this.browserItems.accessTechorusCdn;
   },
 
   methods: {
@@ -116,6 +152,20 @@ export default {
         name: "DownloadRelativeLocationDialog",
         params: {
           downloadRelativeLocation: ""
+        }
+      });
+    },
+
+    accessTechorusCdnClickHandle() {
+      let permissionsOperation = this.accessTechorusCdn ? 'remove' : 'request';
+
+      browser.permissions[permissionsOperation]({ origins: ["*://*.techorus-cdn/*"] }, result => {
+        if (result === true) {
+          this.accessTechorusCdn = permissionsOperation === 'request' ? true : false;
+
+          browser.storage.local.set({
+            accessTechorusCdn: this.accessTechorusCdn
+          });
         }
       });
     }
