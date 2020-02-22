@@ -6,6 +6,10 @@ class Novel {
     this.novelGenerator = new NovelGenerator();
   }
 
+  getId() {
+    return this.context.id;
+  }
+
   prepareProps() {
     this.novelGenerator.setProps({
       uuid: this.context.novelUrl,
