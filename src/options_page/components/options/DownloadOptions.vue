@@ -26,7 +26,7 @@
           </v-list-tile-action>
         </v-list-tile>
 
-        <v-list-tile>
+        <v-list-tile v-if="!isFirefox">
           <v-list-tile-content>
             <v-list-tile-title>{{ tl('setting_ext_take_over_downloads') }}</v-list-tile-title>
             <v-list-tile-sub-title>{{ tl('setting_ext_take_over_downloads_desc') }}</v-list-tile-sub-title>
@@ -36,7 +36,8 @@
              @change="onEnableExtTakeOverDownloadsChange"></v-switch>
           </v-list-tile-action>
         </v-list-tile>
-        <v-list-tile>
+
+        <v-list-tile v-if="!isFirefox">
           <v-list-tile-content>
             <v-list-tile-title>{{ tl('setting_relative_location') }}</v-list-tile-title>
             <v-list-tile-sub-title>{{ downloadRelativeLocation }}</v-list-tile-sub-title>
@@ -49,7 +50,8 @@
             >{{ tl('Change') }}</v-btn>
           </v-list-tile-action>
         </v-list-tile>
-        <v-list-tile>
+
+        <v-list-tile v-if="!isFirefox">
           <v-list-tile-content>
             <v-list-tile-title>
               {{ tl('Ask_where_to_save_each_file_before_downloading') }}

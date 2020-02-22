@@ -8,7 +8,7 @@
 
     <novel-options></novel-options>
 
-    <download-options v-if="!isFirefox"></download-options>
+    <download-options ></download-options>
 
     <history-options></history-options>
 
