@@ -1,23 +1,23 @@
 <template>
   <div v-if="show">
     <ptk-button
-      :text="resourceDownloadText"
+      :text="resourceDownloadText + (resourceSaved ? ' ✔️' : '')"
       @click="resourceButtonClicked"
       :type="resourceButtonType"
     ></ptk-button>
     <template v-if="resourceProgress === 100">
       <ptk-button
-        :text="gifGenerateText"
+        :text="gifGenerateText + (gifSaved ? ' ✔️' : '')"
         @click="gifButtonClicked"
         :type="gifButtonType"
       ></ptk-button>
       <ptk-button
-        :text="apngGenerateText"
+        :text="apngGenerateText + (apngSaved ? ' ✔️' : '')"
         @click="apngButtonClicked"
         :type="apngButtonType"
       ></ptk-button>
       <ptk-button
-        :text="webGenerateText"
+        :text="webGenerateText + (webmSaved ? ' ✔️' : '')"
         @click="webmButtonClicked"
         :type="webmButtonType"
         v-if="!isBrowser('firefox')"
@@ -35,6 +35,7 @@ import {
 } from "@/content_scripts/Browser"
 import Browser from '@/modules/Browser/Browser'
 import downloadFileMixin from "@/content_scripts/mixins/downloadFileMixin"
+import DownloadManager from '@/modules/Manager/DownloadManager';
 
 export default {
   mixins: [
@@ -56,21 +57,27 @@ export default {
 
       resourceProgress: 0,
       resourceButtonType: '',
+      resourceSaved: false,
 
       gifProgress: null,
       gifStatus: 0,
       gifUrl: null,
       gifButtonType: '',
+      gifSaved: false,
 
       apngProgress: null,
       apngStatus: 0,
       apngUrl: null,
       apngButtonType: '',
+      apngSaved: false,
 
       webmProgress: null,
       webmStatus: 0,
       webmUrl: null,
-      webmButtonType: ''
+      webmButtonType: '',
+      webmSaved: false,
+
+      forceDownload: false
     }
   },
 
@@ -134,11 +141,18 @@ export default {
 
     this.resourceProgress = 1;
 
-    this.initTool();
+    DownloadManager.getRecord(this.ugoiraTool.getId(), DownloadManager.illustType).then(doc => {
+      if (doc.zip === 1) vm.resourceSaved = true;
+      if (doc.gif === 1) vm.gifSaved = true;
+      if (doc.apng === 1) vm.apngSaved = true;
+      if (doc.webm === 1) vm.webmSaved = true;
+    }).finally(() => {
+      this.initTool();
 
-    this.show = true
+      this.show = true;
 
-    browser.runtime.onConnect.addListener(this.handleConnect);
+      browser.runtime.onConnect.addListener(this.handleConnect);
+    });
   },
 
   unmounted() {
@@ -245,7 +259,27 @@ export default {
       });
     },
 
+    saveDownloadRecord(record) {
+      DownloadManager.saveRecord(this.ugoiraTool.getId(), DownloadManager.illustType, record);
+    },
+
+    allowDownload(isSaved) {
+      if (isSaved && this.browserItems.askDownloadSavedWork && !this.forceDownload) {
+        if (window.confirm(this.tl('_this_item_may_has_been_saved'))) {
+          this.forceDownload = true;
+        } else {
+          return false;
+        }
+      }
+
+      return true;
+    },
+
     resourceButtonClicked() {
+      if (!this.allowDownload(this.resourceSaved)) {
+        return;
+      }
+
       if (this.resourceProgress === -1) {
         this.initTool();
       } else if (this.tool.zipBlob) {
@@ -254,16 +288,33 @@ export default {
         this.downloadFile(URL.createObjectURL(this.tool.zipBlob), this.getFilename() + '.zip', {
           statType: 'ugoira',
         });
+
+        this.saveDownloadRecord({
+          zip: 1
+        });
+
+        this.resourceSaved = true;
       }
     },
 
     gifButtonClicked() {
+      if (!this.allowDownload(this.gifSaved)) {
+        return;
+      }
+
       if (this.gifStatus === 2) {
         this.gifButtonType = 'success';
 
         this.downloadFile(this.gifUrl, this.getFilename() + '.gif', {
           statType: 'ugoira',
         });
+
+        this.saveDownloadRecord({
+          gif: 1
+        });
+
+        this.gifSaved = true;
+
         return
       } else if (this.gifStatus !== 0) {
         return
@@ -275,12 +326,23 @@ export default {
     },
 
     apngButtonClicked() {
+      if (!this.allowDownload(this.apngSaved)) {
+        return;
+      }
+
       if (this.apngStatus === 2) {
         this.apngButtonType = 'success';
 
         this.downloadFile(this.apngUrl, this.getFilename() + '.apng', {
           statType: 'ugoira',
         });
+
+        this.saveDownloadRecord({
+          apng: 1
+        });
+
+        this.apngSaved = true;
+
         return;
       } else if (this.apngStatus !== 0) {
         return;
@@ -291,12 +353,23 @@ export default {
     },
 
     webmButtonClicked() {
+      if (!this.allowDownload(this.webmSaved)) {
+        return;
+      }
+
       if (this.webmStatus === 2) {
         this.webmButtonType = 'success';
 
         this.downloadFile(this.webmUrl, this.getFilename() + '.webm', {
           statType: 'ugoira',
         });
+
+        this.saveDownloadRecord({
+          webm: 1
+        });
+
+        this.webmSaved = true;
+
         return
       } else if (this.webmStatus !== 0) {
         return

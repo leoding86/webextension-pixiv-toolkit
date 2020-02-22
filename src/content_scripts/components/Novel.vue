@@ -3,7 +3,7 @@
     <ptk-button
       @click="downloadNovel"
       :type="downloadNovelType"
-    >Download Novel</ptk-button>
+    >Download Novel{{ isSaved ? ' ✔️' : '' }}</ptk-button>
   </div>
 </template>
 
@@ -11,6 +11,7 @@
 import Button from "@/content_scripts/components/Button";
 import formatName from "@/modules/Util/formatName";
 import downloadFileMixin from '@/content_scripts/mixins/downloadFileMixin';
+import DownloadManager from '@/modules/Manager/DownloadManager';
 
 export default {
   mixins: [
@@ -27,30 +28,35 @@ export default {
 
   data() {
     return {
-      novelTool: null,
       show: false,
       fileUrl: null,
-      downloadNovelType: ''
+      downloadNovelType: '',
+      isSaved: false,
+      forceDownload: false
     };
   },
 
   mounted() {
     let vm = this;
 
-    this.tool.prepareProps();
+    DownloadManager.getRecord(this.tool.getId(), DownloadManager.novelType).then(doc => {
+      this.isSaved = true;
+    }).finally(() => {
+      this.tool.prepareProps();
 
-    if (this.browserItems.novelIncludeDescription) {
-      this.tool.includeDescription();
-    }
+      if (this.browserItems.novelIncludeDescription) {
+        this.tool.includeDescription();
+      }
 
-    this.tool.prepareSections();
+      this.tool.prepareSections();
 
-    this.tool.generateNovel().then(url => {
-      this.show = true;
-      this.fileUrl = url;
+      this.tool.generateNovel().then(url => {
+        this.show = true;
+        this.fileUrl = url;
+      });
+
+      browser.runtime.onConnect.addListener(this.handleConnect);
     });
-
-    browser.runtime.onConnect.addListener(this.handleConnect);
   },
 
   unmounted() {
@@ -58,7 +64,29 @@ export default {
   },
 
   methods: {
+    saveDownloadRecord(record) {
+      this.isSaved = true;
+
+      DownloadManager.saveRecord(this.tool.getId(), DownloadManager.novelType, record);
+    },
+
+    allowDownload(isSaved) {
+      if (isSaved && this.browserItems.askDownloadSavedWork && !this.forceDownload) {
+        if (window.confirm(this.tl('_this_work_may_has_been_saved'))) {
+          this.forceDownload = true;
+        } else {
+          return false;
+        }
+      }
+
+      return true;
+    },
+
     downloadNovel() {
+      if (!this.allowDownload(this.isSaved)) {
+        return;
+      }
+
       let filename = formatName(
         this.browserItems.novelRenameFormat,
         this.tool.context,
@@ -70,6 +98,10 @@ export default {
       this.downloadFile(this.fileUrl, filename + '.epub', {
         statType: 'novel'
       });
+
+      this.saveDownloadRecord({ novel: 1 });
+
+      this.isSaved = true;
     },
 
     handleConnect(port) {

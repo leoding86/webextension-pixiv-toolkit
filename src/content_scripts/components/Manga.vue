@@ -14,6 +14,7 @@
 import Button from '@/content_scripts/components/Button'
 import formatName from '@/modules/Util/formatName'
 import downloadFileMixin from '@/content_scripts/mixins/downloadFileMixin'
+import DownloadManager from '@/modules/Manager/DownloadManager'
 
 export default {
   mixins: [
@@ -33,7 +34,23 @@ export default {
       mangaTool: null,
       show: false,
       chunks: [],
-      buttonsInfo: {}
+      buttonsInfo: {},
+      isSaved: false,
+      forceDownload: false
+    }
+  },
+
+  watch: {
+    isSaved(val) {
+      Object.keys(this.buttonsInfo).forEach(key => {
+        let buttonInfo = this.buttonsInfo[key];
+
+        if (val === true && buttonInfo.text.indexOf(' ✔️') < 0) {
+          this.updateButtonInfo(buttonInfo, { text: buttonInfo.text + ' ✔️' });
+        } else if (val === false && buttonInfo.text.indexOf(' ✔️') > -1) {
+          this.updateButtonInfo(buttonInfo, { text: buttonInfo.text.replace(' ✔️', '')});
+        }
+      });
     }
   },
 
@@ -52,22 +69,26 @@ export default {
 
     this.chunks = this.mangaTool.chunks
 
-    this.chunks.forEach((chunk, i) => {
-      buttonsInfo[i] = {
-        index: i,
-        text: vm.getChunkTitle(chunk),
-        filename: vm.mangaTool.getFilename(chunk),
-        downloadStatus: 0,
-        chunk: chunk,
-        type: ''
-      }
-    })
+    DownloadManager.getRecord(this.mangaTool.getId(), DownloadManager.illustType).then(doc => {
+      this.isSaved = true;
+    }).finally(() => {
+      this.chunks.forEach((chunk, i) => {
+        buttonsInfo[i] = {
+          index: i,
+          text: vm.getChunkTitle(chunk) + (vm.isSaved ? ' ✔️' : ''),
+          filename: vm.mangaTool.getFilename(chunk),
+          downloadStatus: 0,
+          chunk: chunk,
+          type: ''
+        }
+      })
 
-    this.buttonsInfo = buttonsInfo
+      this.buttonsInfo = buttonsInfo
 
-    browser.runtime.onConnect.addListener(this.handleConnect);
+      browser.runtime.onConnect.addListener(this.handleConnect);
 
-    this.show = true
+      this.show = true
+    });
   },
 
   unmounted() {
@@ -75,6 +96,24 @@ export default {
   },
 
   methods: {
+    saveDownloadRecord(record) {
+      this.isSaved = true;
+
+      DownloadManager.saveRecord(this.mangaTool.getId(), DownloadManager.illustType, record);
+    },
+
+    allowDownload(isSaved) {
+      if (isSaved && this.browserItems.askDownloadSavedWork && !this.forceDownload) {
+        if (window.confirm(this.tl('_this_work_may_has_been_saved'))) {
+          this.forceDownload = true;
+        } else {
+          return false;
+        }
+      }
+
+      return true;
+    },
+
     getChunkTitle(chunk) {
       return 'DL pages ' + (chunk.start - 0 + 1) + '-' + (chunk.end - 0 + 1);
     },
@@ -84,6 +123,10 @@ export default {
     },
 
     downloadButtonClicked(buttonInfo) {
+      if (!this.allowDownload(this.isSaved)) {
+        return;
+      }
+
       let vm = this
 
       if (buttonInfo.downloadStatus === 0) {
@@ -100,6 +143,8 @@ export default {
         this.downloadFile(buttonInfo.url, this.getFilename(buttonInfo.chunk), {
           statType: 'manga'
         });
+
+        this.saveDownloadRecord({ manga: 1 });
       }
     },
 
@@ -131,6 +176,8 @@ export default {
           vm.downloadFile(buttonInfo.url, vm.getFilename(buttonInfo.chunk), {
             statType: 'manga',
           });
+
+          vm.saveDownloadRecord({ manga: 1 });
         }
       }
     },

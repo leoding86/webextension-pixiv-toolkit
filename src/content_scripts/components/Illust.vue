@@ -15,6 +15,7 @@ import Button from '@/content_scripts/components/Button'
 import formatName from '@/modules/Util/formatName'
 import downloadFileMixin from '@/content_scripts/mixins/downloadFileMixin'
 import IllustTool from '@/content_scripts/illust/Illust'
+import DownloadManager from '@/modules/Manager/DownloadManager'
 
 export default {
   mixins: [
@@ -34,7 +35,9 @@ export default {
       illustTool: null,
       show: false,
       chunks: [],
-      buttonsInfo: {}
+      buttonsInfo: {},
+      isSaved: false,
+      forceDownload: false
     }
   },
 
@@ -67,30 +70,66 @@ export default {
     browser.runtime.onConnect.removeListener(this.handleConnect)
   },
 
+  watch: {
+    isSaved(val) {
+      Object.keys(this.buttonsInfo).forEach(key => {
+        let buttonInfo = this.buttonsInfo[key];
+
+        if (val === true && buttonInfo.text.indexOf(' ✔️') < 0) {
+          this.updateButtonInfo(buttonInfo, { text: buttonInfo.text + ' ✔️' });
+        } else if (val === false && buttonInfo.text.indexOf(' ✔️') > -1) {
+          this.updateButtonInfo(buttonInfo, { text: buttonInfo.text.replace(' ✔️', '')});
+        }
+      });
+    }
+  },
+
   methods: {
     initDownloadButtons() {
 			/**
 			 * @param {this}
 			 */
 			let vm = this,
-					buttonsInfo = {}
+          buttonsInfo = {}
 
-			this.chunks.forEach((chunk, i) => {
-				let isSingle = vm.illustTool.isSingle()
+      DownloadManager.getRecord(this.illustTool.getId(), DownloadManager.illustType).then(doc => {
+        this.isSaved = true;
+      }).finally(() => {
+        vm.chunks.forEach((chunk, i) => {
+          let isSingle = vm.illustTool.isSingle()
 
-				buttonsInfo[i] = {
-					index: i,
-					text: isSingle ? 'DL image' : vm.getChunkTitle(chunk),
-					filename: vm.illustTool.getFilename(chunk),
-					downloadStatus: 0,
-					chunk: chunk,
-          isSingle: isSingle,
-          type: ''
-				}
-			})
+          buttonsInfo[i] = {
+            index: i,
+            text: (isSingle ? 'DL image' : vm.getChunkTitle(chunk)) + (vm.isSaved ? ' ✔️' : ''),
+            filename: vm.illustTool.getFilename(chunk),
+            downloadStatus: 0,
+            chunk: chunk,
+            isSingle: isSingle,
+            type: ''
+          }
+        })
 
-			this.buttonsInfo = buttonsInfo
+        vm.buttonsInfo = buttonsInfo
+      });
 		},
+
+    saveDownloadRecord(record) {
+      this.isSaved = true;
+
+      DownloadManager.saveRecord(this.illustTool.getId(), DownloadManager.illustType, record);
+    },
+
+    allowDownload(isSaved) {
+      if (isSaved && this.browserItems.askDownloadSavedWork && !this.forceDownload) {
+        if (window.confirm(this.tl('_this_work_may_has_been_saved'))) {
+          this.forceDownload = true;
+        } else {
+          return false;
+        }
+      }
+
+      return true;
+    },
 
 		updateButtonInfo(buttonInfo, data) {
 			this.$set(
@@ -105,7 +144,11 @@ export default {
     },
 
     downloadButtonClicked(buttonInfo) {
-			let vm = this
+      let vm = this
+
+      if (!this.allowDownload(this.isSaved)) {
+        return;
+      }
 
 			if (buttonInfo.downloadStatus === 0) {
         buttonInfo.downloadStatus = 1
@@ -147,6 +190,8 @@ export default {
               this.updateButtonInfo(buttonInfo, {
                 type: 'success'
               });
+
+              this.saveDownloadRecord({ illust: 1 });
             }
 					})
 				} else {
@@ -164,6 +209,8 @@ export default {
         this.downloadFile(buttonInfo.url, buttonInfo.filename, {
           statType: 'illust',
         });
+
+        this.saveDownloadRecord({ illust: 1 });
       }
     },
 
@@ -207,6 +254,8 @@ export default {
           vm.downloadFile(buttonInfo.url, vm.getFilename(buttonInfo.chunk), {
             statType: 'illust',
           });
+
+          this.saveDownloadRecord({ illust: 1 });
         }
       }
     },
