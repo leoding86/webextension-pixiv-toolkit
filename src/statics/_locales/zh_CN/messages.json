@@ -430,5 +430,14 @@
    },
    "_this_work_may_has_been_saved": {
        "message": "此作品可能已经保存过，是否继续下载？"
+   },
+   "_ask_whether_to_download_the_work_may_has_been_downloaded": {
+       "message": "是否询问下载可能已经保存过的作品"
+   },
+   "_grant_the_extension_to_access": {
+       "message": "授权插件访问"
+   },
+   "_some_user_find_some_resources_of_pixiv_are_store_at": {
+       "message": "一些用户发现部分Pixiv的资源存放在"
    }
 }

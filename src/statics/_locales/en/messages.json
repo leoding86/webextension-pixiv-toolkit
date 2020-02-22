@@ -430,5 +430,14 @@
    },
    "_this_work_may_has_been_saved": {
        "message": "This work may has been saved, still download it ?"
+   },
+   "_ask_whether_to_download_the_work_may_has_been_downloaded": {
+       "message": "Ask whether to download the work may has been downloaded"
+   },
+   "_grant_the_extension_to_access": {
+       "message": "Grant the extension to access"
+   },
+   "_some_user_find_some_resources_of_pixiv_are_store_at": {
+       "message": "Some user find some resources of Pixiv are store at"
    }
 }
