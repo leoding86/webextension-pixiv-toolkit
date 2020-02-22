@@ -424,5 +424,11 @@
    },
    "_import_settings": {
        "message": "导入设置"
+   },
+   "_this_item_may_has_been_saved": {
+       "message": "此项目可能已经保存过，是否继续下载？"
+   },
+   "_this_work_may_has_been_saved": {
+       "message": "此作品可能已经保存过，是否继续下载？"
    }
 }

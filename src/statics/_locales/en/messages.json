@@ -424,5 +424,11 @@
    },
    "_import_settings": {
        "message": "Import settings"
+   },
+   "_this_item_may_has_been_saved": {
+       "message": "This item may has been saved, still download it ?"
+   },
+   "_this_work_may_has_been_saved": {
+       "message": "This work may has been saved, still download it ?"
    }
 }
