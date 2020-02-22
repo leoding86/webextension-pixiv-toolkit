@@ -121,5 +121,12 @@ export default Object.assign({}, {
      */
     illustrationPageNumberStartWithOne: false,
 
-    MangaPageNumberStartWithOne: false
+    MangaPageNumberStartWithOne: false,
+
+    /**
+     * @since 3.9
+     */
+    askDownloadSavedWork: true,
+
+    accessTechorusCdn: false
   });
