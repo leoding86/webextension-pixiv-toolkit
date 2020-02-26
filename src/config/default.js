@@ -124,9 +124,14 @@ export default Object.assign({}, {
     MangaPageNumberStartWithOne: false,
 
     /**
-     * @since 3.9
+     * @since 3.9.0
      */
     askDownloadSavedWork: true,
 
-    accessTechorusCdn: false
+    accessTechorusCdn: false,
+
+    /**
+     * @since 3.9.1
+     */
+    importantNoticeDisplayed: false
   });
