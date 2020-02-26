@@ -31,7 +31,7 @@
     ],
     "optional_permissions": [
         "downloads",
-        "*://*.techorus-cdn/*"
+        "*://*.techorus-cdn.com/*"
     ],
     "content_scripts": [
         {
@@ -67,7 +67,7 @@
             ]
         }
     ],
-    "version": "3.9.0",
-    "version_name": "3.9.0-2020022203",
+    "version": "3.9.1",
+    "version_name": "3.9.1-2020022513",
     "options_page": "options_page/index.html"
 }
