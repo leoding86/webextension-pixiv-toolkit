@@ -8,6 +8,9 @@ Github:
 Pixiv Toolkit: https://github.com/leoding86/webextension-pixiv-toolkit
 Pixiv Omina: https://github.com/leoding86/pixiv-omina
 ----------------------------------------------
+v3.9.1-2020022513
+Fix wrong permission.
+
 v3.9.0-2020022203
 Add feature for check if the target work may has been saved before download it (You can disable it in options page);
 Add a setting for the exntension to grant the extension to access the domain techorus-cdn.com;
