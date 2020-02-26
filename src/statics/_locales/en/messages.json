@@ -438,6 +438,15 @@
        "message": "Grant the extension to access"
    },
    "_some_user_find_some_resources_of_pixiv_are_store_at": {
-       "message": "Some user find some resources of Pixiv are store at"
+       "message": "Some users find some works need to access"
+   },
+   "_do_not_show_again": {
+       "message": "Don't show again"
+   },
+   "_you_can_grant_remove_permission_in_options_page_too": {
+       "message": "You can grant/remove permission in options page too"
+   },
+   "_close": {
+       "message": "Close"
    }
 }
