@@ -10,10 +10,10 @@
             <v-list-tile-sub-title>{{ tl('_some_user_find_some_resources_of_pixiv_are_store_at') }} <strong>techorus-cdn.com</strong></v-list-tile-sub-title>
           </v-list-tile-content>
           <v-list-tile-action>
-            <v-btn
-              depressed
-              @click="accessTechorusCdnClickHandle"
-            >{{ !accessTechorusCdn ? 'Grant' : 'Remove' }}</v-btn>
+            <grant-permissions-btn
+              :item-key="accessTechorusCdnKey"
+              :permissions="accessTechorusCdnPermissions"
+            ></grant-permissions-btn>
           </v-list-tile-action>
         </v-list-tile>
 
@@ -75,11 +75,16 @@
 
 <script>
 import SuperMixin from "@/mixins/SuperMixin";
+import GrantPermissionsBtn from "@@/components/options/GrantPermissionsBtn";
 
 export default {
   mixins: [
     SuperMixin
   ],
+
+  components: {
+    'grant-permissions-btn': GrantPermissionsBtn
+  },
 
   data() {
     return {
@@ -91,7 +96,9 @@ export default {
 
       downloadSaveAs: false,
 
-      accessTechorusCdn: false
+      accessTechorusCdnKey: 'accessTechorusCdn',
+
+      accessTechorusCdnPermissions: { origins: ["*://*.techorus-cdn.com/*"] }
     };
   },
 
@@ -121,8 +128,6 @@ export default {
     this.enableExtTakeOverDownloads = !!this.browserItems.enableExtTakeOverDownloads;
 
     this.downloadSaveAs = !!this.browserItems.downloadSaveAs;
-
-    this.accessTechorusCdn = !!this.browserItems.accessTechorusCdn;
   },
 
   methods: {
@@ -154,20 +159,6 @@ export default {
         name: "DownloadRelativeLocationDialog",
         params: {
           downloadRelativeLocation: ""
-        }
-      });
-    },
-
-    accessTechorusCdnClickHandle() {
-      let permissionsOperation = this.accessTechorusCdn ? 'remove' : 'request';
-
-      browser.permissions[permissionsOperation]({ origins: ["*://*.techorus-cdn/*"] }, result => {
-        if (result === true) {
-          this.accessTechorusCdn = permissionsOperation === 'request' ? true : false;
-
-          browser.storage.local.set({
-            accessTechorusCdn: this.accessTechorusCdn
-          });
         }
       });
     }
