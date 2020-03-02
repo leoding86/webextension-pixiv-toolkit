@@ -62,6 +62,13 @@
             ></v-text-field>
           </v-list-tile-action>
         </v-list-tile>
+
+        <change-location-setting
+          v-model="location"
+          :setting-title="tl('_save_manga_in_relative_location')"
+          :setting-tip="browserItems.enableExtTakeOverDownloads ? '' : tl('_must_enable_extension_take_over_downloads_setting')"
+          :dialog-hint="tl('_work_relative_location_desc')"
+        ></change-location-setting>
       </v-list>
     </v-card>
   </div>
@@ -69,11 +76,16 @@
 
 <script>
 import SuperMixin from "@/mixins/SuperMixin";
+import ChangeLocationSetting from '@@/components/options/ChangeLocationSetting';
 
 export default {
   mixins: [
     SuperMixin
   ],
+
+  components: {
+    'change-location-setting': ChangeLocationSetting
+  },
 
   data() {
     return {
@@ -85,7 +97,9 @@ export default {
 
       mangaPackAndDownload: false,
 
-      pageNumberStartWithOne: false
+      pageNumberStartWithOne: false,
+
+      location: ''
     };
   },
 
@@ -118,6 +132,12 @@ export default {
       browser.storage.local.set({
         mangaPageNumberStartWithOne: val
       });
+    },
+
+    location(val) {
+      browser.storage.local.set({
+        mangaRelativeLocation: val
+      })
     }
   },
 
@@ -127,6 +147,8 @@ export default {
     this.mangaPagesInChunk = this.browserItems.mangaPagesInChunk;
     this.mangaPackAndDownload = this.browserItems.mangaPackAndDownload;
     this.pageNumberStartWithOne = this.browserItems.mangaPageNumberStartWithOne;
+
+    this.location = this.browserItems.mangaRelativeLocation;
   },
 
   methods: {

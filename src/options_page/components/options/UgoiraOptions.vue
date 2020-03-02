@@ -70,6 +70,13 @@
             <v-switch v-model="ugoiraDisplayDownloadProgress"></v-switch>
           </v-list-tile-action>
         </v-list-tile>
+
+        <change-location-setting
+          v-model="location"
+          :setting-title="tl('_save_ugoira_in_relative_location')"
+          :setting-tip="browserItems.enableExtTakeOverDownloads ? '' : tl('_must_enable_extension_take_over_downloads_setting')"
+          :dialog-hint="tl('_work_relative_location_desc')"
+        ></change-location-setting>
       </v-list>
     </v-card>
 
@@ -79,9 +86,14 @@
 
 <script>
 import SuperMixin from "@/mixins/SuperMixin";
+import ChangeLocationSetting from '@@/components/options/ChangeLocationSetting';
 
 export default {
   mixins: [SuperMixin],
+
+  components: {
+    'change-location-setting': ChangeLocationSetting
+  },
 
   data() {
     return {
@@ -108,7 +120,9 @@ export default {
 
       ugoiraGenerateAndDownload: false,
 
-      ugoiraDisplayDownloadProgress: true
+      ugoiraDisplayDownloadProgress: true,
+
+      location: ''
     };
   },
 
@@ -118,6 +132,8 @@ export default {
     this.ugoiraDisplayDownloadProgress = this.browserItems.ugoiraDisplayDownloadProgress;
     this.ugoiraGenerateAndDownload = this.browserItems.ugoiraGenerateAndDownload;
     this.enablePackUgoiraFramesInfo = this.browserItems.enablePackUgoiraFramesInfo;
+
+    this.location = this.browserItems.ugoiraRelativeLocation;
   },
 
   computed: {
@@ -145,6 +161,12 @@ export default {
       browser.storage.local.set({
         ugoiraDisplayDownloadProgress: val
       });
+    },
+
+    location(val) {
+      browser.storage.local.set({
+        ugoiraRelativeLocation: val
+      })
     }
   },
 

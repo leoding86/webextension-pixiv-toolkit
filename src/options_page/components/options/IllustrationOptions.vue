@@ -56,6 +56,13 @@
             <v-switch v-model="downloadIfReady"></v-switch>
           </v-list-tile-action>
         </v-list-tile>
+
+        <change-location-setting
+          v-model="location"
+          :setting-title="tl('_save_illustration_in_relative_location')"
+          :setting-tip="browserItems.enableExtTakeOverDownloads ? '' : tl('_must_enable_extension_take_over_downloads_setting')"
+          :dialog-hint="tl('_work_relative_location_desc')"
+        ></change-location-setting>
       </v-list>
     </v-card>
   </div>
@@ -63,11 +70,16 @@
 
 <script>
 import SuperMixin from "@/mixins/SuperMixin";
+import ChangeLocationSetting from '@@/components/options/ChangeLocationSetting';
 
 export default {
   mixins: [
     SuperMixin
   ],
+
+  components: {
+    'change-location-setting': ChangeLocationSetting
+  },
 
   data() {
     return {
@@ -79,7 +91,9 @@ export default {
 
       keepPageNumber: false,
 
-      pageNumberStartWithOne: false
+      pageNumberStartWithOne: false,
+
+      location: ''
     };
   },
 
@@ -118,6 +132,12 @@ export default {
       browser.storage.local.set({
         illustrationPageNumberStartWithOne: val
       });
+    },
+
+    location(val) {
+      browser.storage.local.set({
+        illustrationRelativeLocation: val
+      });
     }
   },
 
@@ -125,6 +145,8 @@ export default {
     this.downloadIfReady = this.browserItems.illustrationDownloadIfReady;
     this.keepPageNumber = this.browserItems.illustrationKeepPageNumber;
     this.pageNumberStartWithOne = this.browserItems.illustrationPageNumberStartWithOne;
+
+    this.location = this.browserItems.illustrationRelativeLocation;
   },
 
   methods: {

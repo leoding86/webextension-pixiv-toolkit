@@ -25,6 +25,13 @@
             <v-switch v-model="novelIncludeDescription"></v-switch>
           </v-list-tile-action>
         </v-list-tile>
+
+        <change-location-setting
+          v-model="location"
+          :setting-title="tl('_save_ugoira_in_relative_location')"
+          :setting-tip="browserItems.enableExtTakeOverDownloads ? '' : tl('_must_enable_extension_take_over_downloads_setting')"
+          :dialog-hint="tl('_work_relative_location_desc')"
+        ></change-location-setting>
       </v-list>
     </v-card>
 
@@ -34,15 +41,22 @@
 
 <script>
 import SuperMixin from '@/mixins/SuperMixin';
+import ChangeLocationSetting from '@@/components/options/ChangeLocationSetting';
 
 export default {
   mixins: [
     SuperMixin
   ],
 
+  components: {
+    'change-location-setting': ChangeLocationSetting
+  },
+
   data() {
     return {
-      novelIncludeDescription: false
+      novelIncludeDescription: false,
+
+      location: ''
     }
   },
 
@@ -54,6 +68,8 @@ export default {
 
   beforeMount() {
     this.novelIncludeDescription = this.browserItems.novelIncludeDescription;
+
+    this.location = this.browserItems.novelRelativeLocation;
   },
 
   watch: {
@@ -66,6 +82,12 @@ export default {
           novelIncludeDescription: !!val
         });
       }
+    },
+
+    location(val) {
+      browser.storage.local.set({
+        novelRelativeLocation: val
+      });
     }
   },
 
