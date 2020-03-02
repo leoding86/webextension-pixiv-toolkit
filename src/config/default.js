@@ -133,5 +133,16 @@ export default Object.assign({}, {
     /**
      * @since 3.9.1
      */
-    importantNoticeDisplayed: false
+    importantNoticeDisplayed: false,
+
+    /**
+     * @since 3.9.2
+     */
+    ugoiraRelativeLocation: '',
+
+    illustrationRelativeLocation: '',
+
+    mangaRelativeLocation: '',
+
+    novelRelativeLocation: ''
   });
