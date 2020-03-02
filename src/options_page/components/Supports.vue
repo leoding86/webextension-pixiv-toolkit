@@ -11,26 +11,14 @@
     </v-btn>
 
     <v-btn
+      v-if="reviewInfo !== null"
       small
       round
       depressed
       class="support-btn"
-      v-if="isChrome"
-      @click="openInNewTab('https://chrome.google.com/webstore/detail/pixiv-toolkit/ajlcnbbeidbackfknkgknjefhmbngdnj')"
+      @click="openInNewTab(reviewInfo.url)"
     >
-      <img src="../assets/chrome-es.png">
-      <span class="button-text" v-show="largeWindow">{{ tl('Give_5_stars') }}</span>
-      <v-icon right>open_in_new</v-icon>
-    </v-btn>
-
-    <v-btn
-      small
-      round
-      depressed
-      class="support-btn"
-      v-if="isFirefox"
-      @click="openInNewTab('')">
-      <img src="../assets/firefox-amo.png">
+      <img :src="reviewInfo.icon">
       <span class="button-text" v-show="largeWindow">{{ tl('Give_5_stars') }}</span>
       <v-icon right>open_in_new</v-icon>
     </v-btn>
@@ -90,20 +78,30 @@ export default {
 
   data() {
     return {
-      isChrome: false,
-      isFirefox: false,
       largeWindow: true
     };
   },
 
+  computed: {
+    reviewInfo() {
+      if (common.isBrowser("edge")) {
+        return null;
+      } else if (common.isBrowser("chrome")) {
+        return {
+          icon: '../assets/chrome-es.png',
+          url: 'https://chrome.google.com/webstore/detail/pixiv-toolkit/ajlcnbbeidbackfknkgknjefhmbngdnj'
+        };
+      } else if (common.isBrowser("firefox")) {
+        return {
+          icon: '../assets/firefox-amo.png',
+          url: 'https://addons.mozilla.org/en-US/firefox/addon/pixiv-toolkit/'
+        }
+      }
+    }
+  },
+
   mounted() {
     let vm = this;
-
-    if (common.isBrowser("chrome")) {
-      this.isChrome = true;
-    } else if (common.isBrowser("firefox")) {
-      this.isFirefox = true;
-    }
 
     if (window.innerWidth < 950) {
       this.largeWindow = false;
