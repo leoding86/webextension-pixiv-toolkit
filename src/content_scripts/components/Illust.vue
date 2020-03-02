@@ -15,7 +15,7 @@ import Button from '@/content_scripts/components/Button'
 import formatName from '@/modules/Util/formatName'
 import downloadFileMixin from '@/content_scripts/mixins/downloadFileMixin'
 import IllustTool from '@/content_scripts/illust/Illust'
-import DownloadManager from '@/modules/Manager/DownloadManager'
+import DownloadRecordPort from '@/modules/Ports/DownloadRecordPort'
 
 export default {
   mixins: [
@@ -48,7 +48,16 @@ export default {
     /**
      * @var {IllustTool}
      */
-    this.illustTool = this.tool
+    this.illustTool = this.tool;
+
+    /**
+     * @var {DownloadRecordPort}
+     */
+    this.downloadRecordPort = DownloadRecordPort.getInstance();
+
+    this.downloadRecordPort.port.onMessage.addListener(this.handleDownloadRecord);
+
+    this.downloadRecordPort.getDownloadRecord({ id: this.illustTool.getId(), type: DownloadRecordPort.illustType });
 
     this.illustTool.initOptions({
       splitSize: 999,
@@ -68,6 +77,7 @@ export default {
 
   unmounted() {
     browser.runtime.onConnect.removeListener(this.handleConnect)
+    this.downloadRecordPort.port.onMessage.removeListener(this.handleDownloadRecord);
   },
 
   watch: {
@@ -90,33 +100,28 @@ export default {
 			 * @param {this}
 			 */
 			let vm = this,
-          buttonsInfo = {}
+          buttonsInfo = {};
 
-      DownloadManager.getRecord(this.illustTool.getId(), DownloadManager.illustType).then(doc => {
-        this.isSaved = true;
-      }).finally(() => {
-        vm.chunks.forEach((chunk, i) => {
-          let isSingle = vm.illustTool.isSingle()
+      vm.chunks.forEach((chunk, i) => {
+        let isSingle = vm.illustTool.isSingle()
 
-          buttonsInfo[i] = {
-            index: i,
-            text: (isSingle ? 'DL image' : vm.getChunkTitle(chunk)) + (vm.isSaved ? ' ✔️' : ''),
-            filename: vm.illustTool.getFilename(chunk),
-            downloadStatus: 0,
-            chunk: chunk,
-            isSingle: isSingle,
-            type: ''
-          }
-        })
+        buttonsInfo[i] = {
+          index: i,
+          text: (isSingle ? 'DL image' : vm.getChunkTitle(chunk)) + (vm.isSaved ? ' ✔️' : ''),
+          filename: vm.illustTool.getFilename(chunk),
+          downloadStatus: 0,
+          chunk: chunk,
+          isSingle: isSingle,
+          type: ''
+        }
+      })
 
-        vm.buttonsInfo = buttonsInfo
-      });
+      vm.buttonsInfo = buttonsInfo
 		},
 
     saveDownloadRecord(record) {
       this.isSaved = true;
-
-      DownloadManager.saveRecord(this.illustTool.getId(), DownloadManager.illustType, record);
+      this.downloadRecordPort.saveDownloadRecord({ id: this.illustTool.getId(), type: DownloadRecordPort.illustType, record });
     },
 
     allowDownload(isSaved) {
@@ -166,7 +171,7 @@ export default {
 
             onRename({renameFormat, context, pageNum, extName}) {
               if (!vm.browserItems.illustrationKeepPageNumber) {
-                renameFormat = renameFormat.replace(/[_-\s]*{pageNum}/, '');
+                renameFormat = renameFormat.replace(/#.*#/, '');
               }
 
               return formatName(renameFormat, context, context.illustId) + `.${extName}`;
@@ -184,6 +189,7 @@ export default {
 
             if (vm.browserItems.illustrationDownloadIfReady) {
               vm.downloadFile(url, filename, {
+                folder: this.getSubfolder(this.browserItems.illustrationRelativeLocation, this.illustTool.context),
                 statType: 'illust',
               });
 
@@ -207,6 +213,7 @@ export default {
         });
 
         this.downloadFile(buttonInfo.url, buttonInfo.filename, {
+          folder: this.getSubfolder(this.browserItems.illustrationRelativeLocation, this.illustTool.context),
           statType: 'illust',
         });
 
@@ -252,6 +259,7 @@ export default {
           });
 
           vm.downloadFile(buttonInfo.url, vm.getFilename(buttonInfo.chunk), {
+            folder: this.getSubfolder(this.browserItems.illustrationRelativeLocation, this.illustTool.context),
             statType: 'illust',
           });
 
@@ -262,6 +270,12 @@ export default {
 
     getFilename(chunk) {
       return formatName(this.browserItems.illustrationRenameFormat, this.illustTool.context, this.illustTool.context.illustId) + '_' + chunk.start + '-' + chunk.end + '.zip'
+    },
+
+    handleDownloadRecord(message, port) {
+      if (message.channel === DownloadRecordPort.port + ':get-download-record' && message.error === undefined) {
+        this.isSaved = true;
+      }
     },
 
     handleConnect(port) {

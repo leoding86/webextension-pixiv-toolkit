@@ -14,7 +14,7 @@
 import Button from '@/content_scripts/components/Button'
 import formatName from '@/modules/Util/formatName'
 import downloadFileMixin from '@/content_scripts/mixins/downloadFileMixin'
-import DownloadManager from '@/modules/Manager/DownloadManager'
+import DownloadRecordPort from '@/modules/Ports/DownloadRecordPort'
 
 export default {
   mixins: [
@@ -60,6 +60,15 @@ export default {
 
     this.mangaTool = this.tool
 
+    /**
+     * @var {DownloadRecordPort}
+     */
+    this.downloadRecordPort = DownloadRecordPort.getInstance();
+
+    this.downloadRecordPort.port.onMessage.addListener(this.handleDownloadRecord);
+
+    this.downloadRecordPort.getDownloadRecord({ id: this.mangaTool.getId(), type: DownloadRecordPort.illustType });
+
     this.mangaTool.initOptions({
       splitSize: this.browserItems.mangaPagesInChunk,
       mangaRenameFormat: this.browserItems.mangaRenameFormat,
@@ -69,37 +78,33 @@ export default {
 
     this.chunks = this.mangaTool.chunks
 
-    DownloadManager.getRecord(this.mangaTool.getId(), DownloadManager.illustType).then(doc => {
-      this.isSaved = true;
-    }).finally(() => {
-      this.chunks.forEach((chunk, i) => {
-        buttonsInfo[i] = {
-          index: i,
-          text: vm.getChunkTitle(chunk) + (vm.isSaved ? ' ✔️' : ''),
-          filename: vm.mangaTool.getFilename(chunk),
-          downloadStatus: 0,
-          chunk: chunk,
-          type: ''
-        }
-      })
+    this.chunks.forEach((chunk, i) => {
+      buttonsInfo[i] = {
+        index: i,
+        text: vm.getChunkTitle(chunk) + (vm.isSaved ? ' ✔️' : ''),
+        filename: vm.mangaTool.getFilename(chunk),
+        downloadStatus: 0,
+        chunk: chunk,
+        type: ''
+      }
+    })
 
-      this.buttonsInfo = buttonsInfo
+    this.buttonsInfo = buttonsInfo
 
-      browser.runtime.onConnect.addListener(this.handleConnect);
+    browser.runtime.onConnect.addListener(this.handleConnect);
 
-      this.show = true
-    });
+    this.show = true
   },
 
   unmounted() {
     browser.runtime.onConnect.removeListener(this.handleConnect)
+    this.downloadRecordPort.port.onMessage.removeListener(this.handleDownloadRecord);
   },
 
   methods: {
     saveDownloadRecord(record) {
       this.isSaved = true;
-
-      DownloadManager.saveRecord(this.mangaTool.getId(), DownloadManager.illustType, record);
+      this.downloadRecordPort.saveDownloadRecord({ id: this.mangaTool.getId(), type: DownloadRecordPort.illustType, record });
     },
 
     allowDownload(isSaved) {
@@ -141,6 +146,7 @@ export default {
         this.updateButtonInfo(buttonInfo, { type: 'success' });
 
         this.downloadFile(buttonInfo.url, this.getFilename(buttonInfo.chunk), {
+          folder: this.getSubfolder(this.browserItems.mangaRelativeLocation, this.mangaTool.context),
           statType: 'manga'
         });
 
@@ -174,6 +180,7 @@ export default {
           vm.updateButtonInfo(buttonInfo, { type: 'success' });
 
           vm.downloadFile(buttonInfo.url, vm.getFilename(buttonInfo.chunk), {
+            folder: this.getSubfolder(this.browserItems.mangaRelativeLocation, this.mangaTool.context),
             statType: 'manga',
           });
 
@@ -184,6 +191,12 @@ export default {
 
     getFilename(chunk) {
       return formatName(this.browserItems.mangaRenameFormat, this.mangaTool.context, this.mangaTool.context.illustId) + '_' + (chunk.start - 0 + 1) + '-' + (chunk.end - 0 + 1) + '.zip'
+    },
+
+    handleDownloadRecord(message, port) {
+      if (message.channel === DownloadRecordPort.port + ':get-download-record' && message.error === undefined) {
+        this.isSaved = true;
+      }
     },
 
     handleConnect(port) {

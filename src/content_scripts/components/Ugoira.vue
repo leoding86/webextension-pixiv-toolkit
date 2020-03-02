@@ -35,7 +35,7 @@ import {
 } from "@/content_scripts/Browser"
 import Browser from '@/modules/Browser/Browser'
 import downloadFileMixin from "@/content_scripts/mixins/downloadFileMixin"
-import DownloadManager from '@/modules/Manager/DownloadManager';
+import DownloadRecordPort from '@/modules/Ports/DownloadRecordPort';
 
 export default {
   mixins: [
@@ -135,28 +135,28 @@ export default {
 
     this.ugoiraTool = this.tool;
 
+    this.downloadRecordPort = DownloadRecordPort.getInstance();
+
     this.ugoiraTool.event.addExclusiveListener('onProgress', progress => {
       vm.resourceProgress = Math.round(progress * 100);
     });
 
     this.resourceProgress = 1;
 
-    DownloadManager.getRecord(this.ugoiraTool.getId(), DownloadManager.illustType).then(doc => {
-      if (doc.zip === 1) vm.resourceSaved = true;
-      if (doc.gif === 1) vm.gifSaved = true;
-      if (doc.apng === 1) vm.apngSaved = true;
-      if (doc.webm === 1) vm.webmSaved = true;
-    }).finally(() => {
-      this.initTool();
+    this.downloadRecordPort.port.onMessage.addListener(this.handleDownloadRecord);
 
-      this.show = true;
+    this.downloadRecordPort.getDownloadRecord({ id: this.ugoiraTool.getId(), type: DownloadRecordPort.illustType });
 
-      browser.runtime.onConnect.addListener(this.handleConnect);
-    });
+    this.initTool();
+
+    this.show = true;
+
+    browser.runtime.onConnect.addListener(this.handleConnect);
   },
 
   unmounted() {
     browser.runtime.onConnect.removeListener(this.handleConnect)
+    this.downloadRecordPort.port.onMessage.removeListener(this.handleDownloadRecord);
   },
 
   beforeDestroy() {
@@ -206,6 +206,7 @@ export default {
             vm.gifButtonType = 'success';
 
             vm.downloadFile(vm.gifUrl, vm.getFilename() + '.gif', {
+              folder: vm.getSubfolder(this.browserItems.ugoiraRelativeLocation, this.ugoiraTool.context),
               statType: 'ugoira',
             });
           }
@@ -225,6 +226,7 @@ export default {
             vm.webmButtonType = 'success';
 
             vm.downloadFile(vm.webmUrl, vm.getFilename() + '.webm', {
+              folder: vm.getSubfolder(this.browserItems.ugoiraRelativeLocation, this.ugoiraTool.context),
               statType: 'ugoira',
             });
           }
@@ -249,6 +251,7 @@ export default {
             vm.apngButtonType = 'success';
 
             vm.downloadFile(vm.apngUrl, vm.getFilename() + '.apng', {
+              folder: vm.getSubfolder(this.browserItems.ugoiraRelativeLocation, this.ugoiraTool.context),
               statType: 'ugoira',
             });
           }
@@ -260,7 +263,11 @@ export default {
     },
 
     saveDownloadRecord(record) {
-      DownloadManager.saveRecord(this.ugoiraTool.getId(), DownloadManager.illustType, record);
+      this.downloadRecordPort.saveDownloadRecord({
+        id: this.ugoiraTool.getId(),
+        type: DownloadRecordPort.illustType,
+        record
+      });
     },
 
     allowDownload(isSaved) {
@@ -286,6 +293,7 @@ export default {
         this.resourceButtonType = 'success';
 
         this.downloadFile(URL.createObjectURL(this.tool.zipBlob), this.getFilename() + '.zip', {
+          folder: this.getSubfolder(this.browserItems.ugoiraRelativeLocation, this.ugoiraTool.context),
           statType: 'ugoira',
         });
 
@@ -306,6 +314,7 @@ export default {
         this.gifButtonType = 'success';
 
         this.downloadFile(this.gifUrl, this.getFilename() + '.gif', {
+          folder: this.getSubfolder(this.browserItems.ugoiraRelativeLocation, this.ugoiraTool.context),
           statType: 'ugoira',
         });
 
@@ -334,6 +343,7 @@ export default {
         this.apngButtonType = 'success';
 
         this.downloadFile(this.apngUrl, this.getFilename() + '.apng', {
+          folder: this.getSubfolder(this.browserItems.ugoiraRelativeLocation, this.ugoiraTool.context),
           statType: 'ugoira',
         });
 
@@ -361,6 +371,7 @@ export default {
         this.webmButtonType = 'success';
 
         this.downloadFile(this.webmUrl, this.getFilename() + '.webm', {
+          folder: this.getSubfolder(this.browserItems.ugoiraRelativeLocation, this.ugoiraTool.context),
           statType: 'ugoira',
         });
 
@@ -388,6 +399,15 @@ export default {
       var regex = new RegExp(browser, 'i');
 
       return regex.test(navigator.userAgent);
+    },
+
+    handleDownloadRecord(message, port) {
+      if (message.channel === DownloadRecordPort.port + ':get-download-record' && message.error === undefined) {
+        if (message.data.zip === 1) this.resourceSaved = true;
+        if (message.data.gif === 1) this.gifSaved = true;
+        if (message.data.apng === 1) this.apngSaved = true;
+        if (message.data.webm === 1) this.webmSaved = true;
+      }
     },
 
     handleConnect(port) {
