@@ -2,6 +2,7 @@ import { Updater, PackageFileReader } from '@/modules/Util';
 import Browser from '@/modules/Browser/Browser';
 import actions from '@/background/actions';
 import IllustHistoryPort from '@/modules/Ports/IllustHistoryPort';
+import DownloadRecordPort from '@/modules/Ports/DownloadRecordPort';
 import defaultSettings from '@/config/default';
 
 const browser = Browser.getBrowser();
@@ -20,6 +21,7 @@ Main.prototype = {
     let ports = {};
 
     ports[IllustHistoryPort.port] = IllustHistoryPort;
+    ports[DownloadRecordPort.port] = DownloadRecordPort;
 
     return ports;
   },
@@ -188,6 +190,11 @@ Main.prototype = {
    * @param {Object} args
    */
   downloadAction: function (args) {
+    if (args.message.options.arrayBuffer) {
+      args.message.options.url = URL.createObjectURL(new Blob([args.message.options.arrayBuffer], { type: 'text/plain' }));
+      delete args.message.options.arrayBuffer;
+    }
+
     browser.downloads.download(args.message.options, function (downloadId) {
       if (!!args.sendResponse && typeof args.sendResponse === 'function') {
         args.sendResponse(downloadId);
@@ -252,7 +259,12 @@ Main.prototype = {
       var updater = new Updater(items);
 
       if (updater.isNewer(version)) {
-        // console.log('update');
+        let importantNoticeDisplayed = true;
+
+        if (items.version) {
+          importantNoticeDisplayed = false;  // modify it to false when there is important infomation
+        }
+
         updater.setDefaultSettings(defaultSettings);
 
         updater.removeSettings([
@@ -265,7 +277,8 @@ Main.prototype = {
 
         updater.mergeSettings(function () {
           updater.updateSetting({
-            version: version
+            version: version,
+            importantNoticeDisplayed
           }, function () {
             /**
              * Attach a badge with text 'NEW'
