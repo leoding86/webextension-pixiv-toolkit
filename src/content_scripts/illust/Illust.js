@@ -262,7 +262,7 @@ class IllustTool {
         self.context.pageNum = pageNum;
 
         let filename = formatName(
-          self.illustrationImageRenameFormat,
+          self.illustrationImageRenameFormat.replace(/#/g, ''),
           self.context,
           pageNum
         ) + '.' + extName;
