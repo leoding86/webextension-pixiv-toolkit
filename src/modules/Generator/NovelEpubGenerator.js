@@ -1,21 +1,20 @@
 import EpubMaker from 'EpubMaker';
 
-export default class NovelGenerator {
+export default class NovelEpubGenerator {
   constructor(context) {
     this.context = context;
     this.epubMaker = new EpubMaker();
+    this.epubMaker.withTemplate('idpf-wasteland');
   }
 
-  setProps(props) {
-    for (let key in props) {
-      let withMethod = 'with' + key.charAt(0).toUpperCase() + key.slice(1);
+  addMeta(meta, value) {
+    let withMethod = 'with' + meta.charAt(0).toUpperCase() + meta.slice(1);
 
-      if (typeof this.epubMaker[withMethod] === 'function') {
-        this.epubMaker[withMethod](props[key]);
-      }
+    if (typeof this.epubMaker[withMethod] === 'function') {
+      this.epubMaker[withMethod](value);
     }
 
-    this.epubMaker.withTemplate('idpf-wasteland');
+    return this;
   }
 
   appendSection(section) {
@@ -24,9 +23,11 @@ export default class NovelGenerator {
         content: section
       }, false, false)
     );
+
+    return this;
   }
 
-  makeEpub() {
+  makeBook() {
     return new Promise(resolve => {
       this.epubMaker.downloadEpub(epubZipContent => {
         let blob = URL.createObjectURL(epubZipContent);
