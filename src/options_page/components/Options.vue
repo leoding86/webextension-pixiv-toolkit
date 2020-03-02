@@ -12,7 +12,7 @@
 
     <history-options></history-options>
 
-    <search-options></search-options>
+    <search-options v-if="false"></search-options>
 
     <other-options></other-options>
 
