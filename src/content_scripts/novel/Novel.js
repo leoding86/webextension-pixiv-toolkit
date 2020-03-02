@@ -1,41 +1,44 @@
-import NovelGenerator from '@/modules/Generator/NovelGenerator';
+import NovelEpubGenerator from '@/modules/Generator/NovelEpubGenerator';
+import NovelTxtGenerator from '@/modules/Generator/NovelTxtGenerator';
 
 class Novel {
   constructor(context) {
     this.context = context;
-    this.novelGenerator = new NovelGenerator();
   }
 
   getId() {
     return this.context.id;
   }
 
-  prepareProps() {
-    this.novelGenerator.setProps({
-      uuid: this.context.novelUrl,
-      author: this.context.userName,
-      attributionUrl: this.context.novelUrl,
-      cover: this.context.novelCover,
-      title: this.context.novelTitle
-    });
+  getUserId() {
+    return this.context.userId
   }
 
-  prepareSections() {
-    this.context.novelSections.forEach(section => {
-      this.novelGenerator.appendSection(section);
-    });
+  getUserName() {
+    return this.context.userName
   }
 
-  includeDescription() {
-    this.novelGenerator.appendSection(this.context.novelDescription);
-  }
-
-  generateNovel() {
-    return this.novelGenerator.makeEpub();
+  getTitle() {
+    return this.context.novelTitle
   }
 
   isR() {
     return !!this.context.r
+  }
+
+  getCover() {
+    return this.context.novelCover;
+  }
+
+  getGenerator(type) {
+    switch (type) {
+      case 'epub':
+        return new NovelEpubGenerator();
+      case 'txt':
+        return new NovelTxtGenerator();
+      default:
+        throw Error(`Unkown generator type "${type}"`);
+    }
   }
 }
 

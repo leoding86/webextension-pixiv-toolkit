@@ -1,9 +1,11 @@
 <template>
   <div v-if="show">
     <ptk-button
-      @click="downloadNovel"
-      :type="downloadNovelType"
-    >Download Novel{{ isSaved ? ' ✔️' : '' }}</ptk-button>
+      v-for="(button, i) in buttons"
+      :key="i"
+      :type="button.download ? 'success' : ''"
+      @click="button.clickHandle(button)"
+    >{{ button.text }} {{ button.saved ? ' ✔️' : '' }}</ptk-button>
   </div>
 </template>
 
@@ -11,7 +13,7 @@
 import Button from "@/content_scripts/components/Button";
 import formatName from "@/modules/Util/formatName";
 import downloadFileMixin from '@/content_scripts/mixins/downloadFileMixin';
-import DownloadManager from '@/modules/Manager/DownloadManager';
+import DownloadRecordPort from '@/modules/Ports/DownloadRecordPort';
 
 export default {
   mixins: [
@@ -27,47 +29,63 @@ export default {
   },
 
   data() {
+    let vm = this;
+
     return {
       show: false,
       fileUrl: null,
       downloadNovelType: '',
       isSaved: false,
-      forceDownload: false
+      forceDownload: false,
+
+      buttons: [
+        {
+          type: 'epub',
+          text: 'Save Epub',
+          saved: '',
+          download: false,
+          url: '',
+          clickHandle: button => {
+            vm.downloadNovel('epub', button);
+          }
+        }, {
+          type: 'txt',
+          text: 'Save Txt',
+          saved: '',
+          download: false,
+          url: '',
+          clickHandle: button => {
+            vm.downloadNovel('txt', button);
+          }
+        }
+      ]
     };
   },
 
   mounted() {
-    let vm = this;
+    /**
+     * @var {DownloadRecordPort}
+     */
+    this.downloadRecordPort = DownloadRecordPort.getInstance();
 
-    DownloadManager.getRecord(this.tool.getId(), DownloadManager.novelType).then(doc => {
-      this.isSaved = true;
-    }).finally(() => {
-      this.tool.prepareProps();
+    this.downloadRecordPort.port.onMessage.addListener(this.handleDownloadRecord);
 
-      if (this.browserItems.novelIncludeDescription) {
-        this.tool.includeDescription();
-      }
+    this.downloadRecordPort.getDownloadRecord({ id: this.tool.getId(), type: DownloadRecordPort.novelType });
 
-      this.tool.prepareSections();
+    browser.runtime.onConnect.addListener(this.handleConnect);
 
-      this.tool.generateNovel().then(url => {
-        this.show = true;
-        this.fileUrl = url;
-      });
-
-      browser.runtime.onConnect.addListener(this.handleConnect);
-    });
+    this.show = true;
   },
 
   unmounted() {
     browser.runtime.onConnect.removeListener(this.handleConnect)
+    this.downloadRecordPort.port.onMessage.removeListener(this.handleDownloadRecord);
   },
 
   methods: {
     saveDownloadRecord(record) {
       this.isSaved = true;
-
-      DownloadManager.saveRecord(this.tool.getId(), DownloadManager.novelType, record);
+      this.downloadRecordPort.saveDownloadRecord({ id: this.tool.getId(), type: DownloadRecordPort.novelType, record });
     },
 
     allowDownload(isSaved) {
@@ -82,26 +100,72 @@ export default {
       return true;
     },
 
-    downloadNovel() {
-      if (!this.allowDownload(this.isSaved)) {
-        return;
-      }
+		updateButton(button, data) {
+			this.$set(
+				this.buttons,
+				this.buttons.indexOf(button),
+				Object.assign(button, data)
+			);
+		},
 
-      let filename = formatName(
+    getFilename(type) {
+      return formatName(
         this.browserItems.novelRenameFormat,
         this.tool.context,
         this.tool.context.novelId + "_" + this.tool.context.novelTitle
-      );
+      ) + '.' + type;
+    },
 
-      this.downloadNovelType = 'success';
+    downloadNovel(type, button) {
+      if (!this.allowDownload(button.saved)) {
+        return;
+      }
 
-      this.downloadFile(this.fileUrl, filename + '.epub', {
-        statType: 'novel'
+      let novelGenerator = this.tool.getGenerator(type);
+
+      novelGenerator.addMeta('uuid', this.tool.context.novelUrl)
+        .addMeta('author', this.tool.context.userName)
+        .addMeta('attributionUrl', this.tool.context.novelUrl)
+        .addMeta('cover', this.tool.context.novelCover)
+        .addMeta('title', this.tool.context.novelTitle);
+
+      if (this.browserItems.novelIncludeDescription) {
+        novelGenerator.appendSection(this.tool.context.novelDescription);
+      }
+
+      this.tool.context.novelSections.forEach(section => {
+        novelGenerator.appendSection(section);
       });
 
-      this.saveDownloadRecord({ novel: 1 });
+      novelGenerator.makeBook().then(({ url, blob }) => {
+        this.updateButton(button, {
+          url: url,
+          saved: true,
+          download: true
+        });
 
-      this.isSaved = true;
+        this.downloadFile(url, this.getFilename(type), {
+          folder: this.getSubfolder(this.browserItems.novelRelativeLocation, this.tool.context),
+          statType: 'novel',
+          blob: blob
+        });
+
+        let record = {};
+
+        record[type] = 1;
+
+        this.saveDownloadRecord(record);
+      });
+    },
+
+    handleDownloadRecord(message, port) {
+      if (message.channel === DownloadRecordPort.port + ':get-download-record' && message.error === undefined) {
+        this.buttons.forEach(button => {
+          if (message.data && message.data[button.type] === 1) {
+            this.updateButton(button, { saved: true });
+          }
+        });
+      }
     },
 
     handleConnect(port) {
