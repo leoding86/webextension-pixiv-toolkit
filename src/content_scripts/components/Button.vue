@@ -36,10 +36,11 @@ export default {
   .button {
     display:inline-block;
     margin-right: 5px;
-    padding: 5px 15px;
+    padding: 3px 13px;
     border-radius: 50px;
     font-size: 12px;
     background: rgb(0, 150, 250);
+    border:rgb(0, 150, 250) solid 3px;
     color: #fff;
     font-weight: 700;
     cursor: pointer;
@@ -47,6 +48,6 @@ export default {
   }
 
   .button--success {
-    background: #00dc68;
+    border-color:#00dc68;
   }
 </style>
