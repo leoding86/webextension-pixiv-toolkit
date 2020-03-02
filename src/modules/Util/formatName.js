@@ -125,7 +125,9 @@ export default (renameFormat, context, fallback) => {
   );
 
   illegals.forEach(char => {
-    filename = filename.replace(char, '_');
+    while (filename.indexOf(char) > -1) {
+      filename = filename.replace(char, '_');
+    }
   });
 
   /**
