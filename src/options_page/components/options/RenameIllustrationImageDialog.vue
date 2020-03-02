@@ -21,7 +21,7 @@
             ref="renameInput"
             v-model="renameFormat"
             placeholder="Not set"
-            hint="Example: {authorId}_{id}_{pageNum}"
+            :hint="tl('_rename_illustration_image_hint')"
             :persistent-hint=true
             @focus="updateInputPos"
             @keyup="updateInputPos"
