@@ -448,5 +448,29 @@
    },
    "_close": {
        "message": "Close"
+   },
+   "_work_relative_location_desc": {
+       "message": "This setting will override the \"Relative location\" setting in \"Downloads\" section.<br><strong>You can also use rename meta like {id}, {title}, etc. to organize the folders. You can review the rename setting to check available rename meta.</strong>"
+   },
+   "_save_ugoira_in_relative_location": {
+       "message": "Save ugoira in relative location"
+   },
+   "_save_illustration_in_relative_location": {
+       "message": "Save illustration in relative location"
+   },
+   "_save_manga_in_relative_location": {
+       "message": "Save manga in relative location"
+   },
+   "_save_novel_in_relative_location": {
+       "message": "Save novel in relative location"
+   },
+   "_change": {
+       "message": "Change"
+   },
+   "_must_enable_extension_take_over_downloads_setting": {
+       "message": "Must enable \"extension takes over downloads\" setting"
+   },
+   "_rename_illustration_image_hint": {
+       "message": "Example: {authorId}_{id}_{pageNum}. You can place the deleted part between the two # tags when there is only one image in the illustration."
    }
 }

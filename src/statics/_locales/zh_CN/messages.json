@@ -222,7 +222,7 @@
      "message": "需要下载权限"
    },
    "setting_relative_location": {
-     "message": "保存相对位置"
+     "message": "保存到相对位置"
    },
    "relative_location_hint": {
      "message": "此位置将作为浏览器下载设置路径的后缀。例如, 浏览器下载地址设置为 \"D:/downloads/\" ，那么插件将会把文件保存到 \"D:/downloads/{{downloadRelativeLocation}}\""
@@ -448,5 +448,29 @@
    },
    "_close": {
        "message": "关闭"
+   },
+   "_work_relative_location_desc": {
+       "message": "此设置会覆盖“下载”部分中的“保存到相对位置”设置。<br><strong>你还可以使用诸如{id}，{title}等的重命名元来组织文件夹。查看重命名设置以检查可用的重命名元。</strong>"
+   },
+   "_save_ugoira_in_relative_location": {
+       "message": "保存动图到相对位置"
+   },
+   "_save_illustration_in_relative_location": {
+       "message": "保存图集到相对位置"
+   },
+   "_save_manga_in_relative_location": {
+       "message": "保存漫画到相对位置"
+   },
+   "_save_novel_in_relative_location": {
+       "message": "保存小说到相对位置"
+   },
+   "_change": {
+       "message": "修改"
+   },
+   "_must_enable_extension_take_over_downloads_setting": {
+       "message": "必须启用\"插件接管下载\"设置"
+   },
+   "_rename_illustration_image_hint": {
+       "message": "例子：{authorId}_{id}_{pageNum}。你可以将当图集只有一张图片时想要移除的部分放在两个#标签之间。"
    }
 }
