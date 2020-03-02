@@ -55,14 +55,14 @@
           >
             <cacheable-image class="history-item__thumb-body"
               :class="{'history-item__thumb-body--blur': item.r && !disableBlurOnR}"
-              :src="item.images.thumb"
+              :src="item.isNovel ? item.image : item.images.thumb"
               mode="background"
             ></cacheable-image>
           </div>
           <div class="history-item__info">
             <div class="history-item__info-entity history-item__info-entity--blod">
-              <span class="history-item__info-badge" :class="`history-item__info-badge--type${item.type}`">{{ caseWorkType(item.type) }}</span>
-              <a class="maintitle" :href="caseWorkUrl(item.id)" target="_blank">{{ item.title }}</a>
+              <span class="history-item__info-badge" :class="`history-item__info-badge--type${item.isNovel ? '-novel' : item.type}`">{{ caseWorkType(item) }}</span>
+              <a class="maintitle" :href="caseWorkUrl(item)" target="_blank">{{ item.title }}</a>
             </div>
             <div class="history-item__info-entity history-item__info-entity--blod">
               <a class="subtitle" :href="caseUserUrl(item.userId)"
@@ -71,7 +71,7 @@
               >{{ item.userName}}</a>
               <span v-else>-</span>
             </div>
-            <div class="history-item__info-entity history-item__info-entity--sub">{{ caseDate(item.viewed_at) }}<span style="margin-left:15px;">{{ caseWorkUrl(item.id) }}</span></div>
+            <div class="history-item__info-entity history-item__info-entity--sub">{{ caseDate(item.viewed_at) }}<span style="margin-left:15px;">{{ caseWorkUrl(item) }}</span></div>
           </div>
           <div class="history-item__actions">
             <v-btn
@@ -259,11 +259,25 @@ export default {
       }
     },
 
-    caseWorkUrl(id) {
-      return `https://www.pixiv.net/artworks/${id}`;
+    caseWorkUrl(item) {
+      let url = '';
+
+      if (item.isNovel) {
+        url = 'https://www.pixiv.net/novel/show.php?id=' + item.id.substr(1);
+      } else {
+        url = 'https://www.pixiv.net/en/artworks/' + item.id;
+      }
+
+      return url;
     },
 
-    caseWorkType(type) {
+    caseWorkType(item) {
+      if (item.isNovel) {
+        return "Novel";
+      }
+
+      let type = item.type;
+
       if (type == 1) {
         return "Manga";
       } else if (type == 2) {
@@ -302,7 +316,7 @@ export default {
     },
 
     openInNew(illust) {
-      window.open(this.caseWorkUrl(illust.id))
+      window.open(caseWorkUrl(illust));
     },
 
     deleteOne(illust) {
@@ -510,6 +524,11 @@ export default {
       &--type2 {
         color: #fff;
         background:coral;
+      }
+
+      &--type-novel {
+        color: #fff;
+        background: gray;
       }
     }
 

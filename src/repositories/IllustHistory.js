@@ -11,7 +11,7 @@ class IllustHistory {
 
     this.maxLimit = 10000;
 
-    this.properties = ['id', 'title', 'userId', 'userName', 'type', 'r', 'images', 'viewed_at'];
+    this.properties = ['id', 'title', 'userId', 'userName', 'type', 'r', 'images', 'viewed_at', 'isNovel', 'image'];
 
     this.init();
   }
@@ -27,7 +27,7 @@ class IllustHistory {
   checkData(data) {
     // check id
 
-    if (!data.id || !/^\d+$/.test(data.id)) {
+    if (!data.id || !/^N?\d+$/.test(data.id)) {
       return false
     }
 
@@ -35,22 +35,26 @@ class IllustHistory {
       return false
     }
 
-    if (!data.images) {
+    if (!(data.images || (data.isNovel && data.image))) {
       return false
     }
 
-    ['thumb'].forEach(type => {
-      if (!data.images[type] || typeof data.images[type] !== 'string') {
-        data.images.thumb = '';
+    if (!data.isNovel) {
+      ['thumb'].forEach(type => {
+        if (!data.images[type] || typeof data.images[type] !== 'string') {
+          data.images.thumb = '';
+        }
+      });
+    }
+
+    if (!(data.type === undefined || data.isNove)) {
+      return false
+    }
+
+    if (!data.isNovel) {
+      if ([0, 1, 2].indexOf(data.type) < 0) {
+        return false
       }
-    });
-
-    if (data.type === undefined) {
-      return false
-    }
-
-    if ([0, 1, 2].indexOf(data.type) < 0) {
-      return false
     }
 
     if (!data.viewed_at || !/^[1-9]\d+$/.test(data.viewed_at)) {

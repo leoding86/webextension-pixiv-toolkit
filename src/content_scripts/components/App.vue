@@ -212,6 +212,17 @@ export default {
               viewed_at: Math.round(Date.now() / 1000),
               r: vm.tool.isR()
             });
+          } else if (vm.isNovel) {
+            vm.illustHistoryPort.saveIllustHistory({
+              id: 'N' + vm.tool.getId(),
+              title: vm.tool.getTitle(),
+              image: vm.tool.getCover(),
+              isNovel: true,
+              userId: vm.tool.getId(),
+              userName: vm.tool.getUserName(),
+              viewed_at: Math.round(Date.now() / 1000),
+              r: vm.tool.isR()
+            });
           }
         })
         .catch(e => {

@@ -47,12 +47,12 @@
             <div v-if="illust.r && !disableBlurOnR" class="card--image__mask"></div>
             <!-- <div class="card--image" :style="{paddingBottom: '117%', backgroundImage: 'url(' + illust.images.thumb + ')'}"></div> -->
             <cacheable-image class="card--image"
-              :src="illust.images.thumb"
+              :src="illust.isNovel ? illust.image : illust.images.thumb"
               mode="background">
             </cacheable-image>
           </div>
           <div class="card--history-info">{{ illust.title }}</div>
-          <div class="card--type">{{ readableType(illust.type) }}</div>
+          <div class="card--type">{{ readableType(illust) }}</div>
           <div class="card--r" v-if="!!illust.r">R</div>
           <v-card-actions class="card--actions-wrap">
             <v-btn outline small icon color="red"
@@ -235,18 +235,29 @@ export default {
   },
 
   methods: {
-    readableType(type) {
-      if (type == 1) {
+    readableType(illust) {
+      if (illust.isNovel) {
+        return 'N';
+      }
+
+      if (illust.type == 1) {
         return "M";
-      } else if (type == 2) {
+      } else if (illust.type == 2) {
         return "A";
-      } else if (type == 0) {
+      } else if (illust.type == 0) {
         return "I";
       }
     },
 
     openInNew(illust) {
-      window.open('https://www.pixiv.net/member_illust.php?mode=medium&illust_id=' + illust.id)
+      let url = '';
+
+      if (illust.isNovel) {
+        url = 'https://www.pixiv.net/novel/show.php?id=' + illust.id.substr(1);
+      } else {
+        url = 'https://www.pixiv.net/member_illust.php?mode=medium&illust_id=' + illust.id;
+      }
+      window.open(url)
     },
 
     deleteOne(illust) {
