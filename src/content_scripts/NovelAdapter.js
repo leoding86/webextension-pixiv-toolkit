@@ -34,6 +34,7 @@ class NovelAdapter {
       novelSections: sections,
       novelDescription: context.description,
       novelCover: context.coverUrl,
+      novelUrl: window.location.href,
       userId: context.userId,
       userName: context.userName,
       r: context.xRestrict,
