@@ -29,8 +29,7 @@ export default class NovelEpubGenerator {
 
   makeBook() {
     return new Promise(resolve => {
-      this.epubMaker.downloadEpub(epubZipContent => {
-        let blob = URL.createObjectURL(epubZipContent);
+      this.epubMaker.downloadEpub(blob => {
         resolve(blob);
       });
     });
