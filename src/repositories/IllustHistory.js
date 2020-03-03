@@ -35,26 +35,24 @@ class IllustHistory {
       return false
     }
 
-    if (!(data.images || (data.isNovel && data.image))) {
-      return false
-    }
+    if (data.isNovel) {
+      if (!data.image) {
+        return false;
+      }
+    } else {
+      if (!data.images) {
+        return false;
+      }
 
-    if (!data.isNovel) {
+      if ([0, 1, 2].indexOf(data.type) < 0) {
+        return false
+      }
+
       ['thumb'].forEach(type => {
         if (!data.images[type] || typeof data.images[type] !== 'string') {
           data.images.thumb = '';
         }
       });
-    }
-
-    if (!(data.type === undefined || data.isNove)) {
-      return false
-    }
-
-    if (!data.isNovel) {
-      if ([0, 1, 2].indexOf(data.type) < 0) {
-        return false
-      }
     }
 
     if (!data.viewed_at || !/^[1-9]\d+$/.test(data.viewed_at)) {
