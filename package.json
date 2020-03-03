@@ -1,9 +1,9 @@
 {
   "name": "pixiv-toolkits",
-  "version": "3.9.1",
+  "version": "3.10.0",
   "description": "A web extension for adding features on Pixiv",
   "author": "leoding86 <leoding86@msn.com>",
-  "private": true,
+  "private": false,
   "scripts": {
     "dev": "cross-env PLATFORM_ENV=chrome webpack --watch --progress --config webpack.config.js",
     "dev:firefox": "cross-env PLATFORM_ENV=firefox webpack --watch --progress --config webpack.config.js --env.platform=firefox",
