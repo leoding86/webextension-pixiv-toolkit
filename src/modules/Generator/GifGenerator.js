@@ -60,6 +60,10 @@ class GifGenerator {
         })
 
         self.gif.on('finished', blob => {
+          self.gif.freeWorkers.forEach(worker => {
+            worker.terminate();
+          });
+
           self.status = 2
 
           self.event.dispatch('onFinish', [blob])
