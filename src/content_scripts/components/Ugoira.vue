@@ -61,19 +61,19 @@ export default {
 
       gifProgress: null,
       gifStatus: 0,
-      gifUrl: null,
+      gifBlob: null,
       gifButtonType: '',
       gifSaved: false,
 
       apngProgress: null,
       apngStatus: 0,
-      apngUrl: null,
+      apngBlob: null,
       apngButtonType: '',
       apngSaved: false,
 
       webmProgress: null,
       webmStatus: 0,
-      webmUrl: null,
+      webmBlob: null,
       webmButtonType: '',
       webmSaved: false,
 
@@ -200,12 +200,12 @@ export default {
         this.ugoiraTool.gifGenerator.event.addListener("onFinish", blob => {
           vm.gifProgress = 1
           vm.gifStatus = 2
-          vm.gifUrl = URL.createObjectURL(blob)
+          vm.gifBlob = blob
 
           if (vm.browserItems.ugoiraGenerateAndDownload) {
             vm.gifButtonType = 'success';
 
-            vm.downloadFile(vm.gifUrl, vm.getFilename() + '.gif', {
+            vm.downloadFile(vm.gifBlob, vm.getFilename() + '.gif', {
               folder: vm.getSubfolder(this.browserItems.ugoiraRelativeLocation, this.ugoiraTool.context),
               statType: 'ugoira',
             });
@@ -220,12 +220,12 @@ export default {
         this.ugoiraTool.webMGenerator.event.addListener("onFinish", blob => {
           vm.webmProgress = 1
           vm.webmStatus = 2
-          vm.webmUrl = URL.createObjectURL(blob)
+          vm.webmBlob = blob
 
           if (vm.browserItems.ugoiraGenerateAndDownload) {
             vm.webmButtonType = 'success';
 
-            vm.downloadFile(vm.webmUrl, vm.getFilename() + '.webm', {
+            vm.downloadFile(vm.webmBlob, vm.getFilename() + '.webm', {
               folder: vm.getSubfolder(this.browserItems.ugoiraRelativeLocation, this.ugoiraTool.context),
               statType: 'ugoira',
             });
@@ -245,12 +245,12 @@ export default {
           vm.apngStatus = 2;
 
           let blob = new Blob([arrayBuffer], {type: 'image/apng'});
-          vm.apngUrl = URL.createObjectURL(blob);
+          vm.apngBlob = blob;
 
           if (vm.browserItems.ugoiraGenerateAndDownload) {
             vm.apngButtonType = 'success';
 
-            vm.downloadFile(vm.apngUrl, vm.getFilename() + '.apng', {
+            vm.downloadFile(vm.apngBlob, vm.getFilename() + '.apng', {
               folder: vm.getSubfolder(this.browserItems.ugoiraRelativeLocation, this.ugoiraTool.context),
               statType: 'ugoira',
             });
@@ -292,7 +292,7 @@ export default {
       } else if (this.tool.zipBlob) {
         this.resourceButtonType = 'success';
 
-        this.downloadFile(URL.createObjectURL(this.tool.zipBlob), this.getFilename() + '.zip', {
+        this.downloadFile(this.tool.zipBlob, this.getFilename() + '.zip', {
           folder: this.getSubfolder(this.browserItems.ugoiraRelativeLocation, this.ugoiraTool.context),
           statType: 'ugoira',
         });
@@ -313,7 +313,7 @@ export default {
       if (this.gifStatus === 2) {
         this.gifButtonType = 'success';
 
-        this.downloadFile(this.gifUrl, this.getFilename() + '.gif', {
+        this.downloadFile(this.gifBlob, this.getFilename() + '.gif', {
           folder: this.getSubfolder(this.browserItems.ugoiraRelativeLocation, this.ugoiraTool.context),
           statType: 'ugoira',
         });
@@ -342,7 +342,7 @@ export default {
       if (this.apngStatus === 2) {
         this.apngButtonType = 'success';
 
-        this.downloadFile(this.apngUrl, this.getFilename() + '.apng', {
+        this.downloadFile(this.apngBlob, this.getFilename() + '.apng', {
           folder: this.getSubfolder(this.browserItems.ugoiraRelativeLocation, this.ugoiraTool.context),
           statType: 'ugoira',
         });
@@ -370,7 +370,7 @@ export default {
       if (this.webmStatus === 2) {
         this.webmButtonType = 'success';
 
-        this.downloadFile(this.webmUrl, this.getFilename() + '.webm', {
+        this.downloadFile(this.webmBlob, this.getFilename() + '.webm', {
           folder: this.getSubfolder(this.browserItems.ugoiraRelativeLocation, this.ugoiraTool.context),
           statType: 'ugoira',
         });

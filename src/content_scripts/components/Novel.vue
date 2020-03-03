@@ -33,7 +33,6 @@ export default {
 
     return {
       show: false,
-      fileUrl: null,
       downloadNovelType: '',
       isSaved: false,
       forceDownload: false,
@@ -44,7 +43,7 @@ export default {
           text: 'Save Epub',
           saved: '',
           download: false,
-          url: '',
+          blob: null,
           clickHandle: button => {
             vm.downloadNovel('epub', button);
           }
@@ -53,7 +52,7 @@ export default {
           text: 'Save Txt',
           saved: '',
           download: false,
-          url: '',
+          blob: null,
           clickHandle: button => {
             vm.downloadNovel('txt', button);
           }
@@ -84,7 +83,6 @@ export default {
 
   methods: {
     saveDownloadRecord(record) {
-      this.isSaved = true;
       this.downloadRecordPort.saveDownloadRecord({ id: this.tool.getId(), type: DownloadRecordPort.novelType, record });
     },
 
@@ -137,17 +135,16 @@ export default {
         novelGenerator.appendSection(section);
       });
 
-      novelGenerator.makeBook().then(({ url, blob }) => {
+      novelGenerator.makeBook().then(blob => {
         this.updateButton(button, {
-          url: url,
+          blob: blob,
           saved: true,
           download: true
         });
 
-        this.downloadFile(url, this.getFilename(type), {
+        this.downloadFile(blob, this.getFilename(type), {
           folder: this.getSubfolder(this.browserItems.novelRelativeLocation, this.tool.context),
-          statType: 'novel',
-          blob: blob
+          statType: 'novel'
         });
 
         let record = {};

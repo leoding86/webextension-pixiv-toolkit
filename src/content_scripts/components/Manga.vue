@@ -85,7 +85,8 @@ export default {
         filename: vm.mangaTool.getFilename(chunk),
         downloadStatus: 0,
         chunk: chunk,
-        type: ''
+        type: '',
+        blob: null
       }
     })
 
@@ -145,7 +146,7 @@ export default {
       } else if (buttonInfo.downloadStatus === 2) {
         this.updateButtonInfo(buttonInfo, { type: 'success' });
 
-        this.downloadFile(buttonInfo.url, this.getFilename(buttonInfo.chunk), {
+        this.downloadFile(buttonInfo.blob, this.getFilename(buttonInfo.chunk), {
           folder: this.getSubfolder(this.browserItems.mangaRelativeLocation, this.mangaTool.context),
           statType: 'manga'
         });
@@ -172,14 +173,14 @@ export default {
 
         vm.updateButtonInfo(buttonInfo, {
           text: text,
-          url: URL.createObjectURL(blob),
+          blob: blob,
           downloadStatus: 2
         });
 
         if (vm.browserItems.mangaPackAndDownload) {
           vm.updateButtonInfo(buttonInfo, { type: 'success' });
 
-          vm.downloadFile(buttonInfo.url, vm.getFilename(buttonInfo.chunk), {
+          vm.downloadFile(buttonInfo.blob, vm.getFilename(buttonInfo.chunk), {
             folder: this.getSubfolder(this.browserItems.mangaRelativeLocation, this.mangaTool.context),
             statType: 'manga',
           });

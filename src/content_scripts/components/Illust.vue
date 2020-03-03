@@ -112,7 +112,8 @@ export default {
           downloadStatus: 0,
           chunk: chunk,
           isSingle: isSingle,
-          type: ''
+          type: '',
+          blob: null
         }
       })
 
@@ -177,18 +178,17 @@ export default {
               return formatName(renameFormat, context, context.illustId) + `.${extName}`;
             }
 					}).then(result => {
-						let url = URL.createObjectURL(result.blob);
 						let filename = result.targetName;
 
 						vm.updateButtonInfo(buttonInfo, {
-							url: url,
+              blob: result.blob,
 							text: 'Save image',
 							filename: filename,
               downloadStatus: 2
 						});
 
             if (vm.browserItems.illustrationDownloadIfReady) {
-              vm.downloadFile(url, filename, {
+              vm.downloadFile(result.blob, filename, {
                 folder: this.getSubfolder(this.browserItems.illustrationRelativeLocation, this.illustTool.context),
                 statType: 'illust',
               });
@@ -212,7 +212,7 @@ export default {
           type: 'success'
         });
 
-        this.downloadFile(buttonInfo.url, buttonInfo.filename, {
+        this.downloadFile(buttonInfo.blob, buttonInfo.filename, {
           folder: this.getSubfolder(this.browserItems.illustrationRelativeLocation, this.illustTool.context),
           statType: 'illust',
         });
@@ -248,7 +248,7 @@ export default {
           buttonInfo.index,
           Object.assign(buttonInfo, {
             text: text,
-            url: URL.createObjectURL(blob),
+            blob: blob,
             downloadStatus: 2
           })
         );
@@ -258,7 +258,7 @@ export default {
             type: 'success'
           });
 
-          vm.downloadFile(buttonInfo.url, vm.getFilename(buttonInfo.chunk), {
+          vm.downloadFile(buttonInfo.blob, vm.getFilename(buttonInfo.chunk), {
             folder: this.getSubfolder(this.browserItems.illustrationRelativeLocation, this.illustTool.context),
             statType: 'illust',
           });
