@@ -27,11 +27,11 @@
         "webRequestBlocking",
         "storage",
         "*://*.pixiv.net/*",
-        "*://*.pximg.net/*"
+        "*://*.pximg.net/*",
+        "*://*.techorus-cdn.com/*"
     ],
     "optional_permissions": [
-        "downloads",
-        "*://*.techorus-cdn.com/*"
+        "downloads"
     ],
     "content_scripts": [
         {
@@ -67,7 +67,7 @@
             ]
         }
     ],
-    "version": "3.9.1",
-    "version_name": "3.9.1-2020022513",
+    "version": "3.10.0",
+    "version_name": "3.10.0-2020030306",
     "options_page": "options_page/index.html"
 }
