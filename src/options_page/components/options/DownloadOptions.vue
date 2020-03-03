@@ -6,19 +6,6 @@
       <v-list two-line>
         <v-list-tile>
           <v-list-tile-content>
-            <v-list-tile-title>{{ tl('_grant_the_extension_to_access') }} <strong>techorus-cdn.com</strong></v-list-tile-title>
-            <v-list-tile-sub-title>{{ tl('_some_user_find_some_resources_of_pixiv_are_store_at') }} <strong>techorus-cdn.com</strong></v-list-tile-sub-title>
-          </v-list-tile-content>
-          <v-list-tile-action>
-            <grant-permissions-btn
-              :item-key="accessTechorusCdnKey"
-              :permissions="accessTechorusCdnPermissions"
-            ></grant-permissions-btn>
-          </v-list-tile-action>
-        </v-list-tile>
-
-        <v-list-tile>
-          <v-list-tile-content>
             <v-list-tile-title>{{ tl('_ask_whether_to_download_the_work_may_has_been_downloaded') }}</v-list-tile-title>
           </v-list-tile-content>
           <v-list-tile-action>
@@ -26,7 +13,7 @@
           </v-list-tile-action>
         </v-list-tile>
 
-        <v-list-tile v-if="!isFirefox">
+        <v-list-tile>
           <v-list-tile-content>
             <v-list-tile-title>{{ tl('setting_ext_take_over_downloads') }}</v-list-tile-title>
             <v-list-tile-sub-title>{{ tl('setting_ext_take_over_downloads_desc') }}</v-list-tile-sub-title>
@@ -37,7 +24,7 @@
           </v-list-tile-action>
         </v-list-tile>
 
-        <v-list-tile v-if="!isFirefox">
+        <v-list-tile>
           <v-list-tile-content>
             <v-list-tile-title>{{ tl('setting_relative_location') }}</v-list-tile-title>
             <v-list-tile-sub-title>{{ downloadRelativeLocation }}</v-list-tile-sub-title>
@@ -50,8 +37,7 @@
             >{{ tl('Change') }}</v-btn>
           </v-list-tile-action>
         </v-list-tile>
-
-        <v-list-tile v-if="!isFirefox">
+        <v-list-tile>
           <v-list-tile-content>
             <v-list-tile-title>
               {{ tl('Ask_where_to_save_each_file_before_downloading') }}
