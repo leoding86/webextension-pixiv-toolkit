@@ -491,6 +491,7 @@ export default {
     .history-item__info-entity {
       font-size: 12px;
       padding: 6px 0 0 8px;
+      width: 380px;
       white-space: nowrap;
       text-overflow: ellipsis;
       overflow: hidden;
