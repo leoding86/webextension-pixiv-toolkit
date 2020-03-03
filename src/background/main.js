@@ -200,6 +200,8 @@ Main.prototype = {
         args.sendResponse(downloadId);
       }
     });
+
+    args.message.option.url.indexOf('blob') === 0 && URL.revokeObjectURL(args.message.option.url);
   },
 
   updateDownloadedStatAction: function (args) {
@@ -259,12 +261,6 @@ Main.prototype = {
       var updater = new Updater(items);
 
       if (updater.isNewer(version)) {
-        let importantNoticeDisplayed = true;
-
-        if (items.version) {
-          importantNoticeDisplayed = false;  // modify it to false when there is important infomation
-        }
-
         updater.setDefaultSettings(defaultSettings);
 
         updater.removeSettings([
@@ -278,7 +274,7 @@ Main.prototype = {
         updater.mergeSettings(function () {
           updater.updateSetting({
             version: version,
-            importantNoticeDisplayed
+            importantNoticeDisplayed: false
           }, function () {
             /**
              * Attach a badge with text 'NEW'
