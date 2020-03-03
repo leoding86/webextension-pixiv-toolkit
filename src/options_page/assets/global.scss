@@ -51,6 +51,23 @@ a.subtitle {
   }
 }
 
+.change-log__content {
+  margin: 15px 0;
+}
+
+.change-log__title {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.change-log__list {
+  font-size: 12px;
+}
+
+.change-log__list li {
+  font-size: 12px;
+}
+
 @media (max-width: 1300px) {
   .container--big {
     margin-left: 0;
