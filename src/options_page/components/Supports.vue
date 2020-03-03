@@ -4,7 +4,7 @@
       small
       round
       depressed
-      v-if="showPatreon" class="support-btn" @click="openInNewTab('https://github.com/leoding86/webextension-pixiv-toolkit')">
+      class="support-btn" @click="openInNewTab('https://github.com/leoding86/webextension-pixiv-toolkit')">
       <img src="../assets/github.svg">
       <span class="button-text" v-show="largeWindow">{{ tl('Star_it') }}</span>
       <v-icon right>open_in_new</v-icon>
@@ -57,6 +57,8 @@
 <script>
 import common from "@@/modules/common";
 import cr from "@@/modules/cr";
+import chromeEsIcon from '../assets/chrome-es.png';
+import firefoxAmoIcon from '../assets/firefox-amo.png';
 
 export default {
   props: {
@@ -72,7 +74,7 @@ export default {
 
     showPatreon: {
       type: Boolean,
-      default: true
+      default: false
     }
   },
 
@@ -88,12 +90,12 @@ export default {
         return null;
       } else if (common.isBrowser("chrome")) {
         return {
-          icon: '../assets/chrome-es.png',
+          icon: chromeEsIcon,
           url: 'https://chrome.google.com/webstore/detail/pixiv-toolkit/ajlcnbbeidbackfknkgknjefhmbngdnj'
         };
       } else if (common.isBrowser("firefox")) {
         return {
-          icon: '../assets/firefox-amo.png',
+          icon: firefoxAmoIcon,
           url: 'https://addons.mozilla.org/en-US/firefox/addon/pixiv-toolkit/'
         }
       }
