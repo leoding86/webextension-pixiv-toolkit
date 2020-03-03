@@ -29,8 +29,6 @@
         @click="importSettings"
       >{{ tl('_import_settings') }}</v-btn>
     </div>
-
-    <important-notice></important-notice>
   </v-container>
 </template>
 
@@ -45,7 +43,6 @@ import DownloadOptions from '@@/components/options/DownloadOptions';
 import HistoryOptions from '@@/components/options/HistoryOptions';
 import SearchOptions from '@@/components/options/SearchOptions';
 import OtherOptions from '@@/components/options/OtherOptions';
-import ImportantNotice from '@@/components/ImportantNotice';
 import SuperMixin from '@/mixins/SuperMixin';
 import defaultSettings from '@/config/default';
 
@@ -64,8 +61,7 @@ export default {
     'download-options': DownloadOptions,
     'history-options': HistoryOptions,
     'search-options': SearchOptions,
-    'other-options': OtherOptions,
-    'important-notice': ImportantNotice
+    'other-options': OtherOptions
   },
 
   methods: {
