@@ -79,6 +79,8 @@
       <v-content style="padding-left:0;">
         <router-view />
       </v-content>
+
+      <update-notice></update-notice>
     </v-app>
   </div>
 </template>
@@ -91,6 +93,7 @@ import extConfig from '@@/../statics/manifest.json'
 import SuperMixin from '@/mixins/SuperMixin';
 import Supports from '@@/components/Supports';
 import AppSuggest from '@@/components/AppSuggest';
+import UpdateNotice from '@@/components/UpdateNotice';
 
 Vue.use(Vuetify)
 
@@ -103,7 +106,8 @@ export default {
 
   components: {
     'supports': Supports,
-    'app-suggest': AppSuggest
+    'app-suggest': AppSuggest,
+    'update-notice': UpdateNotice
   },
 
   data () {
