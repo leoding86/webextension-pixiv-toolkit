@@ -31,6 +31,6 @@ export default class NovelTxtGenerator {
 
     let blob = new Blob([content], { type: 'text/plain' });
 
-    return Promise.resolve({ url: URL.createObjectURL(blob), blob: blob });
+    return Promise.resolve(blob);
   }
 }
