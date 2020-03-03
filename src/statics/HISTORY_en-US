@@ -1,13 +1,12 @@
-You can use this extension to convert the ugoira on Pixiv to GIF or WebM file, or pack the images of manga to download or save novel as epub.
+v3.10.0-2020030306
+Add standalone save to relative location for illust, ugoira, manga and novel, you can also use rename meta to origanize the folders;
+Add downloading txt type novel support;
+Add saving novel visit history support;
+Change the rename logic when there is only one avaliable image in illustration, you can place deleted content between two # tags;
+Fix issue about downloads setting not working in Firefox;
+Delete search settings;
+Minor fixes.
 
-You can feel free to open issue on GitHub if you have any questions.
-
-There is a power Pixiv downloader Pixiv Omina has been released! It's easy to use and it has plenty features, you should give it a try.
-
-Github:
-Pixiv Toolkit: https://github.com/leoding86/webextension-pixiv-toolkit
-Pixiv Omina: https://github.com/leoding86/pixiv-omina
-----------------------------------------------
 v3.9.1-2020022513
 Fix wrong permission.
 
@@ -274,5 +273,3 @@ Add Japanese language support.
 
 v1.0.1:
 Remove webNavigation permission.
-----------------------------------------------
-Please report bugs and tell me what you need. Thanks!

@@ -1,0 +1,260 @@
+v3.10.0-2020030306
+新增不同作品类型的独立保存位置设置，并且可以使用重命名元，例如{id}, {author}等，来组织存储路径；
+新增下载TXT格式小说支持；
+新增记录小说浏览记录；
+修改当插画只有一张图片时的重命名逻辑，你可以将不需要的部分放入到两个#标签之间；
+修复部分下载设置在Firefox不能使用的问题；
+移除搜索相关设置；
+其他次要修复。
+
+v3.9.1-2020022513
+修复错误的权限。
+
+v3.9.0-2020022203
+添加了在下载前检测作品是否被保存过的功能（可以在设置页面禁用弹出对话框）；
+添加了一个设置可以授权插件访问域名techorus-cdn.com，部分用户发现有资源存放在此域名下；
+摁虫子。
+
+v3.8.2-2020022112
+当资源可以下载时改变按钮颜色；
+修复当下载单张图片是重命名的问题；
+摁虫子。
+
+3.8.1-2020021811
+添加了导出/导入设置功能；
+移除了复制设置功能；
+修复了部分设置无效的问题。
+
+v3.7.3 - 20012112
+添加了“保留页码”设置在插画设置内；
+添加了“复制设置”按钮在设置页面内；
+改进当插画只有一张图片是的图片重命名规则。
+
+v3.7.2 - 20010612
+更新在FireFox中始终在新标签打开设置页面；
+更新当下载图集时只有一张图片时，不应用页码命名规则；
+摁虫子。
+
+v3.7 - 19122311
+新增了新的命名属性，年、月、日；
+更新了浏览历史的界面；
+摁虫子
+
+v3.6 - 19121711
+添加了新安装的引导界面；
+更新了插件在P站上的UI；
+修复不能下载小说的问题；
+缩减插件的大小。
+
+v3.5 - 19120821
+支持Pixiv Omina“点击下载”功能
+
+v3.4.4 - 19120512
+新增了在不用刷新页面即可重试下载资源的功能；
+新增了一个选项来控制动图资源下载进度；
+摁虫子。
+
+v3.4.3 - 19112809
+Moved export/import history data function to settings;
+Added ability to permanently change between history styles;
+Fixed issue about cannot import history data.
+
+v3.4.2 - 19112710
+Fix cannot save file while filename include '~'.
+
+v3.4.1 - 19111810
+Add username in visit history;
+Fix issue about work cannot be saved if work title or username has illegal chars.
+
+v3.4
+Whole NEW visit history UI;
+Add reload extension setting;
+Add "Visit History" on popup page;
+Remove setting of open change history page after updated;
+Minor fixes.
+
+v3.3.3
+修复了插图无法下载的问题。
+
+v3.3.2
+将支持组件移动到头部；
+摁虫子。
+
+v3.2
+新增生成APNG动图功能；
+移除了下载动图资源是的进度显示，因为Pixiv修改了获取动图资源的方法；
+摁虫子。
+
+v3.1
+Add settings about downloading novel;
+Add a setting to clear history data;
+Minor fix.
+
+v3.0.1 beta
+Fix P* won't show up with some urls.
+
+v3.0 beta
+Fix Pixiv new work url issue;
+Fix wrong datetime in zip file;
+Minor fixes.
+
+v2.7
+新增添加搜索后缀功能用于搜索热门作品（大概热门）；
+新增图片缓存功能到浏览记录（Chrome插件的文件缓存机制是不能缓存图片到硬盘）；
+新增开启/禁止记录留言记录的功能。
+
+v2.6.4
+为浏览记录添加了搜索功能;
+更新作品浏览记录的UI。
+
+v2.5.4
+从Plus Addon合并记录浏览记录功能;
+修复bug。
+碎语：
+我可能会为插件定一个价格，但是不管怎样，我都会保持插件开源，并且你可以随时在我的Github上手动安装此插件。
+
+v2.4.3
+如果图集中只有一张图片，则下载图片而不是文件包；
+修复BUG。
+
+v2.3.2
+添加了关于自动激活下载面板的设置；
+修复BUG。
+
+v2.2
+修复了低版本Chrome中插件不能正常运行的问题，现在插件能兼容到Chrome 49版本；
+将压缩包里的帧信息文件名修改为animiation.json；
+添加了记录浏览插画、动图浏览记录的功能，此功能需要Pixiv工具箱Plus Addon来激活。
+注意：记录浏览记录的功能是将数据记录在本地，如果你卸载插件或者卸载浏览器将会导致数据丢失，请定期导出你的浏览记录以免发生意外。
+
+v2.1.1
+修复使用默认设置不能保存漫画的问题。
+
+v2.1
+重构插件，如果发现任何问题请告知我；
+修复“漫画工具箱”的链接。
+
+v2.0.5
+添加一个下载设置；
+在历史修改页面添加是否显示历史修改的设置，避免用户没有看见这个设置；
+添加了“漫画工具箱”的插件的链接，你可以试试它ヽ(^o^)ノ。
+
+v2.0.4
+现在下载设置可以应用于所有作品类型；
+修复了有关授予扩展程序下载权限的错误；
+更新了赞助则页面。
+
+v2.0.3
+添加一个设置可以控制更新完成后是否显示历史更新记录；
+添加下载设置，可以应用于漫画和小说类型（下载设置需要下载权限才能生效，有可以在设置页面控制此权限）。
+
+v2.0.2
+添加了可以在生成动图或打包漫画后直接下载的选项;
+摁虫子。
+
+v2.0.1
+添加重命名漫画是可选的元数据；
+更改扩展图标；
+摁虫子。
+
+v2.0.0
+插件更名为Pixiv工具箱;
+新增下载小说的功能；
+摁虫子。
+
+v1.8.8
+添加可以设置下载漫画时每个包打包多少图片的设置；
+修复一个漫画图片文件重命名错误的问题。
+
+v1.8.7
+修复P站更新产生的问题。
+
+v1.8.6
+修复因为P站更新导致的动图生成按钮不能正确显示的问题。
+
+v1.8.5
+添加了一个设置可以将动图帧信息打包进zip文件;
+动图zip文件现在可以被重名了；
+减少插件大小；
+摁虫子。
+
+v1.8.4
+移除了一些为了测试功能而忘记移除的权限；
+修复了一个损坏插件的BUG。
+注意：
+现在下载动图zip的按钮会在动图资源下载完成后显示，为修复重命名zip文件问题做准备。
+
+v1.8.3
+修复在同一页面访问其他动图时产生的UI混乱和生产错误问题；
+摁虫子。
+
+v1.8.2
+摁虫子。
+
+v1.8.1
+修改设置样式；
+修复bug。
+
+v1.8
+重构重命名功能；
+修复按钮有时不会出现的问题。
+
+v1.7.1:
+修复漫画重命名设置显示错误问题。
+
+v1.7:
+添加漫画重命名设置；
+修复下载文件丢失扩展名的问题。
+
+v1.6.2:
+调整按钮的位置
+
+v1.6.1:
+添加一个选项启用/禁用延长GIF动画；
+修改默认设置（此版本将会用默认设置覆盖1.6.1新增的设置）
+
+v1.5:
+现在扩展可以在新的Pixiv上工作啦（支持向后兼容）！
+
+v1.4.1:
+修复生成gif和webm功能不能正常使用的问题。
+
+v1.4:
+优化下载漫画是的内存使用。
+
+v1.3:
+重构下载漫画的逻辑；
+更新了下载漫画的UI。
+
+v1.2.1:
+修復插件不能正常工作的問題。
+
+v1.2:
+New feature: Generate webm file.
+Remove japanese language support (Maybe someone can help me to translate).
+
+v1.1.4:
+Fix issue that manga cannot be downloaded.
+
+v1.1.3:
+Update button style.
+
+v1.1.2:
+Fix issue of sometimes display black frame in GIF.
+
+v1.1.1:
+Fix issue of cannot generate gif when user use newer Chrome.
+
+v1.1:
+Fix issue of cannot show button when user is not logined on Pixiv;
+Fix issue of cannot show button on new version site;
+Add setting, now you can set name of the gif file on setting page.
+
+v1.0.3:
+Fix issue of cannot download zip file when click the download zip button
+
+v1.0.2:
+Add Japanese language support.
+
+v1.0.1:
+Remove webNavigation permission.
