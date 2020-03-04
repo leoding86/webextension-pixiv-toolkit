@@ -1,3 +1,6 @@
+v3.10.1-2020030411
+Fix downloading issue when using Firefox.
+
 v3.10.0-2020030306
 Add standalone save to relative location for illust, ugoira, manga and novel, you can also use rename meta to origanize the folders;
 Add downloading txt type novel support;
