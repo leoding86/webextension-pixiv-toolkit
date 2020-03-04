@@ -216,7 +216,7 @@
      "message": "Remove"
    },
    "setting_ext_take_over_downloads": {
-     "message": "Extension takes over downloads"
+     "message": "Allow extension takes over downloads"
    },
    "setting_ext_take_over_downloads_desc": {
      "message": "Need download permission"

@@ -216,7 +216,7 @@
      "message": "移除"
    },
    "setting_ext_take_over_downloads": {
-     "message": "插件接管下载"
+     "message": "允许扩展程序接管下载"
    },
    "setting_ext_take_over_downloads_desc": {
      "message": "需要下载权限"
