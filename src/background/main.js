@@ -201,7 +201,7 @@ Main.prototype = {
       }
     });
 
-    args.message.options.url.indexOf('blob') === 0 && URL.revokeObjectURL(args.message.options.url);
+    // args.message.options.url.indexOf('blob') === 0 && URL.revokeObjectURL(args.message.options.url);
   },
 
   updateDownloadedStatAction: function (args) {
