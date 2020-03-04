@@ -17,7 +17,7 @@
 
 <script>
 import SuperMixin from '@/mixins/SuperMixin';
-import PackageFileReader from '@/modules/Util/PackageFileReader';
+import histories from '@/statics/histories.json';
 
 export default {
   mixins: [ SuperMixin ],
@@ -59,14 +59,21 @@ export default {
     loadHistory () {
       return new Promise(resolve => {
         let language = browser.i18n.getUILanguage();
+        let history = '';
 
-        PackageFileReader.read(`HISTORY_${language}`, result => {
-          resolve(this.formatResult(result));
-        }, error => {
-          PackageFileReader.read('HISTORY_en-US', result => {
-            resolve(this.formatResult(result));
-          });
-        });
+        if (histories.indexOf(history) < 0) {
+          history = 'en-US';
+        }
+
+        let xhr = new XMLHttpRequest();
+
+        xhr.open('GET', browser.runtime.getURL(`HISTORY_${history}`));
+
+        xhr.onload = event => {
+          resolve(this.formatResult(xhr.responseText));
+        };
+
+        xhr.send();
       });
     }
   }
