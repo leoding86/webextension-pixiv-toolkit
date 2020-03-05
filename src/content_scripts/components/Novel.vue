@@ -13,7 +13,7 @@
 import Button from "@/content_scripts/components/Button";
 import formatName from "@/modules/Util/formatName";
 import downloadFileMixin from '@/content_scripts/mixins/downloadFileMixin';
-import DownloadRecordPort from '@/modules/Ports/DownloadRecordPort';
+import DownloadRecordPort from '@/modules/Ports/DownloadRecordPort/RendererPort';
 
 export default {
   mixins: [
@@ -156,7 +156,7 @@ export default {
     },
 
     handleDownloadRecord(message, port) {
-      if (message.channel === DownloadRecordPort.port + ':get-download-record' && message.error === undefined) {
+      if (message.channel === DownloadRecordPort.portName + ':get-download-record' && message.error === undefined) {
         this.buttons.forEach(button => {
           if (message.data && message.data[button.type] === 1) {
             this.updateButton(button, { saved: true });

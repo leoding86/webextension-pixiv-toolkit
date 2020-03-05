@@ -35,7 +35,7 @@ import {
 } from "@/content_scripts/Browser"
 import Browser from '@/modules/Browser/Browser'
 import downloadFileMixin from "@/content_scripts/mixins/downloadFileMixin"
-import DownloadRecordPort from '@/modules/Ports/DownloadRecordPort';
+import DownloadRecordPort from '@/modules/Ports/DownloadRecordPort/RendererPort'
 
 export default {
   mixins: [
@@ -402,7 +402,7 @@ export default {
     },
 
     handleDownloadRecord(message, port) {
-      if (message.channel === DownloadRecordPort.port + ':get-download-record' && message.error === undefined) {
+      if (message.channel === DownloadRecordPort.portName + ':get-download-record' && message.error === undefined) {
         if (message.data.zip === 1) this.resourceSaved = true;
         if (message.data.gif === 1) this.gifSaved = true;
         if (message.data.apng === 1) this.apngSaved = true;

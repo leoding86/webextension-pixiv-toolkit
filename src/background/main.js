@@ -1,8 +1,8 @@
 import { Updater, PackageFileReader } from '@/modules/Util';
 import Browser from '@/modules/Browser/Browser';
 import actions from '@/background/actions';
-import IllustHistoryPort from '@/modules/Ports/IllustHistoryPort';
-import DownloadRecordPort from '@/modules/Ports/DownloadRecordPort';
+import IllustHistoryPort from '@/modules/Ports/IllustHistoryPort/BackgroundPort';
+import DownloadRecordPort from '@/modules/Ports/DownloadRecordPort/BackgroundPort';
 import defaultSettings from '@/config/default';
 
 const browser = Browser.getBrowser();
@@ -20,8 +20,8 @@ Main.prototype = {
   getPorts: function() {
     let ports = {};
 
-    ports[IllustHistoryPort.port] = IllustHistoryPort;
-    ports[DownloadRecordPort.port] = DownloadRecordPort;
+    ports[IllustHistoryPort.portName] = IllustHistoryPort;
+    ports[DownloadRecordPort.portName] = DownloadRecordPort;
 
     return ports;
   },
@@ -125,9 +125,11 @@ Main.prototype = {
   },
 
   listenPortConnect: function() {
+    let self = this;
+
     browser.runtime.onConnect.addListener(port => {
-      if (port.name && this.ports[port.name]) {
-        this.ports[port.name].getInstanceFromPort(port);
+      if (port.name && self.ports[port.name]) {
+        self.ports[port.name].getInstance(port);
       }
     });
   },

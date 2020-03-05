@@ -64,7 +64,7 @@ import Manga from '@/content_scripts/components/Manga'
 import Illust from '@/content_scripts/components/Illust'
 import Ugoira from '@/content_scripts/components/Ugoira'
 import SubscriptionButton from '@/content_scripts/components/sub/SubscriptionButton'
-import IllustHistoryPort from '@/modules/Ports/IllustHistoryPort'
+import IllustHistoryPort from '@/modules/Ports/IllustHistoryPort/RendererPort'
 import Button from '@/content_scripts/components/Button'
 import InvalidPageError from '@/content_scripts/errors/InvalidPageError'
 
