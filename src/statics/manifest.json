@@ -39,22 +39,10 @@
                 "*://*.pixiv.net/*"
             ],
             "css": [
-                "content_scripts/static/css/search.css"
-            ],
-            "js": [
-                "lib/babel-polyfill.min.js",
-                "lib/pouchdb.js",
-                "content_scripts/search.js"
-            ]
-        },
-        {
-            "matches": [
-                "*://*.pixiv.net/*"
-            ],
-            "css": [
                 "content_scripts/static/css/app.css"
             ],
             "js": [
+                "lib/babel-polyfill.min.js",
                 "lib/vue.min.js",
                 "lib/handlebars-latest.js",
                 "lib/jszip/jszip.js",
@@ -62,7 +50,6 @@
                 "lib/js-epub-maker/js-epub-maker.js",
                 "lib/gifjs/gif.js",
                 "lib/whammy.js",
-                "lib/pouchdb.js",
                 "content_scripts/app.js"
             ]
         }
