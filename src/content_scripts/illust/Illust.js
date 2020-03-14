@@ -1,26 +1,24 @@
-import RetryTicker from '@/modules/Util/RetryTicker';
 import Queue from '@/modules/Util/Queue';
+import Download from '@/modules/Net/Download';
 import formatName from '@/modules/Util/formatName';
-import Logger from '@/modules/Logger'
+import MimeType from '@/modules/Util/MimeType';
 
 /**
  * @class IllustTool
  *
  * @property context
- * @property retryTicker
  * @property chunks
  * @property filename
  * @property zips
  */
 class IllustTool {
 
-	/**
-	 * @constructor
-	 * @param {Object} context
-	 */
+  /**
+   * @constructor
+   * @param {Object} context
+   */
   constructor(context) {
     this.context = context;
-    this.retryTicker = new RetryTicker();
     this.chunks = [];
     this.filename;
     this.zips;
@@ -42,7 +40,6 @@ class IllustTool {
 
   init() {
     this.chunks = [];
-    this.retryTicker.reset();
     this.filename = null;
     this.zips = null;
 
@@ -107,15 +104,15 @@ class IllustTool {
 
   getFilename(chunk) {
     return formatName(this.illustrationRenameFormat, this.context, this.context.illustId) + '_' + this.getPageRange(chunk) + '.zip';
-	}
+  }
 
-	/**
-	 * Check if there is a single in the set
-	 *
-	 * @returns {Boolean}
-	 */
-	isSingle() {
-		return this.pagesNumber() === 1
+  /**
+   * Check if there is a single in the set
+   *
+   * @returns {Boolean}
+   */
+  isSingle() {
+    return this.pagesNumber() === 1
   }
 
   /**
@@ -127,84 +124,62 @@ class IllustTool {
     return this.context.pages.length;
   }
 
-	/**
-	 * Download file
-	 * @param {string} url
-	 * @param {object} [options={}]
-	 *
-	 * @returns {Promise<{blob: Blob, targetName: string}>}
-	 */
-	downloadFile(url, options = {}) {
-		let self = this,
-				xhr = new XMLHttpRequest()
+  /**
+   * Download file
+   * @param {string} url
+   * @param {object} [options]
+   * @param {function} [options.onProgress]
+   * @param {function} [options.onRename]
+   * @param {object} [options.extraOptions]
+   * @param {number} [options.extraOptions.pageNum]
+   * @returns {Promise<{data: Uint8Array, type: string, filename: string}>}
+   */
+  downloadFile(url, { onProgress = null, onRename = null, extraOptions = {} }) {
+    return new Promise((resolve, reject) => {
+      let download = new Download(url, { method: 'GET' });
 
-		return new Promise((resolve, reject) => {
-			xhr.open('get', url);
-			xhr.overrideMimeType('text/plain; charset=x-user-defined');
-			xhr.onload = () => {
-				let parts = url.match(/(\d+)\.([^.]+)$/),
-						pageNum = parts[1],
-						extName = parts[2];
+      download.addListener('onprogress', ({ totalLength, loadedLength }) => {
+        if (typeof onProgress === 'function') {
+          onProgress.call(download, { totalLength, loadedLength });
+        }
+      });
 
-        self.context.pageNum = pageNum;
+      download.addListener('onerror', error => {
+        console.log(error);
+        reject();
+      });
+
+      download.addListener('onfinish', blob => {
+        this.context.pageNum = extraOptions.pageNum || 0;
 
         let filename = null;
 
-        if (options.onRename && typeof options.onRename === 'function') {
-          filename = options.onRename({
-            renameFormat: self.illustrationImageRenameFormat,
-            context: self.context,
-            pageNum: pageNum,
-            extName: extName
+        if (onRename && typeof onRename === 'function') {
+          filename = onRename({
+            extName: MimeType.getExtenstion(download.getResponseHeader('Content-Type'))
           });
         } else {
           filename = formatName(
-            self.illustrationImageRenameFormat,
-            self.context,
+            this.illustrationImageRenameFormat,
+            this.context,
             pageNum
           ) + '.' + extName;
         }
 
-				let byteArray = new Uint8Array(xhr.responseText.length)
+        resolve({
+          blob: blob,
+          filename: filename
+        });
+      });
 
-				for (let i = 0, l = xhr.responseText.length; i < l; i++) {
-					byteArray[i] = xhr.responseText.charCodeAt(i)
-				}
-
-				let blob = new Blob([byteArray], {type: 'application/octet-stream'})
-
-				resolve({
-					blob: blob,
-					targetName: filename
-				});
-			}
-
-			xhr.onerror = () => {
-				if (!self.retryTicker.reachLimit()) {
-					resolve(self.downloadFile(url));
-				} else {
-					self.retryTicker.reset();
-					reject();
-				}
-			}
-
-			xhr.onprogress = (evt) => {
-				if (typeof options.onProgress === 'function') {
-					options.onProgress.call(xhr, evt)
-				}
-			}
-
-			Logger.notice('Save file ' + url)
-
-			xhr.send();
-		})
-	}
+      download.download();
+    });
+  }
 
   downloadChunk(chunk, listeners) {
-    let self = this,
-        zip = new JSZip(),
-        queue = new Queue(),
-        xhr = new XMLHttpRequest();
+    let self = this;
+    let zip = new JSZip();
+    let queue = new Queue();
 
     queue.onItemComplete = () => {
       listeners.onItemComplete(queue);
@@ -230,69 +205,35 @@ class IllustTool {
     }
 
     queue.start(({url, pageIndex}) => {
-      return new Promise((resolve) => {
-        self.saveImage({xhr, url, zip, pageIndex}).then(() => {
-          resolve();
-        });
-      });
-    });
-  }
+      let pageNum = pageIndex - 0 + (self.pageNumberStartWithOne ? 1 : 0);
 
-  /**
-   * Download image and save it to zip object
-   * @param {object} options
-   * @param {XMLHttpRequest} options.xhr
-   * @param {string} options.url
-   * @param {JSZip} options.zip
-   * @param {number} options.pageIndex
-   * @param {object} options.events
-   */
-  saveImage({xhr, url, zip, pageIndex, events = {}}) {
-    let self = this;
+      return this.downloadFile(url, {
+        onRename({extName}) {
+          return formatName(
+            self.illustrationImageRenameFormat.replace(/#/g, ''),
+            self.context,
+            pageNum
+          ) + '.' + extName;
+        },
 
-    return new Promise((resolve, reject) => {
-      xhr.open('get', url);
-      xhr.overrideMimeType('text/plain; charset=x-user-defined');
-
-      xhr.onload = () => {
-        let parts = url.match(/(\d+)\.([^.]+)$/),
-            pageNum = pageIndex - 0 + (self.pageNumberStartWithOne ? 1 : 0),
-            extName = parts[2];
-
-        self.context.pageNum = pageNum;
-
-        let filename = formatName(
-          self.illustrationImageRenameFormat.replace(/#/g, ''),
-          self.context,
+        extraOptions: {
           pageNum
-        ) + '.' + extName;
-
+        }
+      }).then(result => {
         /**
          * Fix jszip date issue which jszip will save the UTC time as the local time to files in zip
          */
         let now = new Date();
         now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
 
-        zip.file(filename, xhr.responseText, {
-          binary: true,
+        zip.file(result.filename, result.blob, {
           date: now
         });
 
-        resolve();
-      };
-
-      xhr.onerror = () => {
-        if (!self.retryTicker.reachLimit()) {
-          resolve(self.saveImage(xhr, url, zip));
-        } else {
-          self.retryTicker.reset();
-          reject();
-        }
-      };
-
-      Logger.notice('save illustration image ' + url);
-
-      xhr.send();
+        return Promise.resolve();
+      }).catch(error => {
+        console || console.error(error);
+      });
     });
   }
 }

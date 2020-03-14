@@ -1,5 +1,5 @@
-import Event from '@/modules/Event'
-import Request from '@/modules/Util/Request';
+import Event from '@/modules/Event';
+import Download from '@/modules/Net/Download';
 import GifGenerator from '@/modules/Generator/GifGenerator'
 import WebMGenerator from '@/modules/Generator/WebMGenerator'
 import APngGenerator from '@/modules/Generator/APngGenerator'
@@ -9,7 +9,12 @@ class UgoiraTool {
     this.context = context
     this.gifGenerator
     this.webMGenerator
-    this.request = new Request();
+
+    /**
+     * @var {Download}
+     */
+    this.download;
+
     this.zip;
     this.zipBlob;
     this.event = new Event()
@@ -20,16 +25,16 @@ class UgoiraTool {
 
     this.gifGenerator = null
     this.webMGenerator = null
-    this.request.abort()
+    this.download && this.download.abort();
     this.zip = new JSZip()
     this.zipBlob = null
 
-    return self.downloadResource().then(zipData => {
+    return this.downloadResource().then(blob => {
       if ($extension.browserItems.enablePackUgoiraFramesInfo) {
         self.zip.file('animation.json', JSON.stringify(self.context.illustFrames));
       }
 
-      return self.zip.loadAsync(zipData)
+      return self.zip.loadAsync(blob)
     }).then(() => {
       self.gifGenerator = new GifGenerator(
         self.zip,
@@ -61,10 +66,6 @@ class UgoiraTool {
     });
   }
 
-  enableDisplayDownloadProgress() {
-    this.request.readAsStream();
-  }
-
   getUserId() {
     return this.context.userId
   }
@@ -93,35 +94,23 @@ class UgoiraTool {
     let self = this
 
     return new Promise((resolve, reject) => {
-      self.request.open('GET', this.context.illustOriginalSrc);
+      this.download && this.download.abort();
 
-      if (self.request.isReadAsStream()) {
-        let body = [];
+      this.download = new Download(this.context.illustOriginalSrc, { method: 'GET' });
 
-        self.request.event.addExclusiveListener('ondata', data => {
-          data.forEach(char => {
-            body.push(char);
-          });
-        });
+      this.download.addListener('onload', blob => {
+        resolve(blob)
+      });
 
-        self.request.event.addExclusiveListener('onprogress', progress => {
-          self.event.dispatch('onProgress', [progress]);
-        });
+      this.download.addListener('onprogress', ({ totalLength, loadedLength }) => {
+        self.event.dispatch('onProgress', [loadedLength / totalLength]);
+      });
 
-        self.request.event.addExclusiveListener('onfinish', () => {
-          resolve((new Uint8Array(body)).buffer);
-        });
-      } else {
-        self.request.event.addExclusiveListener('onload', response=> {
-          resolve(response.arrayBuffer());
-        });
-      }
-
-      self.request.event.addExclusiveListener('onerror', error => {
+      this.download.addListener('onerror', error => {
         reject(error);
       });
 
-      self.request.send();
+      this.download.download();
 
       self.event.dispatch('onStart');
     })

@@ -179,10 +179,6 @@ export default {
 
   methods: {
     initTool() {
-      if (this.browserItems.ugoiraDisplayDownloadProgress) {
-        this.ugoiraTool.enableDisplayDownloadProgress();
-      }
-
       let vm = this;
 
       this.resourceProgress = 1;

@@ -1,12 +1,12 @@
-import RetryTicker from '@/modules/Util/RetryTicker';
+import Download from '@/modules/Net/Download';
 import Queue from '@/modules/Util/Queue';
 import formatName from '@/modules/Util/formatName';
+import MimeType from '@/modules/Util/MimeType';
 import Logger from '@/modules/Logger'
 
 class MangaTool {
   constructor(context) {
     this.context = context;
-    this.retryTicker = new RetryTicker();
     this.chunks = [];
     this.filename;
     this.zips;
@@ -28,16 +28,15 @@ class MangaTool {
 
   init() {
     this.chunks = [];
-    this.retryTicker.reset();
     this.filename = null;
     this.zips = null;
 
     let self = this,
-        startIndex = 0;
+      startIndex = 0;
 
     while (startIndex <= self.context.pages.length - 1) {
       let chunk = {},
-          endIndex = startIndex + self.splitSize - 1;
+        endIndex = startIndex + self.splitSize - 1;
 
       chunk.start = startIndex;
 
@@ -53,7 +52,7 @@ class MangaTool {
     }
 
     if (!self.mangaImageRenameFormat ||
-        self.mangaImageRenameFormat.indexOf('{pageNum}') < 0
+      self.mangaImageRenameFormat.indexOf('{pageNum}') < 0
     ) {
       self.mangaImageRenameFormat += '{pageNum}';
     }
@@ -96,10 +95,9 @@ class MangaTool {
   }
 
   downloadChunk(chunk, listeners) {
-    let self = this,
-        zip = new JSZip(),
-        queue = new Queue(),
-        xhr = new XMLHttpRequest();
+    let self = this;
+    let zip = new JSZip();
+    let queue = new Queue();
 
     queue.onItemComplete = () => {
       listeners.onItemComplete(queue);
@@ -124,60 +122,40 @@ class MangaTool {
       });
     }
 
-    queue.start(({url, pageIndex}) => {
-      return new Promise((resolve) => {
-        self.saveImage({xhr, url, zip, pageIndex}).then(() => {
+    queue.start(({ url, pageIndex }) => {
+      return new Promise(resolve => {
+        let download = new Download(url, {
+          method: 'GET'
+        });
+
+        download.addListener('onerror', error => {
+          reject();
+        });
+
+        download.addListener('onfinish', blob => {
+          let pageNum = pageIndex - 0 + (self.pageNumberStartWithOne ? 1 : 0);
+
+          self.context.pageNum = pageNum;
+
+          let filename = formatName(
+            self.mangaImageRenameFormat,
+            self.context,
+            pageNum
+          ) + '.' + MimeType.getExtenstion(download.getResponseHeader('Content-Type'));
+
+          /**
+           * Fix jszip date issue which jszip will save the UTC time as the local time to files in zip
+           */
+          let now = new Date();
+          now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+
+          zip.file(filename, blob, {
+            date: now
+          });
+
           resolve();
         });
       });
-    });
-  }
-
-  saveImage({xhr, url, zip, pageIndex}) {
-    let self = this;
-
-    return new Promise((resolve, reject) => {
-      xhr.open('get', url);
-      xhr.overrideMimeType('text/plain; charset=x-user-defined');
-      xhr.onload = () => {
-        let parts = url.match(/(\d+)\.([^.]+)$/),
-            pageNum = pageIndex - 0 + (self.pageNumberStartWithOne ? 1 : 0),
-            extName = parts[2];
-
-        self.context.pageNum = pageNum;
-
-        let filename = formatName(
-          self.mangaImageRenameFormat,
-          self.context,
-          pageNum
-        ) + '.' + extName;
-
-        /**
-         * Fix jszip date issue which jszip will save the UTC time as the local time to files in zip
-         */
-        let now = new Date();
-        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-
-        zip.file(filename, xhr.responseText, {
-          binary: true,
-          date: now
-        });
-
-        resolve();
-      }
-
-      xhr.onerror = () => {
-        if (!self.retryTicker.reachLimit()) {
-          resolve(self.saveImage(xhr, url, zip));
-        } else {
-          self.retryTicker.reset();
-          reject();
-        }
-      }
-
-      Logger.notice('save manga image ' + url)
-
-      xhr.send();
     });
   }
 }

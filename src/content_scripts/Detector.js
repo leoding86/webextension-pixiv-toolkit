@@ -2,7 +2,7 @@ import UgoiraAdapter from './UgoiraAdapter';
 import MangaAdapter from './MangaAdapter';
 import IllustAdapter from './IllustAdapter'
 import NovelAdapter from './NovelAdapter';
-import Request from '@/modules/Util/Request';
+import Request from '@/modules/Net/Request';
 import InvalidPageError from '@/content_scripts/errors/InvalidPageError';
 
 class Detector {
@@ -18,7 +18,7 @@ class Detector {
   static NOVEL_TYPE = 9;
 
   constructor() {
-    this.request = new Request();
+    this.request;
     this.currentUrl;
     this.currentType;
     this.currentTool;
@@ -84,37 +84,33 @@ class Detector {
     let self = this;
 
     return new Promise((resolve, reject) => {
-      let matches;
+      this.request && this.request.abort();
 
-      self.request.open('GET', self.getIllustUrl(illustId));
+      this.request = new Request(this.getIllustUrl(illustId), { method: 'GET' });
 
-      let json;
+      this.request.addExclusiveListener('onload', data => {
+        let json = JSON.parse(String.fromCharCode.apply(null, data));
 
-      self.request.event.addExclusiveListener('onload', response => {
-        response.json().then(json => {
-          if (json && json.body) {
-            self.contextData = json.body;
+        if (json && json.body) {
+          self.contextData = json.body;
 
-            browser.runtime.sendMessage({
-              action: 'activeIcon'
-            });
+          browser.runtime.sendMessage({
+            action: 'activeIcon'
+          });
 
-            resolve(json.body.illustType);
-          }
-        }).catch(error => {
+          resolve(json.body.illustType);
+        } else {
           browser.runtime.sendMessage({
             action: 'deactiveIcon'
           });
-
-          reject('Unkown illust type');
-        });
+        }
       });
 
-      self.request.event.addExclusiveListener('onerror', error => {
+      this.request.addExclusiveListener('onerror', error => {
         reject(error);
       });
 
-      self.request.send();
+      this.request.send();
     });
   }
 
@@ -155,9 +151,7 @@ class Detector {
     let self = this;
 
     return new Promise((resolve, reject) => {
-      if (self.request) {
-        self.request.abort();
-      }
+      this.request && this.request.abort();
 
       let matches, novelId;
 
@@ -168,33 +162,29 @@ class Detector {
         return;
       }
 
-      self.request.open('GET', self.getNovelUrl(novelId));
+      this.request = new Request('GET', self.getNovelUrl(novelId));
 
-      self.request.event.addExclusiveListener('onload', response => {
-        response.json().then(json => {
-          if (json && json.body) {
-            self.contextData = json.body;
+      this.request.addExclusiveListener('onload', data => {
+        let json = JSON.parse(String.fromCharCode.apply(null, data));
 
-            resolve(self.injectNovelAdapter());
+        if (json && json.body) {
+          self.contextData = json.body;
 
-            browser.runtime.sendMessage({
-              action: 'activeIcon'
-            });
+          resolve(self.injectNovelAdapter());
 
-            return;
-          } else {
-            browser.runtime.sendMessage({
-              action: 'deactiveIcon'
-            });
-          }
-        }).catch(error => {
+          browser.runtime.sendMessage({
+            action: 'activeIcon'
+          });
+
+          return;
+        } else {
           browser.runtime.sendMessage({
             action: 'deactiveIcon'
           });
-        });
+        }
       });
 
-      self.request.send();
+      this.request.send();
     });
   }
 

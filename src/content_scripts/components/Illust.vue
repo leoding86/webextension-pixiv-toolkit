@@ -164,21 +164,27 @@ export default {
 					let url = this.illustTool.context.pages[0].urls.original
 
 					this.illustTool.downloadFile(url, {
-						onProgress(evt) {
+						onProgress(progress) {
 							vm.updateButtonInfo(buttonInfo, {
-								text: 'DL ' + Math.floor(evt.loaded * 100 / evt.total) + '%'
+								text: 'DL ' + Math.floor(progress * 100) + '%'
 							});
             },
 
-            onRename({renameFormat, context, pageNum, extName}) {
+            onRename({extName}) {
+              let renameFormat = vm.browserItems.illustrationImageRenameFormat;
+
               if (!vm.browserItems.illustrationKeepPageNumber) {
                 renameFormat = renameFormat.replace(/#.*#/, '');
               }
 
-              return formatName(renameFormat, context, context.illustId) + `.${extName}`;
+              return formatName(renameFormat, self.illustTool.context, self.illustTool.illustId) + `.${extName}`;
+            },
+
+            extraOptions: {
+              pageNum: 0
             }
 					}).then(result => {
-						let filename = result.targetName;
+            let filename = result.filename;
 
 						vm.updateButtonInfo(buttonInfo, {
               blob: result.blob,
