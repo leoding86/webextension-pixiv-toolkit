@@ -7,8 +7,6 @@ export default class BackgroundPort extends IllustHistoryPort {
   constructor() {
     super();
 
-    this.browser = Browser.getBrowser();
-
     this.illustHistoryRepo = new IllustHistoryRepo();
   }
 
