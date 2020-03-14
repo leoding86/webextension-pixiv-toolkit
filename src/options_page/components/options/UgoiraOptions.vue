@@ -61,16 +61,6 @@
           </v-list-tile-action>
         </v-list-tile>
 
-        <v-list-tile>
-          <v-list-tile-content>
-            <v-list-tile-title>{{ tl('_display_ugoira_download_progress') }}</v-list-tile-title>
-            <v-list-tile-sub-title>{{ tl('_Enable_this_may_cause_issue_about_loading_images') }}</v-list-tile-sub-title>
-          </v-list-tile-content>
-          <v-list-tile-action>
-            <v-switch v-model="ugoiraDisplayDownloadProgress"></v-switch>
-          </v-list-tile-action>
-        </v-list-tile>
-
         <change-location-setting
           v-model="location"
           :setting-title="tl('_save_ugoira_in_relative_location')"
@@ -120,8 +110,6 @@ export default {
 
       ugoiraGenerateAndDownload: false,
 
-      ugoiraDisplayDownloadProgress: true,
-
       location: ''
     };
   },
@@ -129,7 +117,6 @@ export default {
   beforeMount() {
     this.ugoiraQuanlity = this.browserItems.ugoiraQuanlity || 10;
     this.ugoiraRenameFormat = this.browserItems.ugoiraRenameFormat;
-    this.ugoiraDisplayDownloadProgress = this.browserItems.ugoiraDisplayDownloadProgress;
     this.ugoiraGenerateAndDownload = this.browserItems.ugoiraGenerateAndDownload;
     this.enablePackUgoiraFramesInfo = this.browserItems.enablePackUgoiraFramesInfo;
 
@@ -150,16 +137,6 @@ export default {
     ugoiraGenerateAndDownload(val) {
       browser.storage.local.set({
         ugoiraGenerateAndDownload: val
-      });
-    },
-
-    ugoiraDisplayDownloadProgress(val) {
-      if (val) {
-        window.alert(this.tl('_display_download_progress_will_block_images_loadings_on_the_page_until_the_download_complete'));
-      }
-
-      browser.storage.local.set({
-        ugoiraDisplayDownloadProgress: val
       });
     },
 
