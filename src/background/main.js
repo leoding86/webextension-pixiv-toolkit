@@ -1,4 +1,4 @@
-import { Updater, PackageFileReader } from '@/modules/Util';
+import { Updater } from '@/modules/Util';
 import Browser from '@/modules/Browser/Browser';
 import actions from '@/background/actions';
 import IllustHistoryPort from '@/modules/Ports/IllustHistoryPort/BackgroundPort';
