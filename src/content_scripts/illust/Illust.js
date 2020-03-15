@@ -1,3 +1,4 @@
+import Retryer from '@/modules/Manager/Retryer';
 import Queue from '@/modules/Util/Queue';
 import Download from '@/modules/Net/Download';
 import formatName from '@/modules/Util/formatName';
@@ -135,44 +136,48 @@ class IllustTool {
    * @returns {Promise<{data: Uint8Array, type: string, filename: string}>}
    */
   downloadFile(url, { onProgress = null, onRename = null, extraOptions = {} }) {
-    return new Promise((resolve, reject) => {
-      let download = new Download(url, { method: 'GET' });
+    let retryer = new Retryer({ maxTime: 3 });
 
-      download.addListener('onprogress', ({ totalLength, loadedLength }) => {
-        if (typeof onProgress === 'function') {
-          onProgress.call(download, { totalLength, loadedLength });
-        }
-      });
+    return retryer.start(retryer => {
+      return new Promise((resolve, reject) => {
+        let download = new Download(url, { method: 'GET' });
 
-      download.addListener('onerror', error => {
-        console.log(error);
-        reject();
-      });
-
-      download.addListener('onfinish', blob => {
-        this.context.pageNum = extraOptions.pageNum || 0;
-
-        let filename = null;
-
-        if (onRename && typeof onRename === 'function') {
-          filename = onRename({
-            extName: MimeType.getExtenstion(download.getResponseHeader('Content-Type'))
-          });
-        } else {
-          filename = formatName(
-            this.illustrationImageRenameFormat,
-            this.context,
-            pageNum
-          ) + '.' + extName;
-        }
-
-        resolve({
-          blob: blob,
-          filename: filename
+        download.addListener('onprogress', ({ totalLength, loadedLength }) => {
+          if (typeof onProgress === 'function') {
+            onProgress.call(download, { totalLength, loadedLength });
+          }
         });
-      });
 
-      download.download();
+        download.addListener('onerror', error => {
+          console.log(error);
+          reject();
+        });
+
+        download.addListener('onfinish', blob => {
+          this.context.pageNum = extraOptions.pageNum || 0;
+
+          let filename = null;
+
+          if (onRename && typeof onRename === 'function') {
+            filename = onRename({
+              extName: MimeType.getExtenstion(download.getResponseHeader('Content-Type'))
+            });
+          } else {
+            filename = formatName(
+              this.illustrationImageRenameFormat,
+              this.context,
+              pageNum
+            ) + '.' + extName;
+          }
+
+          resolve({
+            blob: blob,
+            filename: filename
+          });
+        });
+
+        download.download();
+      });
     });
   }
 

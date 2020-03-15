@@ -1,8 +1,8 @@
+import Retryer from '@/modules/Manager/Retryer';
 import Download from '@/modules/Net/Download';
 import Queue from '@/modules/Util/Queue';
 import formatName from '@/modules/Util/formatName';
 import MimeType from '@/modules/Util/MimeType';
-import Logger from '@/modules/Logger'
 
 class MangaTool {
   constructor(context) {
@@ -123,37 +123,41 @@ class MangaTool {
     }
 
     queue.start(({ url, pageIndex }) => {
-      return new Promise(resolve => {
-        let download = new Download(url, {
-          method: 'GET'
-        });
+      let retryer = new Retryer({ maxTime: 3 });
 
-        download.addListener('onerror', error => {
-          reject();
-        });
-
-        download.addListener('onfinish', blob => {
-          let pageNum = pageIndex - 0 + (self.pageNumberStartWithOne ? 1 : 0);
-
-          self.context.pageNum = pageNum;
-
-          let filename = formatName(
-            self.mangaImageRenameFormat,
-            self.context,
-            pageNum
-          ) + '.' + MimeType.getExtenstion(download.getResponseHeader('Content-Type'));
-
-          /**
-           * Fix jszip date issue which jszip will save the UTC time as the local time to files in zip
-           */
-          let now = new Date();
-          now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-
-          zip.file(filename, blob, {
-            date: now
+      return retryer.start(retryer => {
+        return new Promise(resolve => {
+          let download = new Download(url, {
+            method: 'GET'
           });
 
-          resolve();
+          download.addListener('onerror', error => {
+            reject();
+          });
+
+          download.addListener('onfinish', blob => {
+            let pageNum = pageIndex - 0 + (self.pageNumberStartWithOne ? 1 : 0);
+
+            self.context.pageNum = pageNum;
+
+            let filename = formatName(
+              self.mangaImageRenameFormat,
+              self.context,
+              pageNum
+            ) + '.' + MimeType.getExtenstion(download.getResponseHeader('Content-Type'));
+
+            /**
+             * Fix jszip date issue which jszip will save the UTC time as the local time to files in zip
+             */
+            let now = new Date();
+            now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+
+            zip.file(filename, blob, {
+              date: now
+            });
+
+            resolve();
+          });
         });
       });
     });

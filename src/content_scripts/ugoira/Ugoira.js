@@ -1,4 +1,5 @@
 import Event from '@/modules/Event';
+import Retryer from '@/modules/Manager/Retryer';
 import Download from '@/modules/Net/Download';
 import GifGenerator from '@/modules/Generator/GifGenerator'
 import WebMGenerator from '@/modules/Generator/WebMGenerator'
@@ -91,29 +92,31 @@ class UgoiraTool {
   }
 
   downloadResource() {
-    let self = this
+    let retryer = new Retryer({ maxTime: 3 });
 
-    return new Promise((resolve, reject) => {
-      this.download && this.download.abort();
+    return retryer.start(() => {
+      return new Promise((resolve, reject) => {
+        this.download && this.download.abort();
 
-      this.download = new Download(this.context.illustOriginalSrc, { method: 'GET' });
+        this.download = new Download(this.context.illustOriginalSrc, { method: 'GET' });
 
-      this.download.addListener('onload', blob => {
-        resolve(blob)
-      });
+        this.download.addListener('onload', blob => {
+          resolve(blob)
+        });
 
-      this.download.addListener('onprogress', ({ totalLength, loadedLength }) => {
-        self.event.dispatch('onProgress', [loadedLength / totalLength]);
-      });
+        this.download.addListener('onprogress', ({ totalLength, loadedLength }) => {
+          this.event.dispatch('onProgress', [loadedLength / totalLength]);
+        });
 
-      this.download.addListener('onerror', error => {
-        reject(error);
-      });
+        this.download.addListener('onerror', error => {
+          reject(error);
+        });
 
-      this.download.download();
+        this.download.download();
 
-      self.event.dispatch('onStart');
-    })
+        this.event.dispatch('onStart');
+      })
+    });
   }
 
   generateGif(listeners) {
