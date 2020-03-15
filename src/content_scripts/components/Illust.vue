@@ -164,9 +164,9 @@ export default {
 					let url = this.illustTool.context.pages[0].urls.original
 
 					this.illustTool.downloadFile(url, {
-						onProgress(progress) {
+						onProgress({ totalLength, loadedLength }) {
 							vm.updateButtonInfo(buttonInfo, {
-								text: 'DL ' + Math.floor(progress * 100) + '%'
+								text: 'DL ' + Math.floor(loadedLength / totalLength * 100) + '%'
 							});
             },
 
@@ -177,7 +177,7 @@ export default {
                 renameFormat = renameFormat.replace(/#.*#/, '');
               }
 
-              return formatName(renameFormat, self.illustTool.context, self.illustTool.illustId) + `.${extName}`;
+              return formatName(renameFormat, vm.illustTool.context, vm.illustTool.context.illustId) + `.${extName}`;
             },
 
             extraOptions: {
