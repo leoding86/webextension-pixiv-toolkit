@@ -1,4 +1,4 @@
-import Request from '@/modules/Util/Request';
+import Request from '@/modules/Net/Request';
 import Browser from '@/modules/Browser/Browser'
 import UgoiraTool from '@/content_scripts/ugoira/Ugoira'
 import DateFormatter from '@/modules/Util/DateFormatter';
@@ -57,32 +57,30 @@ class UgoiraAdapter {
         day: dateFormatter.getDay()
       };
 
-      let request = new Request();
+      let request = new Request(this.buildMetaUrl(this.illustContext.illustId), { method: 'GET' });
 
-      request.open('get', self.buildMetaUrl(self.illustContext.illustId));
+      request.addListener('onload', data => {
+        let response = JSON.parse(String.fromCharCode.apply(null, data));
 
-      request.event.addListener('onload', response => {
-        response.json().then(response => {
-          if (response.error) {
-            reject();
-            return;
-          }
+        if (response.error) {
+          reject();
+          return;
+        }
 
-          self.illustContext.illustSrc = response.body.src;
-          self.illustContext.illustOriginalSrc = response.body.originalSrc;
-          self.illustContext.illustFrames = response.body.frames;
-          self.illustContext.illustMimeType = response.body.mime_type;
+        self.illustContext.illustSrc = response.body.src;
+        self.illustContext.illustOriginalSrc = response.body.originalSrc;
+        self.illustContext.illustFrames = response.body.frames;
+        self.illustContext.illustMimeType = response.body.mime_type;
 
-          let duration = 0
+        let duration = 0
 
-          self.illustContext.illustFrames.forEach(function (frame) {
-            duration += --frame.delay;
-          });
-
-          self.illustContext.illustDuration = duration;
-
-          resolve(self.illustContext);
+        self.illustContext.illustFrames.forEach(function (frame) {
+          duration += --frame.delay;
         });
+
+        self.illustContext.illustDuration = duration;
+
+        resolve(self.illustContext);
       });
 
       request.send();

@@ -1,6 +1,6 @@
 import Browser from '@/modules/Browser/Browser';
 import MangaTool from '@/content_scripts/manga/Manga';
-import Request from '@/modules/Util/Request';
+import Request from '@/modules/Net/Request';
 import DateFormatter from '@/modules/Util/DateFormatter';
 
 class MangaAdapter {
@@ -53,24 +53,20 @@ class MangaAdapter {
         day: dateFormatter.getDay()
       };
 
-      let request = new Request();
+      let request = new Request(this.getMangaPagesUrl(), { method: 'GET' });
 
-      request.open('GET', self.getMangaPagesUrl());
+      request.addListener('onload', data => {
+        let json = JSON.parse(String.fromCharCode.apply(null, data));
 
-      request.event.addListener('onload', response => {
-        response.json().then(json => {
-          if (json.error) {
-              reject();
-              return;
-          }
+        if (json.error) {
+            reject();
+            return;
+        }
 
-          // Parse pages information here
-          self.illustContext.pages = json.body;
+        // Parse pages information here
+        self.illustContext.pages = json.body;
 
-          resolve(self.illustContext);
-        }).catch(error => {
-          reject();
-        });
+        resolve(self.illustContext);
       });
 
       request.send();
