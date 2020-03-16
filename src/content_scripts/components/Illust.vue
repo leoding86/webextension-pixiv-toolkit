@@ -96,10 +96,10 @@ export default {
 
   methods: {
     initDownloadButtons() {
-			/**
-			 * @param {this}
-			 */
-			let vm = this,
+      /**
+       * @param {this}
+       */
+      let vm = this,
           buttonsInfo = {};
 
       vm.chunks.forEach((chunk, i) => {
@@ -118,7 +118,7 @@ export default {
       })
 
       vm.buttonsInfo = buttonsInfo
-		},
+    },
 
     saveDownloadRecord(record) {
       this.isSaved = true;
@@ -137,13 +137,13 @@ export default {
       return true;
     },
 
-		updateButtonInfo(buttonInfo, data) {
-			this.$set(
-				this.buttonsInfo,
-				buttonInfo.index,
-				Object.assign(buttonInfo, data)
-			)
-		},
+    updateButtonInfo(buttonInfo, data) {
+      this.$set(
+        this.buttonsInfo,
+        buttonInfo.index,
+        Object.assign(buttonInfo, data)
+      )
+    },
 
     getChunkTitle(chunk) {
       return 'DL images ' + (chunk.start - 0 + 1) + '-' + (chunk.end - 0 + 1);
@@ -156,18 +156,18 @@ export default {
         return;
       }
 
-			if (buttonInfo.downloadStatus === 0) {
+      if (buttonInfo.downloadStatus === 0) {
         buttonInfo.downloadStatus = 1
 
-				// If download single illust
-				if (buttonInfo.isSingle) {
-					let url = this.illustTool.context.pages[0].urls.original
+        // If download single illust
+        if (buttonInfo.isSingle) {
+          let url = this.illustTool.context.pages[0].urls.original
 
-					this.illustTool.downloadFile(url, {
-						onProgress({ totalLength, loadedLength }) {
-							vm.updateButtonInfo(buttonInfo, {
-								text: 'DL ' + Math.floor(loadedLength / totalLength * 100) + '%'
-							});
+          this.illustTool.downloadFile(url, {
+            onProgress({ totalLength, loadedLength }) {
+              vm.updateButtonInfo(buttonInfo, {
+                text: 'DL ' + Math.floor(loadedLength / totalLength * 100) + '%'
+              });
             },
 
             onRename({extName}) {
@@ -183,15 +183,15 @@ export default {
             extraOptions: {
               pageNum: 0
             }
-					}).then(result => {
+          }).then(result => {
             let filename = result.filename;
 
-						vm.updateButtonInfo(buttonInfo, {
+            vm.updateButtonInfo(buttonInfo, {
               blob: result.blob,
-							text: 'Save image',
-							filename: filename,
+              text: 'Save image',
+              filename: filename,
               downloadStatus: 2
-						});
+            });
 
             if (vm.browserItems.illustrationDownloadIfReady) {
               vm.downloadFile(result.blob, filename, {
@@ -205,14 +205,14 @@ export default {
 
               this.saveDownloadRecord({ illust: 1 });
             }
-					})
-				} else {
-					this.illustTool.downloadChunk(buttonInfo.chunk, {
-						onItemComplete: this.updateProgress(buttonInfo),
-						onItemFail: this.updateProgress(buttonInfo),
-						onDone: this.onDone(buttonInfo)
-					})
-				}
+          })
+        } else {
+          this.illustTool.downloadChunk(buttonInfo.chunk, {
+            onItemComplete: this.updateProgress(buttonInfo),
+            onItemFail: this.updateProgress(buttonInfo),
+            onDone: this.onDone(buttonInfo)
+          })
+        }
       } else if (buttonInfo.downloadStatus === 2) {
         this.updateButtonInfo(buttonInfo, {
           type: 'success'

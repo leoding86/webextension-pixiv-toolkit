@@ -98,13 +98,13 @@ export default {
       return true;
     },
 
-		updateButton(button, data) {
-			this.$set(
-				this.buttons,
-				this.buttons.indexOf(button),
-				Object.assign(button, data)
-			);
-		},
+    updateButton(button, data) {
+      this.$set(
+        this.buttons,
+        this.buttons.indexOf(button),
+        Object.assign(button, data)
+      );
+    },
 
     getFilename(type) {
       return formatName(
