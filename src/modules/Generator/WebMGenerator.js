@@ -2,14 +2,15 @@ import Event from '@/modules/Event'
 import getImageSize from '@/modules/Util/getImageSize'
 import getCanvasFromDataURI from '@/modules/Util/getCanvasFromDataURI'
 
-class WebMGenerator {
+class WebMGenerator extends Event {
   constructor(zip, mimeType, frames) {
+    super();
+
     this.status = 0
     this.mimeType = mimeType
     this.frames = frames
     this.zip = zip
     this.encoder
-    this.event = new Event()
     this.duration = 0;
 
     this.frames.forEach(frame => {
@@ -58,7 +59,7 @@ class WebMGenerator {
     this.encoder = new Whammy.Video()
 
     this.encoder.on('progress', (total, index) => {
-      self.event.dispatch('onProgress', [index / total])
+      self.dispatch('progress', [index / total])
     })
 
     this.zip.file(self.frames[0].file).async('base64').then(base64 => {
@@ -75,7 +76,7 @@ class WebMGenerator {
         self.encoder.compile(false, blob => {
           self.status = 2
 
-          self.event.dispatch('onFinish', [blob])
+          self.dispatch('finish', [blob])
         })
       } catch (e) {
         console.error(e);

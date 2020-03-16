@@ -2,14 +2,15 @@ import Event from '@/modules/Event'
 import getImageSize from '@/modules/Util/getImageSize'
 import worker from './GifGeneratorWorker'
 
-class GifGenerator {
+class GifGenerator extends Event {
   constructor(zip, mimeType, frames) {
+    super();
+
     this.status = 0
     this.mimeType = mimeType
     this.frames = frames
     this.gif
     this.zip = zip
-    this.event = new Event()
   }
 
   appendImageToGifFrame(currentIndex, currentDuration = 0) {
@@ -56,7 +57,7 @@ class GifGenerator {
         })
 
         self.gif.on('progress', p => {
-          self.event.dispatch('onProgress', [p])
+          self.dispatch('progress', [p])
         })
 
         self.gif.on('finished', blob => {
@@ -66,7 +67,7 @@ class GifGenerator {
 
           self.status = 2
 
-          self.event.dispatch('onFinish', [blob])
+          self.dispatch('finish', [blob])
         })
 
         self.appendImageToGifFrame().then(() => {

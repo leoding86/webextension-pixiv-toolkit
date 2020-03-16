@@ -5,27 +5,38 @@ import GifGenerator from '@/modules/Generator/GifGenerator'
 import WebMGenerator from '@/modules/Generator/WebMGenerator'
 import APngGenerator from '@/modules/Generator/APngGenerator'
 
-class UgoiraTool {
+/**
+ * @class
+ */
+class UgoiraTool extends Event {
+  /**
+   * @constructor
+   * @param {Object} context
+   */
   constructor(context) {
-    this.context = context
-    this.gifGenerator
-    this.webMGenerator
+    super();
 
     /**
-     * @var {Download}
+     * @property {Object}
+     */
+    this.context = context
+
+    /**
+     * @property {Download}
      */
     this.download;
 
     this.zip;
+
+    /**
+     * @property {Blob}
+     */
     this.zipBlob;
-    this.event = new Event()
   }
 
   init() {
     let self = this
 
-    this.gifGenerator = null
-    this.webMGenerator = null
     this.download && this.download.abort();
     this.zip = new JSZip()
     this.zipBlob = null
@@ -37,26 +48,6 @@ class UgoiraTool {
 
       return self.zip.loadAsync(blob)
     }).then(() => {
-      self.gifGenerator = new GifGenerator(
-        self.zip,
-        self.context.illustMimeType,
-        self.context.illustFrames
-      )
-
-      self.webMGenerator = new WebMGenerator(
-        self.zip,
-        self.context.illustMimeType,
-        self.context.illustFrames
-      )
-
-      self.apngGenerator = new APngGenerator(
-        self.zip,
-        self.context.illustMimeType,
-        self.context.illustFrames
-      )
-
-      self.event.dispatch('onFinish');
-
       return self.zip.generateAsync({
         type: 'blob'
       })
@@ -65,6 +56,10 @@ class UgoiraTool {
 
       return blob
     });
+  }
+
+  isReady() {
+    return this.zipBlob;
   }
 
   getUserId() {
@@ -105,7 +100,7 @@ class UgoiraTool {
         });
 
         this.download.addListener('onprogress', ({ totalLength, loadedLength }) => {
-          this.event.dispatch('onProgress', [loadedLength / totalLength]);
+          this.dispatch('progress', [loadedLength / totalLength]);
         });
 
         this.download.addListener('onerror', error => {
@@ -114,29 +109,33 @@ class UgoiraTool {
 
         this.download.download();
 
-        this.event.dispatch('onStart');
+        this.dispatch('start');
       })
     });
   }
 
-  generateGif(listeners) {
-    if (listeners) {
-      for (let i in listeners) {
-        self.gifGenerator.event.addListener(i, listeners[i])
-      }
+  /**
+   * Make the file generator
+   * @param {'gif'|'webm'|'apng'} type
+   */
+  makeGenerator(type) {
+    let GeneratorConstructor = null;
+
+    switch (type) {
+      case 'gif':
+        GeneratorConstructor = GifGenerator;
+        break;
+      case 'webm':
+        GeneratorConstructor = WebMGenerator;
+        break;
+      case 'apng':
+        GeneratorConstructor = APngGenerator;
+        break;
+      default:
+        throw Error('Invalid generator type');
     }
 
-    self.gifGenerator.generate()
-  }
-
-  generateWebM(listeners) {
-    if (listeners) {
-      for (let i in listeners) {
-        self.gifGenerator.event.addListener(i, listeners[i])
-      }
-    }
-
-    self.webMGenerator.generate()
+    return new GeneratorConstructor(this.zip, this.context.illustMimeType, this.context.illustFrames);
   }
 }
 

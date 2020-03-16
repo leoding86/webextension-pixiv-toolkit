@@ -1,27 +1,15 @@
 <template>
-  <div v-if="show">
+  <div>
     <ptk-button
-      :text="resourceDownloadText + (resourceSaved ? ' ✔️' : '')"
-      @click="resourceButtonClicked"
-      :type="resourceButtonType"
-    ></ptk-button>
-    <template v-if="resourceProgress === 100">
+      :type="zipButton.type"
+      @click="zipButtonClickHandle"
+    >{{ zipButton.text + (zipButton.saved ? ' ✔️' : '') }}</ptk-button>
+    <template v-if="ready">
       <ptk-button
-        :text="gifGenerateText + (gifSaved ? ' ✔️' : '')"
-        @click="gifButtonClicked"
-        :type="gifButtonType"
-      ></ptk-button>
-      <ptk-button
-        :text="apngGenerateText + (apngSaved ? ' ✔️' : '')"
-        @click="apngButtonClicked"
-        :type="apngButtonType"
-      ></ptk-button>
-      <ptk-button
-        :text="webGenerateText + (webmSaved ? ' ✔️' : '')"
-        @click="webmButtonClicked"
-        :type="webmButtonType"
-        v-if="!isBrowser('firefox')"
-      ></ptk-button>
+        v-for="(button, type) in generatorButtons"
+        :key="type"
+        @click="generateButtonClickHandle(type)"
+      >{{ button.text + (button.saved ? ' ✔️' : '') }}</ptk-button>
     </template>
   </div>
 </template>
@@ -52,215 +40,91 @@ export default {
 
   data() {
     return {
-      ugoiraTool: null,
-      show: false,
+      zipButton: {
+        type: '',
+        saved: false,
+        blob: null,
+        text: 'Preparing'
+      },
 
-      resourceProgress: 0,
-      resourceButtonType: '',
-      resourceSaved: false,
+      ready: false,
 
-      gifProgress: null,
-      gifStatus: 0,
-      gifBlob: null,
-      gifButtonType: '',
-      gifSaved: false,
+      generatorButtons: {
+        gif: {},
 
-      apngProgress: null,
-      apngStatus: 0,
-      apngBlob: null,
-      apngButtonType: '',
-      apngSaved: false,
+        apng: {},
 
-      webmProgress: null,
-      webmStatus: 0,
-      webmBlob: null,
-      webmButtonType: '',
-      webmSaved: false,
+        webm: {}
+      },
 
       forceDownload: false
     }
   },
 
-  computed: {
-    resourceDownloadText() {
-      return this.resourceProgress === -1 ?
-        "Interrupted, Click to retry" :
-        this.resourceProgress === 0 ?
-          "Preparing" :
-          this.resourceProgress === 100 ?
-            "Download Zip" :
-            this.browserItems.ugoiraDisplayDownloadProgress ?
-              "Downloading" + ` ${this.resourceProgress}%` :
-              "Downloading"
-    },
+  beforeMount() {
+    /**
+     * Inital generator buttons props
+     */
+    Object.keys(this.generatorButtons).forEach(type => {
+      this.$set(this.generatorButtons, type, {
+        type: '',
+        blob: null,
 
-    gifGenerateText() {
-      if (this.gifProgress === null) {
-        return 'Generate GIF'
-      }
-
-      return this.gifProgress !== 1
-        ? "Generating GIF" +
-            (this.gifProgress > 0
-              ? " " + Math.round(this.gifProgress * 100) + "%"
-              : "")
-        : "Download GIF"
-    },
-
-    apngGenerateText() {
-      if (this.apngProgress === null) {
-        return 'Generate APNG';
-      }
-
-      return this.apngStatus === 2
-        ? "Download APNG" : ("Generating APNG " + Math.floor(this.apngProgress * 100) + '%');
-    },
-
-    webGenerateText() {
-      if (this.webmProgress === null) {
-        return 'Generate WebM'
-      }
-
-      return this.webmProgress !== 1
-        ? "Generating WebM " +
-            (this.webmProgress > 0
-              ? " " + Math.round(this.webmProgress * 100) + "%"
-              : "")
-        : "Download WebM"
-    }
-  },
-
-  mounted() {
-    let vm = this
-
-    this.ugoiraTool = this.tool;
-
-    this.downloadRecordPort = DownloadRecordPort.getInstance();
-
-    this.ugoiraTool.event.addExclusiveListener('onProgress', progress => {
-      vm.resourceProgress = Math.round(progress * 100);
+        /**
+         * 0: not start
+         * 1: generated
+         * 2: generating
+         * 4: generate failed
+         */
+        status: 0,
+        saved: false,
+        text: `Generate ${type.toUpperCase()}`
+      });
     });
 
-    this.resourceProgress = 1;
+    /**
+     * Add listener to download resource progress event
+     */
+    this.tool.addExclusiveListener('progress', progress => {
+      this.zipButton.text = `Downloading ${Math.round(progress * 100)}%`;
+    });
 
+    this.downloadRecordPort = DownloadRecordPort.getInstance();
     this.downloadRecordPort.port.onMessage.addListener(this.handleDownloadRecord);
+    this.downloadRecordPort.getDownloadRecord({ id: this.tool.getId(), type: DownloadRecordPort.illustType });
 
-    this.downloadRecordPort.getDownloadRecord({ id: this.ugoiraTool.getId(), type: DownloadRecordPort.illustType });
-
-    this.initTool();
-
-    this.show = true;
-
-    browser.runtime.onConnect.addListener(this.handleConnect);
+    this.initTool().then(() => {
+      this.ready = true;
+      browser.runtime.onConnect.addListener(this.handleConnect);
+    });
   },
 
+  /**
+   * In unmounted method remove the listeners that need to be removed
+   */
   unmounted() {
     browser.runtime.onConnect.removeListener(this.handleConnect)
     this.downloadRecordPort.port.onMessage.removeListener(this.handleDownloadRecord);
   },
 
-  beforeDestroy() {
-    /**
-     * Check whether the tool is initialization before remove the related listeners,
-     * because when user navigate to other page before the page loaded will cause the tool
-     * has no time to complete initialization.
-     */
-    if (this.ugoiraTool) {
-      this.ugoiraTool.gifGenerator.event.removeEventListeners("onProgress")
-      this.ugoiraTool.gifGenerator.event.removeEventListeners("onFinish")
-
-      this.ugoiraTool.webMGenerator.event.removeEventListeners("onProgress")
-      this.ugoiraTool.webMGenerator.event.removeEventListeners("onFinish")
-
-      this.ugoiraTool.apngGenerator.event.removeEventListeners("onStart");
-      this.ugoiraTool.apngGenerator.event.removeEventListeners("onFinish");
-    }
-  },
-
   methods: {
+    /**
+     * @returns {Promise}
+     */
     initTool() {
-      let vm = this;
-
-      this.resourceProgress = 1;
-
       /**
-       * Init ugoira tool will reset the generators instance, so feel free and must to add listeners to gererators again
+       * Init ugoira tool will reset the generators instance, so feel free to add listeners to gererators again
        */
-      this.ugoiraTool.init().then(blob => {
-        vm.resourceProgress = 100;
-
-        this.ugoiraTool.gifGenerator.event.addListener("onProgress", progress => {
-          vm.gifProgress = progress
-        })
-
-        this.ugoiraTool.gifGenerator.event.addListener("onFinish", blob => {
-          vm.gifProgress = 1
-          vm.gifStatus = 2
-          vm.gifBlob = blob
-
-          if (vm.browserItems.ugoiraGenerateAndDownload) {
-            vm.gifButtonType = 'success';
-
-            vm.downloadFile(vm.gifBlob, vm.getFilename() + '.gif', {
-              folder: vm.getSubfolder(this.browserItems.ugoiraRelativeLocation, this.ugoiraTool.context),
-              statType: 'ugoira',
-            });
-          }
-        })
-
-        this.ugoiraTool.webMGenerator.event.addListener("onProgress", progress => {
-            vm.webmProgress = progress
-          }
-        )
-
-        this.ugoiraTool.webMGenerator.event.addListener("onFinish", blob => {
-          vm.webmProgress = 1
-          vm.webmStatus = 2
-          vm.webmBlob = blob
-
-          if (vm.browserItems.ugoiraGenerateAndDownload) {
-            vm.webmButtonType = 'success';
-
-            vm.downloadFile(vm.webmBlob, vm.getFilename() + '.webm', {
-              folder: vm.getSubfolder(this.browserItems.ugoiraRelativeLocation, this.ugoiraTool.context),
-              statType: 'ugoira',
-            });
-          }
-        })
-
-        this.ugoiraTool.apngGenerator.event.addListener("onStart", () => {
-          vm.apngProgress = 0;
-        });
-
-        this.ugoiraTool.apngGenerator.event.addListener('onProgress', progress => {
-          vm.apngProgress = progress;
-        });
-
-        this.ugoiraTool.apngGenerator.event.addListener("onFinish", arrayBuffer => {
-          vm.apngProgress = 1;
-          vm.apngStatus = 2;
-
-          let blob = new Blob([arrayBuffer], {type: 'image/apng'});
-          vm.apngBlob = blob;
-
-          if (vm.browserItems.ugoiraGenerateAndDownload) {
-            vm.apngButtonType = 'success';
-
-            vm.downloadFile(vm.apngBlob, vm.getFilename() + '.apng', {
-              folder: vm.getSubfolder(this.browserItems.ugoiraRelativeLocation, this.ugoiraTool.context),
-              statType: 'ugoira',
-            });
-          }
-        });
+      return this.tool.init().then(() => {
+        this.zipButton.text = 'Save ZIP';
       }).catch(error => {
-        vm.resourceProgress = -1;
-        throw error;
+        this.zipButton.text = 'Interrupted, Click to retry';
       });
     },
 
     saveDownloadRecord(record) {
       this.downloadRecordPort.saveDownloadRecord({
-        id: this.ugoiraTool.getId(),
+        id: this.tool.getId(),
         type: DownloadRecordPort.illustType,
         record
       });
@@ -278,18 +142,18 @@ export default {
       return true;
     },
 
-    resourceButtonClicked() {
-      if (!this.allowDownload(this.resourceSaved)) {
+    zipButtonClickHandle() {
+      if (!this.allowDownload(this.zipButton.saved)) {
         return;
       }
 
-      if (this.resourceProgress === -1) {
+      if (this.zipButton.saved === -1) {
         this.initTool();
-      } else if (this.tool.zipBlob) {
-        this.resourceButtonType = 'success';
+      } else if (this.tool.isReady()) {
+        this.zipButton.type = 'success';
 
         this.downloadFile(this.tool.zipBlob, this.getFilename() + '.zip', {
-          folder: this.getSubfolder(this.browserItems.ugoiraRelativeLocation, this.ugoiraTool.context),
+          folder: this.getSubfolder(this.browserItems.ugoiraRelativeLocation, this.tool.context),
           statType: 'ugoira',
         });
 
@@ -297,98 +161,76 @@ export default {
           zip: 1
         });
 
-        this.resourceSaved = true;
+        this.zipButton.saved = true;
       }
     },
 
-    gifButtonClicked() {
-      if (!this.allowDownload(this.gifSaved)) {
-        return;
-      }
+    saveFile(blob, type) {
+      this.downloadFile(blob, this.getFilename() + '.' + type, {
+        folder: this.getSubfolder(this.browserItems.ugoiraRelativeLocation, this.tool.context),
+        statType: 'ugoira'
+      });
 
-      if (this.gifStatus === 2) {
-        this.gifButtonType = 'success';
+      this.generatorButtons[type].saved = 1;
 
-        this.downloadFile(this.gifBlob, this.getFilename() + '.gif', {
-          folder: this.getSubfolder(this.browserItems.ugoiraRelativeLocation, this.ugoiraTool.context),
-          statType: 'ugoira',
-        });
+      let data = {};
+      data[type] = 1;
 
-        this.saveDownloadRecord({
-          gif: 1
-        });
-
-        this.gifSaved = true;
-
-        return
-      } else if (this.gifStatus !== 0) {
-        return
-      }
-
-      this.gifStatus = 1
-
-      this.ugoiraTool.gifGenerator.generate();
+      this.saveDownloadRecord(data);
     },
 
-    apngButtonClicked() {
-      if (!this.allowDownload(this.apngSaved)) {
-        return;
-      }
+    generateButtonClickHandle(type) {
+      /**
+       * This is a reference of the one generator button of the component's generatorButtons prop
+       */
+      let button = this.generatorButtons[type];
 
-      if (this.apngStatus === 2) {
-        this.apngButtonType = 'success';
+      if (button.status === 0 || buttons.status === 4) {
+        /**
+         * Create the generator with the type argument
+         */
+        let generator = this.tool.makeGenerator(type);
 
-        this.downloadFile(this.apngBlob, this.getFilename() + '.apng', {
-          folder: this.getSubfolder(this.browserItems.ugoiraRelativeLocation, this.ugoiraTool.context),
-          statType: 'ugoira',
+        /**
+         * Add the listener to the generator's generating progress event
+         */
+        generator.addListener('progress', progress => {
+          // update text
+          button.text = `Generating ${Math.round(progress * 100)}%`;
         });
 
-        this.saveDownloadRecord({
-          apng: 1
+        /**
+         * Add the listener to the generator's finish event
+         */
+        generator.addListener('finish', blob => {
+          /**
+           * Update status, text and style type
+           */
+          button.status = 1;
+          button.text = 'Save GIF';
+          button.type = 'success';
+
+          this.saveFile(blob, type);
         });
 
-        this.apngSaved = true;
+        /**
+         * Start generate target file
+         */
+        generator.generate();
 
-        return;
-      } else if (this.apngStatus !== 0) {
-        return;
+        /**
+         * Update the generator button status
+         */
+        button.status = 2;
+      } else if (button.status === 1) {
+        this.saveFile(blob, type);
+      } else if (button.status === 2) {
+        alert('Generating, please wait.');
       }
-
-      this.apngStatus = 1;
-      this.ugoiraTool.apngGenerator.generate();
-    },
-
-    webmButtonClicked() {
-      if (!this.allowDownload(this.webmSaved)) {
-        return;
-      }
-
-      if (this.webmStatus === 2) {
-        this.webmButtonType = 'success';
-
-        this.downloadFile(this.webmBlob, this.getFilename() + '.webm', {
-          folder: this.getSubfolder(this.browserItems.ugoiraRelativeLocation, this.ugoiraTool.context),
-          statType: 'ugoira',
-        });
-
-        this.saveDownloadRecord({
-          webm: 1
-        });
-
-        this.webmSaved = true;
-
-        return
-      } else if (this.webmStatus !== 0) {
-        return
-      }
-
-      this.webmStatus = 1
-
-      this.ugoiraTool.webMGenerator.generate()
     },
 
     getFilename() {
-      return formatName(this.browserItems.ugoiraRenameFormat, this.ugoiraTool.context, this.ugoiraTool.context.illustId)
+      return formatName(this.browserItems.ugoiraRenameFormat, this.tool.context, this.tool.context.illustId)
     },
 
     isBrowser(browser) {
@@ -399,10 +241,10 @@ export default {
 
     handleDownloadRecord(message, port) {
       if (message.channel === DownloadRecordPort.portName + ':get-download-record' && message.error === undefined) {
-        if (message.data.zip === 1) this.resourceSaved = true;
-        if (message.data.gif === 1) this.gifSaved = true;
-        if (message.data.apng === 1) this.apngSaved = true;
-        if (message.data.webm === 1) this.webmSaved = true;
+        if (message.data.zip === 1) this.zipButton.saved = true;
+        if (message.data.gif === 1) this.generatorButtons.gif.saved = true;
+        if (message.data.apng === 1) this.generatorButtons.apng.saved = true;
+        if (message.data.webm === 1) this.generatorButtons.webm.saved = true;
       }
     },
 
@@ -413,7 +255,7 @@ export default {
         port.onMessage.addListener((message, sender, sendResponse) => {
           if (message.type === 'fetch-info') {
             port.postMessage({
-              info: self.ugoiraTool.context
+              info: self.tool.context
             })
           }
         })

@@ -1,17 +1,16 @@
-import Event from '@/modules/Event'
-import UPNG from 'upng-js';
+import Event from '@/modules/Event';
 import getImageSize from '@/modules/Util/getImageSize';
 import getCanvasFromDataURI from '@/modules/Util/getCanvasFromDataURI';
-// import ApngGeneratorWorker from "worker-loader?inline=true,fallback=false!./ApngGeneratorWorker.js"
 import ApngGeneratorWorker from '@/modules/Workers/APngGenerator.worker';
 
-class APngGenerator {
+class APngGenerator extends Event {
   constructor(zip, mimeType, frames) {
+    super();
+
     this.status = 0;
     this.zip = zip;
     this.mimeType = mimeType;
     this.frames = frames;
-    this.event = new Event();
     this.imagesData = [];
     this.delays = [];
   }
@@ -43,7 +42,7 @@ class APngGenerator {
 
     this.status = 1;
 
-    this.event.dispatch("onStart");
+    this.dispatch("start");
 
     this.zip.file(this.frames[0].file).async('base64').then(b64 => {
       let imageBase64 = "data:" + self.mimeType + ';base64,' + b64;
@@ -59,10 +58,10 @@ class APngGenerator {
 
           worker.onmessage = event => {
             if (event.data.progress) {
-              self.event.dispatch('onProgress', [event.data.progress.currentProgress / event.data.progress.totalProgress]);
+              self.dispatch('progress', [event.data.progress.currentProgress / event.data.progress.totalProgress]);
             } else if (event.data.arrayBuffer) {
               self.status = 2;
-              self.event.dispatch('onFinish', [event.data.arrayBuffer]);
+              self.dispatch('finish', [new Blob([event.data.arrayBuffer], {type: 'image/apng'})]);
             }
           };
         });
