@@ -1,7 +1,7 @@
 import Browser from '@/modules/Browser/Browser';
+import DateFormatter from '@/modules/Util/DateFormatter';
 import IllustTool from '@/content_scripts/illust/Illust';
 import Request from '@/modules/Net/Request';
-import DateFormatter from '@/modules/Util/DateFormatter';
 
 class IllustAdapter {
   constructor() {
@@ -32,7 +32,7 @@ class IllustAdapter {
         userName: context.userName,
         userId: context.userId,
         userAcount: context.userAccount,
-        urls: context.urls, // images
+        urls: context.urls, // Difference sizes thumbnail urls
         r: context.xRestrict,
 
         id: context.illustId,
