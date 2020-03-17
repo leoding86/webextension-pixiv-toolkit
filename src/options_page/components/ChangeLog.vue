@@ -38,7 +38,7 @@ export default {
   methods: {
     formatResult(result) {
       let updateList = [];
-      let updates = result.trim().split(/(\r\n{2}|\r{2}|\n{2})/g);
+      let updates = result.trim().split(/(\r\n\r\n|\r\r|\n\n)/g);
 
       updates.forEach(update => {
         update = update.trim();
@@ -48,7 +48,7 @@ export default {
 
           updateList.push({
             version: _update.shift(),
-            list: _update
+            list: _update.filter(i => i.trim().length > 0)
           });
         }
       });
