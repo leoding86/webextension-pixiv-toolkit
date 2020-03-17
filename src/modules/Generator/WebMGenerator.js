@@ -2,7 +2,16 @@ import Event from '@/modules/Event'
 import getImageSize from '@/modules/Util/getImageSize'
 import getCanvasFromDataURI from '@/modules/Util/getCanvasFromDataURI'
 
+/**
+ * @class
+ */
 class WebMGenerator extends Event {
+  /**
+   * @constructor
+   * @param {*} zip
+   * @param {String} mimeType
+   * @param {Array} frames
+   */
   constructor(zip, mimeType, frames) {
     super();
 
@@ -11,46 +20,51 @@ class WebMGenerator extends Event {
     this.frames = frames
     this.zip = zip
     this.encoder
-    this.duration = 0;
-
-    this.frames.forEach(frame => {
-      this.duration += parseInt(frame.delay)
-    })
+    this.repeat = 0;
+    this.currentRepeat = 0;
   }
 
-  appendImagesToWebMFrame(size, currentIndex, currentDuration = 0) {
-    let self = this;
+  /**
+   * @param {Number} repeat
+   */
+  setRepeat(repeat) {
+    this.repeat = this.currentRepeat = parseInt(repeat);
+  }
 
+  /**
+   *
+   * @param {{width: Number, height: Number}} size
+   * @param {Number} [index=0]
+   * @returns {Promise.<void>}
+   */
+  appendImagesToWebMFrame(size, index = 0) {
     return new Promise(resolve => {
-      let index = currentIndex || 0
-
-      if (index < self.frames.length) {
-        self.zip.file(self.frames[index].file).async('base64').then(base64 => {
+      if (index < this.frames.length) {
+        this.zip.file(this.frames[index].file).async('base64').then(base64 => {
           return getCanvasFromDataURI(
-            "data:" + self.mimeType + ";base64," + base64,
+            "data:" + this.mimeType + ";base64," + base64,
             size
           )
         }).then(canvas => {
-          self.encoder.add(canvas, self.frames[index].delay)
+          this.encoder.add(canvas, this.frames[index].delay)
 
-          resolve(self.appendImagesToWebMFrame(size, index + 1, -(-currentDuration - self.frames[index].delay)))
+          this.dispatch('data', [this.frames.length * (this.repeat + 1), this.frames.length * (this.repeat - this.currentRepeat) + index + 1]);
+
+          resolve(this.appendImagesToWebMFrame(size, index + 1))
         })
+      } else if (this.currentRepeat > 0) {
+        this.currentRepeat--;
+
+        resolve(this.appendImagesToWebMFrame(size))
       } else {
-        if ($extension.enableExtend === true &&
-          $extension.browserItems.enableWhenUnderSeconds * 100 > self.duration &&
-          $extension.browserItems.extendDuration &&
-          $extension.browserItems.extendDuration * 1000 > currentDuration
-        ) {
-          index = 0
-
-          resolve(appendImagesToWebMFrame(size, index, -(-currentDuration - self.frames[index].delay)))
-        }
-
         resolve()
       }
     })
   }
 
+  /**
+   * @returns {void}
+   */
   generate() {
     let self = this
 

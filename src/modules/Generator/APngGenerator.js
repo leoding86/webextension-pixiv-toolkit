@@ -3,7 +3,16 @@ import getImageSize from '@/modules/Util/getImageSize';
 import getCanvasFromDataURI from '@/modules/Util/getCanvasFromDataURI';
 import ApngGeneratorWorker from '@/modules/Workers/APngGenerator.worker';
 
+/**
+ * @class
+ */
 class APngGenerator extends Event {
+  /**
+   * @constructor
+   * @param {*} zip
+   * @param {String} mimeType
+   * @param {Array} frames
+   */
   constructor(zip, mimeType, frames) {
     super();
 
@@ -13,30 +22,51 @@ class APngGenerator extends Event {
     this.frames = frames;
     this.imagesData = [];
     this.delays = [];
+    this.repeat = 0;
+    this.currentRepeat = 0;
   }
 
-  getImagesData(size, index = 0) {
-    let self = this;
+  /**
+   * @param {Number} repeat
+   */
+  setRepeat(repeat) {
+    this.repeat = this.currentRepeat = parseInt(repeat);
+  }
 
+  /**
+   * @param {{width: Number, height: Number}} size
+   * @param {Number} [index=0]
+   * @returns {Promise.<void>}
+   */
+  getImagesData(size, index = 0) {
     return new Promise(resolve => {
-      if (index < self.frames.length) {
-        self.zip.file(self.frames[index].file).async('base64').then(b64 => {
+      if (index < this.frames.length) {
+        this.zip.file(this.frames[index].file).async('base64').then(b64 => {
           return getCanvasFromDataURI(
-            "data:" + self.mimeType + ";base64," + b64,
+            "data:" + this.mimeType + ";base64," + b64,
             size
           );
         }).then(canvas => {
-          self.imagesData.push(canvas.getContext('2d').getImageData(0, 0, size.width, size.height).data.buffer);
-          self.delays.push(self.frames[index].delay);
+          this.imagesData.push(canvas.getContext('2d').getImageData(0, 0, size.width, size.height).data.buffer);
+          this.delays.push(this.frames[index].delay);
 
-          resolve(self.getImagesData(size, index + 1));
+          this.dispatch('data', [this.frames.length * (this.repeat + 1), this.frames.length * (this.repeat - this.currentRepeat) + index + 1]);
+
+          resolve(this.getImagesData(size, index + 1));
         });
+      } else if (this.currentRepeat > 0) {
+        this.currentRepeat--;
+
+        resolve(this.getImagesData(size));
       } else {
         resolve();
       }
     });
   }
 
+  /**
+   * @returns {void}
+   */
   generate() {
     let self = this;
 

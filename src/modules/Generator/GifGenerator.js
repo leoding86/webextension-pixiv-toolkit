@@ -2,7 +2,16 @@ import Event from '@/modules/Event'
 import getImageSize from '@/modules/Util/getImageSize'
 import worker from './GifGeneratorWorker'
 
+/**
+ * @class
+ */
 class GifGenerator extends Event {
+  /**
+   * @constructor
+   * @param {*} zip
+   * @param {String} mimeType
+   * @param {Array} frames
+   */
   constructor(zip, mimeType, frames) {
     super();
 
@@ -11,27 +20,40 @@ class GifGenerator extends Event {
     this.frames = frames
     this.gif
     this.zip = zip
+    this.repeat = 0;
+    this.currentRepeat = 0;
   }
 
-  appendImageToGifFrame(currentIndex, currentDuration = 0) {
-    let self = this
+  /**
+   * @param {Number} repeat
+   */
+  setRepeat(repeat) {
+    this.repeat = this.currentRepeat = parseInt(repeat);
+  }
 
+  appendImageToGifFrame(index = 0) {
     return new Promise(resolve => {
-      let index = currentIndex || 0
+      if (index < this.frames.length) {
 
-      if (index < self.frames.length) {
-        self.zip.file(self.frames[index].file).async('base64').then(base64 => {
-          let imageBase64 = "data:" + self.mimeType + ";base64," + base64,
-              image = new Image()
+
+        this.zip.file(this.frames[index].file).async('base64').then(base64 => {
+          let imageBase64 = "data:" + this.mimeType + ";base64," + base64;
+          let image = new Image();
 
           image.src = imageBase64
 
-          self.gif.addFrame(image, {
-            delay: self.frames[index].delay
+          this.gif.addFrame(image, {
+            delay: this.frames[index].delay
           })
 
-          resolve(self.appendImageToGifFrame(index + 1, -(-currentDuration - self.frames[index].delay)))
+          this.dispatch('data', [this.frames.length * (this.repeat + 1), this.frames.length * (this.repeat - this.currentRepeat) + index + 1]);
+
+          resolve(this.appendImageToGifFrame(index + 1))
         })
+      } else if (this.currentRepeat > 0) {
+        this.currentRepeat--;
+
+        resolve(this.appendImageToGifFrame());
       } else {
         resolve()
       }
