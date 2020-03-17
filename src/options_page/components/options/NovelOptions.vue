@@ -62,7 +62,7 @@ export default {
 
   computed: {
     novelRenameFormatPreview() {
-      return this.browserItems.novelRenameFormat
+      return this.browserItems.novelRenameFormat || 'Not set';
     }
   },
 
