@@ -25,12 +25,6 @@ export default Object.assign({}, {
     mangaPagesInChunk: 99,
 
     /**
-     * @version 2.0.2
-     */
-    ugoiraGenerateAndDownload: false,
-    mangaPackAndDownload: false,
-
-    /**
      * @version 2.0.3
      */
     enableExtTakeOverDownloads: false,
@@ -92,19 +86,11 @@ export default Object.assign({}, {
      */
     illustrationRenameFormat: '',
     illustrationImageRenameFormat: '',
-    illustrationDownloadIfReady: false,
 
     /**
      * @since 3.4.3
      */
     visitHistoryType: 'list', // list || grid
-
-    /**
-     * @since 3.4.4
-     * There is a downside when ugoiraDisplayDownloadProgress setting is on, the images on the pages will be
-     * blocked (UI will not been blocked only block images loadings) until the resources has been downloaded.
-     */
-    ugoiraDisplayDownloadProgress: true,
 
     /**
      * @since 3.6
