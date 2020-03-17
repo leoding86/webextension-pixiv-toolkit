@@ -260,34 +260,22 @@ Main.prototype = {
     let version = manifest.version;
 
     browser.storage.local.get(null, function (items) {
-      var updater = new Updater(items);
+      var updater = new Updater(items, defaultSettings);
 
       if (updater.isNewer(version)) {
-        updater.setDefaultSettings(defaultSettings);
+        updater.mergeSettings({
+          version: version,
+          importantNoticeDisplayed: false
+        }).then(() => {
+          /**
+           * Attach a badge with text 'NEW'
+           */
+          browser.browserAction.setBadgeText({
+            text: 'NEW'
+          });
 
-        updater.removeSettings([
-          'metasConfig',
-          'mangaMetasConfig',
-          'mangaImageNamePrefix',
-          'mangaImagesMetasConfig',
-          'showHistoryWhenUpdateCompleted'
-        ]);
-
-        updater.mergeSettings(function () {
-          updater.updateSetting({
-            version: version,
-            importantNoticeDisplayed: false
-          }, function () {
-            /**
-             * Attach a badge with text 'NEW'
-             */
-            browser.browserAction.setBadgeText({
-              text: 'NEW'
-            });
-
-            browser.browserAction.setBadgeBackgroundColor({
-              color: '#FF0000'
-            });
+          browser.browserAction.setBadgeBackgroundColor({
+            color: '#FF0000'
           });
         });
       }
