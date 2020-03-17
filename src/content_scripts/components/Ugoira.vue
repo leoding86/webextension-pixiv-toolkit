@@ -191,6 +191,20 @@ export default {
          */
         let generator = this.tool.makeGenerator(type);
 
+        if (this.browserItems.enableExtend) {
+          if (this.tool.context.illustDuration < this.browserItems.enableWhenUnderSeconds * 1000) {
+            generator.setRepeat(Math.floor(this.browserItems.extendDuration * 1000 / this.tool.context.illustDuration) + 1);
+          }
+        }
+
+        generator.addListener('data', (totalFrames, loadedFrames) => {
+          /**
+           * Update the generator button status
+           */
+          button.status = 2;
+          button.text = `Preparing ${Math.floor(loadedFrames / totalFrames * 100)}%`;
+        });
+
         /**
          * Add the listener to the generator's generating progress event
          */
@@ -217,11 +231,6 @@ export default {
          * Start generate target file
          */
         generator.generate();
-
-        /**
-         * Update the generator button status
-         */
-        button.status = 2;
       } else if (button.status === 1) {
         this.saveFile(blob, type);
       } else if (button.status === 2) {
