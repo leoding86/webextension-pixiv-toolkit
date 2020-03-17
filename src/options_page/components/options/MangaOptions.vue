@@ -29,16 +29,6 @@
 
         <v-list-tile>
           <v-list-tile-content>
-            <v-list-tile-title>{{ tl('setting_pack_and_download') }}</v-list-tile-title>
-            <v-list-tile-sub-title>{{ tl('setting_pack_and_download_desc') }}</v-list-tile-sub-title>
-          </v-list-tile-content>
-          <v-list-tile-action>
-            <v-switch v-model="mangaPackAndDownload"></v-switch>
-          </v-list-tile-action>
-        </v-list-tile>
-
-        <v-list-tile>
-          <v-list-tile-content>
             <v-list-tile-title>Page number start with 1</v-list-tile-title>
             <v-list-tile-sub-title>Page number start with 1 otherwise start with 0</v-list-tile-sub-title>
           </v-list-tile-content>
@@ -95,8 +85,6 @@ export default {
 
       mangaPagesInChunk: 99,
 
-      mangaPackAndDownload: false,
-
       pageNumberStartWithOne: false,
 
       location: ''
@@ -122,12 +110,6 @@ export default {
   },
 
   watch: {
-    mangaPackAndDownload(val) {
-      browser.storage.local.set({
-        mangaPackAndDownload: val
-      });
-    },
-
     pageNumberStartWithOne(val) {
       browser.storage.local.set({
         mangaPageNumberStartWithOne: val
@@ -145,7 +127,6 @@ export default {
     this.mangaRenameFormat = this.browserItems.mangaRenameFormat;
     this.mangaImageRenameFormat = this.browserItems.mangaImageRenameFormat;
     this.mangaPagesInChunk = this.browserItems.mangaPagesInChunk;
-    this.mangaPackAndDownload = this.browserItems.mangaPackAndDownload;
     this.pageNumberStartWithOne = this.browserItems.mangaPageNumberStartWithOne;
 
     this.location = this.browserItems.mangaRelativeLocation;

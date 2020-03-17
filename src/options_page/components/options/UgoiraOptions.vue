@@ -40,15 +40,7 @@
             ></v-switch>
           </v-list-tile-action>
         </v-list-tile>
-        <v-list-tile>
-          <v-list-tile-content>
-            <v-list-tile-title>{{ tl('setting_generate_and_download') }}</v-list-tile-title>
-            <v-list-tile-sub-title>{{ tl('setting_generate_and_download_desc') }}</v-list-tile-sub-title>
-          </v-list-tile-content>
-          <v-list-tile-action>
-            <v-switch v-model="ugoiraGenerateAndDownload"></v-switch>
-          </v-list-tile-action>
-        </v-list-tile>
+
         <v-list-tile @click="showUgoiraExtendDialog()">
           <v-list-tile-content>
             <v-list-tile-title>{{ tl('extend_duration') }}</v-list-tile-title>
@@ -108,8 +100,6 @@ export default {
 
       enablePackUgoiraFramesInfo: true,
 
-      ugoiraGenerateAndDownload: false,
-
       location: ''
     };
   },
@@ -117,7 +107,6 @@ export default {
   beforeMount() {
     this.ugoiraQuanlity = this.browserItems.ugoiraQuanlity || 10;
     this.ugoiraRenameFormat = this.browserItems.ugoiraRenameFormat;
-    this.ugoiraGenerateAndDownload = this.browserItems.ugoiraGenerateAndDownload;
     this.enablePackUgoiraFramesInfo = this.browserItems.enablePackUgoiraFramesInfo;
 
     this.location = this.browserItems.ugoiraRelativeLocation;
@@ -134,12 +123,6 @@ export default {
   },
 
   watch: {
-    ugoiraGenerateAndDownload(val) {
-      browser.storage.local.set({
-        ugoiraGenerateAndDownload: val
-      });
-    },
-
     location(val) {
       browser.storage.local.set({
         ugoiraRelativeLocation: val

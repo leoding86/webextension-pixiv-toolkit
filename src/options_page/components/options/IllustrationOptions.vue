@@ -48,15 +48,6 @@
           </v-list-tile-action>
         </v-list-tile>
 
-        <v-list-tile>
-          <v-list-tile-content>
-            <v-list-tile-title>{{ tl('Download_file_if_everything_is_ready') }}</v-list-tile-title>
-          </v-list-tile-content>
-          <v-list-tile-action>
-            <v-switch v-model="downloadIfReady"></v-switch>
-          </v-list-tile-action>
-        </v-list-tile>
-
         <change-location-setting
           v-model="location"
           :setting-title="tl('_save_illustration_in_relative_location')"
@@ -87,8 +78,6 @@ export default {
 
       imageRenameFormat: "",
 
-      downloadIfReady: false,
-
       keepPageNumber: false,
 
       pageNumberStartWithOne: false,
@@ -116,12 +105,6 @@ export default {
   },
 
   watch: {
-    downloadIfReady(val) {
-      browser.storage.local.set({
-        illustrationDownloadIfReady: val
-      });
-    },
-
     keepPageNumber(val) {
       browser.storage.local.set({
         illustrationKeepPageNumber: val
@@ -142,7 +125,6 @@ export default {
   },
 
   beforeMount() {
-    this.downloadIfReady = this.browserItems.illustrationDownloadIfReady;
     this.keepPageNumber = this.browserItems.illustrationKeepPageNumber;
     this.pageNumberStartWithOne = this.browserItems.illustrationPageNumberStartWithOne;
 
