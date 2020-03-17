@@ -177,16 +177,14 @@ export default {
           downloadStatus: 2
         });
 
-        if (vm.browserItems.mangaPackAndDownload) {
-          vm.updateButtonInfo(buttonInfo, { type: 'success' });
+        vm.updateButtonInfo(buttonInfo, { type: 'success' });
 
-          vm.downloadFile(buttonInfo.blob, vm.getFilename(buttonInfo.chunk), {
-            folder: this.getSubfolder(this.browserItems.mangaRelativeLocation, this.mangaTool.context),
-            statType: 'manga',
-          });
+        vm.downloadFile(buttonInfo.blob, vm.getFilename(buttonInfo.chunk), {
+          folder: this.getSubfolder(this.browserItems.mangaRelativeLocation, this.mangaTool.context),
+          statType: 'manga',
+        });
 
-          vm.saveDownloadRecord({ manga: 1 });
-        }
+        vm.saveDownloadRecord({ manga: 1 });
       }
     },
 

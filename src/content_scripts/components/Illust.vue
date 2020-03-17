@@ -193,18 +193,16 @@ export default {
               downloadStatus: 2
             });
 
-            if (vm.browserItems.illustrationDownloadIfReady) {
-              vm.downloadFile(result.blob, filename, {
-                folder: this.getSubfolder(this.browserItems.illustrationRelativeLocation, this.illustTool.context),
-                statType: 'illust',
-              });
+            vm.downloadFile(result.blob, filename, {
+              folder: this.getSubfolder(this.browserItems.illustrationRelativeLocation, this.illustTool.context),
+              statType: 'illust',
+            });
 
-              this.updateButtonInfo(buttonInfo, {
-                type: 'success'
-              });
+            this.updateButtonInfo(buttonInfo, {
+              type: 'success'
+            });
 
-              this.saveDownloadRecord({ illust: 1 });
-            }
+            this.saveDownloadRecord({ illust: 1 });
           })
         } else {
           this.illustTool.downloadChunk(buttonInfo.chunk, {
