@@ -21,7 +21,7 @@
               v-model="enableWhenUnderSeconds"
               :disabled="!enableExtend"
               @change="onEnableWhenUnderSecondsChangeHandler()"
-              style="max-width: 100px"
+              style="max-width: 110px"
             ></v-select>
           </v-list-tile-action>
         </v-list-tile>
@@ -35,7 +35,7 @@
               v-model="extendDuration"
               :disabled="!enableExtend"
               @change="onExtendDurationChangeHandler()"
-              style="max-width: 100px"
+              style="max-width: 110px"
             ></v-select>
           </v-list-tile-action>
         </v-list-tile>
@@ -55,8 +55,16 @@ export default {
   data() {
     return {
       showDialog: true,
-      secondsItems: [1, 2, 3],
-      extendDurationItems: [3, 4, 5],
+      secondsItems: [
+        { value: 1, text: '1 second' },
+        { value: 2, text: '2 seconds' },
+        { value: 3, text: '3 seconds' }
+      ],
+      extendDurationItems: [
+        { value: 3, text: '3 seconds' },
+        { value: 4, text: '4 seconds' },
+        { value: 5, text: '5 seconds' }
+      ],
       enableExtend: false,
       enableWhenUnderSeconds: 1,
       extendDuration: 3
