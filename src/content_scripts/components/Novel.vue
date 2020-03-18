@@ -76,7 +76,7 @@ export default {
     this.show = true;
   },
 
-  unmounted() {
+  beforeDestroy() {
     browser.runtime.onConnect.removeListener(this.handleConnect)
     this.downloadRecordPort.port.onMessage.removeListener(this.handleDownloadRecord);
   },

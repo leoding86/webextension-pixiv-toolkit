@@ -102,7 +102,7 @@ export default {
   /**
    * In unmounted method remove the listeners that need to be removed
    */
-  unmounted() {
+  beforeDestroy() {
     browser.runtime.onConnect.removeListener(this.handleConnect)
     this.downloadRecordPort.port.onMessage.removeListener(this.handleDownloadRecord);
   },
