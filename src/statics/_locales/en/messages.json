@@ -472,5 +472,11 @@
    },
    "_rename_illustration_image_hint": {
        "message": "Example: {authorId}_{id}_{pageNum}. You can place the deleted part between the two # tags when there is only one image in the illustration."
+   },
+   "_create_a_specified_number_of_download_tasks": {
+        "message": "Create a specified number of downloads"
+   },
+   "_create_a_specified_number_of_download_tasks_when_downloading_illustration_or_manga": {
+       "message": "Create a specified number of downloads when downloading illust or manga"
    }
 }
