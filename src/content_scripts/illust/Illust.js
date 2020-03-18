@@ -1,24 +1,28 @@
-import Retryer from '@/modules/Manager/Retryer';
-import Queue from '@/modules/Util/Queue';
 import Download from '@/modules/Net/Download';
-import formatName from '@/modules/Util/formatName';
+import Downloader from '@/modules/Net/Downloader';
+import Event from '@/modules/Event';
 import MimeType from '@/modules/Util/MimeType';
+import Queue from '@/modules/Queue';
+import Retryer from '@/modules/Manager/Retryer';
+import formatName from '@/modules/Util/formatName';
 
 /**
  * @class IllustTool
- *
+ * @extends {Event}
  * @property context
  * @property chunks
  * @property filename
  * @property zips
  */
-class IllustTool {
+class IllustTool extends Event {
 
   /**
    * @constructor
    * @param {Object} context
    */
   constructor(context) {
+    super();
+
     this.context = context;
     this.chunks = [];
     this.filename;
@@ -29,12 +33,16 @@ class IllustTool {
     splitSize,
     illustrationRenameFormat,
     illustrationImageRenameFormat,
-    pageNumberStartWithOne = false
+    pageNumberStartWithOne = false,
+    illustrationKeepPageNumber = false,
+    processors = 2
   }) {
     this.splitSize = splitSize;
     this.illustrationRenameFormat = illustrationRenameFormat
     this.illustrationImageRenameFormat = illustrationImageRenameFormat;
     this.pageNumberStartWithOne = pageNumberStartWithOne;
+    this.illustrationKeepPageNumber = illustrationKeepPageNumber;
+    this.processors = processors
 
     return this;
   }
@@ -127,25 +135,20 @@ class IllustTool {
 
   /**
    * Download file
-   * @param {string} url
-   * @param {object} [options]
-   * @param {function} [options.onProgress]
-   * @param {function} [options.onRename]
-   * @param {object} [options.extraOptions]
-   * @param {number} [options.extraOptions.pageNum]
-   * @returns {Promise<{data: Uint8Array, type: string, filename: string}>}
+   * @param {String} url
+   * @param {*} [context]
+   * @param {Object} [extraOptions]
+   * @returns {void}
    */
-  downloadFile(url, { onProgress = null, onRename = null, extraOptions = {} }) {
+  downloadFile(url, context, extraOptions) {
     let retryer = new Retryer({ maxTime: 3 });
 
-    return retryer.start(retryer => {
+    retryer.start(() => {
       return new Promise((resolve, reject) => {
         let download = new Download(url, { method: 'GET' });
 
         download.addListener('onprogress', ({ totalLength, loadedLength }) => {
-          if (typeof onProgress === 'function') {
-            onProgress.call(download, { totalLength, loadedLength });
-          }
+          this.dispatch('progress', [{ progress: loadedLength / totalLength }, context])
         });
 
         download.addListener('onerror', error => {
@@ -154,26 +157,23 @@ class IllustTool {
         });
 
         download.addListener('onfinish', blob => {
-          this.context.pageNum = extraOptions.pageNum || 0;
+          let pageNum = extraOptions.pageNum || 0;
 
-          let filename = null;
+          this.context.pageNum = pageNum;
 
-          if (onRename && typeof onRename === 'function') {
-            filename = onRename({
-              extName: MimeType.getExtenstion(download.getResponseHeader('Content-Type'))
-            });
+          let format = null;
+
+          if (this.illustrationKeepPageNumber) {
+            format = this.illustrationImageRenameFormat.replace(/#/g, '');
           } else {
-            filename = formatName(
-              this.illustrationImageRenameFormat,
-              this.context,
-              pageNum
-            ) + '.' + extName;
+            format = this.illustrationImageRenameFormat.replace(/#.*#/g, '');
           }
 
-          resolve({
-            blob: blob,
-            filename: filename
-          });
+          let filename = formatName(format, this.context, pageNum) + '.' + MimeType.getExtenstion(download.getResponseHeader('Content-Type'));
+
+          this.dispatch('download-finish', [{ blob, filename }, context]);
+
+          resolve();
         });
 
         download.download();
@@ -181,65 +181,54 @@ class IllustTool {
     });
   }
 
-  downloadChunk(chunk, listeners) {
-    let self = this;
+  downloadChunk(chunk, context) {
+    let downloader = new Downloader({ processors: this.processors });
     let zip = new JSZip();
-    let queue = new Queue();
-
-    queue.onItemComplete = () => {
-      listeners.onItemComplete(queue);
-    };
-
-    queue.onItemFail = () => {
-      listeners.onItemFail(queue);
-    };
-
-    queue.onDone = () => {
-      zip.generateAsync({
-        type: 'blob',
-      }).then(blob => {
-        listeners.onDone(blob)
-      });
-    }
 
     for (let i = chunk.start; i <= chunk.end; i++) {
-      queue.add({
-        url: self.context.pages[i].urls.original,
-        pageIndex: i
-      });
+      downloader.appendFile(this.context.pages[i].urls.original);
     }
 
-    queue.start(({url, pageIndex}) => {
-      let pageNum = pageIndex - 0 + (self.pageNumberStartWithOne ? 1 : 0);
+    downloader.addListener('progress', progress => {
+      this.dispatch('download-progress', [progress, context]);
+    });
 
-      return this.downloadFile(url, {
-        onRename({extName}) {
-          return formatName(
-            self.illustrationImageRenameFormat.replace(/#/g, ''),
-            self.context,
-            pageNum
-          ) + '.' + extName;
-        },
+    downloader.addListener('item-error', error => {
+      this.dispatch('download-error', error);
+    });
 
-        extraOptions: {
-          pageNum
-        }
-      }).then(result => {
-        /**
-         * Fix jszip date issue which jszip will save the UTC time as the local time to files in zip
-         */
-        let now = new Date();
-        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+    downloader.addListener('item-finish', ({blob, index, download}) => {
+      let pageNum = chunk.start + index + (this.pageNumberStartWithOne ? 1 : 0);
+      let filename = null;
 
-        zip.file(result.filename, result.blob, {
-          date: now
-        });
+      this.context.pageNum = pageNum;
 
-        return Promise.resolve();
-      }).catch(error => {
-        console || console.error(error);
+      filename = formatName(
+        this.illustrationImageRenameFormat.replace(/#/g, ''),
+        this.context,
+        pageNum
+      );
+
+      filename += '.' + MimeType.getExtenstion(download.getResponseHeader('Content-Type'))
+
+      /**
+       * Fix jszip date issue which jszip will save the UTC time as the local time to files in zip
+       */
+      let now = new Date();
+      now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+
+      zip.file(filename, blob, {
+        date: now
       });
     });
+
+    downloader.addListener('finish', () => {
+      zip.generateAsync({ type: 'blob' }).then(blob => {
+        this.dispatch('download-finish', [{blob, filename: this.getFilename(chunk)}, context]);
+      });
+    });
+
+    downloader.download();
   }
 }
 

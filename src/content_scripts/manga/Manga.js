@@ -1,11 +1,14 @@
-import Retryer from '@/modules/Manager/Retryer';
 import Download from '@/modules/Net/Download';
-import Queue from '@/modules/Util/Queue';
-import formatName from '@/modules/Util/formatName';
+import Downloader from '@/modules/Net/Downloader'
+import Event from '@/modules/Event';
 import MimeType from '@/modules/Util/MimeType';
+import Queue from '@/modules/Queue';
+import Retryer from '@/modules/Manager/Retryer';
+import formatName from '@/modules/Util/formatName';
 
-class MangaTool {
+class MangaTool extends Event {
   constructor(context) {
+    super();
     this.context = context;
     this.chunks = [];
     this.filename;
@@ -16,12 +19,14 @@ class MangaTool {
     splitSize,
     mangaRenameFormat,
     mangaImageRenameFormat,
-    pageNumberStartWithOne
+    pageNumberStartWithOne,
+    processors
   }) {
     this.splitSize = splitSize;
     this.mangaRenameFormat = mangaRenameFormat;
     this.mangaImageRenameFormat = mangaImageRenameFormat;
     this.pageNumberStartWithOne = pageNumberStartWithOne;
+    this.processors = processors
 
     return this;
   }
@@ -94,73 +99,55 @@ class MangaTool {
     return formatName(this.mangaRenameFormat, this.context, this.context.illustId) + '_' + this.getPageRange(chunk) + '.zip';
   }
 
-  downloadChunk(chunk, listeners) {
-    let self = this;
+  /**
+   * @param {{start: Number, end: Number}} chunk
+   * @param {*} context The context used pass to downloads events
+   */
+  downloadChunk(chunk, context) {
     let zip = new JSZip();
-    let queue = new Queue();
-
-    queue.onItemComplete = () => {
-      listeners.onItemComplete(queue);
-    };
-
-    queue.onItemFail = () => {
-      listeners.onItemFail(queue);
-    };
-
-    queue.onDone = () => {
-      zip.generateAsync({
-        type: 'blob',
-      }).then(blob => {
-        listeners.onDone(blob)
-      });
-    }
+    let downloader = new Downloader({ processors: this.processors });
 
     for (let i = chunk.start; i <= chunk.end; i++) {
-      queue.add({
-        url: self.context.pages[i].urls.original,
-        pageIndex: i
-      });
+      downloader.appendFile(this.context.pages[i].urls.original);
     }
 
-    queue.start(({ url, pageIndex }) => {
-      let retryer = new Retryer({ maxTime: 3 });
+    downloader.addListener('progress', progress => {
+      this.dispatch('download-progress', [progress, context]);
+    });
 
-      return retryer.start(retryer => {
-        return new Promise(resolve => {
-          let download = new Download(url, {
-            method: 'GET'
-          });
+    downloader.addListener('item-error', error => {
+      this.dispatch('download-error', error);
+    });
 
-          download.addListener('onerror', error => {
-            reject();
-          });
+    downloader.addListener('item-finish', ({blob, index, download}) => {
+      let pageNum = chunk.start + index + (this.pageNumberStartWithOne ? 1 : 0);
 
-          download.addListener('onfinish', blob => {
-            let pageNum = pageIndex - 0 + (self.pageNumberStartWithOne ? 1 : 0);
+      this.context.pageNum = pageNum;
 
-            self.context.pageNum = pageNum;
+      let filename = formatName(
+        this.mangaImageRenameFormat,
+        this.context,
+        pageNum
+      ) + '.' + MimeType.getExtenstion(download.getResponseHeader('Content-Type'));
 
-            let filename = formatName(
-              self.mangaImageRenameFormat,
-              self.context,
-              pageNum
-            ) + '.' + MimeType.getExtenstion(download.getResponseHeader('Content-Type'));
+      /**
+       * Fix jszip date issue which jszip will save the UTC time as the local time to files in zip
+       */
+      let now = new Date();
+      now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
 
-            /**
-             * Fix jszip date issue which jszip will save the UTC time as the local time to files in zip
-             */
-            let now = new Date();
-            now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-
-            zip.file(filename, blob, {
-              date: now
-            });
-
-            resolve();
-          });
-        });
+      zip.file(filename, blob, {
+        date: now
       });
     });
+
+    downloader.addListener('finish', () => {
+      zip.generateAsync({ type: 'blob' }).then(blob => {
+        this.dispatch('download-finish', [blob, context]);
+      });
+    });
+
+    downloader.download();
   }
 }
 

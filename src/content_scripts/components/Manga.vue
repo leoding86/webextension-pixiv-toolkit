@@ -15,6 +15,7 @@ import Button from '@/content_scripts/components/Button'
 import formatName from '@/modules/Util/formatName'
 import downloadFileMixin from '@/content_scripts/mixins/downloadFileMixin'
 import DownloadRecordPort from '@/modules/Ports/DownloadRecordPort/RendererPort'
+import MangaTool from '@/content_scripts/manga/Manga'
 
 export default {
   mixins: [
@@ -26,7 +27,7 @@ export default {
   },
 
   props: {
-    tool: Object,
+    tool: MangaTool,
   },
 
   data() {
@@ -58,7 +59,7 @@ export default {
     let vm = this,
         buttonsInfo = {}
 
-    this.mangaTool = this.tool
+    this.mangaTool = this.tool;
 
     /**
      * @var {DownloadRecordPort}
@@ -73,7 +74,8 @@ export default {
       splitSize: this.browserItems.mangaPagesInChunk,
       mangaRenameFormat: this.browserItems.mangaRenameFormat,
       mangaImageRenameFormat: this.browserItems.mangaImageRenameFormat,
-      pageNumberStartWithOne: this.browserItems.mangaPageNumberStartWithOne
+      pageNumberStartWithOne: this.browserItems.mangaPageNumberStartWithOne,
+      processors: parseInt(this.browserItems.downloadTasksWhenDownloadingImages)
     }).init()
 
     this.chunks = this.mangaTool.chunks
@@ -81,7 +83,7 @@ export default {
     this.chunks.forEach((chunk, i) => {
       buttonsInfo[i] = {
         index: i,
-        text: vm.getChunkTitle(chunk) + (vm.isSaved ? ' ✔️' : ''),
+        text: vm.getChunkTitle(chunk, { singular: 'DL page', plural: 'DL pages' }) + (vm.isSaved ? ' ✔️' : ''),
         filename: vm.mangaTool.getFilename(chunk),
         downloadStatus: 0,
         chunk: chunk,
@@ -92,14 +94,23 @@ export default {
 
     this.buttonsInfo = buttonsInfo
 
+    this.tool.addListener('download-progress', this.downloadProgressEventHandle);
+
+    this.tool.addListener('download-error', this.downloadErrorEventHandle);
+
+    this.tool.addListener('download-finish', this.downloadFinishEventHandle);
+
     browser.runtime.onConnect.addListener(this.handleConnect);
 
     this.show = true
   },
 
-  unmounted() {
+  beforeDestroy() {
     browser.runtime.onConnect.removeListener(this.handleConnect)
     this.downloadRecordPort.port.onMessage.removeListener(this.handleDownloadRecord);
+    this.tool.removeListener('download-progress', this.downloadProgressEventHandle);
+    this.tool.removeListener('download-error', this.downloadErrorEventHandle);
+    this.tool.removeListener('download-finish', this.downloadFinishEventHandle);
   },
 
   methods: {
@@ -120,8 +131,12 @@ export default {
       return true;
     },
 
-    getChunkTitle(chunk) {
-      return 'DL pages ' + (chunk.start - 0 + 1) + '-' + (chunk.end - 0 + 1);
+    getChunkTitle(chunk, { singular, plural }) {
+      if (chunk.start === chunk.end) {
+        return singular + ' ' + (chunk.start + 1)
+      } else {
+        return plural + ' ' + (chunk.start - 0 + 1) + '-' + (chunk.end - 0 + 1);
+      }
     },
 
     updateButtonInfo(buttonInfo, data) {
@@ -133,16 +148,10 @@ export default {
         return;
       }
 
-      let vm = this
-
       if (buttonInfo.downloadStatus === 0) {
-        buttonInfo.downloadStatus = 1
+        buttonInfo.downloadStatus = 1;
 
-        this.mangaTool.downloadChunk(buttonInfo.chunk, {
-          onItemComplete: this.updateProgress(buttonInfo),
-          onItemFail: this.updateProgress(buttonInfo),
-          onDone: this.onDone(buttonInfo)
-        })
+        this.mangaTool.downloadChunk(buttonInfo.chunk, buttonInfo);
       } else if (buttonInfo.downloadStatus === 2) {
         this.updateButtonInfo(buttonInfo, { type: 'success' });
 
@@ -155,37 +164,33 @@ export default {
       }
     },
 
-    updateProgress(buttonInfo) {
-      let vm = this
-
-      return queue => {
-        let text = 'C:' + queue.complete + ' / F:' + queue.fail + ' / T:' + queue.total
-
-        this.updateButtonInfo(buttonInfo, { text: text });
-      }
+    downloadProgressEventHandle({ progress, failCount}, buttonInfo) {
+      this.updateButtonInfo(buttonInfo, {
+        text: `Downloading ${Math.round(progress * 100)}%` + (failCount > 0 ? ` (F:${failCount})` : '')
+      });
     },
 
-    onDone(buttonInfo) {
-      let vm = this
+    downloadErrorEventHandle() {
+      //
+    },
 
-      return blob => {
-        let text = 'Save pages ' + (buttonInfo.chunk.start - 0 + 1) + '-' + (buttonInfo.chunk.end - 0 + 1)
+    downloadFinishEventHandle(blob, buttonInfo) {
+      let text = this.getChunkTitle(buttonInfo.chunk, { singular: 'Save page', plural: 'Save pages' })
 
-        vm.updateButtonInfo(buttonInfo, {
-          text: text,
-          blob: blob,
-          downloadStatus: 2
-        });
+      this.updateButtonInfo(buttonInfo, {
+        text: text,
+        blob: blob,
+        downloadStatus: 2
+      });
 
-        vm.updateButtonInfo(buttonInfo, { type: 'success' });
+      this.updateButtonInfo(buttonInfo, { type: 'success' });
 
-        vm.downloadFile(buttonInfo.blob, vm.getFilename(buttonInfo.chunk), {
-          folder: this.getSubfolder(this.browserItems.mangaRelativeLocation, this.mangaTool.context),
-          statType: 'manga',
-        });
+      this.downloadFile(buttonInfo.blob, this.getFilename(buttonInfo.chunk), {
+        folder: this.getSubfolder(this.browserItems.mangaRelativeLocation, this.mangaTool.context),
+        statType: 'manga',
+      });
 
-        vm.saveDownloadRecord({ manga: 1 });
-      }
+      this.saveDownloadRecord({ manga: 1 });
     },
 
     getFilename(chunk) {
