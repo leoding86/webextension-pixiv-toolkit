@@ -19,7 +19,7 @@ class Updater {
 
     defaultSettingKeys.forEach(key => {
       if (undefined === this.currentSettings[key]) {
-        this.currentSettings[key] = defaultSettings[key];
+        this.currentSettings[key] = this.defaultSettings[key];
       }
     });
 
