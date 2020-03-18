@@ -6,6 +6,21 @@
       <v-list two-line>
         <v-list-tile>
           <v-list-tile-content>
+            <v-list-tile-title>{{ tl('_create_a_specified_number_of_download_tasks') }}</v-list-tile-title>
+            <v-list-tile-sub-title>{{ tl('_create_a_specified_number_of_download_tasks_when_downloading_illustration_or_manga') }}</v-list-tile-sub-title>
+          </v-list-tile-content>
+          <v-list-tile-action>
+            <v-select
+              :items="[2, 3, 4, 5]"
+              v-model="downloadTasksWhenDownloadingImages"
+              type="value"
+              style="width:100px;"
+            ></v-select>
+          </v-list-tile-action>
+        </v-list-tile>
+
+        <v-list-tile>
+          <v-list-tile-content>
             <v-list-tile-title>{{ tl('_ask_whether_to_download_the_work_may_has_been_downloaded') }}</v-list-tile-title>
           </v-list-tile-content>
           <v-list-tile-action>
@@ -82,9 +97,7 @@ export default {
 
       downloadSaveAs: false,
 
-      accessTechorusCdnKey: 'accessTechorusCdn',
-
-      accessTechorusCdnPermissions: { origins: ["*://*.techorus-cdn.com/*"] }
+      downloadTasksWhenDownloadingImages: 3
     };
   },
 
@@ -105,6 +118,18 @@ export default {
       browser.storage.local.set({
         askDownloadSavedWork: val
       });
+    },
+
+    downloadTasksWhenDownloadingImages(val, oldVal) {
+      val = parseInt(val);
+
+      if (val < 2 || val > 5) {
+        this.downloadTasksWhenDownloadingImages = (oldVal < 2 || oldVal > 5) ? 3 : oldVal;
+      }
+
+      browser.storage.local.set({
+        downloadTasksWhenDownloadingImages: val
+      });
     }
   },
 
@@ -114,6 +139,8 @@ export default {
     this.enableExtTakeOverDownloads = !!this.browserItems.enableExtTakeOverDownloads;
 
     this.downloadSaveAs = !!this.browserItems.downloadSaveAs;
+
+    this.downloadTasksWhenDownloadingImages = this.browserItems.downloadTasksWhenDownloadingImages;
   },
 
   methods: {
