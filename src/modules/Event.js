@@ -45,6 +45,10 @@ class Event {
     }
   }
 
+  removeListener(eventName, listener) {
+    this.removeEventListener(eventName, listener);
+  }
+
   removeEventListeners(eventName) {
     this.events[eventName] = []
   }
