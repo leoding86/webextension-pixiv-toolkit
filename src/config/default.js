@@ -130,5 +130,10 @@ export default Object.assign({}, {
 
     mangaRelativeLocation: '',
 
-    novelRelativeLocation: ''
+    novelRelativeLocation: '',
+
+    /**
+     * @since 4.0.0
+     */
+    downloadTasksWhenDownloadingImages: 3
   });
