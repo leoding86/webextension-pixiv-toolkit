@@ -6,6 +6,7 @@ function Queue() {
   this.total = 0;
   this.onItemComplete;
   this.onItemFail;
+  this.onDone;
   this.stopQueue = false;
   this.processors = 1;
   this.active = 0;
@@ -43,6 +44,8 @@ Queue.prototype = {
     let item;
 
     if (item = this.current()) {
+      this.active++;
+
       handle(item).then(() => {
         this.complete++;
         if (this.onItemComplete) {
@@ -60,16 +63,16 @@ Queue.prototype = {
           return;
         }
 
-        if (this.next() !== false) {
-          this.start(handle);
-        } else if (this.total === (this.complete + this.fail)) {
+        if (this.total === (this.complete + this.fail)) {
           typeof this.onDone === 'function' && this.onDone.call(this);
+        } else if (this.next()) {
+          this.start(handle);
         }
       });
-    }
 
-    if (this.next() !== false) {
-      this.start(handle);
+      if (this.active < this.processors && this.next()) {
+        this.start(handle);
+      }
     }
   },
 
