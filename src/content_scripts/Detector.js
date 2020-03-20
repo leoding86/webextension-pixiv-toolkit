@@ -1,9 +1,9 @@
-import UgoiraAdapter from './UgoiraAdapter';
-import MangaAdapter from './MangaAdapter';
 import IllustAdapter from './IllustAdapter'
+import InvalidPageError from '@/content_scripts/errors/InvalidPageError';
+import MangaAdapter from './MangaAdapter';
 import NovelAdapter from './NovelAdapter';
 import Request from '@/modules/Net/Request';
-import InvalidPageError from '@/content_scripts/errors/InvalidPageError';
+import UgoiraAdapter from './UgoiraAdapter';
 
 class Detector {
 
@@ -162,7 +162,7 @@ class Detector {
         return;
       }
 
-      this.request = new Request('GET', self.getNovelUrl(novelId));
+      this.request = new Request(self.getNovelUrl(novelId), { method: 'GET' });
 
       this.request.addExclusiveListener('onload', data => {
         let json = JSON.parse(String.fromCharCode.apply(null, data));
