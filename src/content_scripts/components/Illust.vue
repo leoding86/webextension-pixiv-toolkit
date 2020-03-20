@@ -203,7 +203,7 @@ export default {
     },
 
     downloadFinishEventHandle({ blob, filename }, buttonInfo) {
-      let text = this.getChunkTitle(buttonInfo, { singular: 'Save page', plural: 'Save pages'})
+      let text = this.getChunkTitle(buttonInfo.chunk, { singular: 'Save page', plural: 'Save pages'})
 
       this.updateButtonInfo(buttonInfo, {
         text: buttonInfo.isSingle ? 'Save image' : text,
