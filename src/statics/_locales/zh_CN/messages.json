@@ -474,9 +474,9 @@
        "message": "例子：{authorId}_{id}_{pageNum}。你可以将当图集只有一张图片时想要移除的部分放在两个#标签之间。"
    },
    "_create_a_specified_number_of_download_tasks": {
-        "message": "创建指定数量的下载任务"
+        "message": "下载请求数"
    },
    "_create_a_specified_number_of_download_tasks_when_downloading_illustration_or_manga": {
-       "message": "在下载插画或漫画时创建指定数量的下载任务"
+       "message": "在下载插画或漫画时同时下载的数量"
    }
 }
