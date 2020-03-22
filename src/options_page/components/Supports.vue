@@ -29,7 +29,7 @@
       depressed
       v-if="showPatreon" class="support-btn" @click="openInNewTab('https://www.patreon.com/leoding')">
       <img src="../assets/patreon.png">
-      <span class="button-text" v-show="largeWindow">{{ tl('Become_a_patron') }} !</span>
+      <span class="button-text" v-show="largeWindow">{{ tl('_support_me') }}</span>
       <v-icon right>open_in_new</v-icon>
     </v-btn>
 
@@ -74,7 +74,7 @@ export default {
 
     showPatreon: {
       type: Boolean,
-      default: false
+      default: true
     }
   },
 
