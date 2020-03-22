@@ -185,7 +185,7 @@ export default {
        */
       let button = this.generatorButtons[type];
 
-      if (button.status === 0 || buttons.status === 4) {
+      if (button.status === 0 || button.status === 4) {
         /**
          * Create the generator with the type argument
          */
@@ -221,8 +221,9 @@ export default {
            * Update status, text and style type
            */
           button.status = 1;
-          button.text = 'Save GIF';
+          button.text = 'Save ' + type.toUpperCase();
           button.type = 'success';
+          button.blob = blob;
 
           this.saveFile(blob, type);
         });
@@ -232,7 +233,7 @@ export default {
          */
         generator.generate();
       } else if (button.status === 1) {
-        this.saveFile(blob, type);
+        this.saveFile(button.blob, type);
       } else if (button.status === 2) {
         alert('Generating, please wait.');
       }
