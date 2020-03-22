@@ -1,3 +1,9 @@
+v4.0.0-2020031815
+Add "Number of download requests" setting for downloading multiple images at same time;
+Optimize downloads of downloading manga and illustration;
+Refactor some modules;
+Minor fixes.
+
 v3.10.1-2020030411
 Fix downloading issue when using Firefox.
 
