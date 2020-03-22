@@ -165,7 +165,7 @@
       "message": "Number of images contained in each chunk"
    },
    "number_of_pages_in_each_chunk_desc": {
-      "message": "Reduce this number if browser is crushing during downloading"
+      "message": "Reduce this number if browser is crashing during downloading"
    },
    "download_novel": {
      "message": "Download novel"
@@ -176,8 +176,8 @@
    "give_5_stars": {
      "message": "Give 5 stars"
    },
-   "Become_a_patron": {
-     "message": "Become a patron"
+   "_support_me": {
+     "message": "Support me"
    },
    "Change_History": {
      "message": "Change History"

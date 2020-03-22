@@ -176,8 +176,8 @@
    "give_5_stars": {
      "message": "5星好评"
    },
-   "Become_a_patron": {
-     "message": "成为赞助者"
+   "_support_me": {
+     "message": "请支持我"
    },
    "Change_History": {
      "message": "更新历史"
