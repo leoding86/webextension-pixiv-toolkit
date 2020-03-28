@@ -59,10 +59,10 @@ export default {
     loadHistory () {
       return new Promise(resolve => {
         let language = browser.i18n.getUILanguage();
-        let history = '';
+        let history = 'en-US';
 
-        if (histories.indexOf(history) < 0) {
-          history = 'en-US';
+        if (histories.indexOf(language) > -1) {
+          history = language;
         }
 
         let xhr = new XMLHttpRequest();
