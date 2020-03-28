@@ -1,4 +1,5 @@
 import Event from '@/modules/Event';
+import { arraybuffer } from '@/statics/lib/jszip/jszip';
 
 class Request extends Event {
   /**
@@ -14,7 +15,8 @@ class Request extends Event {
     this.response = null;
     this.responseContentLength = null;
     this.responseLoadedLength = 0;
-    this.responseData = [];
+    this.responseData = null;
+    this.responseType = 'arrayBuffer';
 
     if (AbortController) {
       this.fetchAbortController = new AbortController();
@@ -37,11 +39,27 @@ class Request extends Event {
     setImmediate(() => {
       reader.read().then(({ done, value }) => {
         if (done) {
-          this.dispatch('onload', [new Uint8Array(this.responseData)]);
+          this.dispatch('onload', [this.responseType === 'arrayBuffer' ? new Uint8Array(this.responseData) : this.responseData]);
         } else {
-          value.forEach(char => {
-            this.responseData.push(char);
-          });
+          if (this.responseType === 'plain') {
+            let index = 0;
+
+            while (true) {
+              let arrayBuffer = value.slice(index, index + 10000);
+
+              index += 10000;
+
+              if (arrayBuffer.length > 0) {
+                this.responseData += String.fromCharCode.apply(null, arrayBuffer);
+              } else {
+                break;
+              }
+            }
+          } else if (this.responseType === 'arrayBuffer') {
+            value.forEach(char => {
+              this.responseData.push(char);
+            });
+          }
 
           this.responseLoadedLength += value.length;
 
@@ -71,6 +89,15 @@ class Request extends Event {
 
       if (contentLength) {
         this.responseContentLength = parseInt(contentLength);
+      }
+
+      switch (this.responseType) {
+        case 'plain':
+          this.responseData = '';
+          break;
+        case 'arrayBuffer':
+        default:
+          this.responseData = [];
       }
 
       this.readData(this.response.body.getReader());
