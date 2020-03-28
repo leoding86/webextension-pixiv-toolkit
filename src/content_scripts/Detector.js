@@ -163,9 +163,10 @@ class Detector {
       }
 
       this.request = new Request(self.getNovelUrl(novelId), { method: 'GET' });
+      this.request.responseType = 'plain';
 
       this.request.addExclusiveListener('onload', data => {
-        let json = JSON.parse(String.fromCharCode.apply(null, data));
+        let json = JSON.parse(data);
 
         if (json && json.body) {
           self.contextData = json.body;
