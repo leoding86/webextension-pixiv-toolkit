@@ -13,11 +13,14 @@ A clear and concise description of what the bug is.
 **Expected behavior**
 A clear and concise description of what you expected to happen.
 
+**Example work from Pixiv**
+If applicable, add work url to help me to reproduce the problem.
+
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
 
 **Browser and Version (please complete the following information):**
- - Browser [e.g. chrome, safari]
+ - e.g. chrome, edge，firefox
 
 **Settings of extension**
 You can export the settings of extension in setting page.
