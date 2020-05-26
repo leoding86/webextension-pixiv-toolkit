@@ -1,8 +1,8 @@
-import Vue from 'vue'
 import App from './App'
-import router from './router'
 import Browser from '@/modules/Browser/Browser'
 import RouterMixin from '@/mixins/RouterMixin'
+import Vue from 'vue'
+import router from './router'
 
 Vue.config.productionTip = false;
 Vue.mixin(RouterMixin);
@@ -57,8 +57,7 @@ try {
           browser.permissions.getAll(permissions => {
             let settings = {};
 
-            settings.enableExtTakeOverDownloads = permissions.permissions.indexOf('downloads') > -1
-            settings.accessTechorusCdn = permissions.origins.indexOf('*://*.techorus-cdn/*') > -1;
+            settings.enableExtTakeOverDownloads = permissions.permissions.indexOf('downloads') > -1;
 
             browser.storage.local.set(settings);
           });
