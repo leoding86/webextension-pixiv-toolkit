@@ -49,6 +49,18 @@
 
         <v-list-tile>
           <v-list-tile-content>
+            <v-list-tile-title>{{ tl('_recovery_history') }} ({{ tl('_total_backup') }}: {{ historyBackupCount }})</v-list-tile-title>
+          </v-list-tile-content>
+          <v-list-tile-action>
+            <v-btn
+              depressed
+              @click="recoveryHistory"
+            >{{ tl('_recovery') }}<span v-if="recoveryTotal > 0"> ({{ recoveryCount }} / {{ recoveryTotal }})</span></v-btn>
+          </v-list-tile-action>
+        </v-list-tile>
+
+        <v-list-tile>
+          <v-list-tile-content>
             <v-list-tile-title>{{ tl('clear_history_data') }}</v-list-tile-title>
             <v-list-tile-sub-title>{{ tl('clear_history_data_cannot_be_reversed') }}</v-list-tile-sub-title>
           </v-list-tile-content>
@@ -81,7 +93,7 @@
 <script>
 import SuperMixin from "@/mixins/SuperMixin";
 import IllustHistory from "@/repositories/IllustHistory";
-import importIllustHistoryWorker from "worker-loader?inline=true,fallback=false!@/options_page/workers/importIllustHistoryWorker.js"
+import importIllustHistoryWorker from "worker-loader?inline=true,fallback=false!@/options_page/workers/importIllustHistoryWorker.js";
 
 export default {
   mixins: [SuperMixin],
@@ -94,7 +106,9 @@ export default {
       importing: false,
       exporting: false,
       importTotal: 0,
-      importedCount: 0
+      importedCount: 0,
+      recoveryTotal: 0,
+      recoveryCount: 0,
     };
   },
 
@@ -103,6 +117,12 @@ export default {
     this.notSaveNSFWWorkInHistory = this.browserItems.notSaveNSFWWorkInHistory;
 
     this.illustHistory = new IllustHistory();
+  },
+
+  computed: {
+    historyBackupCount() {
+      return this.browserItems.historyBackup ? this.browserItems.historyBackup.length : 0;
+    }
   },
 
   watch: {
@@ -210,9 +230,40 @@ export default {
         fileReader.readAsText(files[0])
       })
 
-      if (window.confirm('Import history data will take a long time, after import completed, it will take a long time to rebuild indexes (based on the data size). The existing data will not be overwritten. Are you sure? ')) {
+      if (window.confirm(this.tl('_import_history_will_take_some_time_determine_by_how_many_history_need_to_be_imported_are_you_sure'))) {
         input.click()
       }
+    },
+
+    recoveryHistory() {
+      if (!window.confirm(this.tl('_recovery_history_will_take_some_time_determine_by_how_many_history_need_to_be_recovery_are_you_sure'))) {
+        return;
+      }
+
+      let items = this.browserItems.historyBackup;
+
+      this.recoveryTotal = items.length
+
+      let worker = new importIllustHistoryWorker();
+
+      worker.onmessage = e => {
+        this.recoveryCount = e.data.recoveryCount
+
+        if (e.data.imported) {
+          this.recoveryCount = items.length
+
+          this.recoveryTotal = 0 // disable displaying import progress
+
+          setImmediate(() => {
+            this.importing = false
+            alert('Recovery complete.')
+          });
+        }
+      }
+
+      worker.postMessage({
+        items: items
+      });
     }
   }
 };
