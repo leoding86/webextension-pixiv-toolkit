@@ -1,11 +1,11 @@
-import { Updater } from '@/modules/Util';
 import Browser from '@/modules/Browser/Browser';
-import actions from '@/background/actions';
-import IllustHistoryPort from '@/modules/Ports/IllustHistoryPort/BackgroundPort';
 import DownloadRecordPort from '@/modules/Ports/DownloadRecordPort/BackgroundPort';
+import IllustHistoryPort from '@/modules/Ports/IllustHistoryPort/BackgroundPort';
+import { Updater } from '@/modules/Util';
+import actions from '@/background/actions';
 import defaultSettings from '@/config/default';
 
-const browser = Browser.getBrowser();
+const browser = window.browser = Browser.getBrowser();
 
 function Main() {
   // constructor
