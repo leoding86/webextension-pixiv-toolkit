@@ -127,6 +127,7 @@ import IllustHistory from '@/repositories/IllustHistory'
 import CacheableImage from '@@/components/CacheableImage';
 import Supports from '@@/components/Supports';
 import SuperMixin from '@/mixins/SuperMixin';
+import IllustHistoryPort from '@/modules/Ports/IllustHistoryPort/RendererPort';
 
 export default {
   mixins: [
@@ -168,6 +169,8 @@ export default {
 
     this.loading = true;
     this.illustHistory = new IllustHistory();
+
+    this.illustHistoryPort = IllustHistoryPort.getInstance();
 
     /**
      * Init some data
@@ -272,12 +275,16 @@ export default {
     deleteIllust() {
       this.confirmDialog = false
 
-      let vm = this
+      this.illustHistoryPort.deleteIllustHistory(this.illustDeleteReady);
+      this.illusts.splice(this.illusts.indexOf(this.illustDeleteReady), 1);
+      this.total--;
 
-      this.illustHistory.deleteIllust(this.illustDeleteReady).then(() => {
-        vm.illusts.splice(vm.illusts.indexOf(this.illustDeleteReady), 1)
-        vm.total--
-      })
+      // let vm = this
+
+      // this.illustHistory.deleteIllust(this.illustDeleteReady).then(() => {
+      //   vm.illusts.splice(vm.illusts.indexOf(this.illustDeleteReady), 1)
+      //   vm.total--
+      // })
     },
 
     /**

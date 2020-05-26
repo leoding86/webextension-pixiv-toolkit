@@ -127,6 +127,7 @@ import CacheableImage from '@@/components/CacheableImage';
 import Supports from '@@/components/Supports';
 import SuperMixin from '@/mixins/SuperMixin';
 import RouterMixin from '@/mixins/RouterMixin';
+import IllustHistoryPort from '@/modules/Ports/IllustHistoryPort/RendererPort';
 
 export default {
   mixins: [
@@ -153,7 +154,8 @@ export default {
       illustDeleteReady: null,
       searchQuery: '',
       searchTimeout: null,
-      enableSaveVisitHistory: true
+      enableSaveVisitHistory: true,
+      unlimitedStoragePermission: null
     };
   },
 
@@ -169,10 +171,13 @@ export default {
 
     this.illustHistory = new IllustHistory();
 
+    this.illustHistoryPort = IllustHistoryPort.getInstance();
+
     /**
      * Init some data
      */
     this.enableSaveVisitHistory = this.browserItems.enableSaveVisitHistory;
+    this.unlimitedStoragePermission = this.browserItems.unlimitedStoragePermission;
 
     /**
      * Get general information
@@ -331,12 +336,16 @@ export default {
     deleteIllust() {
       this.confirmDialog = false
 
-      let vm = this
+      this.illustHistoryPort.deleteIllustHistory(this.illustDeleteReady);
+      this.illusts.splice(this.illusts.indexOf(this.illustDeleteReady), 1);
+      this.total--;
 
-      this.illustHistory.deleteIllust(this.illustDeleteReady).then(() => {
-        vm.illusts.splice(vm.illusts.indexOf(this.illustDeleteReady), 1)
-        vm.total--
-      })
+      // let vm = this
+
+      // this.illustHistory.deleteIllust(this.illustDeleteReady).then(() => {
+      //   vm.illusts.splice(vm.illusts.indexOf(this.illustDeleteReady), 1)
+      //   vm.total--
+      // })
     },
 
     /**
