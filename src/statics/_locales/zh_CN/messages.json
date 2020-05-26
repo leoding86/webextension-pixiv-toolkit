@@ -354,7 +354,7 @@
        "message": "当目标页面被加载完成时，自动显示下载面板"
    },
    "Illust_History": {
-       "message": "浏览记录"
+       "message": "历史记录"
    },
    "Illustration": {
        "message": "绘画"
@@ -478,5 +478,20 @@
    },
    "_create_a_specified_number_of_download_tasks_when_downloading_illustration_or_manga": {
        "message": "在下载插画或漫画时同时下载的数量"
+   },
+   "_recovery": {
+       "message": "恢复"
+   },
+   "_recovery_history": {
+       "message": "恢复历史记录"
+   },
+   "_total_backup": {
+       "message": "总数"
+   },
+   "_recovery_history_will_take_some_time_determine_by_how_many_history_need_to_be_recovery_are_you_sure": {
+       "message": "恢复历史记录会花费一些时间，具体时间取决于需要恢复的历史记录的总量？"
+   },
+   "_import_history_will_take_some_time_determine_by_how_many_history_need_to_be_imported_are_you_sure": {
+       "message": "导入历史记录会花费一些时间，具体时间取决于需要恢复的历史记录的总量？"
    }
 }
