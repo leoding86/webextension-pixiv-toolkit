@@ -24,7 +24,7 @@ export default class BackgroundPort extends IllustHistoryPort {
   }
 
   saveIllustHistoryAction(args) {
-    this.historyBackupRepo.putBackup(args.id);
+    this.historyBackupRepo.putBackup(args);
     return this.illustHistoryRepo.putIllust(args)
   }
 
@@ -33,7 +33,7 @@ export default class BackgroundPort extends IllustHistoryPort {
   }
 
   deleteIllustHistoryAction(args) {
-    this.historyBackupRepo.forgetBackup(args.id);
+    this.historyBackupRepo.forgetBackup(args);
     return this.illustHistoryRepo.deleteIllust(args);
   }
 }
