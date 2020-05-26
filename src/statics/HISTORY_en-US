@@ -1,3 +1,8 @@
+v4.1.0-2020052622
+Add dark theme control panel for fitting Pixiv dark theme;
+Add history backup feature for recovering history records because browser's storage strategy may cause history lost sometimes;
+Minor fixes.
+
 v4.0.1-2020032813
 Fix issue that the novel cannot be downloaded when the novel's size is very large.
 
