@@ -26,6 +26,7 @@
         "webRequest",
         "webRequestBlocking",
         "storage",
+        "unlimitedStorage",
         "*://*.pixiv.net/*",
         "*://*.pximg.net/*",
         "*://*.techorus-cdn.com/*"
