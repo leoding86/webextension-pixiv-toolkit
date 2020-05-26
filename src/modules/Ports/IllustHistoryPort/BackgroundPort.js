@@ -1,5 +1,6 @@
-import IllustHistoryRepo from '@/repositories/IllustHistory';
+import HistoryBackupRepo from '@/repositories/HistoryBackup';
 import IllustHistoryPort from './IllustHistoryPort';
+import IllustHistoryRepo from '@/repositories/IllustHistory';
 
 export default class BackgroundPort extends IllustHistoryPort {
   static instance;
@@ -8,6 +9,7 @@ export default class BackgroundPort extends IllustHistoryPort {
     super();
 
     this.illustHistoryRepo = new IllustHistoryRepo();
+    this.historyBackupRepo = HistoryBackupRepo.getDefault();
   }
 
   static getInstance(port) {
@@ -22,6 +24,7 @@ export default class BackgroundPort extends IllustHistoryPort {
   }
 
   saveIllustHistoryAction(args) {
+    this.historyBackupRepo.putBackup(args.id);
     return this.illustHistoryRepo.putIllust(args)
   }
 
@@ -30,6 +33,7 @@ export default class BackgroundPort extends IllustHistoryPort {
   }
 
   deleteIllustHistoryAction(args) {
+    this.historyBackupRepo.forgetBackup(args.id);
     return this.illustHistoryRepo.deleteIllust(args);
   }
 }
