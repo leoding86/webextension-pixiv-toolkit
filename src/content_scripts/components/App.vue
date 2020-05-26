@@ -1,5 +1,5 @@
 <template>
-  <div :class="{'ptk__container': true}">
+  <div :class="{'ptk__container': true}" :id="isDark ? 'ptk-theme__dark' : ''">
     <subscription-button class="ptk__handler"
       style="right:180px;"
       v-if="showSubscribe"
@@ -15,7 +15,7 @@
           <div class="ptk__guide-body">
             <ptk-button style="display: block">Pixiv Toolkit</ptk-button>
             <svg viewBox="0 0 10 15" id="ptk__guide-arrow" width="10" height="15" style="position: relative; top: 3px" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
-              <path d="M5 0 L5 15 L10 10 M5 15 L0 10" stroke="#333" stroke-width="2" fill="transparent" />
+              <path d="M5 0 L5 15 L10 10 M5 15 L0 10" :stroke="isDark ? '#fff' : '#333'" stroke-width="2" fill="transparent" />
             </svg>
           </div>
         </div>
@@ -24,20 +24,20 @@
             @click="handlerClickHandle"
           >
             <svg viewBox="0 0 222 40" id="ptk__new-handler-bg" width="222" height="40" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
-              <path d="M0 40 C 25 40, 43 27, 65 15 C 82 4, 93 0, 111 0 C 131 0, 142 4, 161 15 C 180 27, 198 40, 222 40 Z" stroke-width="0" :fill="hasError ? '#ff3b3b' : '#0096fa'" />
+              <path d="M0 40 C 25 40, 43 27, 65 15 C 82 4, 93 0, 111 0 C 131 0, 142 4, 161 15 C 180 27, 198 40, 222 40 Z" stroke-width="0" :fill="hasError ? '#ff3b3b' : handlerBackground" />
             </svg>
             <svg v-if="!hasError" viewBox="0 0 40 15" id="ptk__new-handler-arrow" width="40" height="25" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
-              <path d="M 0 15 L 20 0 L 40 15" stroke="#ffffff" stroke-width="6" fill="transparent"/>
-              <circle cx="0" cy="15" r="3" stroke-width="0" fill="#ffffff"/>
-              <circle cx="40" cy="15" r="3" stroke-width="0" fill="#ffffff"/>
+              <path d="M 0 15 L 20 0 L 40 15" :stroke="handlerForeground" stroke-width="6" fill="transparent"/>
+              <circle cx="0" cy="15" r="3" stroke-width="0" :fill="handlerForeground"/>
+              <circle cx="40" cy="15" r="3" stroke-width="0" :fill="handlerForeground"/>
             </svg>
             <svg v-if="hasError" viewBox="0 0 40 40" id="ptk__new-handler-cross" width="40" height="40" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
-              <path d="M0 0 L40 40" stroke="#ffffff" stroke-width="10" fill="transparent"/>
-              <path d="M0 40 L40 0" stroke="#ffffff" stroke-width="10" fill="transparent"/>
-              <circle cx="0" cy="0" r="5" stroke-width="0" fill="#ffffff"/>
-              <circle cx="40" cy="40" r="5" stroke-width="0" fill="#ffffff"/>
-              <circle cx="40" cy="0" r="5" stroke-width="0" fill="#ffffff"/>
-              <circle cx="0" cy="40" r="5" stroke-width="0" fill="#ffffff"/>
+              <path d="M0 0 L40 40" :stroke="handlerForeground" stroke-width="10" fill="transparent"/>
+              <path d="M0 40 L40 0" :stroke="handlerForeground" stroke-width="10" fill="transparent"/>
+              <circle cx="0" cy="0" r="5" stroke-width="0" :fill="handlerForeground"/>
+              <circle cx="40" cy="40" r="5" stroke-width="0" :fill="handlerForeground"/>
+              <circle cx="40" cy="0" r="5" stroke-width="0" :fill="handlerForeground"/>
+              <circle cx="0" cy="40" r="5" stroke-width="0" :fill="handlerForeground"/>
             </svg>
           </div>
         </div>
@@ -67,6 +67,7 @@ import SubscriptionButton from '@/content_scripts/components/sub/SubscriptionBut
 import IllustHistoryPort from '@/modules/Ports/IllustHistoryPort/RendererPort'
 import Button from '@/content_scripts/components/Button'
 import InvalidPageError from '@/content_scripts/errors/InvalidPageError'
+import ThemeDetector from '@/content_scripts/ThemeDetector';
 
 export default {
   components: {
@@ -84,7 +85,8 @@ export default {
       currentUrl: null,
       tool: null,
       containerShowed: false,
-      lastError: null
+      lastError: null,
+      isDark: false
     };
   },
 
@@ -135,12 +137,31 @@ export default {
       }
 
       return 0
+    },
+
+    handlerBackground() {
+      return this.isDark ? '#666666' : '#0096fa';
+    },
+
+    handlerForeground() {
+      return '#ffffff';
     }
   },
 
   beforeMount() {
     this.illustHistoryPort = IllustHistoryPort.getInstance();
     this.detector = new Detector();
+    this.themeDetector = ThemeDetector.getDefault();
+
+    this.isDark = this.themeDetector.isDark();
+
+    this.themeDetector.addListener('change', () => {
+      if (this.themeDetector.isDark()) {
+        this.isDark = true;
+      } else {
+        this.isDark = false;
+      }
+    });
   },
 
   mounted() {
@@ -274,43 +295,43 @@ export default {
     overflow: visible;
     text-align: center;
     transition: all 0.5s;
+  }
 
-    .ptk__container__body-container {
-      display: inline-block;
-      position: relative;
-      top: 0;
-      background: #fff;
-      border-radius: 30px;
-      box-shadow: 0 -5px 8px rgba(0,0,0,0.3);
-      overflow: hidden;
-      transition: all 0.5s;
-      box-sizing: border-box;
-      overflow: visible;
+  .ptk__container__body-container {
+    display: inline-block;
+    position: relative;
+    top: 0;
+    background: #fff;
+    border-radius: 30px;
+    box-shadow: 0 -5px 8px rgba(0,0,0,0.3);
+    overflow: hidden;
+    transition: all 0.5s;
+    box-sizing: border-box;
+    overflow: visible;
 
-      .button {
-        &:last-child {
-          margin-right: 0;
-        }
+    .button {
+      &:last-child {
+        margin-right: 0;
       }
     }
+  }
 
-    .ptk__container__body-container--show {
-      top: -50px;
-      box-shadow: 0 0 8px rgba(0,0,0,0.3);
+  .ptk__container__body-container--show {
+    top: -50px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.3);
 
-      #ptk__new-handler-arrow {
-        transform: rotate(180deg);
-      }
-
-      #ptk__new-handler__wrapper {
-        top: -18px;
-        height: 18px;
-      }
+    #ptk__new-handler-arrow {
+      transform: rotate(180deg);
     }
 
-    .ptk__container__body-container--hide {
-      top: 15px;
+    #ptk__new-handler__wrapper {
+      top: -18px;
+      height: 18px;
     }
+  }
+
+  .ptk__container__body-container--hide {
+    top: 15px;
   }
 
   .ptk__handler {
