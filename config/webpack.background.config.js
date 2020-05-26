@@ -59,6 +59,10 @@ module.exports = env => {
           }
         }
       ]),
-    ]
+    ],
+    externals: {
+      browser: 'browser',
+      chrome: 'chrome'
+    }
   });
 };
