@@ -114,8 +114,6 @@ export default Object.assign({}, {
      */
     askDownloadSavedWork: true,
 
-    accessTechorusCdn: false,
-
     /**
      * @since 3.9.1
      */
@@ -135,5 +133,10 @@ export default Object.assign({}, {
     /**
      * @since 4.0.0
      */
-    downloadTasksWhenDownloadingImages: 3
+    downloadTasksWhenDownloadingImages: 3,
+
+    /**
+     * @since 4.1
+     */
+    historyBackup: []
   });
