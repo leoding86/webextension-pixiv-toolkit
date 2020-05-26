@@ -61,16 +61,14 @@ export default class HistoryBackup {
     });
   }
 
-  putBackup(id) {
-    const pos = this.items.indexOf(id);
+  putBackup(data) {
+    this.items.forEach((item, i) => {
+      if (data.id === item.id) {
+        this.items.splice(i, 1);
+      }
+    });
 
-    if (pos >= 0) {
-      this.items.splice(pos, 1);
-    } else {
-      this.free();
-    }
-
-    this.items.push(id);
+    this.items.push(data);
 
     this.saveItems();
   }
