@@ -1,7 +1,9 @@
-import Vue from 'vue';
+import '@/content_scripts/styles/dark.scss';
+
 import App from './components/App';
 import Browser from '@/modules/Browser/Browser';
 import SuperMixin from '@/mixins/SuperMixin';
+import Vue from 'vue';
 
 /**
  * Configurate Vue
