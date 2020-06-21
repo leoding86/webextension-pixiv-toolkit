@@ -178,7 +178,7 @@ export default {
       let text = this.getChunkTitle(buttonInfo.chunk, { singular: 'Save page', plural: 'Save pages' })
 
       this.updateButtonInfo(buttonInfo, {
-        text: text,
+        text: text + ' ✔️',
         blob: blob,
         downloadStatus: 2
       });
