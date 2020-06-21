@@ -1,3 +1,8 @@
+v4.1.1-2020062103
+Fix the issue that ✔️ does not appear after downloading the file;
+Fix the issue that save item to wrong path;
+Fix inaccurate frame delay.
+
 v4.1.0-2020052622
 Add dark theme control panel for fitting Pixiv dark theme;
 Add history backup feature for recovering history records because browser's storage strategy may cause history lost sometimes;
