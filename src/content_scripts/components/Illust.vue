@@ -184,11 +184,11 @@ export default {
         this.updateButtonInfo(buttonInfo, { type: 'success' });
 
         this.downloadFile(buttonInfo.blob, buttonInfo.filename, {
-          folder: this.getSubfolder(this.browserItems.mangaRelativeLocation, this.tool.context),
+          folder: this.getSubfolder(this.browserItems.illustrationRelativeLocation, this.tool.context),
           statType: 'illust'
         });
 
-        this.saveDownloadRecord({ manga: 1 });
+        this.saveDownloadRecord({ illust: 1 });
       }
     },
 
@@ -206,7 +206,7 @@ export default {
       let text = this.getChunkTitle(buttonInfo.chunk, { singular: 'Save page', plural: 'Save pages'})
 
       this.updateButtonInfo(buttonInfo, {
-        text: buttonInfo.isSingle ? 'Save image' : text,
+        text: (buttonInfo.isSingle ? 'Save image' : text) + ' ✔️',
         blob: blob,
         filename: filename,
         downloadStatus: 2,
