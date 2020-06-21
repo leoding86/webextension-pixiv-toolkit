@@ -1,7 +1,7 @@
-import Request from '@/modules/Net/Request';
 import Browser from '@/modules/Browser/Browser'
-import UgoiraTool from '@/content_scripts/ugoira/Ugoira'
 import DateFormatter from '@/modules/Util/DateFormatter';
+import Request from '@/modules/Net/Request';
+import UgoiraTool from '@/content_scripts/ugoira/Ugoira'
 
 class UgoiraAdapter {
   constructor() {
@@ -75,7 +75,7 @@ class UgoiraAdapter {
         let duration = 0
 
         self.illustContext.illustFrames.forEach(function (frame) {
-          duration += --frame.delay;
+          duration += frame.delay;
         });
 
         self.illustContext.illustDuration = duration;
