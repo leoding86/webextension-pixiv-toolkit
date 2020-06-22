@@ -50,14 +50,20 @@ Main.prototype = {
      * Starting from Chrome 72, the Set-Cookie response header is not provided and cannot be modified or removed without
      * specifying 'extraHeaders' in opt_extraInfoSpec.
      **/
-    let opt_extraInfoSpec = [
+    let opt_onBeforeSendHeaders_extraInfoSpec = [
       browser.webRequest.OnBeforeSendHeadersOptions.BLOCKING || "blocking",
       browser.webRequest.OnBeforeSendHeadersOptions.REQUEST_HEADERS || "requestHeaders"
     ];
 
     if (browser.webRequest.OnBeforeSendHeadersOptions.EXTRA_HEADERS) {
-      opt_extraInfoSpec.push(browser.webRequest.OnBeforeSendHeadersOptions.EXTRA_HEADERS);
+      opt_onBeforeSendHeaders_extraInfoSpec.push(browser.webRequest.OnBeforeSendHeadersOptions.EXTRA_HEADERS);
     }
+
+    let opt_onHeadersReceived_extraInfoSpec = [
+      browser.webRequest.OnHeadersReceivedOptions.BLOCKING || 'blocking',
+      browser.webRequest.OnHeadersReceivedOptions.RESPONSE_HEADERS || 'responseHeaders',
+      browser.webRequest.OnHeadersReceivedOptions.EXTRA_HEADERS || 'extraHeaders'
+    ];
 
     browser.webRequest.onBeforeSendHeaders.addListener(details => {
 
@@ -78,7 +84,27 @@ Main.prototype = {
       urls: [
         "*://i.pximg.net/*"
       ]
-    }, opt_extraInfoSpec);
+    }, opt_onBeforeSendHeaders_extraInfoSpec);
+
+    browser.webRequest.onHeadersReceived.addListener(details => {
+      console.log(details);
+      Object.keys(details.responseHeaders).forEach((name, i) => {
+        if (name.toLowerCase === 'access-control-allow-origin') {
+          details.responseHeaders.splice(i, 1);
+        }
+      });
+
+      details.responseHeaders.push({
+        name: 'Access-Control-Allow-Origin',
+        value: '*'
+      });
+
+      return { responseHeaders: details.responseHeaders };
+    }, {
+      urls: [
+        "*://i.pximg.net/*"
+      ]
+    }, opt_onHeadersReceived_extraInfoSpec);
   },
 
   callMessageAction: function (action, args) {
