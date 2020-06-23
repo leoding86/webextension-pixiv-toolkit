@@ -493,5 +493,14 @@
    },
    "_import_history_will_take_some_time_determine_by_how_many_history_need_to_be_imported_are_you_sure": {
        "message": "Import history will take some time determine by how many history need to be imported. Are you sure ?"
+   },
+   "_do_not_pack": {
+        "message": "Do not pack"
+   },
+   "_type": {
+       "message": "Type"
+   },
+   "pack_ugoira_frames_info_into_tip": {
+       "message": "Type 1: Pack frames info only; Type 2: Pack frames and other infos."
    }
 }

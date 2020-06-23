@@ -493,5 +493,14 @@
    },
    "_import_history_will_take_some_time_determine_by_how_many_history_need_to_be_imported_are_you_sure": {
        "message": "导入历史记录会花费一些时间，具体时间取决于需要恢复的历史记录的总量？"
+   },
+   "_do_not_pack": {
+        "message": "不打包"
+   },
+   "_type": {
+       "message": "类型"
+   },
+   "pack_ugoira_frames_info_into_tip": {
+       "message": "类型 1：仅打包帧信息；类型 2：打包帧信息以及其他信息。"
    }
 }
