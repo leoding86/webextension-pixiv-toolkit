@@ -1,9 +1,9 @@
-import Event from '@/modules/Event';
-import Retryer from '@/modules/Manager/Retryer';
-import Download from '@/modules/Net/Download';
-import GifGenerator from '@/modules/Generator/GifGenerator'
-import WebMGenerator from '@/modules/Generator/WebMGenerator'
 import APngGenerator from '@/modules/Generator/APngGenerator'
+import Download from '@/modules/Net/Download';
+import Event from '@/modules/Event';
+import GifGenerator from '@/modules/Generator/GifGenerator'
+import Retryer from '@/modules/Manager/Retryer';
+import WebMGenerator from '@/modules/Generator/WebMGenerator'
 
 /**
  * @class
@@ -32,6 +32,11 @@ class UgoiraTool extends Event {
      * @property {Blob}
      */
     this.zipBlob;
+
+    /**
+     * @property {Number}
+     */
+    this.animationJsonFormat;
   }
 
   init() {
@@ -42,8 +47,8 @@ class UgoiraTool extends Event {
     this.zipBlob = null
 
     return this.downloadResource().then(blob => {
-      if ($extension.browserItems.enablePackUgoiraFramesInfo) {
-        self.zip.file('animation.json', JSON.stringify(self.context.illustFrames));
+      if (this.animationJsonFormat > 0) {
+        self.zip.file('animation.json', self.makeAnimationJsonContent());
       }
 
       return self.zip.loadAsync(blob)
@@ -84,6 +89,26 @@ class UgoiraTool extends Event {
 
   isR() {
     return !!this.context.r
+  }
+
+  /**
+   * @returns {String}
+   */
+  makeAnimationJsonContent() {
+    if (this.animationJsonFormat === 1) {
+      return JSON.stringify(this.context.illustFrames)
+    } else if (this.animationJsonFormat === 2) {
+      return JSON.stringify({
+        ugokuIllustData: {
+          src: this.context.illustSrc,
+          originalSrc: this.context.illustOriginalSrc,
+          mime_type: this.context.illustMimeType,
+          frames: this.context.illustFrames
+        }
+      });
+    } else {
+      return '';
+    }
   }
 
   downloadResource() {
