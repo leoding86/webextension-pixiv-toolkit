@@ -14,6 +14,8 @@ export default Object.assign({}, {
 
     /**
      * @version 1.8.5
+     * @deprecated
+     * @since 4.1.3
      * Pack ugoira frames info to zip file
      */
     enablePackUgoiraFramesInfo: true,
@@ -138,5 +140,10 @@ export default Object.assign({}, {
     /**
      * @since 4.1
      */
-    historyBackup: []
+    historyBackup: [],
+
+    /**
+     * @since 4.1.3
+     */
+    animationJsonFormat: 1
   });
