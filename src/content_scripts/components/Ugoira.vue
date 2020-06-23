@@ -118,6 +118,7 @@ export default {
       return this.tool.init().then(() => {
         this.zipButton.text = 'Save ZIP';
       }).catch(error => {
+        console.error(error);
         this.zipButton.text = 'Interrupted, Click to retry';
       });
     },
