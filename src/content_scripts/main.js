@@ -48,6 +48,12 @@ browser.storage.local.get(null, items => {
       });
     },
 
-    render: h => h(App)
+    render: h => h(App),
+
+    methods: {
+      getItem(offset) {
+        return this.globalBrowserItems[offset];
+      },
+    }
   });
 });
