@@ -1,25 +1,22 @@
-import Browser from '@/modules/Browser/Browser'
 import DateFormatter from '@/modules/Util/DateFormatter';
 import Request from '@/modules/Net/Request';
 import UgoiraTool from '@/content_scripts/ugoira/Ugoira'
 
 class UgoiraAdapter {
   constructor() {
-    this.browser = Browser.getBrowser()
     this.illustContext
     this.ugoiraTool
+    this.options = {};
   }
 
-  inital(context) {
-    let self = this;
+  inital({ context, options }) {
+    this.options = options;
 
     return new Promise((resolve, reject) => {
-      self.browser.storage.local.get(null, items => {
-        self.parseContext(context).then(context => {
-          resolve(context);
-        }).catch(() => {
-          reject();
-        });
+      this.parseContext(context).then(context => {
+        resolve(context);
+      }).catch(() => {
+        reject();
       });
     });
   }
@@ -92,12 +89,14 @@ class UgoiraAdapter {
   }
 
   makeTool() {
-    if (this.ugoiraTool) {
-      this.ugoiraTool.context = this.illustContext;
-      return this.ugoiraTool;
+    if (!this.ugoiraTool) {
+      this.ugoiraTool = new UgoiraTool();
     }
 
-    return this.ugoiraTool = new UgoiraTool(this.illustContext);
+    this.ugoiraTool.context = this.illustContext;
+    this.ugoiraTool.animationJsonFormat = this.options.animationJsonFormat;
+
+    return this.ugoiraTool;
   }
 }
 
