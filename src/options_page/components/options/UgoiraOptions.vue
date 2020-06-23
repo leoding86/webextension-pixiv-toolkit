@@ -30,14 +30,37 @@
         </v-list-tile>
         <v-list-tile>
           <v-list-tile-content>
-            <v-list-tile-title>{{ tl('pack_ugoira_frames_info') }}</v-list-tile-title>
+            <v-list-tile-title>
+              {{ tl('pack_ugoira_frames_info') }}
+              <v-tooltip
+                bottom
+              >
+                <template
+                  v-slot:activator="{ on }"
+                >
+                  <v-icon
+                    v-on="on"
+                    small
+                  >info</v-icon>
+                </template>
+                <span>{{ tl('pack_ugoira_frames_info_into_tip') }}</span>
+              </v-tooltip>
+            </v-list-tile-title>
             <v-list-tile-sub-title>{{ tl('pack_ugoira_frames_info_into_zip') }}</v-list-tile-sub-title>
           </v-list-tile-content>
           <v-list-tile-action>
-            <v-switch
+            <v-select
+              :items="animationJsonFormatOptions"
+              v-model="animationJsonFormat"
+              type="value"
+              @change="onAnimationJsonChangeHandler"
+              style="width:150px"
+            >
+            </v-select>
+            <!-- <v-switch
               v-model="enablePackUgoiraFramesInfo"
               @change="onEnablePackUgoiraFramesInfoChangedHandler"
-            ></v-switch>
+            ></v-switch> -->
           </v-list-tile-action>
         </v-list-tile>
 
@@ -94,6 +117,19 @@ export default {
         }
       ],
 
+      animationJsonFormatOptions: [
+        {
+          text: this.tl('_do_not_pack'),
+          value: 0
+        }, {
+          text: this.tl('_type') + ' 1',
+          value: 1,
+        }, {
+          text: this.tl('_type') + ' 2',
+          value: 2
+        }
+      ],
+
       ugoiraQuanlity: 10,
 
       ugoiraRenameFormat: "",
@@ -108,6 +144,7 @@ export default {
     this.ugoiraQuanlity = this.browserItems.ugoiraQuanlity || 10;
     this.ugoiraRenameFormat = this.browserItems.ugoiraRenameFormat;
     this.enablePackUgoiraFramesInfo = this.browserItems.enablePackUgoiraFramesInfo;
+    this.animationJsonFormat = this.browserItems.animationJsonFormat;
 
     this.location = this.browserItems.ugoiraRelativeLocation;
   },
@@ -134,6 +171,12 @@ export default {
     onUgoiraQualityChangeHandler() {
       browser.storage.local.set({
         ugoiraQuanlity: this.ugoiraQuanlity
+      });
+    },
+
+    onAnimationJsonChangeHandler() {
+      browser.storage.local.set({
+        animationJsonFormat: this.animationJsonFormat
       });
     },
 
