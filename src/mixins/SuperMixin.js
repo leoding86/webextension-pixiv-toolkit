@@ -11,7 +11,7 @@ export default {
 
   methods: {
     tl(string) {
-      return browser.i18n.getMessage(string);
+      return this.$t(`${string}.message`);
     },
 
     stripTags(content, replace = ' ') {
