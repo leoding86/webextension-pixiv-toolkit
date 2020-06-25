@@ -15,8 +15,7 @@
 
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn flat @click="show = false">{{ tl('_close') }}</v-btn>
-        <v-btn color="primary" flat @click="closeNotice">{{ tl('_do_not_show_again') }}</v-btn>
+        <v-btn color="primary" flat @click="closeNotice">{{ tl('_close') }}</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
