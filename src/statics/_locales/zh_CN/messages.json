@@ -314,10 +314,10 @@
    "viewCount": {
        "message": "查看数"
    },
-   "Number_of_works_downloaded": {
+   "_number_of_works_downloaded": {
        "message": "已下载的作品数量"
    },
-   "Infomation_of_current_work": {
+   "_infomation_of_current_work": {
         "message": "当前作品的信息"
    },
    "work": {
@@ -326,7 +326,7 @@
    "works": {
        "message": "作品"
    },
-   "Report_issue": {
+   "_report_issue": {
        "message": "报告问题"
    },
    "_settings": {
@@ -353,7 +353,7 @@
    "Download_panel_will_show_up_automatically_when_page_loaded": {
        "message": "当目标页面被加载完成时，自动显示下载面板"
    },
-   "Illust_History": {
+   "illust_history": {
        "message": "历史记录"
    },
    "Illustration": {
@@ -380,13 +380,13 @@
    "Export_visit_history": {
        "message": "导出浏览历史"
    },
-   "Export": {
+   "_export": {
        "message": "导出"
    },
    "Import_visit_history": {
        "message": "导入浏览历史"
    },
-   "Import": {
+   "_import": {
        "message": "导入"
    },
    "_display_ugoira_download_progress": {
@@ -508,5 +508,50 @@
    },
    "_recovery_complete_refresh_page_please": {
        "message": "恢复完成，请刷新页面。"
+   },
+   "_language": {
+       "message": "语言"
+   },
+   "_default": {
+       "message": "默认"
+   },
+   "_preparing": {
+       "message": "准备中"
+   },
+   "_generate": {
+       "message": "生成"
+   },
+   "_downloading": {
+       "message": "下载中"
+   },
+   "_save": {
+       "message": "保存"
+   },
+   "_interrupted_click_to_retry": {
+       "message": "中断，点击重试"
+   },
+   "_generating": {
+       "message": "生成中"
+   },
+   "_generating_please_wait": {
+       "message": "生产中，请等待"
+   },
+   "_dl_image": {
+       "message": "下载图片"
+   },
+   "_dl_page": {
+       "message": "下载页面"
+   },
+   "_dl_pages": {
+       "message": "下载页面"
+   },
+   "_save_image": {
+       "message": "保存图片"
+   },
+   "_save_page": {
+       "message": "保存页面"
+   },
+   "_save_pages": {
+       "message": "保存页面"
    }
 }
