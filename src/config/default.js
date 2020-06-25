@@ -143,7 +143,8 @@ export default Object.assign({}, {
     historyBackup: [],
 
     /**
-     * @since 4.1.3
+     * @since 4.2
      */
-    animationJsonFormat: 1
+    animationJsonFormat: 1,
+    language: 'default'
   });
