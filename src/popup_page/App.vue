@@ -5,7 +5,7 @@
       <a href="#" @click="openGithub" class="starit"><img src="../options_page/assets/github.svg">{{ tl('Star_it') }} !</a>
     </div>
     <div class="header">
-      <h2>{{ tl('Number_of_works_downloaded') }}</h2>
+      <h2>{{ tl('_number_of_works_downloaded') }}</h2>
     </div>
     <div class="body">
       <div class="card"
@@ -13,7 +13,7 @@
       </div>
       <div class="work-info" v-if="properties">
         <div class="header">
-          <h2>{{ tl('Infomation_of_current_work') }}</h2>
+          <h2>{{ tl('_infomation_of_current_work') }}</h2>
         </div>
         <div class="card">
           <ul>
@@ -29,8 +29,8 @@
       </div>
     </div>
     <div class="footer">
-      <a href="#" @click="openReportIssue" class="button">{{ tl('Report_issue') }}</a>
-      <a href="#" @click="openOptionsPage" class="button">{{ tl('Settings') }}</a>
+      <a href="#" @click="openReportIssue" class="button">{{ tl('_report_issue') }}</a>
+      <a href="#" @click="openOptionsPage" class="button">{{ tl('_settings') }}</a>
       <a href="#" @click="openVisitHistory" class="button">{{ tl('illust_history') }}</a>
     </div>
   </div>

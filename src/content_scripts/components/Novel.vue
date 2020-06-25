@@ -40,7 +40,7 @@ export default {
       buttons: [
         {
           type: 'epub',
-          text: 'Save Epub',
+          text: this.tl('_save') + ' Epub',
           saved: '',
           download: false,
           blob: null,
@@ -49,7 +49,7 @@ export default {
           }
         }, {
           type: 'txt',
-          text: 'Save Txt',
+          text: this.tl('_save') + ' Txt',
           saved: '',
           download: false,
           blob: null,

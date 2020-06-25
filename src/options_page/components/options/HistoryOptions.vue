@@ -31,7 +31,7 @@
             <v-btn
               depressed
               @click="exportVisitHistory"
-            >{{ tl('export') }}</v-btn>
+            >{{ tl('_export') }}</v-btn>
           </v-list-tile-action>
         </v-list-tile>
 
@@ -43,7 +43,7 @@
             <v-btn
               depressed
               @click="importVisitHistory"
-            >{{ tl('import') }}<span v-if="importTotal > 0"> ({{ importedCount }} / {{ importTotal }})</span></v-btn>
+            >{{ tl('_import') }}<span v-if="importTotal > 0"> ({{ importedCount }} / {{ importTotal }})</span></v-btn>
           </v-list-tile-action>
         </v-list-tile>
 

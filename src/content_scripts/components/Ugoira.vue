@@ -44,7 +44,7 @@ export default {
         type: '',
         saved: false,
         blob: null,
-        text: 'Preparing'
+        text: this.tl('_preparing')
       },
 
       ready: false,
@@ -78,7 +78,7 @@ export default {
          */
         status: 0,
         saved: false,
-        text: `Generate ${type.toUpperCase()}`
+        text: `${this.tl('_generate')} ${type.toUpperCase()}`
       });
     });
 
@@ -86,7 +86,7 @@ export default {
      * Add listener to download resource progress event
      */
     this.tool.addExclusiveListener('progress', progress => {
-      this.zipButton.text = `Downloading ${Math.round(progress * 100)}%`;
+      this.zipButton.text = `${this.tl('_downloading')} ${Math.round(progress * 100)}%`;
     });
 
     this.downloadRecordPort = DownloadRecordPort.getInstance();
@@ -116,10 +116,10 @@ export default {
        * Init ugoira tool will reset the generators instance, so feel free to add listeners to gererators again
        */
       return this.tool.init().then(() => {
-        this.zipButton.text = 'Save ZIP';
+        this.zipButton.text = this.tl('_save') + ' ZIP';
       }).catch(error => {
         console.error(error);
-        this.zipButton.text = 'Interrupted, Click to retry';
+        this.zipButton.text = this.tl('_interrupted_click_to_retry')
       });
     },
 
@@ -203,7 +203,7 @@ export default {
            * Update the generator button status
            */
           button.status = 2;
-          button.text = `Preparing ${Math.floor(loadedFrames / totalFrames * 100)}%`;
+          button.text = `${this.tl('_preparing')} ${Math.floor(loadedFrames / totalFrames * 100)}%`;
         });
 
         /**
@@ -211,7 +211,7 @@ export default {
          */
         generator.addListener('progress', progress => {
           // update text
-          button.text = `Generating ${Math.round(progress * 100)}%`;
+          button.text = `${this.tl('_generating')} ${Math.round(progress * 100)}%`;
         });
 
         /**
@@ -222,7 +222,7 @@ export default {
            * Update status, text and style type
            */
           button.status = 1;
-          button.text = 'Save ' + type.toUpperCase();
+          button.text = this.tl('_save') + ' ' + type.toUpperCase();
           button.type = 'success';
           button.blob = blob;
 
@@ -236,7 +236,7 @@ export default {
       } else if (button.status === 1) {
         this.saveFile(button.blob, type);
       } else if (button.status === 2) {
-        alert('Generating, please wait.');
+        alert(this.tl('_generating_please_wait'));
       }
     },
 

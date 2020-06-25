@@ -83,7 +83,7 @@ export default {
     this.chunks.forEach((chunk, i) => {
       buttonsInfo[i] = {
         index: i,
-        text: vm.getChunkTitle(chunk, { singular: 'DL page', plural: 'DL pages' }) + (vm.isSaved ? ' ✔️' : ''),
+        text: vm.getChunkTitle(chunk, { singular: this.tl('_dl_page'), plural: this.tl('_dl_pages') }) + (vm.isSaved ? ' ✔️' : ''),
         filename: vm.mangaTool.getFilename(chunk),
         downloadStatus: 0,
         chunk: chunk,
@@ -175,7 +175,7 @@ export default {
     },
 
     downloadFinishEventHandle(blob, buttonInfo) {
-      let text = this.getChunkTitle(buttonInfo.chunk, { singular: 'Save page', plural: 'Save pages' })
+      let text = this.getChunkTitle(buttonInfo.chunk, { singular: this.tl('_save_page'), plural: this.tl('_save_pages') })
 
       this.updateButtonInfo(buttonInfo, {
         text: text + ' ✔️',

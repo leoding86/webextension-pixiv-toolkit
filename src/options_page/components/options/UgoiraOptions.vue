@@ -102,34 +102,6 @@ export default {
 
   data() {
     return {
-      qualityItems: [
-        {
-          text: this.tl("ugoira_normal"),
-          value: 10
-        },
-        {
-          text: this.tl("ugoira_good"),
-          value: 5
-        },
-        {
-          text: this.tl("ugoira_best"),
-          value: 1
-        }
-      ],
-
-      animationJsonFormatOptions: [
-        {
-          text: this.tl('_do_not_pack'),
-          value: 0
-        }, {
-          text: this.tl('_type') + ' 1',
-          value: 1,
-        }, {
-          text: this.tl('_type') + ' 2',
-          value: 2
-        }
-      ],
-
       ugoiraQuanlity: 10,
 
       ugoiraRenameFormat: "",
@@ -156,6 +128,38 @@ export default {
       } else {
         return "Not set";
       }
+    },
+
+    qualityItems() {
+      return [
+        {
+          text: this.tl("ugoira_normal"),
+          value: 10
+        },
+        {
+          text: this.tl("ugoira_good"),
+          value: 5
+        },
+        {
+          text: this.tl("ugoira_best"),
+          value: 1
+        }
+      ];
+    },
+
+    animationJsonFormatOptions() {
+      return [
+        {
+          text: this.tl('_do_not_pack'),
+          value: 0
+        }, {
+          text: this.tl('_type') + ' 1',
+          value: 1,
+        }, {
+          text: this.tl('_type') + ' 2',
+          value: 2
+        }
+      ];
     }
   },
 

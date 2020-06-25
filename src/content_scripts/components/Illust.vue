@@ -117,7 +117,7 @@ export default {
 
         buttonsInfo[i] = {
           index: i,
-          text: (isSingle ? 'DL image' : vm.getChunkTitle(chunk, { singular: 'DL page', plural: 'DL pages'})) + (vm.isSaved ? ' ✔️' : ''),
+          text: (isSingle ? this.tl('_dl_image') : vm.getChunkTitle(chunk, { singular: this.tl('_dl_page'), plural: this.tl('_dl_pages')})) + (vm.isSaved ? ' ✔️' : ''),
           filename: null,
           downloadStatus: 0,
           chunk: chunk,
@@ -194,7 +194,7 @@ export default {
 
     downloadProgressEventHandle({ progress, failCount }, buttonInfo) {
       this.updateButtonInfo(buttonInfo, {
-        text: `Downloading ${Math.round(progress * 100)}%` + (failCount > 0 ? ` (F:${failCount})` : '')
+        text: `${this.tl('_downloading')} ${Math.round(progress * 100)}%` + (failCount > 0 ? ` (F:${failCount})` : '')
       });
     },
 
@@ -203,10 +203,10 @@ export default {
     },
 
     downloadFinishEventHandle({ blob, filename }, buttonInfo) {
-      let text = this.getChunkTitle(buttonInfo.chunk, { singular: 'Save page', plural: 'Save pages'})
+      let text = this.getChunkTitle(buttonInfo.chunk, { singular: this.tl('_save_page'), plural: this.tl('_save_pages')})
 
       this.updateButtonInfo(buttonInfo, {
-        text: (buttonInfo.isSingle ? 'Save image' : text) + ' ✔️',
+        text: (buttonInfo.isSingle ? this.tl('_save_image') : text) + ' ✔️',
         blob: blob,
         filename: filename,
         downloadStatus: 2,

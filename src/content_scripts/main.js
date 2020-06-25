@@ -2,6 +2,7 @@ import '@/content_scripts/styles/dark.scss';
 
 import App from './components/App';
 import Browser from '@/modules/Browser/Browser';
+import I18n from '@/modules/I18n';
 import SuperMixin from '@/mixins/SuperMixin';
 import Vue from 'vue';
 
@@ -11,7 +12,11 @@ import Vue from 'vue';
 Vue.prototype.$browser = window.browser /* For back compatible */ = Browser.getBrowser();
 Vue.mixin(SuperMixin);
 
+const i18n = I18n.i18n();
+
 browser.storage.local.get(null, items => {
+  i18n.locale = items.language || 'default';
+
   /**
    * Create app mount point
    */
@@ -31,6 +36,8 @@ browser.storage.local.get(null, items => {
   window.$extension = new Vue({
     el: '#__ptk-app',
 
+    i18n,
+
     data() {
       return {
         globalBrowserItems: items,
@@ -44,6 +51,14 @@ browser.storage.local.get(null, items => {
       this.$browser.storage.onChanged.addListener(changes => {
         for (let key in changes) {
           vm.globalBrowserItems[key] = changes[key].newValue;
+
+          if (key === 'language') {
+            if (changes[key].newValue === 'default') {
+              i18n.locale = chrome.i18n.getUILanguage().replace('-', '_');
+            } else {
+              i18n.locale = changes[key].newValue;
+            }
+          }
         }
       });
     },
