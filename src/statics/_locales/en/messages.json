@@ -502,5 +502,11 @@
    },
    "pack_ugoira_frames_info_into_tip": {
        "message": "Type 1: Pack frames info only; Type 2: Pack frames and other infos."
+   },
+   "_this_operation_cannot_be_reversed_are_you_sure": {
+       "message": "This operation cannot be reversed, are you sure?"
+   },
+   "_recovery_complete_refresh_page_please": {
+       "message": "Recovery complete, refresh page please."
    }
 }
