@@ -62,6 +62,11 @@ export default {
         version: '1.5.9',
         desc: 'Material Component Framework for Vue.js 2',
         url: 'https://github.com/vuetifyjs/vuetify'
+      }, {
+        name: 'vue-i18n',
+        version: '8.18.2',
+        desc: 'Vue I18n is internationalization plugin for Vue.js',
+        url: 'http://kazupon.github.io/vue-i18n/'
       }]
     }
   },
