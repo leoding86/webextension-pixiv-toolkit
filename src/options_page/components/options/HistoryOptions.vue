@@ -78,7 +78,7 @@
       <v-card>
         <v-card-title>{{ tl('clear_history_data') }}</v-card-title>
         <v-card-text>
-          <p style="font-size:14px;">This operation cannot be reversed, are you sure?</p>
+          <p style="font-size:14px;">{{ tl('_this_operation_cannot_be_reversed_are_you_sure') }}</p>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -93,6 +93,7 @@
 <script>
 import SuperMixin from "@/mixins/SuperMixin";
 import IllustHistory from "@/repositories/IllustHistory";
+import HistoryBackup from "@/repositories/HistoryBackup";
 import importIllustHistoryWorker from "worker-loader?inline=true,fallback=false!@/options_page/workers/importIllustHistoryWorker.js";
 
 export default {
@@ -117,6 +118,7 @@ export default {
     this.notSaveNSFWWorkInHistory = this.browserItems.notSaveNSFWWorkInHistory;
 
     this.illustHistory = new IllustHistory();
+    this.historyBackup = new HistoryBackup();
   },
 
   computed: {
@@ -142,6 +144,7 @@ export default {
   methods: {
     clearHistory() {
       this.illustHistory.clearData();
+      this.historyBackup.forgetAll();
       this.confirmDialog = false;
     },
 
@@ -247,7 +250,7 @@ export default {
       let worker = new importIllustHistoryWorker();
 
       worker.onmessage = e => {
-        this.recoveryCount = e.data.recoveryCount
+        this.recoveryCount = e.data.importedCount
 
         if (e.data.imported) {
           this.recoveryCount = items.length
@@ -256,7 +259,7 @@ export default {
 
           setImmediate(() => {
             this.importing = false
-            alert('Recovery complete.')
+            alert(this.tl('_recovery_complete_refresh_page_please'))
           });
         }
       }
