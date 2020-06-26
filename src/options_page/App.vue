@@ -24,7 +24,7 @@
             ripple
             @click="goToVisitHistory()">
             <v-list-tile-content>
-              <span>{{ tl('Illust_History') }}</span>
+              <span>{{ tl('illust_history') }}</span>
             </v-list-tile-content>
           </v-list-tile>
 

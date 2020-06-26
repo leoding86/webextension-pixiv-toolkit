@@ -19,7 +19,7 @@
       @click="openInNewTab(reviewInfo.url)"
     >
       <img :src="reviewInfo.icon">
-      <span class="button-text" v-show="largeWindow">{{ tl('Give_5_stars') }}</span>
+      <span class="button-text" v-show="largeWindow">{{ tl('_give_5_stars') }}</span>
       <v-icon right>open_in_new</v-icon>
     </v-btn>
 
@@ -59,8 +59,13 @@ import common from "@@/modules/common";
 import cr from "@@/modules/cr";
 import chromeEsIcon from '../assets/chrome-es.png';
 import firefoxAmoIcon from '../assets/firefox-amo.png';
+import SuperMixin from "@/mixins/SuperMixin";
 
 export default {
+  mixins: [
+    SuperMixin
+  ],
+
   props: {
     showSponsorsLink: {
       type: Boolean,
@@ -127,10 +132,6 @@ export default {
 
     openInNewTab(url) {
       window.open(url, "_blank");
-    },
-
-    tl(string) {
-      return cr._e(string);
     }
   }
 };

@@ -3,7 +3,7 @@
     <v-alert
       :value="true"
       type="warning"
-      v-if="!enableSaveVisitHistory">Save visit history has been disabled</v-alert>
+      v-if="!enableSaveVisitHistory">{{ tl('_save_visit_history_has_been_disabled') }}</v-alert>
 
     <div class="history__header">
       <!-- Searchbar -->
@@ -12,7 +12,7 @@
         single-line
         solo
         flat
-        placeholder="Search History (Beta)"
+        :placeholder="tl('_search_history')"
         v-model="searchQuery"
       ></v-text-field>
       <!-- /Searchbar -->
@@ -24,14 +24,14 @@
         style="margin-left:0;"
         depressed
         @click="pushRoute({name: 'IllustHistory'})"
-      >Return old style</v-btn>
+      >{{ tl('_return_old_style') }}</v-btn>
 
       <v-btn
         class="text-none"
         depressed
-      >Total {{ total }} Records</v-btn>
+      >{{ tl('_total_records') }} {{ total }}</v-btn>
 
-      <v-switch v-model="disableBlurOnR" label="Disable mask"></v-switch>
+      <v-switch v-model="disableBlurOnR" :label="tl('_disable_mask')"></v-switch>
 
       <!-- <v-btn @click="insertData">Insert 10w</v-btn> -->
     </div>
@@ -102,15 +102,15 @@
     <v-dialog v-model="confirmDialog"
       width="500">
       <v-card>
-        <v-card-title>Delete confirmation</v-card-title>
+        <v-card-title>{{ tl('_notice') }}</v-card-title>
         <v-card-text>
-          <p style="font-size:14px;">This operation cannot be reversed, are you sure?</p>
+          <p style="font-size:14px;">{{ tl('_this_operation_cannot_be_reversed_are_you_sure') }}</p>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn @click="deleteIllust"
-            color="error">Delete</v-btn>
-          <v-btn @click="confirmDialog = false">Keep it</v-btn>
+            color="error">{{ tl('_delete') }}</v-btn>
+          <v-btn @click="confirmDialog = false">{{ tl('_keep') }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

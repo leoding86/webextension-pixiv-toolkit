@@ -29,8 +29,8 @@
 
         <v-list-tile>
           <v-list-tile-content>
-            <v-list-tile-title>Page number start with 1</v-list-tile-title>
-            <v-list-tile-sub-title>Page number start with 1 otherwise start with 0</v-list-tile-sub-title>
+            <v-list-tile-title>{{ tl('_page_number_start_with_1') }}</v-list-tile-title>
+            <v-list-tile-sub-title>{{ tl('_page_number_start_with_1_otherwise_start_with_0') }}</v-list-tile-sub-title>
           </v-list-tile-content>
           <v-list-tile-action>
             <v-switch v-model="pageNumberStartWithOne"></v-switch>

@@ -3,7 +3,7 @@
     <v-alert
       :value="true"
       type="warning"
-      v-if="!enableSaveVisitHistory">Save visit history has been disabled</v-alert>
+      v-if="!enableSaveVisitHistory">{{ tl('_save_visit_history_has_been_disabled') }}</v-alert>
 
     <!-- Searchbar -->
     <v-text-field class="search-panel"
@@ -11,7 +11,7 @@
       single-line
       solo
       flat
-      placeholder="Search History (Beta)"
+      :placeholder="tl('_search_history')"
       v-model="searchQuery"
     ></v-text-field>
     <!-- /Searchbar -->
@@ -22,15 +22,15 @@
         style="margin-left:0;"
         flat
         @click="pushRoute({name: 'VisitHistory'})"
-      >Go to new style</v-btn>
+      >{{ tl('_go_to_new_style') }}</v-btn>
 
       <v-btn
         class="text-none"
         style="margin-left:0;"
         depressed
-        flat>Total {{ total }} Records</v-btn>
+        flat>{{ tl('_total_records') }} {{ total }}</v-btn>
 
-      <v-switch v-model="disableBlurOnR" label="Disable mask"></v-switch>
+      <v-switch v-model="disableBlurOnR" :label="tl('_disable_mask')"></v-switch>
 
       <!-- <v-btn @click="insertData">Insert 10w</v-btn> -->
     </div>
@@ -39,7 +39,7 @@
       class="illust-history-wrap">
       <p v-if="illusts.length <= 0"
         style="font-size:14px;text-align:center;">
-        There is no any history
+        {{ tl('_there_is_no_any_history') }}
       </p>
       <v-flex v-else lg1 md2 sm3 xs4 v-for="(illust, i) in illusts" :key="i">
         <v-card class="card--history-item">
@@ -79,18 +79,18 @@
       <v-btn depressed
         color="#eee"
         @click="prev()"
-        style="margin-left:0">Newer</v-btn>
+        style="margin-left:0">{{ tl('_newer') }}</v-btn>
       <v-btn
         depressed
         color="#eee"
-        @click="next()">Older</v-btn>
+        @click="next()">{{ tl('_older') }}</v-btn>
       <v-menu open-on-hover top offset-y>
         <template v-slot:activator="{ on }">
           <v-btn
             depressed
             color="#eee"
             v-on="on">
-            Page {{ page }}
+            {{ tl('_page') }} {{ page }}
           </v-btn>
         </template>
 
@@ -106,15 +106,15 @@
     <v-dialog v-model="confirmDialog"
       width="500">
       <v-card>
-        <v-card-title>Delete confirmation</v-card-title>
+        <v-card-title>{{ tl('_notice') }}</v-card-title>
         <v-card-text>
-          <p style="font-size:14px;">This operation cannot be reversed, are you sure?</p>
+          <p style="font-size:14px;">{{ tl('_this_operation_cannot_be_reversed_are_you_sure') }}</p>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn @click="deleteIllust"
-            color="error">Delete</v-btn>
-          <v-btn @click="confirmDialog = false">Keep it</v-btn>
+            color="error">{{ tl('_delete') }}</v-btn>
+          <v-btn @click="confirmDialog = false">{{ tl('_keep') }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
