@@ -173,7 +173,7 @@
    "Menu": {
      "message": "菜单"
    },
-   "give_5_stars": {
+   "_give_5_stars": {
      "message": "5星好评"
    },
    "_support_me": {
@@ -553,5 +553,50 @@
    },
    "_save_pages": {
        "message": "保存页面"
+   },
+   "_return_old_style": {
+       "message": "旧版样式"
+   },
+   "_disable_mask": {
+       "message": "关闭遮罩"
+   },
+   "_go_to_new_style": {
+       "message": "新版样式"
+   },
+   "_total_records": {
+       "message": "全部条数"
+   },
+   "_save_visit_history_has_been_disabled": {
+       "message": "记录历史功能被关闭"
+   },
+   "_keep": {
+       "message": "保留"
+   },
+   "_delete": {
+       "message": "删除"
+   },
+   "_notice": {
+       "message": "注意"
+   },
+   "_newer": {
+       "message": "更近"
+   },
+   "_older": {
+       "message": "更远"
+   },
+   "_page": {
+       "message": "页码"
+   },
+   "_there_is_no_any_history": {
+       "message": "没有历史记录"
+   },
+   "_search_history": {
+       "message": "搜索历史记录"
+   },
+   "_page_number_start_with_1": {
+       "message": "页码从1开始"
+   },
+   "_page_number_start_with_1_otherwise_start_with_0": {
+       "message": "启用后页面从1开始，否则从0开始"
    }
 }

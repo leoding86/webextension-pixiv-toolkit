@@ -173,7 +173,7 @@
    "Menu": {
      "message": "Menu"
    },
-   "give_5_stars": {
+   "_give_5_stars": {
      "message": "Give 5 stars"
    },
    "_support_me": {
@@ -553,5 +553,50 @@
    },
    "_save_pages": {
        "message": "Save pages"
+   },
+   "_return_old_style": {
+       "message": "Return old style"
+   },
+   "_disable_mask": {
+       "message": "Disable mask"
+   },
+   "_go_to_new_style": {
+       "message": "Go to new style"
+   },
+   "_total_records": {
+       "message": "Total records"
+   },
+   "_save_visit_history_has_been_disabled": {
+       "message": "Save visit history has been disabled"
+   },
+   "_keep": {
+       "message": "Keep"
+   },
+   "_delete": {
+       "message": "Delete"
+   },
+   "_notice": {
+       "message": "Notice"
+   },
+   "_newer": {
+       "message": "Newer"
+   },
+   "_older": {
+       "message": "Older"
+   },
+   "_page": {
+       "message": "Page"
+   },
+   "_there_is_no_any_history": {
+       "message": "There is no any history"
+   },
+   "_search_history": {
+       "message": "Search History"
+   },
+   "_page_number_start_with_1": {
+       "message": "Page number start with 1"
+   },
+   "_page_number_start_with_1_otherwise_start_with_0": {
+       "message": "Page number start with 1 otherwise start with 0"
    }
 }
