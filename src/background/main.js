@@ -55,15 +55,21 @@ Main.prototype = {
       browser.webRequest.OnBeforeSendHeadersOptions.REQUEST_HEADERS || "requestHeaders"
     ];
 
+    let opt_onHeadersReceived_extraInfoSpec = [
+      browser.webRequest.OnHeadersReceivedOptions.BLOCKING || 'blocking',
+      browser.webRequest.OnHeadersReceivedOptions.RESPONSE_HEADERS || 'responseHeaders',
+    ];
+
+    /**
+     * Firefox has not enumeration EXTRA_HEADERS on OnBeforeSendHeadersOptions and OnHeadersReceivedOptions
+     */
     if (browser.webRequest.OnBeforeSendHeadersOptions.EXTRA_HEADERS) {
       opt_onBeforeSendHeaders_extraInfoSpec.push(browser.webRequest.OnBeforeSendHeadersOptions.EXTRA_HEADERS);
     }
 
-    let opt_onHeadersReceived_extraInfoSpec = [
-      browser.webRequest.OnHeadersReceivedOptions.BLOCKING || 'blocking',
-      browser.webRequest.OnHeadersReceivedOptions.RESPONSE_HEADERS || 'responseHeaders',
-      browser.webRequest.OnHeadersReceivedOptions.EXTRA_HEADERS || 'extraHeaders'
-    ];
+    if (browser.webRequest.OnHeadersReceivedOptions.EXTRA_HEADERS) {
+      opt_onHeadersReceived_extraInfoSpec.push(browser.webRequest.OnHeadersReceivedOptions.EXTRA_HEADERS);
+    }
 
     browser.webRequest.onBeforeSendHeaders.addListener(details => {
 
