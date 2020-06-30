@@ -72,13 +72,17 @@ export default class AssetCacheService {
       xhr.responseType = 'blob';
 
       xhr.onload = () => {
-        let reader = new FileReader();
+        if (xhr.status === 200) {
+          let reader = new FileReader();
 
-        reader.onloadend = () => {
-          resolve(reader.result);
-        };
+          reader.onloadend = () => {
+            resolve(reader.result);
+          };
 
-        reader.readAsDataURL(xhr.response);
+          reader.readAsDataURL(xhr.response);
+        } else {
+          reject(Error('Cannot fetch asset from remote'));
+        }
       };
 
       xhr.onerror = err => {
