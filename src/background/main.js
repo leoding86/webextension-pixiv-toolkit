@@ -72,23 +72,37 @@ Main.prototype = {
     }
 
     browser.webRequest.onBeforeSendHeaders.addListener(details => {
+      let hasOriginHeader = false;
 
       for (let i = 0, l = details.requestHeaders.length; i < l; ++i) {
-        if (details.requestHeaders[i].name.toLowerCase() === 'referer') {
-          details.requestHeaders.splice(i, 1)
-          break;
+        if (details.url.indexOf('i.pximg.net') > -1 && details.requestHeaders[i].name.toLowerCase() === 'referer') {
+          details.requestHeaders.splice(i, 1);
+        } else if (details.requestHeaders[i].name.toLowerCase() === 'origin') {
+          hasOriginHeader = true;
         }
       }
 
-      details.requestHeaders.push({
-        name: 'Referer',
-        value: 'https://www.pixiv.net/'
-      })
+      if (details.url.indexOf('api.fanbox.cc') > -1) {
+        if (!hasOriginHeader) {
+          details.requestHeaders.push({
+            name: 'Origin',
+            value: details.initiator
+          });
+        }
+      } else if (details.url.indexOf('i.pximg.net') > -1) {
+        if (!details.initiator || details.initiator.indexOf('http') < 0) {
+          details.requestHeaders.push({
+            name: 'Referer',
+            value: 'https://www.pixiv.net/',
+          });
+        }
+      }
 
       return { requestHeaders: details.requestHeaders }
     }, {
       urls: [
-        "*://i.pximg.net/*"
+        "*://i.pximg.net/*",
+        "*://api.fanbox.cc/*"
       ]
     }, opt_onBeforeSendHeaders_extraInfoSpec);
 
