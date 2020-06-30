@@ -183,6 +183,8 @@ class IllustTool extends Event {
 
   downloadChunk(chunk, context) {
     let downloader = new Downloader({ processors: this.processors });
+    downloader.asBlob = false;
+
     let zip = new JSZip();
 
     for (let i = chunk.start; i <= chunk.end; i++) {
@@ -197,7 +199,7 @@ class IllustTool extends Event {
       this.dispatch('download-error', error);
     });
 
-    downloader.addListener('item-finish', ({blob, index, download}) => {
+    downloader.addListener('item-finish', ({data, index, download}) => {
       let pageNum = chunk.start + index + (this.pageNumberStartWithOne ? 1 : 0);
       let filename = null;
 
@@ -217,7 +219,10 @@ class IllustTool extends Event {
       let now = new Date();
       now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
 
-      zip.file(filename, blob, {
+      /**
+       * Firefox related issue, cannot use blob as a given data to zip.file function
+       */
+      zip.file(filename, data, {
         date: now
       });
     });
@@ -225,7 +230,7 @@ class IllustTool extends Event {
     downloader.addListener('finish', () => {
       zip.generateAsync({ type: 'blob' }).then(blob => {
         this.dispatch('download-finish', [{blob, filename: this.getFilename(chunk)}, context]);
-      });
+      }).catch(error => console.error(error));
     });
 
     downloader.download();

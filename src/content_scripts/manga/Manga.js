@@ -106,6 +106,7 @@ class MangaTool extends Event {
   downloadChunk(chunk, context) {
     let zip = new JSZip();
     let downloader = new Downloader({ processors: this.processors });
+    downloader.asBlob = false;
 
     for (let i = chunk.start; i <= chunk.end; i++) {
       downloader.appendFile(this.context.pages[i].urls.original);
@@ -119,7 +120,7 @@ class MangaTool extends Event {
       this.dispatch('download-error', error);
     });
 
-    downloader.addListener('item-finish', ({blob, index, download}) => {
+    downloader.addListener('item-finish', ({data, index, download}) => {
       let pageNum = chunk.start + index + (this.pageNumberStartWithOne ? 1 : 0);
 
       this.context.pageNum = pageNum;
@@ -136,7 +137,10 @@ class MangaTool extends Event {
       let now = new Date();
       now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
 
-      zip.file(filename, blob, {
+      /**
+       * Firefox related issue, cannot use blob as a given data to zip.file function
+       */
+      zip.file(filename, data, {
         date: now
       });
     });
