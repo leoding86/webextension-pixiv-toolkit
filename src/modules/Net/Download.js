@@ -8,6 +8,8 @@ class Download extends Request {
    */
   constructor(url, options = {}) {
     super(url, options);
+
+    this.asBlob = true;
   }
 
   /**
@@ -25,7 +27,7 @@ class Download extends Request {
     let self = this;
 
     this.addListener('onload', data => {
-      self.dispatch('onfinish', [new Blob([data.buffer], { type: self.getResponseHeader('Content-Type') })]);
+      self.dispatch('onfinish', [self.asBlob ? new Blob([data.buffer], { type: self.getResponseHeader('Content-Type') }) : data.buffer]);
     });
 
     this.send(data)

@@ -17,6 +17,7 @@ class Downloader extends Event {
     this.failIndexes = [];
     this.progresses = [];
     this.queue = null;
+    this.asBlob = true;
   }
 
   /**
@@ -57,6 +58,8 @@ class Downloader extends Event {
       return new Promise((resolve, reject) => {
         let download = new Download(file, { method: 'GET' });
 
+        download.asBlob = this.asBlob;
+
         download.addListener('onprogress', ({totalLength, loadedLength}) => {
           this.progresses[index] = loadedLength / totalLength;
 
@@ -67,10 +70,10 @@ class Downloader extends Event {
           }]);
         });
 
-        download.addListener('onfinish', blob => {
+        download.addListener('onfinish', data => {
           this.successIndexes.push(index);
 
-          this.dispatch('item-finish', [{blob, index, download}]);
+          this.dispatch('item-finish', [{blob: this.asBlob ? data : null, data: this.asBlob ? null : data, index, download}]);
 
           resolve();
         });
