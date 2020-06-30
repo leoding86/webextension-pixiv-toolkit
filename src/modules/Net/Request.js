@@ -1,5 +1,4 @@
 import Event from '@/modules/Event';
-import { arraybuffer } from '@/statics/lib/jszip/jszip';
 
 class Request extends Event {
   /**
