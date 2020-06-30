@@ -18,7 +18,7 @@ module.exports = env => {
   return merge.smart(baseConfig, {
     entry: {
       app: './src/content_scripts/main.js',
-      search: './src/content_scripts/search.js'
+      'fanbox-cs': './src/fanbox/content_scripts/app.js'
     },
     output: {
       path: utils.resolve(`dist/${platform}/content_scripts`),
