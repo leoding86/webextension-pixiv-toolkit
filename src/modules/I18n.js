@@ -1,18 +1,19 @@
 import Vue from 'vue';
 import VueI18n from 'vue-i18n';
-import localeEn from '@/statics/_locales/en/messages.json';
-import localeZhCN from '@/statics/_locales/zh_CN/messages.json';
+import locales from 'locales';
 
 Vue.use(VueI18n);
 
 export default class I18n {
-  static i18n() {
-    return new VueI18n({
-      locale: 'en',
+  static i18n(locale) {
+    let i18n = new VueI18n({
+      locale: (!locale || locale === 'default') ? 'en' : locale,
       messages: {
-        en: localeEn,
-        'zh_CN': localeZhCN
+        en: locales.localeEn,
+        'zh_CN': locales.localeZhCN
       }
     });
+
+    return i18n;
   }
 }
