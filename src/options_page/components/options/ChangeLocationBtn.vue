@@ -22,13 +22,7 @@
 </template>
 
 <script>
-import SuperMixin from "@/mixins/SuperMixin";
-
 export default {
-  mixins: [
-    SuperMixin
-  ],
-
   props: {
     disabled: {
       required: false,

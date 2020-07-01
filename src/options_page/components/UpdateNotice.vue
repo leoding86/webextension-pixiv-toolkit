@@ -22,14 +22,9 @@
 </template>
 
 <script>
-import SuperMixin from "@/mixins/SuperMixin";
 import ChangeLog from '@/options_page/components/ChangeLog'
 
 export default {
-  mixins: [
-    SuperMixin
-  ],
-
   components: {
     'change-log': ChangeLog
   },

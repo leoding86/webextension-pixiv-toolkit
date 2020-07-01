@@ -2,7 +2,7 @@
   <div id="popup">
     <div class="top-header">
       <h1><span>Pixiv</span>Toolkit</h1>
-      <a href="#" @click="openGithub" class="starit"><img src="../options_page/assets/github.svg">{{ tl('Star_it') }} !</a>
+      <a href="#" @click="openGithub" class="starit"><img src="../options_page/assets/github.svg">{{ tl('_star_it') }} !</a>
     </div>
     <div class="header">
       <h2>{{ tl('_number_of_works_downloaded') }}</h2>

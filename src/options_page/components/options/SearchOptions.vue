@@ -19,13 +19,7 @@
 </template>
 
 <script>
-import SuperMixin from '@/mixins/SuperMixin';
-
 export default {
-  mixins: [
-    SuperMixin
-  ],
-
   data() {
     return {
       enablePtkSearch: true

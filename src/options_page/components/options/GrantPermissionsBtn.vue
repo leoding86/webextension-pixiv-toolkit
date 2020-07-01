@@ -6,13 +6,7 @@
 </template>
 
 <script>
-import SuperMixin from "@/mixins/SuperMixin";
-
 export default {
-  mixins: [
-    SuperMixin
-  ],
-
   props: {
     itemKey: {
       required: true,

@@ -34,14 +34,12 @@
 </template>
 
 <script>
-import SuperMixin from '@/mixins/SuperMixin';
 import renameFormatMixin from '@@/mixins/renameFormatMixin';
 
 export default {
   name: "RenameMangaDialog",
 
   mixins: [
-    SuperMixin,
     renameFormatMixin
   ],
 

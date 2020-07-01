@@ -45,12 +45,8 @@
 </template>
 
 <script>
-import SuperMixin from "@/mixins/SuperMixin";
-
 export default {
   name: "UgoiraExtendDialog",
-
-  mixins: [SuperMixin],
 
   data() {
     return {

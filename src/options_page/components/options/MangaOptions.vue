@@ -65,14 +65,9 @@
 </template>
 
 <script>
-import SuperMixin from "@/mixins/SuperMixin";
 import ChangeLocationSetting from '@@/components/options/ChangeLocationSetting';
 
 export default {
-  mixins: [
-    SuperMixin
-  ],
-
   components: {
     'change-location-setting': ChangeLocationSetting
   },

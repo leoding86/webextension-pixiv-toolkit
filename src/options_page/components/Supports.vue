@@ -6,7 +6,7 @@
       depressed
       class="support-btn" @click="openInNewTab('https://github.com/leoding86/webextension-pixiv-toolkit')">
       <img src="../assets/github.svg">
-      <span class="button-text" v-show="largeWindow">{{ tl('Star_it') }}</span>
+      <span class="button-text" v-show="largeWindow">{{ tl('_star_it') }}</span>
       <v-icon right>open_in_new</v-icon>
     </v-btn>
 
@@ -36,7 +36,7 @@
     <v-btn v-if="showInlineSponsorsLink"
       small
       depressed
-      round class="support-btn" @click="showSponsors"
+      round class="support-btn" @click="routeTo('Sponsors')"
       style="background:#fff;">
       😍<span class="button-text" v-show="largeWindow">{{ tl('Sponsors') }}</span>
       <v-icon>keyboard_arrow_right</v-icon>
@@ -59,13 +59,8 @@ import common from "@@/modules/common";
 import cr from "@@/modules/cr";
 import chromeEsIcon from '../assets/chrome-es.png';
 import firefoxAmoIcon from '../assets/firefox-amo.png';
-import SuperMixin from "@/mixins/SuperMixin";
 
 export default {
-  mixins: [
-    SuperMixin
-  ],
-
   props: {
     showSponsorsLink: {
       type: Boolean,
@@ -124,12 +119,6 @@ export default {
   },
 
   methods: {
-    showSponsors() {
-      this.$router.push({
-        name: "Sponsors"
-      });
-    },
-
     openInNewTab(url) {
       window.open(url, "_blank");
     }

@@ -87,22 +87,13 @@
 
 <script>
 import Vue from 'vue'
-import Vuetify from 'vuetify'
-import 'vuetify/dist/vuetify.min.css'
 import extConfig from '@@/../statics/manifest.json'
-import SuperMixin from '@/mixins/SuperMixin';
 import Supports from '@@/components/Supports';
 import AppSuggest from '@@/components/AppSuggest';
 import UpdateNotice from '@@/components/UpdateNotice';
 
-Vue.use(Vuetify)
-
 export default {
   name: 'App',
-
-  mixins: [
-    SuperMixin
-  ],
 
   components: {
     'supports': Supports,
@@ -152,12 +143,6 @@ export default {
       } else {
         this.routeTo('VisitHistory');
       }
-    },
-
-    routeTo (name) {
-      this.pushRoute({
-        name: name
-      })
     }
   }
 }

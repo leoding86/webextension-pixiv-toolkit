@@ -91,14 +91,11 @@
 </template>
 
 <script>
-import SuperMixin from "@/mixins/SuperMixin";
 import IllustHistory from "@/repositories/IllustHistory";
 import HistoryBackup from "@/repositories/HistoryBackup";
 import importIllustHistoryWorker from "worker-loader?inline=true,fallback=false!@/options_page/workers/importIllustHistoryWorker.js";
 
 export default {
-  mixins: [SuperMixin],
-
   data() {
     return {
       enableSaveVisitHistory: true,

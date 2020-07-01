@@ -43,14 +43,9 @@ import DownloadOptions from '@@/components/options/DownloadOptions';
 import HistoryOptions from '@@/components/options/HistoryOptions';
 import SearchOptions from '@@/components/options/SearchOptions';
 import OtherOptions from '@@/components/options/OtherOptions';
-import SuperMixin from '@/mixins/SuperMixin';
 import defaultSettings from '@/config/default';
 
 export default {
-  mixins: [
-    SuperMixin,
-  ],
-
   name: 'Options',
 
   components: {

@@ -16,12 +16,9 @@
 </template>
 
 <script>
-import SuperMixin from '@/mixins/SuperMixin';
 import histories from '@/statics/histories.json';
 
 export default {
-  mixins: [ SuperMixin ],
-
   data() {
     return {
       loading: true,

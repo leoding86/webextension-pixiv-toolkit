@@ -75,14 +75,9 @@
 </template>
 
 <script>
-import SuperMixin from "@/mixins/SuperMixin";
 import GrantPermissionsBtn from "@@/components/options/GrantPermissionsBtn";
 
 export default {
-  mixins: [
-    SuperMixin
-  ],
-
   components: {
     'grant-permissions-btn': GrantPermissionsBtn
   },
@@ -168,7 +163,7 @@ export default {
     },
 
     showDownloadRelativeLocationDialog() {
-      this.$router.push({
+      this.pushRoute({
         name: "DownloadRelativeLocationDialog",
         params: {
           downloadRelativeLocation: ""

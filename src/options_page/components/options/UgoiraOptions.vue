@@ -90,12 +90,9 @@
 </template>
 
 <script>
-import SuperMixin from "@/mixins/SuperMixin";
 import ChangeLocationSetting from '@@/components/options/ChangeLocationSetting';
 
 export default {
-  mixins: [SuperMixin],
-
   components: {
     'change-location-setting': ChangeLocationSetting
   },
@@ -192,8 +189,8 @@ export default {
     },
 
     showRenameUgoiraDialog(evt) {
-      this.$router.push({
-        name: "RenameUgoira",
+      this.pushRoute({
+        name: 'RenameUgoira',
         params: {
           renameFormat: this.ugoiraRenameFormat
         }
@@ -201,7 +198,7 @@ export default {
     },
 
     showUgoiraExtendDialog() {
-      this.$router.push("ugoira-extend");
+      this.routeTo('UgoiraExtend');
     }
   }
 };

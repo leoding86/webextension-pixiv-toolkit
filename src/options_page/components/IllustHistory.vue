@@ -126,14 +126,9 @@ import PageTitle from '@@/components/PageTitle'
 import IllustHistory from '@/repositories/IllustHistory'
 import CacheableImage from '@@/components/CacheableImage';
 import Supports from '@@/components/Supports';
-import SuperMixin from '@/mixins/SuperMixin';
 import IllustHistoryPort from '@/modules/Ports/IllustHistoryPort/RendererPort';
 
 export default {
-  mixins: [
-    SuperMixin,
-  ],
-
   components: {
     'page-title': PageTitle,
     'cacheable-image': CacheableImage

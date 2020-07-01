@@ -60,14 +60,9 @@
 </template>
 
 <script>
-import SuperMixin from "@/mixins/SuperMixin";
 import ChangeLocationSetting from '@@/components/options/ChangeLocationSetting';
 
 export default {
-  mixins: [
-    SuperMixin
-  ],
-
   components: {
     'change-location-setting': ChangeLocationSetting
   },
@@ -133,15 +128,11 @@ export default {
 
   methods: {
     showRenameDialog(evt) {
-      this.$router.push({
-        name: "RenameIllustration"
-      });
+      this.routeTo('RenameIllustration');
     },
 
     showRenameImageDialog(evt) {
-      this.$router.push({
-        name: "RenameIllustrationImage"
-      });
+      this.routeTo('RenameIllustrationImage');
     }
   }
 };

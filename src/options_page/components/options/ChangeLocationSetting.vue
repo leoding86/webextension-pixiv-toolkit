@@ -32,12 +32,9 @@
 </template>
 
 <script>
-import SuperMixin from "@/mixins/SuperMixin";
 import ChangeLocationBtn from "@@/components/options/ChangeLocationBtn";
 
 export default {
-  mixins: [SuperMixin],
-
   components: {
     'change-location-btn': ChangeLocationBtn
   },
