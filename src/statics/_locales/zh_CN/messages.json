@@ -257,7 +257,7 @@
    "Add_a_search_suffix_for_searching_popular_works_probably": {
        "message": "添加搜索后缀以搜索热门作品（大概）"
    },
-   "Star_it": {
+   "_star_it": {
        "message": "加个星"
    },
    "Novel": {
