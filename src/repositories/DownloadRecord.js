@@ -1,7 +1,4 @@
 import PouchDB from 'pouchdb';
-import PouchDBFind from 'pouchdb-find';
-
-PouchDB.plugin(PouchDBFind)
 
 class DownloadRecord {
   static instance;
