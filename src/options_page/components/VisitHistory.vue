@@ -313,7 +313,7 @@ export default {
     },
 
     openInNew(illust) {
-      window.open(caseWorkUrl(illust));
+      window.open(this.caseWorkUrl(illust));
     },
 
     deleteOne(illust) {
