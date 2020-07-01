@@ -1,14 +1,15 @@
+import 'vuetify/dist/vuetify.min.css'
+
 import App from './App'
 import Browser from '@/modules/Browser/Browser'
 import I18n from '@/modules/I18n';
-import RouterMixin from '@/mixins/RouterMixin'
+import SuperMixin from '@/mixins/SuperMixin';
 import Vue from 'vue'
+import Vuetify from 'vuetify';
 import router from './router'
 
 Vue.config.productionTip = false;
-Vue.mixin(RouterMixin);
-
-const i18n = I18n.i18n();
+Vue.mixin(SuperMixin);
 
 try {
   (function(browser) {
@@ -29,7 +30,9 @@ try {
     });
 
     browser.storage.local.get(null, items => {
-      i18n.locale = items.language || 'default';
+      const i18n = I18n.i18n(items.language);
+
+      Vue.use(Vuetify)
 
       /* eslint-disable no-new */
       new Vue({

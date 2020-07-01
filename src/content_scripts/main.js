@@ -12,10 +12,8 @@ import Vue from 'vue';
 Vue.prototype.$browser = window.browser /* For back compatible */ = Browser.getBrowser();
 Vue.mixin(SuperMixin);
 
-let i18n = I18n.i18n();
-
 browser.storage.local.get(null, items => {
-  i18n.locale = items.language || 'default';
+  let i18n = I18n.i18n(items.language);
 
   /**
    * Create app mount point
