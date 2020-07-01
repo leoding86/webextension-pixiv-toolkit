@@ -34,8 +34,10 @@ module.exports = env => {
     },
     externals: {
       vue: 'Vue',
+      'vue-i18n': 'VueI18n',
       pouchdb: 'PouchDB',
-      'pouchdb-find': 'PouchDBFind'
+      'pouchdb-find': 'PouchDBFind',
+      locales: 'locales',
     },
     node: {
       // prevent webpack from injecting useless setImmediate polyfill because Vue

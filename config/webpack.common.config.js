@@ -1,6 +1,6 @@
 'use strict'
 
-const baseConfig = require('./webpack.base.config')();
+const merge = require('webpack-merge');
 const utils = require('./utils');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
@@ -10,20 +10,24 @@ const isProduction = process.env.NODE_ENV === 'production' ?
 module.exports = env => {
   let platform = env ? (env.platform || 'chrome') : 'chrome';
 
-  let baseConfig_ = Object.assign({}, baseConfig);
-
-  delete baseConfig_.externals.pouchdb;
-  delete baseConfig_.externals["pouchdb-find"];
-
-  return Object.assign({}, baseConfig_, {
+  return Object.assign({}, {
     entry: {
-      pouchdb: './src/common/PouchDB.js'
+      locales: utils.resolve('src/modules/Locales.js'),
     },
     output: {
-      library: 'common',
+      library: '[name]',
       path: utils.resolve(`dist/${platform}/lib`),
-      filename: '[name].js'
+      filename: '[name].js',
+      libraryTarget: 'umd'
     },
+    module: merge.smart({
+      rules: [
+        {
+          test: /\.json$/,
+          loader: 'json-loader'
+        }
+      ]
+    }),
     plugins: [
       new BundleAnalyzerPlugin({
         analyzerMode: isProduction ? 'static' : 'disabled',

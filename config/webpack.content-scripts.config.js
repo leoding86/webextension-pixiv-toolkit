@@ -17,8 +17,7 @@ module.exports = env => {
 
   return merge.smart(baseConfig, {
     entry: {
-      app: './src/content_scripts/main.js',
-      search: './src/content_scripts/search.js'
+      app: './src/content_scripts/main.js'
     },
     output: {
       path: utils.resolve(`dist/${platform}/content_scripts`),
