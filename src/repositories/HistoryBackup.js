@@ -42,16 +42,17 @@ export default class HistoryBackup {
     return this.items.length >= this.limit;
   }
 
-  free(size = 1) {
-    const targetSize = this.limit - size;
-
-    while (this.items.length > targetSize) {
-      this.items.shift();
+  free() {
+    if (this.items.length > this.limit) {
+      this.items.splice(0, this.items.length - this.limit);
     }
   }
 
   saveItems() {
+    this.free();
+
     let data = {};
+
     data[this.getKey()] = this.items;
 
     this.browser.storage.local.set(data, () => {
