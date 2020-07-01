@@ -1,7 +1,6 @@
 {
     "background": {
         "scripts": [
-            "lib/babel-polyfill.min.js",
             "lib/pouchdb.min.js",
             "lib/pouchdb.find.min.js",
             "backgrounds/background.js"
@@ -44,7 +43,6 @@
                 "content_scripts/static/css/app.css"
             ],
             "js": [
-                "lib/babel-polyfill.min.js",
                 "lib/vue.min.js",
                 "lib/vue-i18n.min.js",
                 "lib/locales.js",
