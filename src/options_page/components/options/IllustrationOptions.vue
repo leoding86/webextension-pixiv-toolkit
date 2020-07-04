@@ -30,11 +30,11 @@
 
         <v-list-tile>
           <v-list-tile-content>
-            <v-list-tile-title>{{ tl('_keep_page_number') }}</v-list-tile-title>
-            <v-list-tile-sub-title>{{ tl('_keep_page_number_even_if_the_illustration_only_has_one_image') }}</v-list-tile-sub-title>
+            <v-list-tile-title>{{ tl('_always_pack') }}</v-list-tile-title>
+            <v-list-tile-sub-title>{{ tl('_always_pack_images_into_zip_file_even_if_there_is_only_one_image_in_the_illustration') }}</v-list-tile-sub-title>
           </v-list-tile-content>
           <v-list-tile-action>
-            <v-switch v-model="keepPageNumber"></v-switch>
+            <v-switch v-model="alwaysPack"></v-switch>
           </v-list-tile-action>
         </v-list-tile>
 
@@ -73,7 +73,7 @@ export default {
 
       imageRenameFormat: "",
 
-      keepPageNumber: false,
+      alwaysPack: false,
 
       pageNumberStartWithOne: false,
 
@@ -100,11 +100,6 @@ export default {
   },
 
   watch: {
-    keepPageNumber(val) {
-      browser.storage.local.set({
-        illustrationKeepPageNumber: val
-      });
-    },
 
     pageNumberStartWithOne(val) {
       browser.storage.local.set({
@@ -116,14 +111,20 @@ export default {
       browser.storage.local.set({
         illustrationRelativeLocation: val
       });
+    },
+
+    alwaysPack(val) {
+      browser.storage.local.set({
+        alwaysPack: !!val
+      });
     }
   },
 
   beforeMount() {
-    this.keepPageNumber = this.browserItems.illustrationKeepPageNumber;
     this.pageNumberStartWithOne = this.browserItems.illustrationPageNumberStartWithOne;
 
     this.location = this.browserItems.illustrationRelativeLocation;
+    this.alwaysPack = this.browserItems.alwaysPack;
   },
 
   methods: {

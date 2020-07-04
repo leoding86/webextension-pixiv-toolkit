@@ -34,14 +34,12 @@ class IllustTool extends Event {
     illustrationRenameFormat,
     illustrationImageRenameFormat,
     pageNumberStartWithOne = false,
-    illustrationKeepPageNumber = false,
     processors = 2
   }) {
     this.splitSize = splitSize;
     this.illustrationRenameFormat = illustrationRenameFormat
     this.illustrationImageRenameFormat = illustrationImageRenameFormat;
     this.pageNumberStartWithOne = pageNumberStartWithOne;
-    this.illustrationKeepPageNumber = illustrationKeepPageNumber;
     this.processors = processors
 
     return this;
@@ -112,7 +110,8 @@ class IllustTool extends Event {
   }
 
   getFilename(chunk) {
-    return formatName(this.illustrationRenameFormat, this.context, this.context.illustId) + '_' + this.getPageRange(chunk) + '.zip';
+    let pageSuffix = this.chunks.length > 1 ? ('_' + this.getPageRange(chunk)) : '';
+    return formatName(this.illustrationRenameFormat, this.context, this.context.illustId) + pageSuffix + '.zip';
   }
 
   /**
@@ -161,13 +160,7 @@ class IllustTool extends Event {
 
           this.context.pageNum = pageNum;
 
-          let format = null;
-
-          if (this.illustrationKeepPageNumber) {
-            format = this.illustrationImageRenameFormat.replace(/#/g, '');
-          } else {
-            format = this.illustrationImageRenameFormat.replace(/#.*#/g, '');
-          }
+          let format = this.illustrationImageRenameFormat.replace(/#.*#/g, '');
 
           let filename = formatName(format, this.context, pageNum) + '.' + MimeType.getExtenstion(download.getResponseHeader('Content-Type'));
 
@@ -206,7 +199,7 @@ class IllustTool extends Event {
       this.context.pageNum = pageNum;
 
       filename = formatName(
-        this.illustrationImageRenameFormat.replace(/#/g, ''),
+        this.illustrationImageRenameFormat.replace(this.isSingle() ? /#.*#/g: /#/g, ''),
         this.context,
         pageNum
       );

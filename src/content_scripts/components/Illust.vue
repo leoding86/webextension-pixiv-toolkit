@@ -41,6 +41,12 @@ export default {
     }
   },
 
+  computed: {
+    alwaysPack() {
+      return this.browserItems.alwaysPack;
+    }
+  },
+
   mounted() {
     let vm = this,
         buttonsInfo = {}
@@ -63,7 +69,6 @@ export default {
       splitSize: 999,
       illustrationRenameFormat: this.browserItems.illustrationRenameFormat,
       illustrationImageRenameFormat: this.browserItems.illustrationImageRenameFormat,
-      illustrationKeepPageNumber: this.browserItems.illustrationKeepPageNumber,
       pageNumberStartWithOne: this.browserItems.illustrationPageNumberStartWithOne,
       processors: parseInt(this.browserItems.downloadTasksWhenDownloadingImages)
     }).init()
@@ -117,7 +122,7 @@ export default {
 
         buttonsInfo[i] = {
           index: i,
-          text: (isSingle ? this.tl('_dl_image') : vm.getChunkTitle(chunk, { singular: this.tl('_dl_page'), plural: this.tl('_dl_pages')})) + (vm.isSaved ? ' ✔️' : ''),
+          text: ((isSingle && !this.alwaysPack) ? this.tl('_dl_image') : vm.getChunkTitle(chunk, { singular: this.tl('_dl_page'), plural: this.tl('_dl_pages')})) + (vm.isSaved ? ' ✔️' : ''),
           filename: null,
           downloadStatus: 0,
           chunk: chunk,
@@ -171,7 +176,7 @@ export default {
       if (buttonInfo.downloadStatus === 0) {
         buttonInfo.downloadStatus = 1;
 
-        if (buttonInfo.isSingle) {
+        if (buttonInfo.isSingle && !this.alwaysPack) {
           this.tool.downloadFile(
             this.tool.context.pages[0].urls.original,
             buttonInfo,
