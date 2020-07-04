@@ -598,5 +598,11 @@
    },
    "_page_number_start_with_1_otherwise_start_with_0": {
        "message": "启用后页面从1开始，否则从0开始"
+   },
+   "_always_pack": {
+       "message": "始终打包"
+   },
+   "_always_pack_images_into_zip_file_even_if_there_is_only_one_image_in_the_illustration": {
+       "message": "即使图集只有一张图片也打包进压缩包"
    }
 }

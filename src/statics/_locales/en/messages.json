@@ -598,5 +598,11 @@
    },
    "_page_number_start_with_1_otherwise_start_with_0": {
        "message": "Page number start with 1 otherwise start with 0"
+   },
+   "_always_pack": {
+       "message": "Always pack"
+   },
+   "_always_pack_images_into_zip_file_even_if_there_is_only_one_image_in_the_illustration": {
+       "message": "Alway pack image(s) into zip file even if there is only one image in the illustration"
    }
 }
