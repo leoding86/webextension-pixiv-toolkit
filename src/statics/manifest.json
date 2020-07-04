@@ -64,7 +64,7 @@
                 "content_scripts/static/css/fanbox-cs.css"
             ],
             "js": [
-                "lib/babel-polyfill.min.js",
+                "lib/global.js",
                 "lib/vue.min.js",
                 "lib/jszip/jszip.js",
                 "lib/jszip/jszip-utils.min.js",
