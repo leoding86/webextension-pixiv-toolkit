@@ -101,6 +101,7 @@ export default Object.assign({}, {
 
     /**
      * @since 3.7.3
+     * @deprecated since 4.2.2
      */
     illustrationKeepPageNumber: false,
 
@@ -146,5 +147,10 @@ export default Object.assign({}, {
      * @since 4.2
      */
     animationJsonFormat: 1,
-    language: 'default'
+    language: 'default',
+
+    /**
+     * @since 4.2.2
+     */
+    alwaysPack: false
   });
