@@ -95,9 +95,11 @@ export default {
       try {
         let postAdatper = this.detector.getPostAdapter(window.location.href);
         postAdatper.getContext().then(context => {
-          this.ready = true;
-          this.isUnsupportedPostType = false;
-          this.context = context;
+          if (context.images.length > 0) {
+            this.ready = true;
+            this.isUnsupportedPostType = false;
+            this.context = context;
+          }
         });
       } catch (e) {
         if (e.name === 'UnsupportedPostType') {
@@ -130,8 +132,7 @@ export default {
           splitSize: 99,
           illustrationRenameFormat: vm.getItem('illustrationRenameFormat'),
           illustrationImageRenameFormat: vm.getItem('illustrationImageRenameFormat'),
-          pageNumberStartWithOne: vm.getItem('illustrationPageNumberStartWithOne'),
-          illustrationKeepPageNumber: vm.getItem('illustrationKeepPageNumber')
+          pageNumberStartWithOne: vm.getItem('illustrationPageNumberStartWithOne')
         }).init();
 
         post.addListener('download-progress', progress => {

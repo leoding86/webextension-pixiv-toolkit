@@ -32,14 +32,12 @@ export default class Post extends Event {
     illustrationRenameFormat,
     illustrationImageRenameFormat,
     pageNumberStartWithOne = false,
-    illustrationKeepPageNumber = false,
     processors = 2
   }) {
     this.splitSize = splitSize;
     this.illustrationRenameFormat = illustrationRenameFormat
     this.illustrationImageRenameFormat = illustrationImageRenameFormat;
     this.pageNumberStartWithOne = pageNumberStartWithOne;
-    this.illustrationKeepPageNumber = illustrationKeepPageNumber;
     this.processors = processors
 
     return this;
@@ -160,11 +158,7 @@ export default class Post extends Event {
 
           let format = null;
 
-          if (this.illustrationKeepPageNumber) {
-            format = this.illustrationImageRenameFormat.replace(/#/g, '');
-          } else {
-            format = this.illustrationImageRenameFormat.replace(/#.*#/g, '');
-          }
+          format = this.illustrationImageRenameFormat.replace(/#.*#/g, '');
 
           let filename = formatName(format, this.context, pageNum) + '.' + MimeType.getExtenstion(download.getResponseHeader('Content-Type'));
 
