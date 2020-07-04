@@ -16,11 +16,21 @@ class MimeType {
   static getExtenstion(mimeType) {
     mimeType = mimeType.toLowerCase();
 
-    if (MimeType.types[mimeType]) {
-      return MimeType.types[mimeType];
+    let parts = [];
+
+    if (mimeType.indexOf('; ') > -1) {
+      parts = mimeType.split('; ');
     } else {
-      return null;
+      parts = [mimeType];
     }
+
+    for (let i = 0, l = parts.length; i < l; i++) {
+      if (MimeType.types[parts[i]]) {
+        return MimeType.types[parts[i]];
+      }
+    }
+
+    return null;
   }
 }
 

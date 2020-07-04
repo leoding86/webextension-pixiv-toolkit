@@ -29,7 +29,8 @@
         "unlimitedStorage",
         "*://*.pixiv.net/*",
         "*://*.pximg.net/*",
-        "*://*.techorus-cdn.com/*"
+        "*://*.techorus-cdn.com/*",
+        "*://*.fanbox.cc/*"
     ],
     "optional_permissions": [
         "downloads"
@@ -55,9 +56,23 @@
                 "lib/whammy.js",
                 "content_scripts/app.js"
             ]
+        }, {
+            "matches": [
+                "*://*.fanbox.cc/*"
+            ],
+            "css": [
+                "content_scripts/static/css/fanbox-cs.css"
+            ],
+            "js": [
+                "lib/babel-polyfill.min.js",
+                "lib/vue.min.js",
+                "lib/jszip/jszip.js",
+                "lib/jszip/jszip-utils.min.js",
+                "content_scripts/fanbox-cs.js"
+            ]
         }
     ],
-    "version": "4.2.1",
-    "version_name": "4.2.1-2020063020",
+    "version": "4.3.0",
+    "version_name": "4.3.0-2020070422",
     "options_page": "options_page/index.html"
 }
