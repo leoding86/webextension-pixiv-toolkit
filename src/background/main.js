@@ -74,13 +74,15 @@ Main.prototype = {
     browser.webRequest.onBeforeSendHeaders.addListener(details => {
       let hasOriginHeader = false;
 
-      for (let i = 0, l = details.requestHeaders.length; i < l; ++i) {
-        if (details.url.indexOf('i.pximg.net') > -1 && details.requestHeaders[i].name.toLowerCase() === 'referer') {
-          details.requestHeaders.splice(i, 1);
-        } else if (details.requestHeaders[i].name.toLowerCase() === 'origin') {
+      details.requestHeaders.forEach((header, i) => {
+        let headerName = header.name.toLowerCase();
+
+        if (headerName === 'referer') {
+          details.url.indexOf('i.pximg.net') > -1 && details.requestHeaders.splice(i, 1);
+        } else if (headerName === 'origin') {
           hasOriginHeader = true;
         }
-      }
+      });
 
       if (details.url.indexOf('api.fanbox.cc') > -1) {
         if (!hasOriginHeader) {
@@ -90,12 +92,10 @@ Main.prototype = {
           });
         }
       } else if (details.url.indexOf('i.pximg.net') > -1) {
-        if (!details.initiator || details.initiator.indexOf('http') < 0) {
-          details.requestHeaders.push({
-            name: 'Referer',
-            value: 'https://www.pixiv.net/',
-          });
-        }
+        details.requestHeaders.push({
+          name: 'Referer',
+          value: details.initiator ? details.initiator : 'https://www.pixiv.net/'
+        });
       }
 
       return { requestHeaders: details.requestHeaders }
@@ -108,15 +108,11 @@ Main.prototype = {
 
     browser.webRequest.onHeadersReceived.addListener(details => {
       console.log(details);
-      Object.keys(details.responseHeaders).forEach((name, i) => {
-        if (name.toLowerCase === 'access-control-allow-origin') {
-          details.responseHeaders.splice(i, 1);
-        }
-      });
 
-      details.responseHeaders.push({
-        name: 'Access-Control-Allow-Origin',
-        value: '*'
+      details.responseHeaders.forEach((header, i) => {
+        if (header.name.toLowerCase() === 'access-control-allow-origin') {
+          header.value = '*';
+        }
       });
 
       return { responseHeaders: details.responseHeaders };
