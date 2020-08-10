@@ -1,12 +1,12 @@
 import PouchDB from 'pouchdb'
 
 class IllustHistory {
-  constructor() {
+  constructor( { max = 10000 } ) {
     this.db = new PouchDB('illust_histories',  {
       revs_limit: 1
     });
 
-    this.maxLimit = 10000;
+    this.maxLimit = max;
 
     this.properties = ['id', 'title', 'userId', 'userName', 'type', 'r', 'images', 'viewed_at', 'isNovel', 'image'];
 
@@ -126,6 +126,12 @@ class IllustHistory {
         })
       })
     })
+  }
+
+  countItems(option = {}) {
+    return this.db.allDocs(option).then(items => {
+      return items.rows.length;
+    });
   }
 
   getIllusts(option = {}) {

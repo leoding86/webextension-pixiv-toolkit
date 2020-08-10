@@ -3,12 +3,12 @@ import PouchDB from 'pouchdb';
 class DownloadRecord {
   static instance;
 
-  constructor() {
+  constructor({ max = 10000 }) {
     this.db = new PouchDB('download_record', {
       revs_limit: 1
     });
 
-    this.maxLimit = 5000;
+    this.maxLimit = max;
 
     this.init();
   }
@@ -27,7 +27,7 @@ class DownloadRecord {
   init() {
     return this.db.createIndex({
       index: {
-        fields: ['downloaded_at']
+        fields: ['_id', 'downloaded_at']
       }
     })
   }
@@ -68,6 +68,23 @@ class DownloadRecord {
 
   retrieveRecord(id) {
     return this.db.get(id);
+  }
+
+  retrieveRecordsFromIds(ids) {
+    return this.db.query(
+      (doc, emit) => {
+        if (ids.indexOf(doc._id) > -1) {
+          emit(doc);
+        }
+      }, {
+        limit: ids.length,
+        include_docs: true
+      }
+    ).then(response => {
+      return response.rows.map((row) => {
+        return row.doc;
+      });
+    });
   }
 }
 
