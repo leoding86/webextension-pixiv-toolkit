@@ -8,7 +8,7 @@ export default class BackgroundPort extends IllustHistoryPort {
   constructor() {
     super();
 
-    this.illustHistoryRepo = new IllustHistoryRepo();
+    this.illustHistoryRepo = new IllustHistoryRepo({ max: window.$extension.items.maxHistoryItems });
     this.historyBackupRepo = HistoryBackupRepo.getDefault();
   }
 
@@ -28,8 +28,34 @@ export default class BackgroundPort extends IllustHistoryPort {
     return this.illustHistoryRepo.putIllust(args)
   }
 
-  listIllustHistoriesAction() {
-    return this.illustHistoryRepo.getIllusts();
+  countItemsAction(args, port) {
+    this.illustHistoryRepo.countItems(args).then(count => {
+      this.sendMessageThroughPort(port, 'items-count', { count });
+    });
+  }
+
+  listItemsAction(args, port) {
+    this.illustHistoryRepo.getIllusts(args).then(docs => {
+      this.sendMessageThroughPort(port, 'items-list', { dataset: docs });
+    }).catch(err => {
+      this.sendMessageThroughPort(port, 'items-list', { error: err });
+    });
+  }
+
+  searchItemsAction(args, port) {
+    if (args.extra && args.extra.query.length > 0) {
+      args.fun = (doc, emit) => {
+        if (doc.title.toLowerCase().indexOf(args.extra.query) > -1) {
+          emit(doc);
+        }
+      }
+    }
+
+    this.illustHistoryRepo.searchIllusts(args).then(docs => {
+      this.sendMessageThroughPort(port, 'items-list', { dataset: docs });
+    }).catch(err => {
+      this.sendMessageThroughPort(port, 'items-list', { error: err });
+    });
   }
 
   deleteIllustHistoryAction(args) {

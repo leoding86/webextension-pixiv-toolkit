@@ -1,5 +1,5 @@
-import DownloadRecordRepo from '@/repositories/DownloadRecord';
 import DownloadRecordPort from './DownloadRecordPort';
+import DownloadRecordRepo from '@/repositories/DownloadRecord';
 
 export default class BackgroundPort extends DownloadRecordPort {
   static instance;
@@ -7,7 +7,7 @@ export default class BackgroundPort extends DownloadRecordPort {
   constructor() {
     super();
 
-    this.downloadRecordRepo = new DownloadRecordRepo();
+    this.downloadRecordRepo = new DownloadRecordRepo({ max: window.$extension.items.maxDownloadRecords });
   }
 
   /**=
@@ -39,6 +39,23 @@ export default class BackgroundPort extends DownloadRecordPort {
     }).catch(error => {
       port.postMessage({
         channel: DownloadRecordPort.portName + ":get-download-record",
+        error: error.message
+      });
+    });
+  }
+
+  getDownloadRecordsFromIdsAction({ ids, responseArgs }, port) {
+    this.downloadRecordRepo.retrieveRecordsFromIds(ids).then(docs => {
+      port.postMessage({
+        channel: DownloadRecordPort.portName + ':get-download-records',
+        data: {
+          dataset: docs,
+          responseArgs
+        }
+      });
+    }).catch(error => {
+      port.postMessage({
+        channel: DownloadRecordPort.portName + ':get-download-records',
         error: error.message
       });
     });

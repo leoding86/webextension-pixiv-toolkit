@@ -41,4 +41,11 @@ export default class RendererPort extends DownloadRecordPort {
       args: { id, type }
     })
   }
+
+  getDownloadRecordsFromIds({ ids, responseArgs }) {
+    this.postMessage({
+      action: 'getDownloadRecordsFromIds',
+      args: { ids, responseArgs }
+    })
+  }
 }

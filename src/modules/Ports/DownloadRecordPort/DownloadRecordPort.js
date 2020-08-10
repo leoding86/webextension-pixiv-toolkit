@@ -54,4 +54,8 @@ export default class DownloadRecordPort {
 
     return type + id;
   }
+
+  isChannel(incomingChannel, channel) {
+    return incomingChannel === `${DownloadRecordPort.portName}:${channel}`;
+  }
 }

@@ -29,20 +29,34 @@ export default class RendererPort extends IllustHistoryPort {
     this.postMessage({
       action: 'saveIllustHistory',
       args: args
-    })
+    });
   }
 
-  listIllustHistories(args) {
-    return this.postMessage({
-      action: 'listIllustHistories',
+  countItems(args) {
+    this.postMessage({
+      action: 'countItems',
       args: args
-    })
+    });
+  }
+
+  listItems(args) {
+    this.postMessage({
+      action: 'listItems',
+      args: args
+    });
+  }
+
+  searchItems(args) {
+    this.postMessage({
+      action: 'searchItems',
+      args: args
+    });
   }
 
   deleteIllustHistory(args) {
     return this.postMessage({
       action: 'deleteIllustHistory',
       args: args
-    })
+    });
   }
 }
