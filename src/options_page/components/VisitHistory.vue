@@ -21,14 +21,8 @@
     <div class="history__header-action">
       <v-btn
         class="text-none"
+        depressed
         style="margin-left:0;"
-        depressed
-        @click="pushRoute({name: 'IllustHistory'})"
-      >{{ tl('_return_old_style') }}</v-btn>
-
-      <v-btn
-        class="text-none"
-        depressed
       >{{ tl('_total_records') }} {{ total }}</v-btn>
 
       <v-switch v-model="disableBlurOnR" :label="tl('_disable_mask')"></v-switch>
@@ -38,11 +32,11 @@
 
     <v-layout row wrap
       class="history-items"
-      v-if="illusts.length > 0"
+      v-if="historyItems.length > 0"
     >
       <recycle-scroller
         class="scroller"
-        :items="illusts"
+        :items="historyItems"
         :item-size="90"
         page-mode
         key-field="id"
@@ -61,6 +55,7 @@
           <div class="history-item__info">
             <div class="history-item__info-entity history-item__info-entity--blod">
               <span class="history-item__info-badge" :class="`history-item__info-badge--type${item.isNovel ? '-novel' : item.type}`">{{ caseWorkType(item) }}</span>
+              <span class="history-item__info-badge" v-show="item.download">Downloaded</span>
               <a class="maintitle" :href="caseWorkUrl(item)" target="_blank">{{ item.title }}</a>
             </div>
             <div class="history-item__info-entity history-item__info-entity--blod">
@@ -119,12 +114,12 @@
 
 <script>
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css';
-import { RecycleScroller } from 'vue-virtual-scroller'
-import PageTitle from '@@/components/PageTitle'
-import IllustHistory from '@/repositories/IllustHistory'
+import { RecycleScroller } from 'vue-virtual-scroller';
+import PageTitle from '@@/components/PageTitle';
 import CacheableImage from '@@/components/CacheableImage';
 import Supports from '@@/components/Supports';
 import IllustHistoryPort from '@/modules/Ports/IllustHistoryPort/RendererPort';
+import DownloadRecordPort from '@/modules/Ports/DownloadRecordPort/RendererPort';
 
 export default {
   components: {
@@ -136,7 +131,8 @@ export default {
   data() {
     return {
       total: 0,
-      illusts: [],
+      historyItems: [],
+      downloadItems: {},
       offset: 0,
       step: 50,
       disableBlurOnR: false,
@@ -151,6 +147,23 @@ export default {
     };
   },
 
+  created() {
+    this.windowScrollEventBinded = false;
+    this.tempHistoryItems = [];
+
+    this.illustHistoryPort = IllustHistoryPort.getInstance();
+    this.illustHistoryPort.port.onMessage.addListener(this.handleIllustHistoryPortResponse);
+
+    this.downloadRecordPort = DownloadRecordPort.getInstance();
+    this.downloadRecordPort.port.onMessage.addListener(this.handleDownloadRecortPortResponse);
+
+    /**
+     * Init some data
+     */
+    this.enableSaveVisitHistory = this.browserItems.enableSaveVisitHistory;
+    this.unlimitedStoragePermission = this.browserItems.unlimitedStoragePermission;
+  },
+
   beforeMount() {
     /**
      * Store visit history type
@@ -159,38 +172,18 @@ export default {
       visitHistoryType: 'list'
     });
 
-    let vm = this;
-
-    this.illustHistory = new IllustHistory();
-
-    this.illustHistoryPort = IllustHistoryPort.getInstance();
-
-    /**
-     * Init some data
-     */
-    this.enableSaveVisitHistory = this.browserItems.enableSaveVisitHistory;
-    this.unlimitedStoragePermission = this.browserItems.unlimitedStoragePermission;
-
     /**
      * Get general information
      */
-    this.illustHistory.init().then(() => {
-      vm.illustHistory.db.allDocs({
-        endkey: '_'
-      }).then(items => {
-        vm.total = items.rows.length;
-      })
+    this.illustHistoryPort.countItems({
+      endkey: '_'
     });
   },
 
   mounted() {
     let vm = this;
 
-    this.getIllusts()
-      .then(illusts => {
-        this.illusts = this.illusts.concat(illusts);
-        window.addEventListener('scroll', this.handleScroll);
-      });
+    this.getHistoryItems();
   },
 
   beforeDestroy() {
@@ -199,7 +192,7 @@ export default {
 
   computed: {
     statusNotice() {
-      if (this.illusts.length <= 0) {
+      if (this.historyItems.length <= 0) {
         return 'There is no any history';
       } else if (this.allLoaded) {
         return 'There is no more history';
@@ -226,21 +219,14 @@ export default {
       this.searchTimeout = setTimeout(() => {
         let promise;
 
-        this.illusts = [];
+        this.historyItems = [];
         this.offset = 0;
 
         if (val.trim().length > 0) {
-          promise = this.searchIllusts();
+          this.searchHistoryItems();
         } else {
-          promise = this.getIllusts();
+          this.getHistoryItems();
         }
-
-        promise
-          .then(illusts => {
-            if (illusts.length > 0) {
-              this.illusts = this.illusts.concat(illusts);
-            }
-          })
       }, 800);
     }
   },
@@ -298,22 +284,98 @@ export default {
         let promise;
 
         if (this.searchQuery.trim().length > 0) {
-          promise = this.searchIllusts();
+          this.searchHistoryItems();
         } else {
-          promise = this.getIllusts();
+          this.getHistoryItems();
         }
-
-        promise
-          .then(illusts => {
-            if (illusts.length > 0) {
-              this.illusts = this.illusts.concat(illusts);
-            }
-          });
       }
     },
 
     openInNew(illust) {
       window.open(this.caseWorkUrl(illust));
+    },
+
+    getDownloadRecordInfo(historyItems) {
+      let ids = [];
+
+      historyItems.forEach(item => {
+        if (!!item.isNovel) {
+          ids.push(item.id);
+        } else {
+          ids.push(`I${item.id}`);
+        }
+      });
+
+      this.downloadRecordPort.getDownloadRecordsFromIds({ ids });
+    },
+
+    handleIllustHistoryPortResponse(message, port) {
+      if (this.illustHistoryPort.isChannel(message.channel, 'items-count')) {
+        this.total = message.data.count;
+      } else if (this.illustHistoryPort.isChannel(message.channel, 'items-list')) {
+        if (!this.windowScrollEventBinded) {
+          window.addEventListener('scroll', this.handleScroll);
+          this.windowScrollEventBinded = false;
+        }
+
+        if (undefined === message.error && message.data.dataset.length > 0) {
+          this.tempHistoryItems = message.data.dataset;
+
+          this.getDownloadRecordInfo(message.data.dataset);
+
+          if (message.data.dataset.length < this.step) {
+            this.allLoaded = true;
+          }
+        } else {
+          this.loading = false;
+        }
+      }
+
+      if (undefined !== message.data.error) {
+        throw message.data.error;
+      }
+    },
+
+    handleDownloadRecortPortResponse(message, port) {
+      if (this.downloadRecordPort.isChannel(message.channel, 'get-download-records')) {
+        if (undefined === message.data.error && message.data.dataset.length > 0) {
+          message.data.dataset.forEach(item => {
+            if (undefined === this.downloadItems[item._id]) {
+              this.downloadItems[item._id] = item;
+            }
+          });
+
+          /**
+           * update history items
+           */
+          for (let start = 0, end = this.step; start < end; start++) {
+            let historyItem = this.tempHistoryItems[start];
+
+            if (historyItem) {
+              let casedId = !!historyItem.isNovel ? historyItem.id : `I${historyItem.id}`;
+              if (this.downloadItems[casedId]) {
+                this.tempHistoryItems[start].download = true;
+              }
+            } else {
+              break;
+            }
+          }
+
+          if (this.offset === 0) {
+            this.historyItems = this.tempHistoryItems;
+          } else {
+            this.historyItems = this.historyItems.concat(this.tempHistoryItems);
+          }
+
+          this.offset += this.step;
+        }
+      }
+
+      this.loading = false;
+
+      if (undefined !== message.data.error) {
+        throw message.data.error;
+      }
     },
 
     deleteOne(illust) {
@@ -329,73 +391,36 @@ export default {
       this.confirmDialog = false
 
       this.illustHistoryPort.deleteIllustHistory(this.illustDeleteReady);
-      this.illusts.splice(this.illusts.indexOf(this.illustDeleteReady), 1);
+      this.historyItems.splice(this.historyItems.indexOf(this.illustDeleteReady), 1);
       this.total--;
-
-      // let vm = this
-
-      // this.illustHistory.deleteIllust(this.illustDeleteReady).then(() => {
-      //   vm.illusts.splice(vm.illusts.indexOf(this.illustDeleteReady), 1)
-      //   vm.total--
-      // })
     },
 
     /**
-     * Get illust histories
+     * Get history items
      */
-    getIllusts() {
-      return new Promise((resolve, reject) => {
-        this.loading = true;
+    getHistoryItems() {
+      this.loading = true;
 
-        this.illustHistory.getIllusts({
-          limit: this.step,
-          skip: this.offset
-        }).then(illusts => {
-          this.offset += this.step;
-
-          if (illusts.length < this.step) {
-            this.allLoaded = true;
-          }
-
-          resolve(illusts);
-        }).catch(err => {
-          console.log(err);
-        }).finally(() => {
-          this.loading = false;
-        });;
+      this.illustHistoryPort.listItems({
+        limit: this.step,
+        skip: this.offset
       });
     },
 
     /**
-     * Search illust histories
+     * Search histories
      */
-    searchIllusts() {
+    searchHistoryItems() {
       let vm = this;
 
-      return new Promise(resolve => {
-        this.loading = true;
+      this.loading = true;
 
-        this.illustHistory.searchIllusts({
-          limit: this.step,
-          skip: this.offset,
-          fun(doc, emit) {
-            if (doc.title.toLowerCase().indexOf(vm.searchQuery.toLowerCase()) > -1) {
-              emit(doc);
-            }
-          }
-        }).then(illusts => {
-          if (illusts.length < this.step) {
-            this.allLoaded = true;
-          }
-
-          this.offset += this.step;
-
-          resolve(illusts);
-        }).catch(err => {
-          console.log(err);
-        }).finally(() => {
-          this.loading = false;
-        });
+      this.illustHistoryPort.searchItems({
+        limit: this.step,
+        skip: this.offset,
+        extra: {
+          query: this.searchQuery.toLowerCase()
+        }
       });
     }
   }
