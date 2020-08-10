@@ -13,7 +13,7 @@ function Main() {
   this.enableExtension = false;
   this.logs = [];
   this.logsMax = 200;
-  this.ports = this.getPorts();
+  this.ports = {};
 }
 
 Main.prototype = {
@@ -27,17 +27,16 @@ Main.prototype = {
   },
 
   run: function () {
-    let self = this;
-
-    browser.storage.local.get(null, function (items) {
+    browser.storage.local.get(null, items => {
       // self.enableExtension = items.enableExtension;
-      self.items = items;
-      self.enableExtension = true;
+      this.items = items;
+      this.enableExtension = true;
 
-      self.update();
-      self.listenStorageChanged();
-      self.listenMessage();
-      self.listenPortConnect();
+      this.ports = this.getPorts();
+      this.update();
+      this.listenStorageChanged();
+      this.listenMessage();
+      this.listenPortConnect();
     });
 
     /**
@@ -71,14 +70,21 @@ Main.prototype = {
       opt_onHeadersReceived_extraInfoSpec.push(browser.webRequest.OnHeadersReceivedOptions.EXTRA_HEADERS);
     }
 
+    let savePattern = /^https:\/\/(www\.)[pixiv|fanbox]/;
+
     browser.webRequest.onBeforeSendHeaders.addListener(details => {
       let hasOriginHeader = false;
+      let hasReferer = false;
 
       details.requestHeaders.forEach((header, i) => {
         let headerName = header.name.toLowerCase();
 
         if (headerName === 'referer') {
-          details.url.indexOf('i.pximg.net') > -1 && details.requestHeaders.splice(i, 1);
+          hasReferer = true;
+
+          if (details.url.indexOf('i.pximg.net') > -1 && !savePattern.text(header.value)) {
+            details.requestHeaders[i].value = 'https://www.pixiv.net/';
+          }
         } else if (headerName === 'origin') {
           hasOriginHeader = true;
         }
@@ -91,10 +97,12 @@ Main.prototype = {
             value: details.initiator
           });
         }
-      } else if (details.url.indexOf('i.pximg.net') > -1) {
+      }
+
+      if (!hasReferer) {
         details.requestHeaders.push({
-          name: 'Referer',
-          value: details.initiator ? details.initiator : 'https://www.pixiv.net/'
+          name: 'referer',
+          value: 'https://www.pixiv.net/'
         });
       }
 
@@ -325,5 +333,5 @@ Main.prototype = {
   }
 }
 
-const main = new Main();
+const main = window.$extension = new Main();
 main.run();
