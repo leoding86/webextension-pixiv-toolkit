@@ -1,3 +1,8 @@
+v4.4.0-2020081004
+Add settings in History section in setting page;
+Add download tag in history list for showing download status;
+Minor fixes.
+
 v4.3.0-2020070422
 Add support for downloading images in Fanbox articles (support article and image type);
 Add setting 'Always pack';
