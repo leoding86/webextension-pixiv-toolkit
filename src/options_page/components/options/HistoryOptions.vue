@@ -25,6 +25,36 @@
 
         <v-list-tile>
           <v-list-tile-content>
+            <v-list-tile-title>{{ tl('_max_history_items') }}</v-list-tile-title>
+            <v-list-tile-sub-title>{{ tl('_reload_to_apply_change') }}</v-list-tile-sub-title>
+          </v-list-tile-content>
+          <v-list-tile-action>
+            <v-text-field
+              v-model="maxHistoryItems"
+              reverse
+              type="number"
+              style="width:100px;"
+            ></v-text-field>
+          </v-list-tile-action>
+        </v-list-tile>
+
+        <v-list-tile>
+          <v-list-tile-content>
+            <v-list-tile-title>{{ tl('_max_download_records') }}</v-list-tile-title>
+            <v-list-tile-sub-title>{{ tl('_reload_to_apply_change') }}</v-list-tile-sub-title>
+          </v-list-tile-content>
+          <v-list-tile-action>
+            <v-text-field
+              v-model="maxDownloadRecords"
+              reverse
+              type="number"
+              style="width:100px;"
+            ></v-text-field>
+          </v-list-tile-action>
+        </v-list-tile>
+
+        <v-list-tile>
+          <v-list-tile-content>
             <v-list-tile-title>{{ tl('Export_visit_history') }}</v-list-tile-title>
           </v-list-tile-content>
           <v-list-tile-action>
@@ -107,12 +137,16 @@ export default {
       importedCount: 0,
       recoveryTotal: 0,
       recoveryCount: 0,
+      maxHistoryItems: 10000,
+      maxDownloadRecords: 10000
     };
   },
 
   beforeMount() {
     this.enableSaveVisitHistory = this.browserItems.enableSaveVisitHistory;
     this.notSaveNSFWWorkInHistory = this.browserItems.notSaveNSFWWorkInHistory;
+    this.maxHistoryItems = this.browserItems.maxHistoryItems;
+    this.maxDownloadRecords = this.browserItems.maxDownloadRecords;
 
     this.illustHistory = new IllustHistory();
     this.historyBackup = new HistoryBackup();
@@ -135,6 +169,26 @@ export default {
       browser.storage.local.set({
         notSaveNSFWWorkInHistory: !!val
       });
+    },
+
+    maxHistoryItems(val) {
+      if (/^\d+$/.test(val) && val > 0) {
+        browser.storage.local.set({
+          maxHistoryItems: val
+        });
+      } else {
+        this.maxHistoryItems = 10000;
+      }
+    },
+
+    maxDownloadRecords(val) {
+      if (/^\d+$/.test(val) && val > 0) {
+        browser.storage.local.set({
+          maxDownloadRecords: val
+        });
+      } else {
+        this.maxDownloadRecords = 10000;
+      }
     }
   },
 
