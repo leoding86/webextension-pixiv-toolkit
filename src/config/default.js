@@ -152,5 +152,11 @@ export default Object.assign({}, {
     /**
      * @since 4.2.2
      */
-    alwaysPack: false
+    alwaysPack: false,
+
+    /**
+     * @since 4.4.0
+     */
+    maxHistoryItems: 10000,
+    maxDownloadRecords: 10000,
   });
