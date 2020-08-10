@@ -604,5 +604,14 @@
    },
    "_always_pack_images_into_zip_file_even_if_there_is_only_one_image_in_the_illustration": {
        "message": "Alway pack image(s) into zip file even if there is only one image in the illustration"
+   },
+   "_max_history_items": {
+       "message": "Max history items"
+   },
+   "_max_download_records": {
+       "message": "Max download records"
+   },
+   "_reload_to_apply_change": {
+       "message": "Reload to apply change (Add downloads in progress will be aborted)"
    }
 }

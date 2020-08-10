@@ -604,5 +604,14 @@
    },
    "_always_pack_images_into_zip_file_even_if_there_is_only_one_image_in_the_illustration": {
        "message": "即使图集只有一张图片也打包进压缩包"
+   },
+   "_max_history_items": {
+       "message": "最多历史记录"
+   },
+   "_max_download_records": {
+       "message": "最多下载记录"
+   },
+   "_reload_to_apply_change": {
+       "message": "重新加载以应用更改（所有下载中的任务将会中断）"
    }
 }
