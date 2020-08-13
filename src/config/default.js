@@ -50,8 +50,9 @@ export default Object.assign({}, {
 
     /**
      * @version 2.2
+     * @deprecated since 4.4.1
      */
-    subscribedUsers: {},
+    // subscribedUsers: {},
 
     /**
      * @version 2.3
