@@ -1,10 +1,5 @@
 <template>
   <div :class="{'ptk__container': true}" :id="isDark ? 'ptk-theme__dark' : ''">
-    <subscription-button class="ptk__handler"
-      style="right:180px;"
-      v-if="showSubscribe"
-      :user-id="userId"
-    ></subscription-button>
 
     <div class="ptk__container__body">
       <div class="ptk__container__body-container"
@@ -63,7 +58,6 @@ import Novel from "@/content_scripts/components/Novel"
 import Manga from '@/content_scripts/components/Manga'
 import Illust from '@/content_scripts/components/Illust'
 import Ugoira from '@/content_scripts/components/Ugoira'
-import SubscriptionButton from '@/content_scripts/components/sub/SubscriptionButton'
 import IllustHistoryPort from '@/modules/Ports/IllustHistoryPort/RendererPort'
 import Button from '@/content_scripts/components/Button'
 import InvalidPageError from '@/content_scripts/errors/InvalidPageError'
@@ -75,7 +69,6 @@ export default {
     'manga-tool': Manga,
     'illust-tool': Illust,
     'ugoira-tool': Ugoira,
-    'subscription-button': SubscriptionButton,
     'ptk-button': Button
   },
 
@@ -121,10 +114,6 @@ export default {
 
     iconContent() {
       return this.isUndetermined ? 'P?' : 'P*';
-    },
-
-    showSubscribe() {
-      return false;
     },
 
     showContainer() {
