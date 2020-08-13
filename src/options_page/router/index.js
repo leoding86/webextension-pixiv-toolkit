@@ -12,7 +12,6 @@ import ThirdParty from '@@/components/ThirdParty';
 import Sponsors from '@@/components/Sponsors';
 import History from '@@/components/History';
 import DownloadRelativeLocationDialog from '@@/components/options/DownloadRelativeLocationDialog';
-import Subscribes from '@@/components/Subscribes'
 
 Vue.use(Router)
 
@@ -77,10 +76,6 @@ export default new Router({
       path: '/history',
       name: 'History',
       component: History
-    }, {
-      path: '/subscribes',
-      name: 'Subscribes',
-      component: Subscribes
     }, {
       path: '/test',
       name: 'Test',
