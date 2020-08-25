@@ -613,5 +613,14 @@
    },
    "_reload_to_apply_change": {
        "message": "重新加载以应用更改（所有下载中的任务将会中断）"
+   },
+   "_search": {
+       "message": "搜索"
+   },
+   "_downloads": {
+       "message": "下载记录"
+   },
+   "_enable_mask": {
+       "message": "启用遮罩"
    }
 }

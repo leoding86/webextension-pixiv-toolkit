@@ -613,5 +613,14 @@
    },
    "_reload_to_apply_change": {
        "message": "Reload to apply change (Add downloads in progress will be aborted)"
+   },
+   "_search": {
+       "message": "Search"
+   },
+   "_downloads": {
+       "message": "Downloads"
+   },
+   "_enable_mask": {
+       "message": "Enable mask"
    }
 }
