@@ -1,12 +1,13 @@
 import PouchDB from 'pouchdb'
 
 class IllustHistory {
-  constructor( { max = 10000 } ) {
+
+  constructor(options = { max: 10000 }) {
     this.db = new PouchDB('illust_histories',  {
       revs_limit: 1
     });
 
-    this.maxLimit = max;
+    this.maxLimit = options.max;
 
     this.properties = ['id', 'title', 'userId', 'userName', 'type', 'r', 'images', 'viewed_at', 'isNovel', 'image'];
 
