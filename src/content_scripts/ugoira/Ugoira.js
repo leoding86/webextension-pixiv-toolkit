@@ -83,6 +83,10 @@ class UgoiraTool extends Event {
     return this.context.urls
   }
 
+  getThumb() {
+    return this.getImages().thumb;
+  }
+
   getTitle() {
     return this.context.illustTitle
   }
