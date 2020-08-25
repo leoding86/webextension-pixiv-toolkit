@@ -55,10 +55,10 @@ class DownloadRecord {
   putRecord(record) {
     this.checkLimitationAndRemove();
 
+    record.downloaded_at = Math.floor(Date.now() / 1000);
+
     return this.retrieveRecord(record._id).then(doc => {
-      doc = Object.assign(doc, record, {
-        downloaded_at: Math.floor(Date.now() / 1000)
-      });
+      doc = Object.assign(doc, record);
 
       return this.db.put(doc);
     }).catch(error => {
