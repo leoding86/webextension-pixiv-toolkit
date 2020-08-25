@@ -65,6 +65,10 @@ export default new Router({
       name: 'VisitHistory',
       component: () => import('@@/components/VisitHistory')
     }, {
+      path: '/downloads',
+      name: 'Downloads',
+      component: () => import('@@/components/Downloads')
+    }, {
       path: '/third-party',
       name: 'ThirdParty',
       component: ThirdParty

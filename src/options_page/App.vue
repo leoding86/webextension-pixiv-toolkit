@@ -19,6 +19,8 @@
           </v-list>
         </v-toolbar>
 
+        <v-divider light></v-divider>
+
         <v-list dense>
           <v-list-tile
             ripple
@@ -28,7 +30,17 @@
             </v-list-tile-content>
           </v-list-tile>
 
+          <v-list-tile
+            ripple
+            @click="routeTo('Downloads')"
+          >
+            <v-list-tile-content>
+              <span>{{ tl('_downloads') }}</span>
+            </v-list-tile-content>
+          </v-list-tile>
+
           <v-divider light></v-divider>
+
           <v-list-tile ripple @click="routeTo('Options')">
             <v-list-tile-content>
               <v-list-tile-title>{{ tl('settings') }}</v-list-tile-title>
