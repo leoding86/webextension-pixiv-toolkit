@@ -137,7 +137,17 @@ export default {
 
     saveDownloadRecord(record) {
       this.isSaved = true;
-      this.downloadRecordPort.saveDownloadRecord({ id: this.illustTool.getId(), type: DownloadRecordPort.illustType, record });
+      this.downloadRecordPort.saveDownloadRecord({
+        id: this.illustTool.getId(),
+        type: DownloadRecordPort.illustType,
+        record: Object.assign({
+          title: this.tool.getTitle(),
+          userId: this.tool.getUserId(),
+          userName: this.tool.getUserName(),
+          thumb: this.tool.getThumb(),
+          isR: this.tool.isR()
+        }, record)
+      });
     },
 
     allowDownload(isSaved) {

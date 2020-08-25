@@ -127,7 +127,13 @@ export default {
       this.downloadRecordPort.saveDownloadRecord({
         id: this.tool.getId(),
         type: DownloadRecordPort.illustType,
-        record
+        record: Object.assign({
+          title: this.tool.getTitle(),
+          userId: this.tool.getUserId(),
+          userName: this.tool.getUserName(),
+          thumb: this.tool.getThumb(),
+          isR: this.tool.isR()
+        }, record)
       });
     },
 

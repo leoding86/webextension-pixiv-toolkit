@@ -83,7 +83,17 @@ export default {
 
   methods: {
     saveDownloadRecord(record) {
-      this.downloadRecordPort.saveDownloadRecord({ id: this.tool.getId(), type: DownloadRecordPort.novelType, record });
+      this.downloadRecordPort.saveDownloadRecord({
+        id: this.tool.getId(),
+        type: DownloadRecordPort.novelType,
+        record: Object.assign({
+          title: this.tool.getTitle(),
+          userId: this.tool.getUserId(),
+          userName: this.tool.getUserName(),
+          thumb: this.tool.getCover(),
+          isR: this.tool.isR()
+        }, record)
+      });
     },
 
     allowDownload(isSaved) {
