@@ -48,4 +48,31 @@ export default class RendererPort extends DownloadRecordPort {
       args: { ids, responseArgs }
     })
   }
+
+  getDownload({ id, type }) {
+    this.postMessage({
+      action: 'getDownload',
+      args: { id, type }
+    });
+  }
+
+  deleteDownload({ id }) {
+    this.postMessage({
+      action: 'deleteDownload',
+      args: { id }
+    })
+  }
+
+  listDownloads(options = {
+    selector: { viewed_at: { $gts: null } },
+    sort: [{ viewed_at: 'desc' }],
+    limit: 50,
+    skip: 0,
+    query: null
+  }) {
+    this.postMessage({
+      action: 'listDownloads',
+      args: options
+    });
+  }
 }
