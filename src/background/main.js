@@ -82,7 +82,7 @@ Main.prototype = {
         if (headerName === 'referer') {
           hasReferer = true;
 
-          if (details.url.indexOf('i.pximg.net') > -1 && !savePattern.text(header.value)) {
+          if (details.url.indexOf('i.pximg.net') > -1 && !savePattern.test(header.value)) {
             details.requestHeaders[i].value = 'https://www.pixiv.net/';
           }
         } else if (headerName === 'origin') {
