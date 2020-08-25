@@ -25,7 +25,11 @@
         style="margin-left:0;"
       >{{ tl('_total_records') }} {{ total }}</v-btn>
 
-      <v-switch v-model="disableBlurOnR" :label="tl('_disable_mask')"></v-switch>
+      <v-btn v-model="disableBlurOnR"
+        label="Solo"
+        depressed
+        @click="disableBlurOnRClicked"
+      >{{ disableBlurOnRText }}</v-btn>
 
       <!-- <v-btn @click="insertData">Insert 10w</v-btn> -->
     </div>
@@ -55,7 +59,6 @@
           <div class="history-item__info">
             <div class="history-item__info-entity history-item__info-entity--blod">
               <span class="history-item__info-badge" :class="`history-item__info-badge--type${item.isNovel ? '-novel' : item.type}`">{{ caseWorkType(item) }}</span>
-              <span class="history-item__info-badge" v-show="item.download">Downloaded</span>
               <a class="maintitle" :href="caseWorkUrl(item)" target="_blank">{{ item.title }}</a>
             </div>
             <div class="history-item__info-entity history-item__info-entity--blod">
@@ -72,9 +75,12 @@
               class="history-item__actions-btn"
               flat
               icon
+              small
               @click="deleteOne(item)"
             >
-              <v-icon>delete</v-icon>
+                <svg class="c01204" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2048 2048" width="16" height="16">
+                  <path d="M1115 1024l690 691-90 90-691-690-691 690-90-90 690-691-690-691 90-90 691 690 691-690 90 90-690 691z"></path>
+                </svg>
             </v-btn>
           </div>
         </div>
@@ -119,7 +125,6 @@ import PageTitle from '@@/components/PageTitle';
 import CacheableImage from '@@/components/CacheableImage';
 import Supports from '@@/components/Supports';
 import IllustHistoryPort from '@/modules/Ports/IllustHistoryPort/RendererPort';
-import DownloadRecordPort from '@/modules/Ports/DownloadRecordPort/RendererPort';
 
 export default {
   components: {
@@ -132,7 +137,6 @@ export default {
     return {
       total: 0,
       historyItems: [],
-      downloadItems: {},
       offset: 0,
       step: 50,
       disableBlurOnR: false,
@@ -149,13 +153,9 @@ export default {
 
   created() {
     this.windowScrollEventBinded = false;
-    this.tempHistoryItems = [];
 
     this.illustHistoryPort = IllustHistoryPort.getInstance();
     this.illustHistoryPort.port.onMessage.addListener(this.handleIllustHistoryPortResponse);
-
-    this.downloadRecordPort = DownloadRecordPort.getInstance();
-    this.downloadRecordPort.port.onMessage.addListener(this.handleDownloadRecortPortResponse);
 
     /**
      * Init some data
@@ -207,6 +207,10 @@ export default {
       }
 
       return ' (' + this.importedCount + '/' + this.importTotal + ')'
+    },
+
+    disableBlurOnRText() {
+      return this.tl(this.disableBlurOnR ? '_enable_mask' : '_disable_mask')
     }
   },
 
@@ -295,20 +299,9 @@ export default {
       window.open(this.caseWorkUrl(illust));
     },
 
-    getDownloadRecordInfo(historyItems) {
-      let ids = [];
-
-      historyItems.forEach(item => {
-        if (!!item.isNovel) {
-          ids.push(item.id);
-        } else {
-          ids.push(`I${item.id}`);
-        }
-      });
-
-      this.downloadRecordPort.getDownloadRecordsFromIds({ ids });
-    },
-
+    /**
+     * Handle response from the port of IllustHistory
+     */
     handleIllustHistoryPortResponse(message, port) {
       if (this.illustHistoryPort.isChannel(message.channel, 'items-count')) {
         this.total = message.data.count;
@@ -319,59 +312,15 @@ export default {
         }
 
         if (undefined === message.error && message.data.dataset.length > 0) {
-          this.tempHistoryItems = message.data.dataset;
-
-          this.getDownloadRecordInfo(message.data.dataset);
+          this.historyItems = message.data.dataset;
 
           if (message.data.dataset.length < this.step) {
             this.allLoaded = true;
           }
-        } else {
-          this.loading = false;
         }
+
+        this.loading = false;
       }
-
-      if (undefined !== message.data.error) {
-        throw message.data.error;
-      }
-    },
-
-    handleDownloadRecortPortResponse(message, port) {
-      if (this.downloadRecordPort.isChannel(message.channel, 'get-download-records')) {
-        if (undefined === message.data.error && message.data.dataset.length > 0) {
-          message.data.dataset.forEach(item => {
-            if (undefined === this.downloadItems[item._id]) {
-              this.downloadItems[item._id] = item;
-            }
-          });
-
-          /**
-           * update history items
-           */
-          for (let start = 0, end = this.step; start < end; start++) {
-            let historyItem = this.tempHistoryItems[start];
-
-            if (historyItem) {
-              let casedId = !!historyItem.isNovel ? historyItem.id : `I${historyItem.id}`;
-              if (this.downloadItems[casedId]) {
-                this.tempHistoryItems[start].download = true;
-              }
-            } else {
-              break;
-            }
-          }
-
-          if (this.offset === 0) {
-            this.historyItems = this.tempHistoryItems;
-          } else {
-            this.historyItems = this.historyItems.concat(this.tempHistoryItems);
-          }
-
-          this.offset += this.step;
-        }
-      }
-
-      this.loading = false;
 
       if (undefined !== message.data.error) {
         throw message.data.error;
@@ -422,6 +371,10 @@ export default {
           query: this.searchQuery.toLowerCase()
         }
       });
+    },
+
+    disableBlurOnRClicked() {
+      this.disableBlurOnR = !this.disableBlurOnR;
     }
   }
 };
@@ -566,7 +519,6 @@ export default {
     }
 
     .history-item__actions-btn {
-      margin: 27px 10px;
       color: rgb(88, 88, 88);
     }
   }
