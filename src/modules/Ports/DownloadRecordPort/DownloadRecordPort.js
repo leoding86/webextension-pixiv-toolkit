@@ -55,6 +55,22 @@ export default class DownloadRecordPort {
     return type + id;
   }
 
+  sendMessageThroughPort(port, channel, data) {
+    port.postMessage(Object.assign({
+      channel: `${DownloadRecordPort.portName}:${channel}`
+    }, data));
+  }
+
+  responseSuccess(port, channel, data) {
+    this.sendMessageThroughPort(port, channel, data ? { data: data } : {});
+  }
+
+  responseError(port, channel, error) {
+    this.sendMessageThroughPort(port, channel, {
+      error: error
+    });
+  }
+
   isChannel(incomingChannel, channel) {
     return incomingChannel === `${DownloadRecordPort.portName}:${channel}`;
   }
