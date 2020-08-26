@@ -63,16 +63,27 @@ export default class RendererPort extends DownloadRecordPort {
     })
   }
 
-  listDownloads(options = {
-    selector: { viewed_at: { $gts: null } },
-    sort: [{ viewed_at: 'desc' }],
-    limit: 50,
-    skip: 0,
-    query: null
-  }) {
+  listDownloads(options) {
+    options = Object.assign({
+      selector: { downloaded_at: { $gte: null } },
+      sort: [{ downloaded_at: 'desc' }],
+      limit: 50,
+      skip: 0,
+      query: null
+    }, options);
+
     this.postMessage({
       action: 'listDownloads',
       args: options
+    });
+  }
+
+  /**
+   * Clear all downloads
+   */
+  clearDownloads() {
+    this.postMessage({
+      action: 'clearDownloads',
     });
   }
 }

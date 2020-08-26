@@ -111,4 +111,8 @@ export default class BackgroundPort extends DownloadRecordPort {
       this.responseError(port, 'list-downloads', error.message);
     });
   }
+
+  clearDownloadsAction() {
+    this.downloadRecordRepo.clearDownloads();
+  }
 }
