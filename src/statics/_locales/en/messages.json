@@ -622,5 +622,17 @@
    },
    "_enable_mask": {
        "message": "Enable mask"
+   },
+   "_enable_save_download_history": {
+       "message": "Enable save download history"
+   },
+   "_disable": {
+       "message": "Disable"
+   },
+   "_enable": {
+       "message": "Enable"
+   },
+   "_show_in_work_only": {
+       "message": "Show in work only"
    }
 }

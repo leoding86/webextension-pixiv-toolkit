@@ -339,7 +339,7 @@
        "message": "如果浏览器相关设置为启用状态，此项无效"
    },
    "Enable_save_visit_history": {
-       "message": "启用保存浏览记录"
+       "message": "保存浏览记录"
    },
    "Enable_Disable_save_visit_history": {
        "message": "启用/禁止保存浏览记录"
@@ -622,5 +622,17 @@
    },
    "_enable_mask": {
        "message": "启用遮罩"
+   },
+   "_enable_save_download_history": {
+       "message": "保存下载记录"
+   },
+   "_disable": {
+       "message": "禁用"
+   },
+   "_enable": {
+       "message": "启用"
+   },
+   "_show_in_work_only": {
+       "message": "仅在作品中显示"
    }
 }
