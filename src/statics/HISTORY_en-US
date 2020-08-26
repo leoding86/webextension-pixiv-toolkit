@@ -1,6 +1,6 @@
-v4.4.0-2020081004
+v4.5.0-2020082508
 Add settings in History section in setting page;
-Add download tag in history list for showing download status;
+Add downloads history page;
 Minor fixes.
 
 v4.3.0-2020070422
