@@ -7,10 +7,31 @@
         <v-list-tile>
           <v-list-tile-content>
             <v-list-tile-title>{{ tl('Enable_save_visit_history') }}</v-list-tile-title>
-            <v-list-tile-sub-title>{{ tl('Enable_Disable_save_visit_history') }}</v-list-tile-sub-title>
           </v-list-tile-content>
           <v-list-tile-action>
             <v-switch v-model="enableSaveVisitHistory"></v-switch>
+          </v-list-tile-action>
+        </v-list-tile>
+
+        <v-list-tile>
+          <v-list-tile-content>
+            <v-list-tile-title>{{ tl('_enable_save_download_history') }}</v-list-tile-title>
+          </v-list-tile-content>
+          <v-list-tile-action>
+            <v-select
+              :items="[{
+                text: this.tl('_enable'),
+                value: 1
+              }, {
+                text: this.tl('_show_in_work_only'),
+                value: 2
+              }, {
+                text: this.tl('_disable'),
+                value: 0
+              }]"
+              v-model="enableSaveDownloadHistory"
+              style="width:150px;"
+            ></v-select>
           </v-list-tile-action>
         </v-list-tile>
 
@@ -129,6 +150,7 @@ export default {
   data() {
     return {
       enableSaveVisitHistory: true,
+      enableSaveDownloadHistory: true,
       notSaveNSFWWorkInHistory: false,
       confirmDialog: false,
       importing: false,
@@ -144,6 +166,7 @@ export default {
 
   beforeMount() {
     this.enableSaveVisitHistory = this.browserItems.enableSaveVisitHistory;
+    this.enableSaveDownloadHistory = this.browserItems.enableSaveDownloadHistory;
     this.notSaveNSFWWorkInHistory = this.browserItems.notSaveNSFWWorkInHistory;
     this.maxHistoryItems = this.browserItems.maxHistoryItems;
     this.maxDownloadRecords = this.browserItems.maxDownloadRecords;
@@ -162,6 +185,13 @@ export default {
     enableSaveVisitHistory(val) {
       browser.storage.local.set({
         enableSaveVisitHistory: !!val
+      });
+    },
+
+    enableSaveDownloadHistory(val) {
+      console.log(val);
+      browser.storage.local.set({
+        enableSaveDownloadHistory: val
       });
     },
 
