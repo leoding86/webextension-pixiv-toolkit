@@ -13,6 +13,17 @@
       <!-- /Searchbar -->
     </div>
 
+    <div class="history__header-action">
+      <v-btn
+        depressed
+        style="margin-left:0;"
+        :disabled="datasets.length === 0"
+        @click="clearAll"
+      >
+        Clear all
+      </v-btn>
+    </div>
+
     <v-layout row wrap
       class="history-items"
       v-if="datasets.length > 0"
@@ -274,6 +285,13 @@ export default {
         skip: this.offset,
         query: this.searchQuery.toLowerCase()
       });
+    },
+
+    clearAll() {
+      if (window.confirm('Remove all downloads history? This operate cannot be reversed.')) {
+        this.downloadsPort.clearDownloads();
+        this.datasets = [];
+      }
     }
   }
 };
@@ -426,8 +444,8 @@ export default {
     font-size: 14px;
     text-align: center;
     line-height: 4;
-    color: #ababab;
-    text-shadow: 0 -1px 0 #ccc;
+    color: #dedede;
+    text-shadow: 0 -1px 0 #555;
   }
 }
 
