@@ -31,6 +31,14 @@
         @click="disableBlurOnRClicked"
       >{{ disableBlurOnRText }}</v-btn>
 
+      <v-btn
+        depressed
+        :disabled="historyItems.length === 0"
+        @click="clearAll"
+      >
+        Clear all
+      </v-btn>
+
       <!-- <v-btn @click="insertData">Insert 10w</v-btn> -->
     </div>
 
@@ -311,7 +319,7 @@ export default {
           this.windowScrollEventBinded = false;
         }
 
-        if (undefined === message.error && message.data.dataset.length > 0) {
+        if (undefined === message.error && message.data.dataset && message.data.dataset.length > 0) {
           this.historyItems = message.data.dataset;
 
           if (message.data.dataset.length < this.step) {
@@ -375,6 +383,13 @@ export default {
 
     disableBlurOnRClicked() {
       this.disableBlurOnR = !this.disableBlurOnR;
+    },
+
+    clearAll() {
+      if (window.confirm('Remove all visit history? This operate cannot be reversed.')) {
+        this.illustHistoryPort.clearHistory();
+        this.historyItems = [];
+      }
     }
   }
 };
@@ -527,8 +542,8 @@ export default {
     font-size: 14px;
     text-align: center;
     line-height: 4;
-    color: #ababab;
-    text-shadow: 0 -1px 0 #ccc;
+    color: #dedede;
+    text-shadow: 0 -1px 0 #555;
   }
 }
 
