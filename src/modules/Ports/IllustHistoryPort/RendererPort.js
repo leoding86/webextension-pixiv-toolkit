@@ -59,4 +59,10 @@ export default class RendererPort extends IllustHistoryPort {
       args: args
     });
   }
+
+  clearHistory() {
+    return this.postMessage({
+      action: 'clearHistory'
+    });
+  }
 }

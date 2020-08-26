@@ -62,4 +62,8 @@ export default class BackgroundPort extends IllustHistoryPort {
     this.historyBackupRepo.forgetBackup(args);
     return this.illustHistoryRepo.deleteIllust(args);
   }
+
+  clearHistoryAction() {
+    this.illustHistoryRepo.clearData();
+  }
 }
