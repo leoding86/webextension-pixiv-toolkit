@@ -31,6 +31,7 @@
           </v-list-tile>
 
           <v-list-tile
+            v-if="this.browserItems.enableSaveDownloadHistory === 1"
             ripple
             @click="routeTo('Downloads')"
           >
