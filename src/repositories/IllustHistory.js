@@ -3,15 +3,16 @@ import PouchDB from 'pouchdb'
 class IllustHistory {
 
   constructor(options = { max: 10000 }) {
-    this.db = new PouchDB('illust_histories',  {
+    this.db = this.getDb();
+    this.maxLimit = options.max;
+    this.properties = ['id', 'title', 'userId', 'userName', 'type', 'r', 'images', 'viewed_at', 'isNovel', 'image'];
+    this.init();
+  }
+
+  getDb() {
+    return new PouchDB('illust_histories', {
       revs_limit: 1
     });
-
-    this.maxLimit = options.max;
-
-    this.properties = ['id', 'title', 'userId', 'userName', 'type', 'r', 'images', 'viewed_at', 'isNovel', 'image'];
-
-    this.init();
   }
 
   init() {
@@ -193,7 +194,10 @@ class IllustHistory {
   }
 
   clearData() {
-    this.db.destroy();
+    this.db.destroy().then(() => {
+      this.db = this.getDb();
+      this.init();
+    });
   }
 }
 

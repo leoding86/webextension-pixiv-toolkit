@@ -4,12 +4,8 @@ class DownloadRecord {
   static instance;
 
   constructor(options = { max: 10000 }) {
-    this.db = new PouchDB('download_record', {
-      revs_limit: 1
-    });
-
+    this.db = this.getDb();
     this.maxLimit = options.max;
-
     this.init();
   }
 
@@ -24,12 +20,27 @@ class DownloadRecord {
     return DownloadRecord.instance;
   }
 
+  getDb() {
+    return new PouchDB('download_record', {
+      revs_limit: 1
+    });
+  }
+
+  /**
+   * Initialize database, create indexe on `_id` and `downloaded_at` separately
+   */
   init() {
-    return this.db.createIndex({
+    this.db.createIndex({
       index: {
-        fields: ['_id', 'downloaded_at']
+        fields: ['_id']
       }
-    })
+    });
+
+    this.db.createIndex({
+      index: {
+        fields: ['downloaded_at']
+      }
+    });
   }
 
   checkLimitationAndRemove() {
@@ -118,6 +129,16 @@ class DownloadRecord {
         });
       });
     }
+  }
+
+  /**
+   * Clear all downloads
+   */
+  clearDownloads() {
+    this.db.destroy().then(() => {
+      this.db = this.getDb();
+      this.init();
+    });
   }
 
   retrieveRecord(id) {
