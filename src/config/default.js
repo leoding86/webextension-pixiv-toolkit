@@ -160,4 +160,9 @@ export default Object.assign({}, {
      */
     maxHistoryItems: 10000,
     maxDownloadRecords: 10000,
+
+    /**
+     * @since 4.5.0
+     */
+    enableSaveDownloadHistory: 1
   });
