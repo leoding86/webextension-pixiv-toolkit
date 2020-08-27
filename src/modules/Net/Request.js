@@ -35,7 +35,7 @@ class Request extends Event {
       return;
     }
 
-    setImmediate(() => {
+    setTimeout(() => {
       reader.read().then(({ done, value }) => {
         if (done) {
           this.dispatch('onload', [this.responseType === 'arrayBuffer' ? new Uint8Array(this.responseData) : this.responseData]);
