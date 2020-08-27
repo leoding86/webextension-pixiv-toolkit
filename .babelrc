@@ -1,12 +1,22 @@
 {
   "presets": [
-    ["env", {
-      "modules": false,
-      "targets": {
-        "browsers": ["> 1%", "last 2 versions", "not ie <= 8"]
+    [
+      "@babel/preset-env", {
+        "modules": false,
+        "targets": {
+          "browsers": [
+            "> 1%",
+            "last 2 versions",
+            "not ie <= 8"
+          ]
+        }
       }
-    }],
-    "stage-2"
+    ]
   ],
-  "plugins": ["transform-vue-jsx", "transform-runtime"]
+  "plugins": [
+    "@babel/plugin-syntax-jsx",
+    "@babel/plugin-transform-runtime",
+    "@babel/plugin-proposal-class-properties",
+    "@vue/babel-plugin-transform-vue-jsx"
+  ]
 }
