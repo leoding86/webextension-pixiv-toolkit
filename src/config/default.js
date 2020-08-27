@@ -10,6 +10,9 @@ export default Object.assign({}, {
     mangaRenameFormat: '',
     mangaImageRenameFormat: '',
 
+    /**
+     * @dprecated
+     */
     enableExtension: true,
 
     /**
