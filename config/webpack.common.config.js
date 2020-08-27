@@ -1,6 +1,7 @@
 'use strict'
 
-const merge = require('webpack-merge');
+const { merge } = require('webpack-merge');
+const baseConfig = require('./webpack.base.config')();
 const utils = require('./utils');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
@@ -10,7 +11,7 @@ const isProduction = process.env.NODE_ENV === 'production' ?
 module.exports = env => {
   let platform = env ? (env.platform || 'chrome') : 'chrome';
 
-  return Object.assign({}, {
+  return Object.assign({}, baseConfig, {
     entry: {
       locales: utils.resolve('src/modules/Locales.js'),
     },
@@ -20,10 +21,11 @@ module.exports = env => {
       filename: '[name].js',
       libraryTarget: 'umd'
     },
-    module: merge.smart({
+    module: merge({
       rules: [
         {
           test: /\.json$/,
+          type: "javascript/auto",
           loader: 'json-loader'
         }
       ]

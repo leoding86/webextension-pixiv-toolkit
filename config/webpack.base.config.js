@@ -1,11 +1,9 @@
 const utils = require('./utils');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
-const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = env => {
-  let platform = env ? (env.platform || 'chrome') : 'chrome';
-
   let config = Object.assign({}, {
+    mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
     output: {
       filename: '[name].js',
     },
@@ -26,8 +24,7 @@ module.exports = env => {
           test: /\.worker\.js$/,
           loader: 'worker-loader',
           options: {
-            fallback: false,
-            inline: true
+            inline: "no-fallback"
           }
         }
       ]
@@ -59,18 +56,20 @@ module.exports = env => {
 
   if (process.env.NODE_ENV === 'production') {
     _config = Object.assign({}, config, {
-      plugins: [
-        new UglifyJsPlugin({
-          uglifyOptions: {
-            output: {
-              ascii_only: true
-            },
-            compress: {
-              drop_console: true,
+      optimization: {
+        minimizer: [
+          new UglifyJsPlugin({
+            uglifyOptions: {
+              output: {
+                ascii_only: true
+              },
+              compress: {
+                drop_console: true,
+              }
             }
-          }
-        })
-      ]
+          })
+        ]
+      }
     });
   } else {
     _config = Object.assign({}, config, {

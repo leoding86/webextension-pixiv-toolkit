@@ -3,11 +3,11 @@
 const baseConfig = require('./webpack.base.config')();
 const utils = require('./utils');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const merge = require('webpack-merge');
+const { merge } = require('webpack-merge');
 const vueLoaderConfig = require('./vue-loader.config');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
 const isProduction = process.env.NODE_ENV === 'production' ?
   !0 : !!0;
@@ -15,7 +15,7 @@ const isProduction = process.env.NODE_ENV === 'production' ?
 module.exports = env => {
   let platform = env ? (env.platform || 'chrome') : 'chrome';
 
-  return merge.smart(baseConfig, {
+  return merge(baseConfig, {
     entry: {
       app: './src/popup_page/main.js'
     },
@@ -24,7 +24,7 @@ module.exports = env => {
       filename: '[name].js',
       publicPath: './'
     },
-    module: merge.smart({
+    module: merge({
       rules: [
         {
           test: /\.vue$/,
@@ -33,11 +33,16 @@ module.exports = env => {
         },
         {
           test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
-          loader: 'url-loader',
-          options: {
-            limit: 10000,
-            name: utils.assetsPath('img/[name].[hash:7].[ext]')
-          }
+          use: [
+            {
+              loader: 'url-loader',
+              options: {
+                limit: 10000,
+                name: utils.assetsPath('img/[name].[hash:7].[ext]'),
+                esModule: false // Fix bug about it will produce [object Module]
+              }
+            }
+          ]
         },
         {
           test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/,
@@ -70,13 +75,8 @@ module.exports = env => {
       }),
 
       // extract css into its own file
-      new ExtractTextPlugin({
-        filename: utils.assetsPath('css/[name].css'),
-        // Setting the following option to `false` will not extract CSS from codesplit chunks.
-        // Their CSS will instead be inserted dynamically with style-loader when the codesplit chunk has been loaded by webpack.
-        // It's currently set to `true` because we are seeing that sourcemaps are included in the codesplit bundle as well when it's `false`,
-        // increasing file size: https://github.com/vuejs-templates/webpack/issues/1110
-        allChunks: true,
+      new MiniCssExtractPlugin({
+        filename: utils.assetsPath('css/[name].css')
       }),
 
       // Compress extracted CSS. We are using this plugin so that possible
@@ -102,8 +102,10 @@ module.exports = env => {
           // https://github.com/kangax/html-minifier#options-quick-reference
         },
         // necessary to consistently work with multiple chunks via CommonsChunkPlugin
-        chunksSortMode: 'dependency'
+        chunksSortMode: 'auto'
       }),
+
+      new VueLoaderPlugin()
     ],
     externals: {
       common: 'common',
