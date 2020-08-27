@@ -23,6 +23,7 @@
 
         <v-list dense>
           <v-list-tile
+            v-if="browserItems.enableSaveVisitHistory === true"
             ripple
             @click="goToVisitHistory()">
             <v-list-tile-content>
@@ -40,7 +41,7 @@
             </v-list-tile-content>
           </v-list-tile>
 
-          <v-divider light></v-divider>
+          <v-divider light v-if="browserItems.enableSaveVisitHistory === true || browserItems.enableSaveDownloadHistory === 1"></v-divider>
 
           <v-list-tile ripple @click="routeTo('Options')">
             <v-list-tile-content>
