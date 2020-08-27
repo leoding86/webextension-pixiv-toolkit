@@ -2,15 +2,12 @@ import Browser from '@/modules/Browser/Browser';
 import DownloadRecordPort from '@/modules/Ports/DownloadRecordPort/BackgroundPort';
 import IllustHistoryPort from '@/modules/Ports/IllustHistoryPort/BackgroundPort';
 import { Updater } from '@/modules/Util';
-import actions from '@/background/actions';
 import defaultSettings from '@/config/default';
 
 const browser = window.browser = Browser.getBrowser();
 
 function Main() {
-  // constructor
   this.items = null;
-  this.enableExtension = false;
   this.logs = [];
   this.logsMax = 200;
   this.ports = {};
@@ -28,10 +25,7 @@ Main.prototype = {
 
   run: function () {
     browser.storage.local.get(null, items => {
-      // self.enableExtension = items.enableExtension;
       this.items = items;
-      this.enableExtension = true;
-
       this.ports = this.getPorts();
       this.update();
       this.listenStorageChanged();
@@ -132,11 +126,6 @@ Main.prototype = {
   },
 
   callMessageAction: function (action, args) {
-    if (actions.has(action)) {
-      actions.callAction(action, args)
-      return
-    }
-
     let methodName = action + 'Action';
 
     if (typeof this[methodName] === 'function') {
