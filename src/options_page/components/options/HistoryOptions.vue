@@ -94,7 +94,7 @@
             <v-btn
               depressed
               @click="importVisitHistory"
-            >{{ tl('_import') }}<span v-if="importTotal > 0"> ({{ importedCount }} / {{ importTotal }})</span></v-btn>
+            >{{ tl('_import') }}</v-btn>
           </v-list-tile-action>
         </v-list-tile>
 
@@ -106,7 +106,7 @@
             <v-btn
               depressed
               @click="recoveryHistory"
-            >{{ tl('_recovery') }}<span v-if="recoveryTotal > 0"> ({{ recoveryCount }} / {{ recoveryTotal }})</span></v-btn>
+            >{{ tl('_recovery') }}</v-btn>
           </v-list-tile-action>
         </v-list-tile>
 
@@ -138,13 +138,33 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <v-dialog
+      v-model="importing"
+      width="250"
+      persistent="true"
+    >
+      <v-card
+        color="primary"
+        dark
+      >
+        <v-card-text
+          style="font-size:14px"
+        >
+          Import progress: {{ importCount - importItems.length }} / {{ importCount }}
+          <v-progress-linear
+            v-model="importProgress"
+            color="white"
+          ></v-progress-linear>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
 <script>
+import VisitHistoryPort from '@/modules/Ports/IllustHistoryPort/RendererPort';
 import IllustHistory from "@/repositories/IllustHistory";
-import HistoryBackup from "@/repositories/HistoryBackup";
-import importIllustHistoryWorker from "worker-loader?inline=true,fallback=false!@/options_page/workers/importIllustHistoryWorker.js";
 
 export default {
   data() {
@@ -155,13 +175,17 @@ export default {
       confirmDialog: false,
       importing: false,
       exporting: false,
-      importTotal: 0,
-      importedCount: 0,
-      recoveryTotal: 0,
-      recoveryCount: 0,
+      importItems: [],
+      importCount: 0,
       maxHistoryItems: 10000,
       maxDownloadRecords: 10000
     };
+  },
+
+  created() {
+    this.illustHistory = new IllustHistory();
+    this.visitHistoryPort = VisitHistoryPort.getInstance();
+    this.visitHistoryPort.port.onMessage.addListener(this.handleVisitHistoryPortResponse);
   },
 
   beforeMount() {
@@ -170,14 +194,15 @@ export default {
     this.notSaveNSFWWorkInHistory = this.browserItems.notSaveNSFWWorkInHistory;
     this.maxHistoryItems = this.browserItems.maxHistoryItems;
     this.maxDownloadRecords = this.browserItems.maxDownloadRecords;
-
-    this.illustHistory = new IllustHistory();
-    this.historyBackup = new HistoryBackup();
   },
 
   computed: {
     historyBackupCount() {
       return this.browserItems.historyBackup ? this.browserItems.historyBackup.length : 0;
+    },
+
+    importProgress() {
+      return Math.floor((this.importCount - this.importItems.length) / this.importCount * 100);
     }
   },
 
@@ -223,9 +248,18 @@ export default {
   },
 
   methods: {
+    handleVisitHistoryPortResponse(message, port) {
+      if (this.visitHistoryPort.isChannel(message.channel, 'save-batch-histories')) {
+        if (this.importItems.length > 0) {
+          this.importVisitHistoryData();
+        } else {
+          this.importing = false;
+        }
+      }
+    },
+
     clearHistory() {
-      this.illustHistory.clearData();
-      this.historyBackup.forgetAll();
+      this.visitHistoryPort.clearHistory();
       this.confirmDialog = false;
     },
 
@@ -235,9 +269,6 @@ export default {
       }
 
       this.exporting = true
-
-      let json = ''
-      let vm = this
 
       this.illustHistory.getIllusts({
         limit: null
@@ -250,8 +281,27 @@ export default {
         document.body.appendChild(a);
         a.click()
         a.remove();
-        vm.exporting = false
+        this.exporting = false
       })
+    },
+
+    importVisitHistoryData() {
+      let items = [];
+
+      while (items.length < 100) {
+        if (!!this.importItems[0]) {
+          items.push(this.importItems[0]);
+          this.importItems.splice(0, 1);
+        } else {
+          break;
+        }
+      }
+
+      if (items.length > 0) {
+        this.visitHistoryPort.saveBatchHistories({
+          items
+        });
+      }
     },
 
     importVisitHistory() {
@@ -260,56 +310,26 @@ export default {
       }
 
       let input = document.createElement('input')
-      let vm = this
-
       input.type = 'file'
       input.addEventListener('change', (e) => {
         const files = e.target.files
-
         let fileReader = new FileReader()
 
-        vm.importing = true
-
         fileReader.addEventListener('load', () => {
-          let items
-
           try {
-            items = JSON.parse(fileReader.result)
-
-            vm.importTotal = items.length
-
-            let worker = new importIllustHistoryWorker();
-
-            worker.onmessage = e => {
-              vm.importedCount = e.data.importedCount
-
-              if (e.data.imported) {
-                vm.importedCount = items.length
-
-                vm.importTotal = 0 // disable displaying import progress
-
-
-                setImmediate(() => {
-                  vm.importing = false
-                  alert('Import complete.')
-                });
-              }
-            }
-
-            worker.postMessage({
-              items: items
-            })
-
-            // vm.importTotal = items.length
-
-            // vm.importIllustItems(items).then(() => {
-            //   alert('Import complete')
-            //   window.location.reload()
-            // })
+            this.importItems = JSON.parse(fileReader.result);
+            this.importCount = this.importItems.length;
+            this.importing = true;
+            this.importVisitHistoryData();
           } catch (e) {
-            console.log(e)
+            this.importing = false;
+            alert('Invalid import file');
           }
-        })
+        });
+
+        fileReader.addEventListener('abort', () => {
+          this.importing = false;
+        });
 
         fileReader.readAsText(files[0])
       })
@@ -324,30 +344,10 @@ export default {
         return;
       }
 
-      let items = this.browserItems.historyBackup;
-
-      this.recoveryTotal = items.length
-
-      let worker = new importIllustHistoryWorker();
-
-      worker.onmessage = e => {
-        this.recoveryCount = e.data.importedCount
-
-        if (e.data.imported) {
-          this.recoveryCount = items.length
-
-          this.recoveryTotal = 0 // disable displaying import progress
-
-          setImmediate(() => {
-            this.importing = false
-            alert(this.tl('_recovery_complete_refresh_page_please'))
-          });
-        }
-      }
-
-      worker.postMessage({
-        items: items
-      });
+      this.importItems = this.browserItems.historyBackup;
+      this.importCount = this.importItems.length;
+      this.importing = true;
+      this.importVisitHistoryData();
     }
   }
 };
