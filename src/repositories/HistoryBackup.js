@@ -87,6 +87,7 @@ export default class HistoryBackup {
   forgetAll() {
     let data = {};
 
+    this.items = [];
     data[this.getKey()] = [];
 
     this.browser.storage.local.set(data, () => {
