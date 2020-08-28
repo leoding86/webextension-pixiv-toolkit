@@ -1,19 +1,25 @@
 <template>
   <div class="container container--big">
-    <h1>Test cacheable component</h1>
-    <cacheable-image style="width:100px;height:100px;"
+    <h1>!!! TEST AREA !!!</h1>
+    <h1>Components</h1>
+    <h2>cacheable-image component</h2>
+    <cacheable-image style="width:100px;height:100px;border:1px solid #000"
       mode="background"
       :src="image"></cacheable-image>
-    <h1>Debug options</h1>
+    <h2>app-suggest component</h2>
     <div>
-      <button @click="resetVersionNumber">Reset version number</button>
-    </div>
-    <div>
-      <app-suggest :icon="pixivOminaIcon"
+      <app-suggest
+        style="width:200px;border:1px solid #000"
+        :icon="pixivOminaIcon"
         title="Pixiv Omina"
         subTitle="Sub title"
         link="https://www.github.com">
       </app-suggest>
+    </div>
+    <h1>Debug actions</h1>
+    <div>
+      <v-btn @click="resetVersionNumber">Reset version number</v-btn>
+      <v-btn @click="insertData">Insert histories</v-btn>
     </div>
   </div>
 </template>
@@ -21,6 +27,7 @@
 <script>
 import CacheableImage from './CacheableImage';
 import AppSuggest from './AppSuggest';
+import IllustHistory from '@/repositories/IllustHistory';
 
 export default {
   components: {
@@ -35,6 +42,10 @@ export default {
     }
   },
 
+  created() {
+    this.illustHistory = new IllustHistory();
+  },
+
   methods: {
     resetVersionNumber() {
       browser.storage.local.set({
@@ -46,6 +57,61 @@ export default {
           alert(items.version);
         });
       });
+    },
+
+    insertData() {
+      let startId = 70114228
+      let endId = startId + 10000
+
+      this.putExampleData(startId, endId).then(() => {
+        console.log('complete')
+      }).catch(() => {
+        console.log('error')
+      })
+    },
+
+    putExampleData(startId, endId) {
+      let vm = this
+
+      let root = 'https://www.pixiv.net/ajax/illust/'
+
+      let url = root + startId
+
+      console.log('request ' + url)
+
+      return new Promise(resolve => {
+        let xhr = new XMLHttpRequest()
+        xhr.open('get', url)
+        xhr.addEventListener('loadend', () => {
+          let data
+
+          try {
+            data = JSON.parse(xhr.responseText)
+
+            if (data.error === false && data.body) {
+              vm.illustHistory.putIllust({
+                id: data.body.illustId,
+                title: data.body.illustTitle,
+                images: data.body.urls,
+                type: data.body.illustType,
+                viewed_at: Math.floor(Date.now()),
+                r: data.body.xRestrict === 0 ? false : true
+              })
+            }
+          } catch (e) {
+            //do nothing
+          }
+
+          startId++
+
+          if (startId > endId) {
+            resolve()
+          } else {
+            resolve(vm.putExampleData(startId, endId))
+          }
+        })
+        xhr.send()
+      })
     }
   }
 }
