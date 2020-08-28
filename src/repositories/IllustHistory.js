@@ -130,6 +130,65 @@ class IllustHistory {
     })
   }
 
+  /**
+   *
+   * @param {Array} items
+   * @returns {Promise}
+   */
+  putBatchHistories(items) {
+    let bulkGetOptions = {
+      docs: []
+    };
+    let histories = [];
+    let itemsById = {};
+
+    items.forEach(item => {
+      bulkGetOptions.docs.push({
+        id: item.id
+      });
+      itemsById[item.id] = item;
+    });
+
+    /**
+     * Check if there are exists items, if so, compare the viewed_at to determine if the incoming entry need to save.
+     * After comparing, save incoming entry to histories array or skip it.
+     */
+    return this.db.bulkGet(bulkGetOptions).then(result => {
+      result.results.forEach(item => {
+        let doc = item.docs[0]; // Get first rev doc
+
+        if (undefined !== doc.ok) {
+          doc.ok._revisions && delete doc.ok._revisions; // remove revisions property which not be needed
+
+          let incomingItem = itemsById[doc.ok.id];
+
+          /**
+           * Check if the incoming item is valid and comparing viewed_at proerty to the exists entry's viewed_at property
+           */
+          if (this.checkData(incomingItem) && parseInt(incomingItem.viewed_at) > doc.ok.viewed_at) {
+            histories.push(Object.assign({}, doc.ok, incomingItem));
+          }
+
+          /**
+           * Delete the item from itemsById then the left items are the items which not exists in db
+           */
+          itemsById[doc.ok.id] && delete itemsById[doc.ok.id];
+        }
+      });
+
+      Object.keys(itemsById).forEach(id => {
+        if (this.checkData(itemsById[id])) {
+          histories.push(itemsById[id]);
+        }
+      });
+
+      /**
+       * Bulk create/update
+       */
+      return this.db.bulkDocs(histories);
+    });
+  }
+
   countItems(option = {}) {
     return this.db.allDocs(option).then(items => {
       return items.rows.length;
