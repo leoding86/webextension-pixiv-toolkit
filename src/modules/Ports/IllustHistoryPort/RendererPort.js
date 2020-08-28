@@ -9,6 +9,9 @@ export default class RendererPort extends IllustHistoryPort {
     this.createPort(IllustHistoryPort.portName);
   }
 
+  /**
+   * @returns {RendererPort}
+   */
   static getInstance() {
     if (RendererPort.instance) {
       return RendererPort.instance;
@@ -29,6 +32,13 @@ export default class RendererPort extends IllustHistoryPort {
     this.postMessage({
       action: 'saveIllustHistory',
       args: args
+    });
+  }
+
+  saveBatchHistories({ items }) {
+    this.postMessage({
+      action: 'saveBatchHistories',
+      args: { items }
     });
   }
 

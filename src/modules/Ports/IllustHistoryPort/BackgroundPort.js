@@ -28,6 +28,14 @@ export default class BackgroundPort extends IllustHistoryPort {
     return this.illustHistoryRepo.putIllust(args)
   }
 
+  saveBatchHistoriesAction({ items }, port) {
+    return this.illustHistoryRepo.putBatchHistories(items).then(() => {
+      this.sendMessageThroughPort(port, 'save-batch-histories');
+    }).catch(error => {
+      this.sendMessageThroughPort(port, 'save-batch-histories', { error });
+    });
+  }
+
   countItemsAction(args, port) {
     this.illustHistoryRepo.countItems(args).then(count => {
       this.sendMessageThroughPort(port, 'items-count', { count });
@@ -65,5 +73,6 @@ export default class BackgroundPort extends IllustHistoryPort {
 
   clearHistoryAction() {
     this.illustHistoryRepo.clearData();
+    this.historyBackupRepo.forgetAll();
   }
 }
