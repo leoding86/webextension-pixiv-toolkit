@@ -95,7 +95,7 @@
       </recycle-scroller>
     </v-layout>
 
-    <p v-if="statusNotice"
+    <p v-if="!loading && statusNotice"
       class="history__status-notice"
     >
       {{ statusNotice }}
@@ -320,7 +320,7 @@ export default {
         }
 
         if (undefined === message.error && message.data.dataset && message.data.dataset.length > 0) {
-          this.historyItems = message.data.dataset;
+          this.historyItems = this.historyItems.concat(message.data.dataset);
 
           if (message.data.dataset.length < this.step) {
             this.allLoaded = true;
@@ -389,6 +389,7 @@ export default {
       if (window.confirm('Remove all visit history? This operate cannot be reversed.')) {
         this.illustHistoryPort.clearHistory();
         this.historyItems = [];
+        this.total = 0;
       }
     }
   }
