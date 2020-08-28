@@ -70,7 +70,7 @@ module.exports = env => {
     }),
     plugins: [
       new BundleAnalyzerPlugin({
-        analyzerMode: isProduction ? 'static' : 'disabled',
+        analyzerMode: isProduction && (env && env.analyzer) ? 'static' : 'disabled',
         reportFilename: '../bundleAnalyzer/options-page.html'
       }),
 

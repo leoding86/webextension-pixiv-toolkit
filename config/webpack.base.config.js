@@ -55,22 +55,7 @@ module.exports = env => {
   let _config;
 
   if (process.env.NODE_ENV === 'production') {
-    _config = Object.assign({}, config, {
-      optimization: {
-        minimizer: [
-          new UglifyJsPlugin({
-            uglifyOptions: {
-              output: {
-                ascii_only: true
-              },
-              compress: {
-                drop_console: true,
-              }
-            }
-          })
-        ]
-      }
-    });
+    _config = Object.assign({}, config);
   } else {
     _config = Object.assign({}, config, {
       devtool: 'inline-source-map'

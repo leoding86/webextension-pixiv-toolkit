@@ -7,7 +7,8 @@
           "browsers": [
             "> 1%",
             "last 2 versions",
-            "not ie <= 8"
+            "not ie <= 8",
+            "chrome >= 48"
           ]
         }
       }
@@ -17,6 +18,8 @@
     "@babel/plugin-syntax-jsx",
     "@babel/plugin-transform-runtime",
     "@babel/plugin-proposal-class-properties",
+    "@babel/plugin-transform-arrow-functions",
+    "@babel/plugin-transform-block-scoping",
     "@vue/babel-plugin-transform-vue-jsx"
   ]
 }
