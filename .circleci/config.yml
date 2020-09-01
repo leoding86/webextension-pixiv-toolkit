@@ -20,6 +20,9 @@ jobs:
           paths:
             - ./node_modules
       - run:
+          name: "Rebuild node-sass"
+          command: "npm rebuild node-sass"
+      - run:
           name: "Build extension for Chrome"
           command: "npm run build"
       - run:
