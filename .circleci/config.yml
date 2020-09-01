@@ -31,8 +31,8 @@ jobs:
       - run:
           name: "Create artifacts"
           command: |
-            tar --cvzf ./chrome.tar.gz ./dist/chrome/
-            tar --cvzf ./firefox.tar.gz ./dist/firefox/
+            tar -cvzf ./chrome.tar.gz ./dist/chrome/
+            tar -cvzf ./firefox.tar.gz ./dist/firefox/
       - store_artifacts:
           path: ./chrome.tar.gz
       - store_artifacts:
