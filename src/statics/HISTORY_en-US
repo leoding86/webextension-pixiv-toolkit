@@ -1,3 +1,6 @@
+v4.5.1-2020090111
+Fix issue about more history cannot be loaded.
+
 v4.5.0-2020082508
 Add settings in History section in setting page;
 Add downloads history page;
