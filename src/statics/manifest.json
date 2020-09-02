@@ -66,13 +66,15 @@
             "js": [
                 "lib/global.js",
                 "lib/vue.min.js",
+                "lib/vue-i18n.min.js",
+                "lib/locales.js",
                 "lib/jszip/jszip.js",
                 "lib/jszip/jszip-utils.min.js",
                 "content_scripts/fanbox-cs.js"
             ]
         }
     ],
-    "version": "4.5.1",
-    "version_name": "4.5.1-2020090111",
+    "version": "4.5.2",
+    "version_name": "4.5.2-2020090211",
     "options_page": "options_page/index.html"
 }
