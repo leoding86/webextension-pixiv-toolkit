@@ -1,5 +1,8 @@
+v4.5.3-2020090311
+Fix issue about loading more histories/downloads.
+
 v4.5.2-2020090211
-Fix issue about download button isn't appear in Fanbox work.
+Fix issue about download button disappear in Fanbox work.
 
 v4.5.1-2020090111
 Fix issue about more history cannot be loaded.
