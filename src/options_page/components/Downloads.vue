@@ -247,6 +247,8 @@ export default {
 
           if (message.data.datasets.length < this.step) {
             this.allLoaded = true;
+          } else {
+            this.offset += this.skip;
           }
         }
 
