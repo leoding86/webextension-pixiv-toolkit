@@ -17,7 +17,7 @@ class Request extends Event {
     this.responseData = null;
     this.responseType = 'arrayBuffer';
 
-    if (AbortController) {
+    if (window.AbortController) {
       this.fetchAbortController = new AbortController();
       this.fetchInit.signal = this.fetchAbortController.signal;
     }
