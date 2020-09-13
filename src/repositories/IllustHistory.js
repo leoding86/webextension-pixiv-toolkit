@@ -158,8 +158,6 @@ class IllustHistory {
         let doc = item.docs[0]; // Get first rev doc
 
         if (undefined !== doc.ok) {
-          doc.ok._revisions && delete doc.ok._revisions; // remove revisions property which not be needed
-
           let incomingItem = itemsById[doc.ok.id];
 
           /**
