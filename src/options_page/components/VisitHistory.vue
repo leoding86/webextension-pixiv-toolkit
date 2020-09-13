@@ -20,26 +20,12 @@
 
     <div class="history__header-action">
       <v-btn
-        class="text-none"
-        depressed
-        style="margin-left:0;"
-      >{{ tl('_total_records') }} {{ total }}</v-btn>
-
-      <v-btn v-model="disableBlurOnR"
-        label="Solo"
-        depressed
+        flat
+        icon
         @click="disableBlurOnRClicked"
-      >{{ disableBlurOnRText }}</v-btn>
-
-      <v-btn
-        depressed
-        :disabled="historyItems.length === 0"
-        @click="clearAll"
       >
-        Clear all
+        <v-icon>{{ disableBlurOnR ? 'visibility' : 'visibility_off' }}</v-icon>
       </v-btn>
-
-      <!-- <v-btn @click="insertData">Insert 10w</v-btn> -->
     </div>
 
     <v-layout row wrap
@@ -49,12 +35,14 @@
       <recycle-scroller
         class="scroller"
         :items="historyItems"
-        :item-size="90"
         page-mode
         key-field="id"
         v-slot="{ item }"
       >
-        <div class="history-item">
+        <div v-if="!!item.time" class="history-date">
+          {{ formatDate(item.time) }}
+        </div>
+        <div v-else class="history-item">
           <div class="history-item__thumb"
             @click="openInNew(item)"
           >
@@ -128,11 +116,12 @@
 
 <script>
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css';
-import { RecycleScroller } from 'vue-virtual-scroller';
+import { RecycleScroller, DynamicScroller } from 'vue-virtual-scroller';
 import PageTitle from '@@/components/PageTitle';
 import CacheableImage from '@@/components/CacheableImage';
 import Supports from '@@/components/Supports';
 import IllustHistoryPort from '@/modules/Ports/IllustHistoryPort/RendererPort';
+import moment from 'moment';
 
 export default {
   components: {
@@ -145,6 +134,7 @@ export default {
     return {
       total: 0,
       historyItems: [],
+      totalLoaded: 0,
       offset: 0,
       step: 50,
       disableBlurOnR: false,
@@ -170,6 +160,15 @@ export default {
      */
     this.enableSaveVisitHistory = this.browserItems.enableSaveVisitHistory;
     this.unlimitedStoragePermission = this.browserItems.unlimitedStoragePermission;
+    this.latestListDate = null;
+
+    if (this.$i18n.locale === 'zh_CN') {
+      this.dateFormat = 'YYYY[年]MMMMDD[日] dddd';
+      this.timeFormat = 'A h:mm';
+    } else {
+      this.dateFormat = 'dddd, MMMM DD, YYYY';
+      this.timeFormat = 'h:mmA';
+    }
   },
 
   beforeMount() {
@@ -202,11 +201,9 @@ export default {
     statusNotice() {
       if (this.historyItems.length <= 0) {
         return 'There is no any history';
-      } else if (this.allLoaded) {
-        return 'There is no more history';
       }
 
-      return '';
+      return `${this.historyItems.length} / ${this.total}`;
     },
 
     importProgress() {
@@ -232,6 +229,7 @@ export default {
         let promise;
 
         this.historyItems = [];
+        this.totalLoaded = 0;
         this.offset = 0;
 
         if (val.trim().length > 0) {
@@ -245,13 +243,7 @@ export default {
 
   methods: {
     caseDate(time) {
-      let date = new Date(time * 1000);
-
-      if (browser.i18n.getUILanguage().toLowerCase().indexOf('zh') === 0) {
-        return [date.getFullYear(), date.getMonth() + 1, date.getDate()].join('/');
-      } else {
-        return [date.getMonth() + 1, date.getDate(), date.getFullYear()].join('/');
-      }
+      return moment(time).format(this.timeFormat);
     },
 
     caseWorkUrl(item) {
@@ -320,6 +312,37 @@ export default {
         }
 
         if (undefined === message.error && message.data.dataset && message.data.dataset.length > 0) {
+          this.totalLoaded += message.data.dataset.length;
+
+          for (let i = 0; i < message.data.dataset.length; i++) {
+            let item = message.data.dataset[i];
+            item.size = 90;
+
+            if (this.latestListDate === null) {
+              this.latestListDate = new Date(item.viewed_at * 1000);
+              this.latestListDate.setHours(0);
+              this.latestListDate.setMinutes(0);
+              this.latestListDate.setSeconds(0);
+              this.latestListDate.setMilliseconds(0);
+              let time = this.latestListDate.getTime();
+              message.data.dataset.splice(i, 0, { id: time, time: time, size: 50});
+              i++;
+            } else {
+              let itemDate = new Date(item.viewed_at * 1000);
+
+              if (this.latestListDate.getTime() > itemDate.getTime()) {
+                itemDate.setHours(0);
+                itemDate.setMinutes(0);
+                itemDate.setSeconds(0);
+                itemDate.setMilliseconds(0);
+                let time = itemDate.getTime();
+                message.data.dataset.splice(i, 0, { id: time, time: time, size: 50 });
+                this.latestListDate = itemDate;
+                i++;
+              }
+            }
+          }
+
           this.historyItems = this.historyItems.concat(message.data.dataset);
 
           if (message.data.dataset.length < this.step) {
@@ -387,12 +410,9 @@ export default {
       this.disableBlurOnR = !this.disableBlurOnR;
     },
 
-    clearAll() {
-      if (window.confirm('Remove all visit history? This operate cannot be reversed.')) {
-        this.illustHistoryPort.clearHistory();
-        this.historyItems = [];
-        this.total = 0;
-      }
+    formatDate(time) {
+      console.log(this.$i18n.locale);
+      return moment(time).format(this.dateFormat);
     }
   }
 };
@@ -420,7 +440,7 @@ export default {
     z-index: 5;
 
     .v-input__slot {
-      box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
+      box-shadow: 0 0 3px 0 rgba(0,0,0,.5);
     }
 
     .v-text-field__details {
@@ -428,11 +448,14 @@ export default {
     }
   }
 
+  .history-date {
+    padding-top: 15px;
+    font-size: 18px;
+  }
+
   .history-items {
     position: relative;
     margin-top: 8px;
-    box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
-    background: #fff;
 
     .scroller {
       width: 100%;
@@ -444,9 +467,10 @@ export default {
       display: flex;
       flex-direction: row;
       box-sizing: border-box;
-      height: 90px;
-      border-bottom: 1px solid #ccc;
+      height: 80px;
       background: #fff;
+      border-radius: 5px;
+      box-shadow: 0 0 3px 0 rgba(0,0,0,.5);
 
       &:hover {
         background: #f6f6f6;
@@ -460,10 +484,12 @@ export default {
     .history-item__thumb{
       position: relative;
       width: 120px;
-      height: 89px;
+      height: 80px;
       cursor: pointer;
       overflow: hidden;
       background: url(../../statics/img/rthumb.png) center center no-repeat;
+      border-top-left-radius: 5px;
+      border-bottom-left-radius: 5px;
     }
 
     .history-item__thumb-body {
@@ -559,7 +585,11 @@ export default {
   transition: transform 300ms;
 
   &:hover {
-    transform: scale(1.2);
+    transform: scale(1.1);
   }
+}
+
+.vue-recycle-scroller__item-wrapper {
+  overflow:visible;
 }
 </style>
