@@ -1,17 +1,17 @@
-import Vue from 'vue'
-import Router from 'vue-router'
+import DownloadRelativeLocationDialog from '@@/components/options/DownloadRelativeLocationDialog';
+import History from '@@/components/History';
 import Options from '@@/components/Options'
-import UgoriaExtendDialog from '@@/components/options/UgoiraExtendDialog'
-import RenameUgoiraDialog from '@@/components/options/RenameUgoiraDialog';
+import RenameIllustrationDialog from '@@/components/options/RenameIllustrationDialog';
+import RenameIllustrationImageDialog from '@@/components/options/RenameIllustrationImageDialog';
 import RenameMangaDialog from '@@/components/options/RenameMangaDialog';
 import RenameMangaImageDialog from '@@/components/options/RenameMangaImageDialog';
 import RenameNovelDialog from '@@/components/options/RenameNovelDialog';
-import RenameIllustrationDialog from '@@/components/options/RenameIllustrationDialog';
-import RenameIllustrationImageDialog from '@@/components/options/RenameIllustrationImageDialog';
-import ThirdParty from '@@/components/ThirdParty';
+import RenameUgoiraDialog from '@@/components/options/RenameUgoiraDialog';
+import Router from 'vue-router'
 import Sponsors from '@@/components/Sponsors';
-import History from '@@/components/History';
-import DownloadRelativeLocationDialog from '@@/components/options/DownloadRelativeLocationDialog';
+import ThirdParty from '@@/components/ThirdParty';
+import UgoriaExtendDialog from '@@/components/options/UgoiraExtendDialog'
+import Vue from 'vue'
 
 Vue.use(Router)
 
@@ -56,10 +56,6 @@ export default new Router({
             component: RenameNovelDialog
           }
       ]
-    }, {
-      path: '/illust-history',
-      name: 'IllustHistory',
-      component: () => import('@@/components/IllustHistory')
     }, {
       path: '/visit-history',
       name: 'VisitHistory',

@@ -152,11 +152,7 @@ export default {
     },
 
     goToVisitHistory() {
-      if (this.browserItems['visitHistoryType'] === 'grid') {
-        this.routeTo('IllustHistory');
-      } else {
-        this.routeTo('VisitHistory');
-      }
+      this.routeTo('VisitHistory');
     }
   }
 }
