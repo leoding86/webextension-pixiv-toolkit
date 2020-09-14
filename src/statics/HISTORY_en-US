@@ -1,3 +1,9 @@
+v4.6.0-2020091418
+Update visit history page and downloads page style;
+Fix issue about download progress doesn't show when downloading single image;
+Fix issue about cann't load more downloads history;
+Minor fixes.
+
 v4.5.3-2020090311
 Fix issue about loading more histories/downloads.
 
