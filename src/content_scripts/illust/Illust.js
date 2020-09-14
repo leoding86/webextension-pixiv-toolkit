@@ -151,7 +151,7 @@ class IllustTool extends Event {
         let download = new Download(url, { method: 'GET' });
 
         download.addListener('onprogress', ({ totalLength, loadedLength }) => {
-          this.dispatch('progress', [{ progress: loadedLength / totalLength }, context])
+          this.dispatch('download-progress', [{ progress: loadedLength / totalLength }, context])
         });
 
         download.addListener('onerror', error => {
