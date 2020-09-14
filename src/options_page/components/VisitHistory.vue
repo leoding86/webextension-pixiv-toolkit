@@ -411,8 +411,7 @@ export default {
     },
 
     formatDate(time) {
-      console.log(this.$i18n.locale);
-      return moment.unix(time).format(this.dateFormat);
+      return moment(time).format(this.dateFormat);
     }
   }
 };

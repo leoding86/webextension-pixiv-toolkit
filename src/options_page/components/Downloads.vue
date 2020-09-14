@@ -309,7 +309,7 @@ export default {
     },
 
     formatDate(time) {
-      return moment.unix(time).format(this.dateFormat);
+      return moment(time).format(this.dateFormat);
     },
 
     clearAll() {
