@@ -1,6 +1,6 @@
 <template>
   <div class="container container--small page-history">
-    <div class="history__header">
+    <div class="download__header">
       <!-- Searchbar -->
       <v-text-field class="search-panel"
         label="Solo"
@@ -13,7 +13,7 @@
       <!-- /Searchbar -->
     </div>
 
-    <div class="history__header-action">
+    <div class="download__header-action">
       <v-btn
         depressed
         style="margin-left:0;"
@@ -25,43 +25,42 @@
     </div>
 
     <v-layout row wrap
-      class="history-items"
+      class="download-items"
       v-if="datasets.length > 0"
     >
       <recycle-scroller
         class="scroller"
         :items="datasets"
-        :item-size="90"
+        :item-size="50"
         page-mode
         key-field="_id"
         v-slot="{ item }"
       >
-        <div class="history-item">
-          <div class="history-item__thumb"
+        <div
+          v-if="item.time"
+          class="download-date"
+        >{{ formatDate(item.time) }}</div>
+        <div
+          v-else
+          class="download-item">
+          <div class="download-item__thumb"
             v-if="!1"
             @click="openInNew(item)"
           >
-            <cacheable-image class="history-item__thumb-body"
+            <cacheable-image class="download-item__thumb-body"
               :src="item.thumb"
               mode="background"
             ></cacheable-image>
           </div>
-          <div class="history-item__info">
-            <div class="history-item__info-entity history-item__info-entity--blod">
-              <a class="maintitle" :href="caseWorkUrl(item)" target="_blank">{{ item.title || item._id }}</a>
-            </div>
-            <div class="history-item__info-entity history-item__info-entity--blod">
-              <a class="subtitle" :href="caseUserUrl(item.userId)"
-                target="_blank"
-                v-if="item.userId"
-              >{{ item.userName}}</a>
-              <span v-else>-</span>
-            </div>
-            <div class="history-item__info-entity history-item__info-entity--sub">{{ caseDate(item.downloaded_at) }}<span style="margin-left:15px;">{{ caseWorkUrl(item) }}</span></div>
+          <div class="download-item__info">
+            <div class="download-item__info-time">{{ caseDate(item.downloaded_at) }}</div>
+            <div class="download-item__info-title"><a :href="caseWorkUrl(item)">{{ item.title || item._id }}</a></div>
+            <div class="download-item__info-user"><a :href="caseUserUrl(item.userId)">{{ item.userName}}</a></div>
+            <div class="download-item__info-id">{{ caseWorkType(item) + ' ' + item._id.substr(1) }}</div>
           </div>
-          <div class="history-item__actions">
+          <div class="download-item__actions">
             <v-btn
-              class="history-item__actions-btn"
+              class="download-item__actions-btn"
               flat
               icon
               small
@@ -77,7 +76,7 @@
     </v-layout>
 
     <p v-if="statusNotice"
-      class="history__status-notice"
+      class="download__status-notice"
     >
       {{ statusNotice }}
     </p>
@@ -97,6 +96,7 @@ import { RecycleScroller } from 'vue-virtual-scroller';
 import PageTitle from '@@/components/PageTitle';
 import CacheableImage from '@@/components/CacheableImage';
 import DownloadRecordPort from '@/modules/Ports/DownloadRecordPort/RendererPort';
+import moment from 'moment';
 
 export default {
   components: {
@@ -123,6 +123,15 @@ export default {
     this.windowScrollEventBinded = false;
     this.downloadsPort = DownloadRecordPort.getInstance();
     this.downloadsPort.port.onMessage.addListener(this.handleDownloadsPortResponse);
+    this.latestListDate = null;
+
+    if (this.$i18n.locale === 'zh_CN') {
+      this.dateFormat = 'YYYY[年]MMMMDD[日] dddd';
+      this.timeFormat = 'A h:mm';
+    } else {
+      this.dateFormat = 'dddd, MMMM DD, YYYY';
+      this.timeFormat = 'h:mmA';
+    }
   },
 
   mounted() {
@@ -167,17 +176,7 @@ export default {
 
   methods: {
     caseDate(time) {
-      if (!time) {
-        return '-';
-      }
-
-      let date = new Date(time * 1000);
-
-      if (browser.i18n.getUILanguage().toLowerCase().indexOf('zh') === 0) {
-        return [date.getFullYear(), date.getMonth() + 1, date.getDate()].join('/');
-      } else {
-        return [date.getMonth() + 1, date.getDate(), date.getFullYear()].join('/');
-      }
+      return moment.unix(time).format(this.timeFormat);
     },
 
     caseWorkUrl(item) {
@@ -193,20 +192,12 @@ export default {
     },
 
     caseWorkType(item) {
-      if (item.isNovel) {
-        return "Novel";
-      }
-
-      let type = item.type;
-
-      if (type == 1) {
-        return "Manga";
-      } else if (type == 2) {
-        return "Ugoira";
-      } else if (type == 0) {
-        return "Illustration";
+      if (item._id.indexOf('I') === 0) {
+        return 'Artwork';
+      } else if (item._id.indexOf('N') === 0) {
+        return 'Novel';
       } else {
-        return "Unkown";
+        return 'Unkown';
       }
     },
 
@@ -243,7 +234,35 @@ export default {
         }
 
         if (message.data.datasets.length > 0) {
-          this.datasets = message.data.datasets;
+          for (let i = 0; i < message.data.datasets.length; i++) {
+            let item = message.data.datasets[i];
+
+            if (this.latestListDate === null) {
+              this.latestListDate = new Date(item.downloaded_at * 1000);
+              this.latestListDate.setHours(0);
+              this.latestListDate.setMinutes(0);
+              this.latestListDate.setSeconds(0);
+              this.latestListDate.setMilliseconds(0);
+              let time = this.latestListDate.getTime();
+              message.data.datasets.splice(i, 0, { _id: time, time: time });
+              i++;
+            } else {
+              let itemDate = new Date(item.downloaded_at * 1000);
+
+              if (this.latestListDate.getTime() > itemDate.getTime()) {
+                itemDate.setHours(0);
+                itemDate.setMinutes(0);
+                itemDate.setSeconds(0);
+                itemDate.setMilliseconds(0);
+                let time = itemDate.getTime();
+                message.data.datasets.splice(i, 0, { _id: time, time: time });
+                this.latestListDate = itemDate;
+                i++;
+              }
+            }
+          }
+
+          this.datasets = this.datasets.concat(message.data.datasets);
 
           if (message.data.datasets.length < this.step) {
             this.allLoaded = true;
@@ -289,6 +308,10 @@ export default {
       });
     },
 
+    formatDate(time) {
+      return moment.unix(time).format(this.dateFormat);
+    },
+
     clearAll() {
       if (window.confirm('Remove all downloads history? This operate cannot be reversed.')) {
         this.downloadsPort.clearDownloads();
@@ -301,7 +324,7 @@ export default {
 
 <style lang="scss">
 .page-history {
-  .history__header-action {
+  .download__header-action {
     .v-input--selection-controls {
       display: inline-block;
       box-sizing: border-box;
@@ -314,14 +337,14 @@ export default {
     }
   }
 
-  .history__header {
+  .download__header {
     position: -webkit-sticky;
     position: sticky;
     top: 80px;
     z-index: 5;
 
     .v-input__slot {
-      box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
+      box-shadow: 0 0 3px 0 rgba(0,0,0,.3);
     }
 
     .v-text-field__details {
@@ -329,120 +352,87 @@ export default {
     }
   }
 
-  .history-items {
+  .download-items {
     position: relative;
     margin-top: 8px;
-    box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
-    background: #fff;
 
     .scroller {
       width: 100%;
       height: 100%;
     }
 
-    .history-item {
+    .download-date {
+      font-size: 16px;
+      line-height: 50px;
+    }
+
+    .download-item {
       position: relative;
       display: flex;
       flex-direction: row;
       box-sizing: border-box;
-      height: 90px;
-      border-bottom: 1px solid #ccc;
+      height: 40px;
+      border-radius: 5px;
+      box-shadow: 0 0 3px 0 rgba(0,0,0,.3);
       background: #fff;
 
       &:hover {
         background: #f6f6f6;
 
-        .history-item__actions {
-          width: 120px;
+        .download-item__actions {
+          width: 50px;
         }
       }
     }
 
-    .history-item__thumb{
-      position: relative;
-      width: 120px;
-      height: 89px;
-      cursor: pointer;
-      overflow: hidden;
-      background: url(../../statics/img/rthumb.png) center center no-repeat;
-    }
-
-    .history-item__thumb-body {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      transition: opacity 0.5s;
-    }
-
-    .history-item__thumb-body--blur {
-      opacity: 0;
-
-      &:hover {
-        opacity: 1;
-      }
-    }
-
-    .history-item__info {
+    .download-item__info {
       flex: auto;
-    }
-
-    .history-item__info-entity {
+      display: flex;
       font-size: 12px;
-      padding: 6px 0 0 8px;
-      width: 380px;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      overflow: hidden;
-    }
+      line-height: 40px;
 
-    .history-item__info-entity--blod {
-      font-weight: 700;
-    }
+      a {
+        color: #333;
+        text-decoration: none;
 
-    .history-item__info-entity--sub {
-      color: #999;
-    }
-
-    .history-item__info-badge {
-      position: relative;
-      margin-right: 5px;
-      padding: 3px;
-      background: #ccc;
-      font-weight: 300;
-
-      &--type0 {
-        color: #fff;
-        background:brown;
+        &:hover {
+          text-decoration: underline;
+        }
       }
 
-      &--type1 {
-        color: #fff;
-        background:cadetblue;
+      &-time {
+        width: 80px;
+        padding-left: 1em;
+        color: #555;
       }
 
-      &--type2 {
-        color: #fff;
-        background:coral;
+      &-title {
+        width: 300px;
+        font-weight: 700;
       }
 
-      &--type-novel {
-        color: #fff;
-        background: gray;
+      &-user {
+        width: 150px;
+        font-weight: 700;
+      }
+
+      &-id {
+        color: #555;
       }
     }
 
-    .history-item__actions {
+    .download-item__actions {
       width: 0;
       text-align: right;
       overflow: hidden;
     }
 
-    .history-item__actions-btn {
+    .download-item__actions-btn {
       color: rgb(88, 88, 88);
     }
   }
 
-  .history__status-notice {
+  .download__status-notice {
     font-size: 14px;
     text-align: center;
     line-height: 4;
@@ -462,5 +452,9 @@ export default {
   &:hover {
     transform: scale(1.2);
   }
+}
+
+.vue-recycle-scroller__item-wrapper {
+  overflow:visible;
 }
 </style>
