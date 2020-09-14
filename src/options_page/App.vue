@@ -91,7 +91,7 @@
           :show-inline-sponsors-link="true"></supports>
       </v-toolbar>
       <v-content style="padding-left:0;">
-        <router-view />
+        <router-view style="max-width: 800px;" />
       </v-content>
 
       <update-notice></update-notice>
@@ -138,7 +138,7 @@ export default {
 
   methods: {
     resizeHandle() {
-      if (window.innerWidth < 1300) {
+      if (window.innerWidth < 1400) {
         if (!this.drawerTemporary) {
           this.drawerTemporary = true
           this.drawer = false
