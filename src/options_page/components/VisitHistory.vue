@@ -243,7 +243,7 @@ export default {
 
   methods: {
     caseDate(time) {
-      return moment(time).format(this.timeFormat);
+      return moment.unix(time).format(this.timeFormat);
     },
 
     caseWorkUrl(item) {
@@ -412,7 +412,7 @@ export default {
 
     formatDate(time) {
       console.log(this.$i18n.locale);
-      return moment(time).format(this.dateFormat);
+      return moment.unix(time).format(this.dateFormat);
     }
   }
 };
@@ -440,7 +440,7 @@ export default {
     z-index: 5;
 
     .v-input__slot {
-      box-shadow: 0 0 3px 0 rgba(0,0,0,.5);
+      box-shadow: 0 0 3px 0 rgba(0,0,0,.3);
     }
 
     .v-text-field__details {
@@ -470,7 +470,7 @@ export default {
       height: 80px;
       background: #fff;
       border-radius: 5px;
-      box-shadow: 0 0 3px 0 rgba(0,0,0,.5);
+      box-shadow: 0 0 3px 0 rgba(0,0,0,.3);
 
       &:hover {
         background: #f6f6f6;
