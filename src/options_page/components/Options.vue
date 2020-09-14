@@ -1,5 +1,5 @@
 <template>
-  <v-container style="max-width: 640px;">
+  <v-container>
     <ugoira-options></ugoira-options>
 
     <illustration-options></illustration-options>

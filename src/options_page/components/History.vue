@@ -1,5 +1,5 @@
 <template>
-  <v-container style="max-width: 640px;">
+  <v-container>
     <span class="card-title">{{ tl('Change_History') }}</span>
 
     <v-card>

@@ -1,5 +1,5 @@
 <template>
-  <v-container style="max-width: 640px;">
+  <v-container>
     <v-card>
       <v-card-text>
         <p style="font-size:14px;">{{ tl('sponsor_update_periodically') }} ~ヾ(＾∇＾)</p>
