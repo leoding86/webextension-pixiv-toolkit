@@ -57,6 +57,28 @@
 
         <v-list-tile>
           <v-list-tile-content>
+            <v-list-tile-title>Cover size</v-list-tile-title>
+          </v-list-tile-content>
+          <v-list-tile-action>
+            <v-select
+              :items="[{
+                text: this.tl('_small'),
+                value: 1
+              }, {
+                text: this.tl('_normal'),
+                value: 2
+              }, {
+                text: this.tl('_large'),
+                value: 3
+              }]"
+              v-model="workCoverSize"
+              style="width:150px;"
+            ></v-select>
+          </v-list-tile-action>
+        </v-list-tile>
+
+        <v-list-tile>
+          <v-list-tile-content>
             <v-list-tile-title>{{ tl('_max_history_items') }}</v-list-tile-title>
             <v-list-tile-sub-title>{{ tl('_reload_to_apply_change') }}</v-list-tile-sub-title>
           </v-list-tile-content>
@@ -190,7 +212,8 @@ export default {
       importItems: [],
       importCount: 0,
       maxHistoryItems: 10000,
-      maxDownloadRecords: 10000
+      maxDownloadRecords: 10000,
+      workCoverSize: 1
     };
   },
 
@@ -207,6 +230,7 @@ export default {
     this.notSaveNSFWWorkInHistory = this.browserItems.notSaveNSFWWorkInHistory;
     this.maxHistoryItems = this.browserItems.maxHistoryItems;
     this.maxDownloadRecords = this.browserItems.maxDownloadRecords;
+    this.workCoverSize = this.browserItems.workCoverSize;
   },
 
   computed: {
@@ -262,6 +286,12 @@ export default {
       } else {
         this.maxDownloadRecords = 10000;
       }
+    },
+
+    workCoverSize(val) {
+      browser.storage.local.set({
+        workCoverSize: val - 0
+      });
     }
   },
 

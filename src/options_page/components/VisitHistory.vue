@@ -42,9 +42,12 @@
         <div v-if="!!item.time" class="history-date">
           {{ formatDate(item.time) }}
         </div>
-        <div v-else class="history-item">
+        <div v-else class="history-item"
+          :style="{ height: coverSize.height + 'px' }"
+        >
           <div class="history-item__thumb"
             @click="openInNew(item)"
+            :style="{ width: coverSize.width + 'px', height: coverSize.height + 'px' }"
           >
             <cacheable-image class="history-item__thumb-body"
               :class="{'history-item__thumb-body--blur': item.r && !disableBlurOnR}"
@@ -149,7 +152,7 @@ export default {
       searchQuery: '',
       searchTimeout: null,
       enableSaveVisitHistory: true,
-      unlimitedStoragePermission: null
+      unlimitedStoragePermission: null,
     };
   },
 
@@ -224,6 +227,34 @@ export default {
 
     displayWorkTypeLabel() {
       return this.browserItems.displayWorkTypeLabel;
+    },
+
+    coverSize() {
+      let height, size;
+
+      switch (this.browserItems.workCoverSize) {
+        case 1:
+          height = 80;
+          break;
+        case 2:
+          height = 110;
+          break;
+        case 3:
+          height = 150;
+      }
+
+      size = {
+        width: Math.floor(height * 1.25),
+        height: height
+      };
+
+      this.historyItems.forEach(item => {
+        if (undefined === item.time) {
+          item.size = size.height + 10;
+        }
+      });
+
+      return size;
     }
   },
 
@@ -324,7 +355,7 @@ export default {
 
           for (let i = 0; i < message.data.dataset.length; i++) {
             let item = message.data.dataset[i];
-            item.size = 90;
+            item.size = this.coverSize.height + 10;
 
             if (this.latestListDate === null) {
               this.latestListDate = new Date(item.viewed_at * 1000);
@@ -474,7 +505,6 @@ export default {
       display: flex;
       flex-direction: row;
       box-sizing: border-box;
-      height: 80px;
       background: #fff;
       border-radius: 5px;
       box-shadow: 0 0 3px 0 rgba(0,0,0,.3);
@@ -490,8 +520,6 @@ export default {
 
     .history-item__thumb{
       position: relative;
-      width: 120px;
-      height: 80px;
       cursor: pointer;
       overflow: hidden;
       background: url(../../statics/img/rthumb.png) center center no-repeat;
