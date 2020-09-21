@@ -637,5 +637,14 @@
    },
    "_display_work_type_label": {
        "message": "显示作品类型标签"
+   },
+   "_small": {
+       "message": "小"
+   },
+   "_normal": {
+       "message": "中"
+   },
+   "_large": {
+       "message": "大"
    }
 }

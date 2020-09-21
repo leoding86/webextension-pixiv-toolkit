@@ -637,5 +637,14 @@
    },
    "_display_work_type_label": {
        "message": "Display work type label"
+   },
+   "_small": {
+       "message": "Small"
+   },
+   "_normal": {
+       "message": "Normal"
+   },
+   "_large": {
+       "message": "Large"
    }
 }
