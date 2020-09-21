@@ -54,7 +54,11 @@
           </div>
           <div class="history-item__info">
             <div class="history-item__info-entity history-item__info-entity--blod">
-              <span class="history-item__info-badge" :class="`history-item__info-badge--type${item.isNovel ? '-novel' : item.type}`">{{ caseWorkType(item) }}</span>
+              <span
+                v-if="displayWorkTypeLabel"
+                class="history-item__info-badge"
+                :class="`history-item__info-badge--type${item.isNovel ? '-novel' : item.type}`"
+              >{{ caseWorkType(item) }}</span>
               <a class="maintitle" :href="caseWorkUrl(item)" target="_blank">{{ item.title }}</a>
             </div>
             <div class="history-item__info-entity history-item__info-entity--blod">
@@ -216,6 +220,10 @@ export default {
 
     disableBlurOnRText() {
       return this.tl(this.disableBlurOnR ? '_enable_mask' : '_disable_mask')
+    },
+
+    displayWorkTypeLabel() {
+      return this.browserItems.displayWorkTypeLabel;
     }
   },
 
