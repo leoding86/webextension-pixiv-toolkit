@@ -634,5 +634,8 @@
    },
    "_show_in_work_only": {
        "message": "Show in work only"
+   },
+   "_display_work_type_label": {
+       "message": "Display work type label"
    }
 }

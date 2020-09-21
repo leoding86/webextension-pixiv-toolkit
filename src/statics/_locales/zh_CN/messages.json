@@ -634,5 +634,8 @@
    },
    "_show_in_work_only": {
        "message": "仅在作品中显示"
+   },
+   "_display_work_type_label": {
+       "message": "显示作品类型标签"
    }
 }
