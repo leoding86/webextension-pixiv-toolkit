@@ -652,5 +652,8 @@
    },
    "_exclude_history_backup": {
        "message": "排除历史记录备份"
+   },
+   "_cover_size": {
+       "message": "封面尺寸"
    }
 }

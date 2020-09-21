@@ -652,5 +652,8 @@
    },
    "_exclude_history_backup": {
        "message": "Exclude history backup"
+   },
+   "_cover_size": {
+       "message": "Cover size"
    }
 }

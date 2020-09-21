@@ -57,7 +57,7 @@
 
         <v-list-tile>
           <v-list-tile-content>
-            <v-list-tile-title>Cover size</v-list-tile-title>
+            <v-list-tile-title>{{ tl('_cover_size') }}</v-list-tile-title>
           </v-list-tile-content>
           <v-list-tile-action>
             <v-select
