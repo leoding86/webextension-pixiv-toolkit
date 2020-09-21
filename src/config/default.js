@@ -169,5 +169,7 @@ export default Object.assign({}, {
      */
     enableSaveDownloadHistory: 1,
 
-    displayWorkTypeLabel: true
+    displayWorkTypeLabel: true,
+
+    workCoverSize: 1
   });
