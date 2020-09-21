@@ -167,5 +167,7 @@ export default Object.assign({}, {
     /**
      * @since 4.5.0
      */
-    enableSaveDownloadHistory: 1
+    enableSaveDownloadHistory: 1,
+
+    displayWorkTypeLabel: true
   });
