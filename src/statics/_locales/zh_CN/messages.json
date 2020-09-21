@@ -646,5 +646,11 @@
    },
    "_large": {
        "message": "大"
+   },
+   "_all_settings": {
+       "message": "所有设置"
+   },
+   "_exclude_history_backup": {
+       "message": "排除历史记录备份"
    }
 }

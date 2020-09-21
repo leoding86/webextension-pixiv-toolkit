@@ -646,5 +646,11 @@
    },
    "_large": {
        "message": "Large"
+   },
+   "_all_settings": {
+       "message": "All Settings"
+   },
+   "_exclude_history_backup": {
+       "message": "Exclude history backup"
    }
 }

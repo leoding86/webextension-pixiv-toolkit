@@ -4,9 +4,8 @@
 
 <p align="center">
   <a href="https://circleci.com/gh/leoding86/webextension-pixiv-toolkit"><img src="https://img.shields.io/circleci/build/github/leoding86/webextension-pixiv-toolkit/master?logo=circleci&token=e46c87fa8bb712ab70284f1be692d0d9035da8d4"></a>
-  <a href="https://chrome.google.com/webstore/detail/ajlcnbbeidbackfknkgknjefhmbngdnj"><img src="https://img.shields.io/chrome-web-store/rating/ajlcnbbeidbackfknkgknjefhmbngdnj?logo=google%20chrome&logoColor=white"></a>
-  <a href="https://chrome.google.com/webstore/detail/ajlcnbbeidbackfknkgknjefhmbngdnj"><img src="https://img.shields.io/chrome-web-store/rating-count/ajlcnbbeidbackfknkgknjefhmbngdnj?logo=google%20chrome&logoColor=white"></a>
-  <a href="https://addons.mozilla.org/en-US/firefox/addon/pixiv-toolkit/"><img src="https://img.shields.io/amo/rating/pixiv-toolkit?logo=mozilla%20firefox&logoColor=white"></a>
+  <a href="https://chrome.google.com/webstore/detail/ajlcnbbeidbackfknkgknjefhmbngdnj"><img src="https://img.shields.io/chrome-web-store/users/ajlcnbbeidbackfknkgknjefhmbngdnj?logo=google%20chrome&logoColor=white"></a>
+  <a href="https://addons.mozilla.org/en-US/firefox/addon/pixiv-toolkit/"><img src="https://img.shields.io/amo/rating/pixiv-toolkit?logo=Firefox%20Browser&logoColor=white"></a>
 </p>
 
 <h2 align="center">Pixiv Toolkit</h2>
