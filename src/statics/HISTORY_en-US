@@ -1,3 +1,7 @@
+v4.7.0-2020092915
+Add setting "Cover size" in "History" setting section;
+Minor fix.
+
 v4.6.2-2020091712
 Move settings export/import buttons to other options section and change logics of exporting/importing settings.
 
