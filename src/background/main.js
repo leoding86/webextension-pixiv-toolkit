@@ -65,63 +65,71 @@ Main.prototype = {
     }
 
     let savePattern = /^https:\/\/(www\.)[pixiv|fanbox]/;
+    let filter = [
+      "*://*.pixiv.net/*",
+      "*://*.pximg.net/*",
+      "*://*.techorus-cdn.com/*",
+      "*://*.fanbox.cc/*"
+    ];
 
     browser.webRequest.onBeforeSendHeaders.addListener(details => {
-      let hasOriginHeader = false;
-      let hasReferer = false;
+      if (details.type === 'xmlhttprequest') {
+        let hasOriginHeader = false;
+        let hasReferer = false;
 
-      details.requestHeaders.forEach((header, i) => {
-        let headerName = header.name.toLowerCase();
+        details.requestHeaders.forEach((header, i) => {
+          let headerName = header.name.toLowerCase();
 
-        if (headerName === 'referer') {
-          hasReferer = true;
+          if (headerName === 'referer') {
+            hasReferer = true;
 
-          if (details.url.indexOf('i.pximg.net') > -1 && !savePattern.test(header.value)) {
-            details.requestHeaders[i].value = 'https://www.pixiv.net/';
+            if (details.url.indexOf('i.pximg.net') > -1 && !savePattern.test(header.value)) {
+              details.requestHeaders[i].value = 'https://www.pixiv.net/';
+            }
+          } else if (headerName === 'origin') {
+            hasOriginHeader = true;
           }
-        } else if (headerName === 'origin') {
-          hasOriginHeader = true;
-        }
-      });
+        });
 
-      if (details.url.indexOf('api.fanbox.cc') > -1) {
-        if (!hasOriginHeader) {
+        if (details.url.indexOf('api.fanbox.cc') > -1) {
+          if (!hasOriginHeader) {
+            details.requestHeaders.push({
+              name: 'Origin',
+              value: details.initiator
+            });
+          }
+        }
+
+        if (!hasReferer) {
           details.requestHeaders.push({
-            name: 'Origin',
-            value: details.initiator
+            name: 'referer',
+            value: 'https://www.pixiv.net/'
           });
         }
-      }
 
-      if (!hasReferer) {
-        details.requestHeaders.push({
-          name: 'referer',
-          value: 'https://www.pixiv.net/'
-        });
+        return { requestHeaders: details.requestHeaders }
       }
-
-      return { requestHeaders: details.requestHeaders }
     }, {
-      urls: [
-        "*://i.pximg.net/*",
-        "*://api.fanbox.cc/*"
-      ]
+      urls: filter
     }, opt_onBeforeSendHeaders_extraInfoSpec);
 
     browser.webRequest.onHeadersReceived.addListener(details => {
-      console.log(details);
+      if (details.type === 'xmlhttprequest') {
+        details.responseHeaders.forEach((header, i) => {
+          if (header.name.toLowerCase() === 'access-control-allow-origin') {
+            details.requestHeaders.splice(i, 1);
+          }
+        });
 
-      details.responseHeaders.forEach((header, i) => {
-        if (header.name.toLowerCase() === 'access-control-allow-origin') {
-          header.value = '*';
-        }
-      });
+        details.responseHeaders.push({
+          name: 'access-control-allow-origin',
+          value: '*'
+        });
 
-      return { responseHeaders: details.responseHeaders };
+        return { responseHeaders: details.responseHeaders };
+      }
     }, {
-      urls: [
-        "*://i.pximg.net/*"
-      ]
+      urls: filter
     }, opt_onHeadersReceived_extraInfoSpec);
   },
 
