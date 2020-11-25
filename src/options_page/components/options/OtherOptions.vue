@@ -86,7 +86,7 @@
               </template>
               <v-list>
                 <v-list-tile
-                  @click="importSettings()"
+                  @click="importSettings({})"
                 >{{ tl('_all_settings') }}</v-list-tile>
                 <v-list-tile
                   @click="importSettings({ excludeHistoryBackup: true })"
@@ -113,6 +113,8 @@
 </template>
 
 <script>
+import defaultSettings from '@/config/default';
+
 export default {
   data() {
     return {
