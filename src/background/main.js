@@ -121,9 +121,21 @@ Main.prototype = {
           }
         });
 
+        let accessControlAllowOrigin = '';
+
+        if (details.frameId === 0 && /^https:\/\/[^.]+\.fanbox\.cc/.test(details.initiator)) {
+          accessControlAllowOrigin = details.initiator;
+          details.responseHeaders.push({
+            name: 'Access-Control-Allow-Credentials',
+            value: 'true'
+          });
+        } else {
+          accessControlAllowOrigin = '*';
+        }
+
         details.responseHeaders.push({
-          name: 'access-control-allow-origin',
-          value: '*'
+          name: 'Access-Control-Allow-Origin',
+          value: accessControlAllowOrigin
         });
 
         return { responseHeaders: details.responseHeaders };
