@@ -173,7 +173,12 @@ export default class Post extends Event {
   }
 
   downloadChunk(context) {
-    let downloader = new Downloader({ processors: this.processors });
+    let downloader = new Downloader({
+      processors: this.processors,
+      requestOptions: {
+        credentials: 'include'
+      }
+    });
     let zip = new JSZip();
 
     this.context.images.forEach(image => {
