@@ -1,3 +1,7 @@
+v4.7.1
+Fix issue about importing settings;
+Try to fix issue about downloading images from fanbox.
+
 v4.7.0-2020092915
 Add setting "Cover size" in "History" setting section;
 Minor fix.
