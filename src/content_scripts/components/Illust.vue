@@ -70,6 +70,7 @@ export default {
       illustrationRenameFormat: this.browserItems.illustrationRenameFormat,
       illustrationImageRenameFormat: this.browserItems.illustrationImageRenameFormat,
       pageNumberStartWithOne: this.browserItems.illustrationPageNumberStartWithOne,
+      illustrationPageNumberLength: this.browserItems.illustrationPageNumberLength,
       processors: parseInt(this.browserItems.downloadTasksWhenDownloadingImages)
     }).init()
 

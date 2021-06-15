@@ -20,12 +20,14 @@ class MangaTool extends Event {
     mangaRenameFormat,
     mangaImageRenameFormat,
     pageNumberStartWithOne,
+    mangaPageNumberLength,
     processors
   }) {
     this.splitSize = splitSize;
     this.mangaRenameFormat = mangaRenameFormat;
     this.mangaImageRenameFormat = mangaImageRenameFormat;
     this.pageNumberStartWithOne = pageNumberStartWithOne;
+    this.mangaPageNumberLength = mangaPageNumberLength;
     this.processors = processors
 
     return this;
@@ -127,7 +129,7 @@ class MangaTool extends Event {
     downloader.addListener('item-finish', ({data, index, download}) => {
       let pageNum = chunk.start + index + (this.pageNumberStartWithOne ? 1 : 0);
 
-      this.context.pageNum = pageNum;
+      this.context.pageNum = this.getPageNumberString(pageNum);
 
       let filename = formatName(
         this.mangaImageRenameFormat,
@@ -156,6 +158,23 @@ class MangaTool extends Event {
     });
 
     downloader.download();
+  }
+
+  getPageNumberString(pageNum) {
+    if (this.mangaPageNumberLength === 0) {
+      return pageNum;
+    }
+
+    let pageNumStr = pageNum + '', pageNumberLength = 0;
+
+    if (this.mangaPageNumberLength > 1) {
+      pageNumberLength = this.mangaPageNumberLength;
+    } else if (this.mangaPageNumberLength === -1) {
+      pageNumberLength = (this.context.pages.length + '').length;
+    }
+
+    return pageNumStr.length < pageNumberLength ?
+      ('0'.repeat(pageNumberLength - pageNumStr.length) + pageNumStr) : pageNum;
   }
 }
 

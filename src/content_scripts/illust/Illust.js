@@ -34,12 +34,14 @@ class IllustTool extends Event {
     illustrationRenameFormat,
     illustrationImageRenameFormat,
     pageNumberStartWithOne = false,
+    illustrationPageNumberLength,
     processors = 2
   }) {
     this.splitSize = splitSize;
     this.illustrationRenameFormat = illustrationRenameFormat
     this.illustrationImageRenameFormat = illustrationImageRenameFormat;
     this.pageNumberStartWithOne = pageNumberStartWithOne;
+    this.illustrationPageNumberLength = illustrationPageNumberLength;
     this.processors = processors
 
     return this;
@@ -200,7 +202,7 @@ class IllustTool extends Event {
       let pageNum = chunk.start + index + (this.pageNumberStartWithOne ? 1 : 0);
       let filename = null;
 
-      this.context.pageNum = pageNum;
+      this.context.pageNum = this.getPageNumberString(pageNum);
 
       filename = formatName(
         this.illustrationImageRenameFormat.replace(this.isSingle() ? /#.*#/g: /#/g, ''),
@@ -231,6 +233,28 @@ class IllustTool extends Event {
     });
 
     downloader.download();
+  }
+
+  /**
+   * Format page number
+   * @param {Number|String} pageNum
+   * @returns {String}
+   */
+  getPageNumberString(pageNum) {
+    if (this.illustrationPageNumberLength === 0) {
+      return pageNum;
+    }
+
+    let pageNumStr = pageNum + '', pageNumberLength = 0;
+
+    if (this.illustrationPageNumberLength > 1) {
+      pageNumberLength = this.illustrationPageNumberLength;
+    } else if (this.illustrationPageNumberLength === -1) {
+      pageNumberLength = (this.context.pages.length + '').length;
+    }
+
+    return pageNumStr.length < pageNumberLength ?
+      ('0'.repeat(pageNumberLength - pageNumStr.length) + pageNumStr) : pageNum;
   }
 }
 
