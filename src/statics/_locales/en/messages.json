@@ -655,5 +655,11 @@
    },
    "_cover_size": {
        "message": "Cover size"
+   },
+   "_the_length_of_page_number": {
+       "message": "The length of page number"
+   },
+   "_zeros_will_be_filled_at_the_beginning_of_page_number": {
+       "message": "Zeros will be filled at the beginning of page number"
    }
 }

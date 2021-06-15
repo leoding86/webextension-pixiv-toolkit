@@ -655,5 +655,11 @@
    },
    "_cover_size": {
        "message": "封面尺寸"
+   },
+   "_the_length_of_page_number": {
+       "message": "页码字符长度"
+   },
+   "_zeros_will_be_filled_at_the_beginning_of_page_number": {
+       "message": "将会在页码前填充\"0\""
    }
 }
