@@ -171,5 +171,12 @@ export default Object.assign({}, {
 
     displayWorkTypeLabel: true,
 
-    workCoverSize: 1
+    workCoverSize: 1,
+
+    /**
+     * @since 4.8.0
+     */
+    mangaPageNumberLength: 0,
+
+    illustrationPageNumberLength: 0,
   });
