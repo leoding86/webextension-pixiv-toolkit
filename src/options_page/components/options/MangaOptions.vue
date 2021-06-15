@@ -39,6 +39,19 @@
 
         <v-list-tile>
           <v-list-tile-content>
+            <v-list-tile-title>{{ tl('_the_length_of_page_number') }}</v-list-tile-title>
+            <v-list-tile-sub-title>{{ tl('_zeros_will_be_filled_at_the_beginning_of_page_number') }}</v-list-tile-sub-title>
+          </v-list-tile-content>
+          <v-list-tile-action>
+            <v-select :items="pageNumberLengthOptions"
+              v-model="pageNumberLength"
+              style="width:150px;"
+            ></v-select>
+          </v-list-tile-action>
+        </v-list-tile>
+
+        <v-list-tile>
+          <v-list-tile-content>
             <v-list-tile-title>{{ tl('number_of_pages_in_each_chunk') }}</v-list-tile-title>
             <v-list-tile-sub-title>{{ tl('number_of_pages_in_each_chunk_desc') }}</v-list-tile-sub-title>
           </v-list-tile-content>
@@ -82,7 +95,26 @@ export default {
 
       pageNumberStartWithOne: false,
 
-      location: ''
+      pageNumberLength: 0,
+
+      location: '',
+
+      pageNumberLengthOptions: [{
+        text: 'Disable',
+        value: 0,
+      }, {
+        text: 'Dynamic',
+        value: -1,
+      }, {
+        text: '2',
+        value: 2
+      }, {
+        text: '3',
+        value: 3
+      }, {
+        text: '4',
+        value: 4
+      }]
     };
   },
 
@@ -111,6 +143,12 @@ export default {
       });
     },
 
+    pageNumberLength(val) {
+      browser.storage.local.set({
+        mangaPageNumberLength: val
+      });
+    },
+
     location(val) {
       browser.storage.local.set({
         mangaRelativeLocation: val
@@ -123,6 +161,7 @@ export default {
     this.mangaImageRenameFormat = this.browserItems.mangaImageRenameFormat;
     this.mangaPagesInChunk = this.browserItems.mangaPagesInChunk;
     this.pageNumberStartWithOne = this.browserItems.mangaPageNumberStartWithOne;
+    this.pageNumberLength = this.browserItems.mangaPageNumberLength;
 
     this.location = this.browserItems.mangaRelativeLocation;
   },
