@@ -95,7 +95,7 @@ Main.prototype = {
           if (!hasOriginHeader) {
             details.requestHeaders.push({
               name: 'Origin',
-              value: details.initiator
+              value: details.initiator ? details.initiator : 'https://www.fanbox.cc'
             });
           }
         }

@@ -181,6 +181,11 @@ export default class Post extends Event {
     });
     let zip = new JSZip();
 
+    /**
+     * Firefox can't use blob for saving data into zip file
+     */
+    downloader.asBlob = false;
+
     this.context.images.forEach(image => {
       downloader.appendFile(image);
     });
@@ -193,7 +198,7 @@ export default class Post extends Event {
       this.dispatch('download-error', error);
     });
 
-    downloader.addListener('item-finish', ({blob, index, download}) => {
+    downloader.addListener('item-finish', ({data, index, download}) => {
       let pageNum = index + (this.pageNumberStartWithOne ? 1 : 0);
       let filename = null;
 
@@ -213,7 +218,7 @@ export default class Post extends Event {
       let now = new Date();
       now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
 
-      zip.file(filename, blob, {
+      zip.file(filename, data, {
         date: now
       });
     });
