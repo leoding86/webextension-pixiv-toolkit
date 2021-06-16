@@ -23,8 +23,22 @@ export default class Detector {
       let postAdapter = PostAdapter.getDefault();
       postAdapter.setUrl(url);
 
+      /**
+       * Highlight icon
+       */
+      browser.runtime.sendMessage({
+        action: 'activeIcon'
+      });
+
       return postAdapter;
     } else {
+      /**
+       * Deactive badge icon
+       */
+      browser.runtime.sendMessage({
+        action: 'deactiveIcon'
+      });
+
       throw new InvalidPageError(url);
     }
   }
