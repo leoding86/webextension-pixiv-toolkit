@@ -33,8 +33,8 @@ module.exports = env => {
             to: utils.resolve(`dist/${platform}/`),
             globOptions: {
               ignore: [
-                'manifest.json',
-                'remote/**/*'
+                '**/manifest.json',
+                '**/remote/**/*'
               ]
             }
           }, {
