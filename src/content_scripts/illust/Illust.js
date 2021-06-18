@@ -235,6 +235,73 @@ class IllustTool extends Event {
     downloader.download();
   }
 
+  downloadSelected(indexes, context) {
+    let downloader = new Downloader({ processors: this.processors });
+    downloader.asBlob = false;
+
+    let zip = new JSZip();
+
+    indexes.forEach(idx => {
+      downloader.appendFile(this.context.pages[idx].urls.original);
+    });
+
+    downloader.addListener('progress', progress => {
+      this.dispatch('download-progress', [progress, context, { selected: true }]);
+    });
+
+    downloader.addListener('item-error', error => {
+      this.dispatch('download-error', error);
+    });
+
+    downloader.addListener('item-finish', ({data, index, download}) => {
+      let pageNum = index + (this.pageNumberStartWithOne ? 1 : 0);
+      let filename = null;
+
+      this.context.pageNum = this.getPageNumberString(pageNum);
+
+      filename = formatName(
+        this.illustrationImageRenameFormat.replace(this.isSingle() ? /#.*#/g: /#/g, ''),
+        this.context,
+        pageNum
+      );
+
+      filename += '.' + MimeType.getExtenstion(download.getResponseHeader('Content-Type'))
+
+      /**
+       * Fix jszip date issue which jszip will save the UTC time as the local time to files in zip
+       */
+      let now = new Date();
+      now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+
+      /**
+       * Firefox related issue, cannot use blob as a given data to zip.file function
+       */
+      zip.file(filename, data, {
+        date: now
+      });
+    });
+
+    downloader.addListener('finish', () => {
+      zip.generateAsync({ type: 'blob' }).then(blob => {
+        this.dispatch(
+          'download-finish',
+          [
+            {
+              blob,
+              filename: formatName(this.illustrationRenameFormat, this.context, this.context.illustId) + '.zip'
+            },
+            context,
+            {
+              selected: true
+            }
+          ]
+        );
+      }).catch(error => console.error(error));
+    });
+
+    downloader.download();
+  }
+
   /**
    * Format page number
    * @param {Number|String} pageNum

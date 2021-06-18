@@ -14,6 +14,9 @@
     <ptk-dialog
       :show.sync="showSelectionDialog"
     >
+      <template slot="head">
+        Select image(s) you want to download
+      </template>
       <div class="ptk__images-selection">
         <div class="ptk__image-preview"
           :class="{ 'ptk__image-preview--selected': image.selected }"
@@ -33,6 +36,17 @@
           </div>
         </div>
       </div>
+      <template slot="foot">
+        <ptk-button @click="downloadSelectedImages" v-if="selectedImageIndexes.length > 0">
+          <template v-if="downloadSelectedImagesStatus === 1">
+            {{ downloadSelectedImagesNotice }}
+          </template>
+          <template v-else>
+            Download
+          </template>
+        </ptk-button>
+        <ptk-button @click="closeSelectionDialog">Close</ptk-button>
+      </template>
     </ptk-dialog>
   </div>
 </template>
@@ -67,7 +81,10 @@ export default {
       buttonsInfo: {},
       isSaved: false,
       forceDownload: false,
+      downloadSelectedImagesStatus: 0, // 0: pending, 1: downloading
+      downloadSelectedImagesNotice: '',
       showSelectionDialog: false,
+      downloadSelectedImageButton: {},
       images: [],
       selectedImageIndexes: [],
     }
@@ -80,9 +97,6 @@ export default {
   },
 
   mounted() {
-    let vm = this,
-        buttonsInfo = {}
-
     /**
      * @var {IllustTool}
      */
@@ -242,28 +256,43 @@ export default {
       }
     },
 
-    downloadProgressEventHandle({ progress, failCount }, buttonInfo) {
-      this.updateButtonInfo(buttonInfo, {
-        text: `${this.tl('_downloading')} ${Math.round(progress * 100)}%` + (failCount > 0 ? ` (F:${failCount})` : '')
-      });
+    downloadProgressEventHandle({ progress, failCount }, buttonInfo, extra) {
+      let progressNotice = `${this.tl('_downloading')} ${Math.round(progress * 100)}%` + (failCount > 0 ? ` (F:${failCount})` : '');
+
+      if (extra && extra.selected === true) {
+        this.downloadSelectedImagesNotice = progressNotice;
+      } else {
+        this.updateButtonInfo(buttonInfo, {
+          text: progressNotice
+        });
+      }
     },
 
     downloadErrorEventHandle() {
       //
     },
 
-    downloadFinishEventHandle({ blob, filename }, buttonInfo) {
-      let text = this.getChunkTitle(buttonInfo.chunk, { singular: this.tl('_save_page'), plural: this.tl('_save_pages')})
+    downloadFinishEventHandle({ blob, filename }, buttonInfo, extra) {
+      if (extra && extra.selected === true) {
+        /**
+         * Initial properties for downloading selected images
+         */
+        this.downloadSelectedImagesStatus = 0;
+        this.selectedImageIndexes = [];
+        this.downloadSelectedImagesNotice = '';
+      } else {
+        let text = this.getChunkTitle(buttonInfo.chunk, { singular: this.tl('_save_page'), plural: this.tl('_save_pages')})
 
-      this.updateButtonInfo(buttonInfo, {
-        text: (buttonInfo.isSingle ? this.tl('_save_image') : text) + ' ✔️',
-        blob: blob,
-        filename: filename,
-        downloadStatus: 2,
-        type: 'success'
-      });
+        this.updateButtonInfo(buttonInfo, {
+          text: (buttonInfo.isSingle ? this.tl('_save_image') : text) + ' ✔️',
+          blob: blob,
+          filename: filename,
+          downloadStatus: 2,
+          type: 'success'
+        });
+      }
 
-      this.downloadFile(buttonInfo.blob, filename, {
+      this.downloadFile(blob, filename, {
         folder: this.getSubfolder(this.browserItems.illustrationRelativeLocation, this.illustTool.context),
         statType: 'illust',
       });
@@ -297,15 +326,39 @@ export default {
     },
 
     selectImage(idx) {
-      let image = this.images[idx];
-
-      if (image.selected) {
-        image.selected = false;
+      if (this.downloadSelectedImagesStatus === 1) {
+        alert('Please wait download complete');
       } else {
-        image.selected = true;
-      }
+        let image = this.images[idx];
 
-      this.$set(this.images, idx, image);
+        if (image.selected) {
+          image.selected = false;
+        } else {
+          image.selected = true;
+
+          if (this.selectedImageIndexes.indexOf(idx) < 0) {
+            this.selectedImageIndexes.push(idx);
+          }
+        }
+
+        this.$set(this.images, idx, image);
+      }
+    },
+
+    closeSelectionDialog() {
+      if (this.downloadSelectedImagesStatus === 1) {
+        alert('Please wait download complete');
+      } else {
+        this.showSelectionDialog = false;
+      }
+    },
+
+    downloadSelectedImages() {
+      if (this.downloadSelectedImagesStatus === 0) {
+        this.downloadSelectedImagesStatus = 1;
+        this.selectedImageIndexes.sort();
+        this.tool.downloadSelected(this.selectedImageIndexes);
+      }
     }
   }
 }
