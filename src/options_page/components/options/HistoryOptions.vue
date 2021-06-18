@@ -298,11 +298,7 @@ export default {
   methods: {
     handleVisitHistoryPortResponse(message, port) {
       if (this.visitHistoryPort.isChannel(message.channel, 'save-batch-histories')) {
-        if (this.importItems.length > 0) {
-          this.importVisitHistoryData();
-        } else {
-          this.importing = false;
-        }
+        this.importVisitHistoryData();
       }
     },
 
@@ -334,21 +330,27 @@ export default {
     },
 
     importVisitHistoryData() {
-      let items = [];
+      if (this.importItems.length > 0) {
+        this.importing = true;
 
-      while (items.length < 100) {
-        if (!!this.importItems[0]) {
-          items.push(this.importItems[0]);
-          this.importItems.splice(0, 1);
-        } else {
-          break;
+        let items = [];
+
+        while (items.length < 100) {
+          if (!!this.importItems[0]) {
+            items.push(this.importItems[0]);
+            this.importItems.splice(0, 1);
+          } else {
+            break;
+          }
         }
-      }
 
-      if (items.length > 0) {
-        this.visitHistoryPort.saveBatchHistories({
-          items
-        });
+        if (items.length > 0) {
+          this.visitHistoryPort.saveBatchHistories({
+            items
+          });
+        }
+      } else {
+        this.importing = false;
       }
     },
 
@@ -366,8 +368,6 @@ export default {
         fileReader.addEventListener('load', () => {
           try {
             this.importItems = JSON.parse(fileReader.result);
-            this.importCount = this.importItems.length;
-            this.importing = true;
             this.importVisitHistoryData();
           } catch (e) {
             this.importing = false;
@@ -393,8 +393,6 @@ export default {
       }
 
       this.importItems = this.browserItems.historyBackup;
-      this.importCount = this.importItems.length;
-      this.importing = true;
       this.importVisitHistoryData();
     }
   }
