@@ -7,11 +7,39 @@
       :type="buttonInfo.type"
       @click="downloadButtonClicked(buttonInfo)"
     ></ptk-button>
+    <ptk-button
+      text="DL Selections"
+      @click="openSelectionDialog()"
+    ></ptk-button>
+    <ptk-dialog
+      :show.sync="showSelectionDialog"
+    >
+      <div class="ptk__images-selection">
+        <div class="ptk__image-preview"
+          :class="{ 'ptk__image-preview--selected': image.selected }"
+          :style="{
+            'background': `url(${image.urls.thumb_mini}) center center no-repeat`,
+            'background-size': '95% 95%'
+          }"
+          v-for="(image, idx) in images"
+          :key="idx"
+          @click="selectImage(idx)"
+        >
+          <div class="ptk__image-preview--download">
+            <svg viewBox="0 0 120 120">
+              <polyline points="60,105 60,8"></polyline>
+              <polyline points="10,57 60,8 110,57"></polyline>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </ptk-dialog>
   </div>
 </template>
 
 <script>
 import Button from '@/content_scripts/components/Button'
+import Dialog from '@/content_scripts/components/Dialog'
 import formatName from '@/modules/Util/formatName'
 import downloadFileMixin from '@/content_scripts/mixins/downloadFileMixin'
 import IllustTool from '@/content_scripts/illust/Illust'
@@ -23,7 +51,8 @@ export default {
   ],
 
   components: {
-    'ptk-button': Button
+    'ptk-button': Button,
+    'ptk-dialog': Dialog,
   },
 
   props: {
@@ -37,7 +66,10 @@ export default {
       chunks: [],
       buttonsInfo: {},
       isSaved: false,
-      forceDownload: false
+      forceDownload: false,
+      showSelectionDialog: false,
+      images: [],
+      selectedImageIndexes: [],
     }
   },
 
@@ -75,6 +107,8 @@ export default {
     }).init()
 
     this.chunks = this.illustTool.chunks
+
+    this.images = this.illustTool.context.pages
 
     this.initDownloadButtons()
 
@@ -255,7 +289,66 @@ export default {
           }
         })
       }
+    },
+
+    openSelectionDialog() {
+      this.showSelectionDialog = true;
+      console.log('open selection dialog');
+    },
+
+    selectImage(idx) {
+      let image = this.images[idx];
+
+      if (image.selected) {
+        image.selected = false;
+      } else {
+        image.selected = true;
+      }
+
+      this.$set(this.images, idx, image);
     }
   }
 }
 </script>
+
+<style lang="scss">
+.ptk__images-selection {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+
+  svg {
+    width: 24px;
+    height: 24px;
+    stroke: #fff;
+    fill: none;
+    stroke-width: 10;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transform: rotate(180deg);
+  }
+}
+.ptk__image-preview {
+  width: 128px;
+  height: 128px;
+
+  img {
+    display: block;
+  }
+}
+
+.ptk__image-preview--selected {
+  .ptk__image-preview--download {
+    display: flex;
+  }
+}
+
+.ptk__image-preview--download {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.33);
+}
+</style>
