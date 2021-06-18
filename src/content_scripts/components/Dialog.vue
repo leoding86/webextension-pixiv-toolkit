@@ -1,18 +1,18 @@
 <template>
   <div class="ptk__dialog"
     :class="{ 'ptk__dialog--show': show }"
-    @click="$emit('update:show', false)"
+    @click="handleDialogMaskClick"
   >
     <div class="ptk__dialog-container"
       @click="hanldeDialogContainerClick"
     >
-      <div class="ptk__dialog-head">
+      <div class="ptk__dialog-head" v-if="hasHead">
         <slot name="head"></slot>
       </div>
       <div class="ptk__dialog-body">
         <slot></slot>
       </div>
-      <div class="ptk__dialog-foot">
+      <div class="ptk__dialog-foot" v-if="hasFoot">
         <slot name="foot"></slot>
       </div>
     </div>
@@ -24,6 +24,10 @@ export default {
   props: {
     show: {
       required: true,
+      type: Boolean,
+      default: false
+    },
+    closeOnMaskClick: {
       type: Boolean,
       default: false
     }
@@ -39,10 +43,26 @@ export default {
     this.showDialog = this.show;
   },
 
+  computed: {
+    hasHead() {
+      return Array.isArray(this.$slots.head) && this.$slots.head.length > 0;
+    },
+
+    hasFoot() {
+      return Array.isArray(this.$slots.foot) && this.$slots.foot.length > 0;
+    }
+  },
+
   methods: {
     hanldeDialogContainerClick(event) {
       event.stopPropagation();
       return;
+    },
+
+    handleDialogMaskClick() {
+      if (this.closeOnMaskClick) {
+        this.$emit('update:show', false);
+      }
     }
   }
 }
@@ -60,23 +80,28 @@ export default {
   background: rgba(0, 0, 0, 0.333);
 
   .ptk__dialog-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     width: 50%;
     height: 100%;
     margin: 0 auto;
-    overflow-y: auto;
-    background: #fff;
   }
 
   .ptk__dialog-head {
-    //
+    padding: 20px 0 10px 0;
+    background: #fff;
   }
 
   .ptk__dialog-body {
-    //
+    padding: 10px;
+    background: #fff;
+    overflow-y: auto;
   }
 
-  .pth__dialog-foot {
-    //
+  .ptk__dialog-foot {
+    padding: 10px 0 20px 0;
+    background: #fff;
   }
 }
 
