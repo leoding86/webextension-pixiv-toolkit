@@ -208,9 +208,9 @@ export default {
     statusNotice() {
       if (this.historyItems.length <= 0) {
         return 'There is no any history';
+      } else {
+        return '';
       }
-
-      return `${this.historyItems.length} / ${this.total}`;
     },
 
     importProgress() {
