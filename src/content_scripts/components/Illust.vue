@@ -8,14 +8,14 @@
       @click="downloadButtonClicked(buttonInfo)"
     ></ptk-button>
     <ptk-button
-      text="DL Selections"
+      :text="tl('_select_and_dl')"
       @click="openSelectionDialog()"
     ></ptk-button>
     <ptk-dialog
       :show.sync="showSelectionDialog"
     >
       <template slot="head">
-        Select image(s) you want to download
+        {{ tl('_select_images_you_want_to_download') }}
       </template>
       <div class="ptk__images-selection">
         <div class="ptk__image-preview"
@@ -42,10 +42,10 @@
             {{ downloadSelectedImagesNotice }}
           </template>
           <template v-else>
-            Download
+            {{ tl('_download') }}
           </template>
         </ptk-button>
-        <ptk-button @click="closeSelectionDialog">Close</ptk-button>
+        <ptk-button @click="closeSelectionDialog">{{ tl('_close') }}</ptk-button>
       </template>
     </ptk-dialog>
   </div>
@@ -278,7 +278,6 @@ export default {
          * Initial properties for downloading selected images
          */
         this.downloadSelectedImagesStatus = 0;
-        this.selectedImageIndexes = [];
         this.downloadSelectedImagesNotice = '';
       } else {
         let text = this.getChunkTitle(buttonInfo.chunk, { singular: this.tl('_save_page'), plural: this.tl('_save_pages')})
@@ -333,6 +332,12 @@ export default {
 
         if (image.selected) {
           image.selected = false;
+
+          let index = this.selectedImageIndexes.indexOf(idx);
+
+          if (index > -1) {
+            this.selectedImageIndexes.splice(index, 1);
+          }
         } else {
           image.selected = true;
 
@@ -356,6 +361,7 @@ export default {
     downloadSelectedImages() {
       if (this.downloadSelectedImagesStatus === 0) {
         this.downloadSelectedImagesStatus = 1;
+        this.downloadSelectedImagesStatus = this.tl('_pending');
         this.selectedImageIndexes.sort();
         this.tool.downloadSelected(this.selectedImageIndexes);
       }
