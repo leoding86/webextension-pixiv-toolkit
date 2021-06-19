@@ -661,5 +661,17 @@
    },
    "_zeros_will_be_filled_at_the_beginning_of_page_number": {
        "message": "将会在页码前填充\"0\""
+   },
+   "_download": {
+       "message": "下载"
+   },
+   "_select_and_dl": {
+       "message": "选择并下载"
+   },
+   "_select_images_you_want_to_download": {
+       "message": "选择要下载的图片"
+   },
+   "_pending": {
+       "message": "准备中"
    }
 }
