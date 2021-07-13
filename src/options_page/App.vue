@@ -66,12 +66,6 @@
           </v-list-tile>
           <v-divider light></v-divider>
         </v-list>
-
-        <app-suggest icon="https://raw.githubusercontent.com/leoding86/webextension-pixiv-toolkit/master/src/statics/remote/img/pixiv-omina.png"
-          title="Pixiv Omina"
-          subTitle="A Pixiv works downloader"
-          link="https://github.com/leoding86/pixiv-omina"
-        ></app-suggest>
       </v-navigation-drawer>
       <v-toolbar class="v-primary" app fixed clipped-left height="56">
         <v-btn flat dark icon
@@ -95,13 +89,26 @@
       </v-content>
 
       <update-notice></update-notice>
+
+      <div style="height:100px;"></div>
     </v-app>
+
+    <app-suggest
+      :class="{
+        'app-suggest_container': true,
+        'app-suggest_container--show': showAppSuggest
+      }"
+      v-if="displayAppSuggest"
+      icon="https://raw.githubusercontent.com/leoding86/webextension-pixiv-toolkit/master/src/statics/remote/img/pixiv-omina.png"
+      title="Pixiv Omina"
+      subTitle="A Pixiv works downloader"
+      link="https://github.com/leoding86/pixiv-omina"
+    ></app-suggest>
   </div>
 </template>
 
 <script>
 import Vue from 'vue'
-import extConfig from '@@/../statics/manifest.json'
 import Supports from '@@/components/Supports';
 import AppSuggest from '@@/components/AppSuggest';
 import UpdateNotice from '@@/components/UpdateNotice';
@@ -118,14 +125,19 @@ export default {
   data () {
     return {
       drawer: true,
-      drawerTemporary: false
+      drawerTemporary: false,
+      displayAppSuggest: false,
+      showAppSuggest: false
     }
   },
 
   computed: {
     version () {
-      return 'v' + extConfig.version;
+      return 'v' + browser.runtime.getManifest().version;
     }
+  },
+
+  created() {
   },
 
   beforeMount() {
@@ -133,7 +145,17 @@ export default {
 
     window.addEventListener('resize', this.resizeHandle)
 
-    this.resizeHandle()
+    this.resizeHandle();
+
+    browser.runtime.getPlatformInfo(platformInfo => {
+      if (platformInfo.os === 'win' && platformInfo.arch !== 'arm') {
+        this.displayAppSuggest = true;
+
+        this.$nextTick(() => {
+          setTimeout(() => this.showAppSuggest = true, 1000);
+        });
+      }
+    });
   },
 
   methods: {
@@ -178,6 +200,21 @@ $primary-blue-text-color: #fff;
       strong {
         font-weight: 700;
       }
+    }
+
+    .app-suggest_container {
+      position: fixed;
+      bottom: 10px;
+      left: 10px;
+      border-radius: 5px;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+      background: rgb(255, 255, 255);
+      transform: translateX(-300px);
+      transition: 800ms ease all;
+    }
+
+    .app-suggest_container--show {
+      transform: translateX(0px);
     }
 }
 </style>
