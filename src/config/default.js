@@ -179,4 +179,9 @@ export default Object.assign({}, {
     mangaPageNumberLength: 0,
 
     illustrationPageNumberLength: 0,
+
+    /**
+     * @since 4.10.0
+     */
+    showUpdateChangeLog: false,
   });
