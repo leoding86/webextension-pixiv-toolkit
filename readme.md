@@ -39,8 +39,6 @@ Then you can install the extension manually.
 
 There is a layer with a arrow will appear at the center bottom of the page if the page has available content. Click the arrow to active the action panel, then enjoy.
 
-<p><img src="https://raw.githubusercontent.com/leoding86/webextension-pixiv-toolkit/master/src/statics/img/example.gif"></p>
-
 ## Something wrong?
 
 Please feel free to submit a issue if you have trouble with using this.
