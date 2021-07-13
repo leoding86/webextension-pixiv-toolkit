@@ -185,6 +185,9 @@
    "Sponsors": {
      "message": "Sponsors"
    },
+   "_sponsors": {
+     "message": "Sponsors"
+   },
    "Third_Party": {
      "message": "Third-Party"
    },

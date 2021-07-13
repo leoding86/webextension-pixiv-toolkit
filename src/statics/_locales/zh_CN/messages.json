@@ -185,6 +185,9 @@
    "Sponsors": {
      "message": "赞助者"
    },
+   "_sponsors": {
+     "message": "赞助者"
+   },
    "Third_Party": {
      "message": "第三方"
    },

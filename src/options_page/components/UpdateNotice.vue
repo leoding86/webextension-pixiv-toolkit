@@ -5,9 +5,12 @@
     :scrollable="true"
   >
     <v-card>
+
       <v-card-title class="headline grey lighten-2" primary-title>Change Log</v-card-title>
 
       <v-card-text>
+        <div style="font-size:20px;font-weight:700;margin-bottom:10px;text-align:center;">✨{{ tl('_sponsors') }}✨</div>
+        <sponsors-card></sponsors-card>
         <change-log></change-log>
       </v-card-text>
 
@@ -22,11 +25,13 @@
 </template>
 
 <script>
+import SponsorsCard from '@/options_page/components/SponsorsCard.vue';
 import ChangeLog from '@/options_page/components/ChangeLog'
 
 export default {
   components: {
-    'change-log': ChangeLog
+    'change-log': ChangeLog,
+    'sponsors-card': SponsorsCard,
   },
 
   data() {
@@ -36,14 +41,14 @@ export default {
   },
 
   mounted() {
-    if (!this.browserItems.importantNoticeDisplayed) {
+    if (!this.browserItems.showUpdateChangeLog) {
       this.show = true;
     }
   },
 
   methods: {
     closeNotice() {
-      browser.storage.local.set({ importantNoticeDisplayed: true });
+      browser.storage.local.set({ showUpdateChangeLog: true });
 
       this.show = false;
     }

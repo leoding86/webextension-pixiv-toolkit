@@ -1,5 +1,6 @@
 'use strict'
 
+const packageInfo = require('../package.json');
 const baseConfig = require('./webpack.base.config')();
 const utils = require('./utils');
 const { merge } = require('webpack-merge');
@@ -54,6 +55,8 @@ module.exports = env => {
             to: utils.resolve(`dist/${platform}/manifest.json`),
             transform(content, path) {
               let json = JSON.parse(content.toString());
+
+              json.version_name = json.version = packageInfo.version;
 
               if (json.options_page && platform === 'firefox') {
                 console.log(`rename options_page to options_ui`);
