@@ -3,6 +3,7 @@ import DownloadRecordPort from '@/modules/Ports/DownloadRecordPort/BackgroundPor
 import IllustHistoryPort from '@/modules/Ports/IllustHistoryPort/BackgroundPort';
 import { Updater } from '@/modules/Util';
 import defaultSettings from '@/config/default';
+import updateSettings from '@/config/update';
 
 const browser = window.browser = Browser.getBrowser();
 
@@ -324,7 +325,8 @@ Main.prototype = {
       if (updater.isNewer(version)) {
         updater.mergeSettings({
           version: version,
-          importantNoticeDisplayed: false
+          showUpdateChangeLog: false,
+          importantNoticeDisplayed: updateSettings.importantNoticeDisplayed || true
         }).then(() => {
           /**
            * Attach a badge with text 'NEW'
