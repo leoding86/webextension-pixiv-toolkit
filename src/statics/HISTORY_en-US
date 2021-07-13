@@ -1,3 +1,7 @@
+v4.9.0
+Add feature to download selected images (support illustration type);
+Minor fix.
+
 v4.8.0
 Fix issue about download button didn't show in Fanbox page when using Firefox;
 Add new options to keep page number string length same.
