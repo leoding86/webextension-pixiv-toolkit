@@ -1,3 +1,9 @@
+v4.10.0
+Display download progress when downloading selected pictures;
+Add sponsors list at the top of the change history page;
+Display change history when extension has been updated instead of displaying change log popup;
+🖐🐞.
+
 v4.9.0
 Add feature to download selected images (support illustration type);
 Minor fix.
