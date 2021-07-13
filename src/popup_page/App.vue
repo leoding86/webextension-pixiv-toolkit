@@ -140,11 +140,12 @@ body {
     position: relative;
     margin: auto -20px;
     padding: 20px;
-    background: #fff;
+    background: #0097FA;
     border-bottom: 1px solid #ddd;
 
     h1 {
       font-weight: 500;
+      color: #fff;
 
       span {
         font-weight: 300;
@@ -157,7 +158,7 @@ body {
       right: 20px;
       font-size: 12px;
       text-decoration: none;
-      background: #eee;
+      background: #fff;
       border-radius: 3px;
       padding: 8px 10px;
       color: #000;

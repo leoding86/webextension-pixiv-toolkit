@@ -1,5 +1,5 @@
 <template>
-  <v-container style="max-width: 640px;">
+  <v-container>
     <span class="card-title">{{ tl('Third_Party') }}</span>
 
     <v-card style="margin-bottom:30px;">

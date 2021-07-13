@@ -1,3 +1,40 @@
+v4.9.0
+Add feature to download selected images (support illustration type);
+Minor fix.
+
+v4.8.0
+Fix issue about download button didn't show in Fanbox page when using Firefox;
+Add new options to keep page number string length same.
+
+v4.7.1-2020112812
+Fix issue about importing settings;
+Try to fix issue about downloading images from fanbox.
+
+v4.7.0-2020092915
+Add setting "Cover size" in "History" setting section;
+Minor fix.
+
+v4.6.2-2020091712
+Move settings export/import buttons to other options section and change logics of exporting/importing settings.
+
+v4.6.1-2020091514
+Fix date formatting issue.
+
+v4.6.0-2020091418
+Update visit history page and downloads page style;
+Fix issue about download progress doesn't show when downloading single image;
+Fix issue about cann't load more downloads history;
+Minor fixes.
+
+v4.5.3-2020090311
+Fix issue about loading more histories/downloads.
+
+v4.5.2-2020090211
+Fix issue about download button disappear in Fanbox work.
+
+v4.5.1-2020090111
+Fix issue about more history cannot be loaded.
+
 v4.5.0-2020082508
 Add settings in History section in setting page;
 Add downloads history page;

@@ -75,6 +75,7 @@ export default {
       mangaRenameFormat: this.browserItems.mangaRenameFormat,
       mangaImageRenameFormat: this.browserItems.mangaImageRenameFormat,
       pageNumberStartWithOne: this.browserItems.mangaPageNumberStartWithOne,
+      mangaPageNumberLength: this.browserItems.mangaPageNumberLength,
       processors: parseInt(this.browserItems.downloadTasksWhenDownloadingImages)
     }).init()
 

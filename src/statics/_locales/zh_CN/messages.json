@@ -634,5 +634,44 @@
    },
    "_show_in_work_only": {
        "message": "仅在作品中显示"
+   },
+   "_display_work_type_label": {
+       "message": "显示作品类型标签"
+   },
+   "_small": {
+       "message": "小"
+   },
+   "_normal": {
+       "message": "中"
+   },
+   "_large": {
+       "message": "大"
+   },
+   "_all_settings": {
+       "message": "所有设置"
+   },
+   "_exclude_history_backup": {
+       "message": "排除历史记录备份"
+   },
+   "_cover_size": {
+       "message": "封面尺寸"
+   },
+   "_the_length_of_page_number": {
+       "message": "页码字符长度"
+   },
+   "_zeros_will_be_filled_at_the_beginning_of_page_number": {
+       "message": "将会在页码前填充\"0\""
+   },
+   "_download": {
+       "message": "下载"
+   },
+   "_select_and_dl": {
+       "message": "选择并下载"
+   },
+   "_select_images_you_want_to_download": {
+       "message": "选择要下载的图片"
+   },
+   "_pending": {
+       "message": "准备中"
    }
 }

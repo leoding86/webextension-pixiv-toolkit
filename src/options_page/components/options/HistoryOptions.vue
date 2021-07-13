@@ -46,6 +46,39 @@
 
         <v-list-tile>
           <v-list-tile-content>
+            <v-list-tile-title>{{ tl('_display_work_type_label') }}</v-list-tile-title>
+          </v-list-tile-content>
+          <v-list-tile-action>
+            <v-switch
+              v-model="displayWorkTypeLabel"
+            ></v-switch>
+          </v-list-tile-action>
+        </v-list-tile>
+
+        <v-list-tile>
+          <v-list-tile-content>
+            <v-list-tile-title>{{ tl('_cover_size') }}</v-list-tile-title>
+          </v-list-tile-content>
+          <v-list-tile-action>
+            <v-select
+              :items="[{
+                text: this.tl('_small'),
+                value: 1
+              }, {
+                text: this.tl('_normal'),
+                value: 2
+              }, {
+                text: this.tl('_large'),
+                value: 3
+              }]"
+              v-model="workCoverSize"
+              style="width:150px;"
+            ></v-select>
+          </v-list-tile-action>
+        </v-list-tile>
+
+        <v-list-tile>
+          <v-list-tile-content>
             <v-list-tile-title>{{ tl('_max_history_items') }}</v-list-tile-title>
             <v-list-tile-sub-title>{{ tl('_reload_to_apply_change') }}</v-list-tile-sub-title>
           </v-list-tile-content>
@@ -171,6 +204,7 @@ export default {
     return {
       enableSaveVisitHistory: true,
       enableSaveDownloadHistory: true,
+      displayWorkTypeLabel: true,
       notSaveNSFWWorkInHistory: false,
       confirmDialog: false,
       importing: false,
@@ -178,7 +212,8 @@ export default {
       importItems: [],
       importCount: 0,
       maxHistoryItems: 10000,
-      maxDownloadRecords: 10000
+      maxDownloadRecords: 10000,
+      workCoverSize: 1
     };
   },
 
@@ -191,9 +226,11 @@ export default {
   beforeMount() {
     this.enableSaveVisitHistory = this.browserItems.enableSaveVisitHistory;
     this.enableSaveDownloadHistory = this.browserItems.enableSaveDownloadHistory;
+    this.displayWorkTypeLabel = this.browserItems.displayWorkTypeLabel;
     this.notSaveNSFWWorkInHistory = this.browserItems.notSaveNSFWWorkInHistory;
     this.maxHistoryItems = this.browserItems.maxHistoryItems;
     this.maxDownloadRecords = this.browserItems.maxDownloadRecords;
+    this.workCoverSize = this.browserItems.workCoverSize;
   },
 
   computed: {
@@ -214,9 +251,14 @@ export default {
     },
 
     enableSaveDownloadHistory(val) {
-      console.log(val);
       browser.storage.local.set({
         enableSaveDownloadHistory: val
+      });
+    },
+
+    displayWorkTypeLabel(val) {
+      browser.storage.local.set({
+        displayWorkTypeLabel: !!val
       });
     },
 
@@ -244,17 +286,19 @@ export default {
       } else {
         this.maxDownloadRecords = 10000;
       }
+    },
+
+    workCoverSize(val) {
+      browser.storage.local.set({
+        workCoverSize: val - 0
+      });
     }
   },
 
   methods: {
     handleVisitHistoryPortResponse(message, port) {
       if (this.visitHistoryPort.isChannel(message.channel, 'save-batch-histories')) {
-        if (this.importItems.length > 0) {
-          this.importVisitHistoryData();
-        } else {
-          this.importing = false;
-        }
+        this.importVisitHistoryData();
       }
     },
 
@@ -286,21 +330,27 @@ export default {
     },
 
     importVisitHistoryData() {
-      let items = [];
+      if (this.importItems.length > 0) {
+        this.importing = true;
 
-      while (items.length < 100) {
-        if (!!this.importItems[0]) {
-          items.push(this.importItems[0]);
-          this.importItems.splice(0, 1);
-        } else {
-          break;
+        let items = [];
+
+        while (items.length < 100) {
+          if (!!this.importItems[0]) {
+            items.push(this.importItems[0]);
+            this.importItems.splice(0, 1);
+          } else {
+            break;
+          }
         }
-      }
 
-      if (items.length > 0) {
-        this.visitHistoryPort.saveBatchHistories({
-          items
-        });
+        if (items.length > 0) {
+          this.visitHistoryPort.saveBatchHistories({
+            items
+          });
+        }
+      } else {
+        this.importing = false;
       }
     },
 
@@ -318,8 +368,6 @@ export default {
         fileReader.addEventListener('load', () => {
           try {
             this.importItems = JSON.parse(fileReader.result);
-            this.importCount = this.importItems.length;
-            this.importing = true;
             this.importVisitHistoryData();
           } catch (e) {
             this.importing = false;
@@ -345,8 +393,6 @@ export default {
       }
 
       this.importItems = this.browserItems.historyBackup;
-      this.importCount = this.importItems.length;
-      this.importing = true;
       this.importVisitHistoryData();
     }
   }

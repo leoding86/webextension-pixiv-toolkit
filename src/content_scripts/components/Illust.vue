@@ -7,11 +7,53 @@
       :type="buttonInfo.type"
       @click="downloadButtonClicked(buttonInfo)"
     ></ptk-button>
+    <ptk-button
+      :text="tl('_select_and_dl')"
+      @click="openSelectionDialog()"
+    ></ptk-button>
+    <ptk-dialog
+      :show.sync="showSelectionDialog"
+    >
+      <template slot="head">
+        {{ tl('_select_images_you_want_to_download') }}
+      </template>
+      <div class="ptk__images-selection">
+        <div class="ptk__image-preview"
+          :class="{ 'ptk__image-preview--selected': image.selected }"
+          :style="{
+            'background': `url(${image.urls.thumb_mini}) center center no-repeat`,
+            'background-size': '95% 95%'
+          }"
+          v-for="(image, idx) in images"
+          :key="idx"
+          @click="selectImage(idx)"
+        >
+          <div class="ptk__image-preview--download">
+            <svg viewBox="0 0 120 120">
+              <polyline points="60,105 60,8"></polyline>
+              <polyline points="10,57 60,8 110,57"></polyline>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <template slot="foot">
+        <ptk-button @click="downloadSelectedImages" :disabled="selectedImageIndexes.length < 1">
+          <template v-if="downloadSelectedImagesStatus === 1">
+            {{ downloadSelectedImagesNotice }}
+          </template>
+          <template v-else>
+            {{ tl('_download') }}
+          </template>
+        </ptk-button>
+        <ptk-button @click="closeSelectionDialog">{{ tl('_close') }}</ptk-button>
+      </template>
+    </ptk-dialog>
   </div>
 </template>
 
 <script>
 import Button from '@/content_scripts/components/Button'
+import Dialog from '@/content_scripts/components/Dialog'
 import formatName from '@/modules/Util/formatName'
 import downloadFileMixin from '@/content_scripts/mixins/downloadFileMixin'
 import IllustTool from '@/content_scripts/illust/Illust'
@@ -23,7 +65,8 @@ export default {
   ],
 
   components: {
-    'ptk-button': Button
+    'ptk-button': Button,
+    'ptk-dialog': Dialog,
   },
 
   props: {
@@ -37,7 +80,13 @@ export default {
       chunks: [],
       buttonsInfo: {},
       isSaved: false,
-      forceDownload: false
+      forceDownload: false,
+      downloadSelectedImagesStatus: 0, // 0: pending, 1: downloading
+      downloadSelectedImagesNotice: '',
+      showSelectionDialog: false,
+      downloadSelectedImageButton: {},
+      images: [],
+      selectedImageIndexes: [],
     }
   },
 
@@ -48,9 +97,6 @@ export default {
   },
 
   mounted() {
-    let vm = this,
-        buttonsInfo = {}
-
     /**
      * @var {IllustTool}
      */
@@ -70,10 +116,13 @@ export default {
       illustrationRenameFormat: this.browserItems.illustrationRenameFormat,
       illustrationImageRenameFormat: this.browserItems.illustrationImageRenameFormat,
       pageNumberStartWithOne: this.browserItems.illustrationPageNumberStartWithOne,
+      illustrationPageNumberLength: this.browserItems.illustrationPageNumberLength,
       processors: parseInt(this.browserItems.downloadTasksWhenDownloadingImages)
     }).init()
 
     this.chunks = this.illustTool.chunks
+
+    this.images = this.illustTool.context.pages
 
     this.initDownloadButtons()
 
@@ -207,28 +256,42 @@ export default {
       }
     },
 
-    downloadProgressEventHandle({ progress, failCount }, buttonInfo) {
-      this.updateButtonInfo(buttonInfo, {
-        text: `${this.tl('_downloading')} ${Math.round(progress * 100)}%` + (failCount > 0 ? ` (F:${failCount})` : '')
-      });
+    downloadProgressEventHandle({ progress, failCount }, buttonInfo, extra) {
+      let progressNotice = `${this.tl('_downloading')} ${Math.round(progress * 100)}%` + (failCount > 0 ? ` (F:${failCount})` : '');
+
+      if (extra && extra.selected === true) {
+        this.downloadSelectedImagesNotice = progressNotice;
+      } else {
+        this.updateButtonInfo(buttonInfo, {
+          text: progressNotice
+        });
+      }
     },
 
     downloadErrorEventHandle() {
       //
     },
 
-    downloadFinishEventHandle({ blob, filename }, buttonInfo) {
-      let text = this.getChunkTitle(buttonInfo.chunk, { singular: this.tl('_save_page'), plural: this.tl('_save_pages')})
+    downloadFinishEventHandle({ blob, filename }, buttonInfo, extra) {
+      if (extra && extra.selected === true) {
+        /**
+         * Initial properties for downloading selected images
+         */
+        this.downloadSelectedImagesStatus = 0;
+        this.downloadSelectedImagesNotice = '';
+      } else {
+        let text = this.getChunkTitle(buttonInfo.chunk, { singular: this.tl('_save_page'), plural: this.tl('_save_pages')})
 
-      this.updateButtonInfo(buttonInfo, {
-        text: (buttonInfo.isSingle ? this.tl('_save_image') : text) + ' ✔️',
-        blob: blob,
-        filename: filename,
-        downloadStatus: 2,
-        type: 'success'
-      });
+        this.updateButtonInfo(buttonInfo, {
+          text: (buttonInfo.isSingle ? this.tl('_save_image') : text) + ' ✔️',
+          blob: blob,
+          filename: filename,
+          downloadStatus: 2,
+          type: 'success'
+        });
+      }
 
-      this.downloadFile(buttonInfo.blob, filename, {
+      this.downloadFile(blob, filename, {
         folder: this.getSubfolder(this.browserItems.illustrationRelativeLocation, this.illustTool.context),
         statType: 'illust',
       });
@@ -254,7 +317,96 @@ export default {
           }
         })
       }
+    },
+
+    openSelectionDialog() {
+      this.showSelectionDialog = true;
+    },
+
+    selectImage(idx) {
+      if (this.downloadSelectedImagesStatus === 1) {
+        alert('Please wait download complete');
+      } else {
+        let image = this.images[idx];
+
+        if (image.selected) {
+          image.selected = false;
+
+          let index = this.selectedImageIndexes.indexOf(idx);
+
+          if (index > -1) {
+            this.selectedImageIndexes.splice(index, 1);
+          }
+        } else {
+          image.selected = true;
+
+          if (this.selectedImageIndexes.indexOf(idx) < 0) {
+            this.selectedImageIndexes.push(idx);
+          }
+        }
+
+        this.$set(this.images, idx, image);
+      }
+    },
+
+    closeSelectionDialog() {
+      if (this.downloadSelectedImagesStatus === 1) {
+        alert('Please wait download complete');
+      } else {
+        this.showSelectionDialog = false;
+      }
+    },
+
+    downloadSelectedImages() {
+      if (this.downloadSelectedImagesStatus === 0) {
+        this.downloadSelectedImagesStatus = 1;
+        this.downloadSelectedImagesNotice = this.tl('_pending');
+        this.selectedImageIndexes.sort();
+        this.tool.downloadSelected(this.selectedImageIndexes);
+      }
     }
   }
 }
 </script>
+
+<style lang="scss">
+.ptk__images-selection {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+
+  svg {
+    width: 24px;
+    height: 24px;
+    stroke: #fff;
+    fill: none;
+    stroke-width: 10;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transform: rotate(180deg);
+  }
+}
+.ptk__image-preview {
+  width: 128px;
+  height: 128px;
+
+  img {
+    display: block;
+  }
+}
+
+.ptk__image-preview--selected {
+  .ptk__image-preview--download {
+    display: flex;
+  }
+}
+
+.ptk__image-preview--download {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.33);
+}
+</style>

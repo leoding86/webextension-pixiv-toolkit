@@ -34,12 +34,14 @@ class IllustTool extends Event {
     illustrationRenameFormat,
     illustrationImageRenameFormat,
     pageNumberStartWithOne = false,
+    illustrationPageNumberLength,
     processors = 2
   }) {
     this.splitSize = splitSize;
     this.illustrationRenameFormat = illustrationRenameFormat
     this.illustrationImageRenameFormat = illustrationImageRenameFormat;
     this.pageNumberStartWithOne = pageNumberStartWithOne;
+    this.illustrationPageNumberLength = illustrationPageNumberLength;
     this.processors = processors
 
     return this;
@@ -151,7 +153,7 @@ class IllustTool extends Event {
         let download = new Download(url, { method: 'GET' });
 
         download.addListener('onprogress', ({ totalLength, loadedLength }) => {
-          this.dispatch('progress', [{ progress: loadedLength / totalLength }, context])
+          this.dispatch('download-progress', [{ progress: loadedLength / totalLength }, context])
         });
 
         download.addListener('onerror', error => {
@@ -200,7 +202,7 @@ class IllustTool extends Event {
       let pageNum = chunk.start + index + (this.pageNumberStartWithOne ? 1 : 0);
       let filename = null;
 
-      this.context.pageNum = pageNum;
+      this.context.pageNum = this.getPageNumberString(pageNum);
 
       filename = formatName(
         this.illustrationImageRenameFormat.replace(this.isSingle() ? /#.*#/g: /#/g, ''),
@@ -231,6 +233,95 @@ class IllustTool extends Event {
     });
 
     downloader.download();
+  }
+
+  downloadSelected(indexes, context) {
+    let downloader = new Downloader({ processors: this.processors });
+    downloader.asBlob = false;
+
+    let zip = new JSZip();
+
+    indexes.forEach(idx => {
+      downloader.appendFile(this.context.pages[idx].urls.original);
+    });
+
+    downloader.addListener('progress', progress => {
+      this.dispatch('download-progress', [progress, context, { selected: true }]);
+    });
+
+    downloader.addListener('item-error', error => {
+      this.dispatch('download-error', error);
+    });
+
+    downloader.addListener('item-finish', ({data, index, download}) => {
+      let pageNum = index + (this.pageNumberStartWithOne ? 1 : 0);
+      let filename = null;
+
+      this.context.pageNum = this.getPageNumberString(pageNum);
+
+      filename = formatName(
+        this.illustrationImageRenameFormat.replace(this.isSingle() ? /#.*#/g: /#/g, ''),
+        this.context,
+        pageNum
+      );
+
+      filename += '.' + MimeType.getExtenstion(download.getResponseHeader('Content-Type'))
+
+      /**
+       * Fix jszip date issue which jszip will save the UTC time as the local time to files in zip
+       */
+      let now = new Date();
+      now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+
+      /**
+       * Firefox related issue, cannot use blob as a given data to zip.file function
+       */
+      zip.file(filename, data, {
+        date: now
+      });
+    });
+
+    downloader.addListener('finish', () => {
+      zip.generateAsync({ type: 'blob' }).then(blob => {
+        this.dispatch(
+          'download-finish',
+          [
+            {
+              blob,
+              filename: formatName(this.illustrationRenameFormat, this.context, this.context.illustId) + '.zip'
+            },
+            context,
+            {
+              selected: true
+            }
+          ]
+        );
+      }).catch(error => console.error(error));
+    });
+
+    downloader.download();
+  }
+
+  /**
+   * Format page number
+   * @param {Number|String} pageNum
+   * @returns {String}
+   */
+  getPageNumberString(pageNum) {
+    if (this.illustrationPageNumberLength === 0) {
+      return pageNum;
+    }
+
+    let pageNumStr = pageNum + '', pageNumberLength = 0;
+
+    if (this.illustrationPageNumberLength > 1) {
+      pageNumberLength = this.illustrationPageNumberLength;
+    } else if (this.illustrationPageNumberLength === -1) {
+      pageNumberLength = (this.context.pages.length + '').length;
+    }
+
+    return pageNumStr.length < pageNumberLength ?
+      ('0'.repeat(pageNumberLength - pageNumStr.length) + pageNumStr) : pageNum;
   }
 }
 

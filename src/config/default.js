@@ -167,5 +167,16 @@ export default Object.assign({}, {
     /**
      * @since 4.5.0
      */
-    enableSaveDownloadHistory: 1
+    enableSaveDownloadHistory: 1,
+
+    displayWorkTypeLabel: true,
+
+    workCoverSize: 1,
+
+    /**
+     * @since 4.8.0
+     */
+    mangaPageNumberLength: 0,
+
+    illustrationPageNumberLength: 0,
   });

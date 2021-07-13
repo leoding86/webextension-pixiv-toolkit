@@ -48,6 +48,19 @@
           </v-list-tile-action>
         </v-list-tile>
 
+        <v-list-tile>
+          <v-list-tile-content>
+            <v-list-tile-title>{{ tl('_the_length_of_page_number') }}</v-list-tile-title>
+            <v-list-tile-sub-title>{{ tl('_zeros_will_be_filled_at_the_beginning_of_page_number') }}</v-list-tile-sub-title>
+          </v-list-tile-content>
+          <v-list-tile-action>
+            <v-select :items="pageNumberLengthOptions"
+              v-model="pageNumberLength"
+              style="width:150px;"
+            ></v-select>
+          </v-list-tile-action>
+        </v-list-tile>
+
         <change-location-setting
           v-model="location"
           :setting-title="tl('_save_illustration_in_relative_location')"
@@ -77,7 +90,26 @@ export default {
 
       pageNumberStartWithOne: false,
 
-      location: ''
+      pageNumberLength: 0,
+
+      location: '',
+
+      pageNumberLengthOptions: [{
+        text: 'Disable',
+        value: 0,
+      }, {
+        text: 'Dynamic',
+        value: -1,
+      }, {
+        text: '2',
+        value: 2
+      }, {
+        text: '3',
+        value: 3
+      }, {
+        text: '4',
+        value: 4
+      }]
     };
   },
 
@@ -107,6 +139,12 @@ export default {
       });
     },
 
+    pageNumberLength(val) {
+      browser.storage.local.set({
+        illustrationPageNumberLength: val
+      });
+    },
+
     location(val) {
       browser.storage.local.set({
         illustrationRelativeLocation: val
@@ -122,6 +160,7 @@ export default {
 
   beforeMount() {
     this.pageNumberStartWithOne = this.browserItems.illustrationPageNumberStartWithOne;
+    this.pageNumberLength = this.browserItems.illustrationPageNumberLength;
 
     this.location = this.browserItems.illustrationRelativeLocation;
     this.alwaysPack = this.browserItems.alwaysPack;

@@ -1,5 +1,5 @@
 <template>
-  <v-container style="max-width: 640px;">
+  <v-container>
     <ugoira-options></ugoira-options>
 
     <illustration-options></illustration-options>
@@ -15,20 +15,6 @@
     <search-options v-if="false"></search-options>
 
     <other-options></other-options>
-
-    <div class="no-margin-buttons">
-      <v-btn
-        depressed
-        color="info"
-        @click="exportSettings"
-      >{{ tl('_export_settings') }}</v-btn>
-
-      <v-btn
-        depressed
-        color="info"
-        @click="importSettings"
-      >{{ tl('_import_settings') }}</v-btn>
-    </div>
   </v-container>
 </template>
 
@@ -57,65 +43,6 @@ export default {
     'history-options': HistoryOptions,
     'search-options': SearchOptions,
     'other-options': OtherOptions
-  },
-
-  methods: {
-    copySettings() {
-      CopyStr.copy(JSON.stringify(this.browserItems));
-      alert('Copied');
-    },
-
-    exportSettings() {
-      let blob = new Blob([JSON.stringify(this.browserItems)], {type: 'application/json'})
-
-      let a = document.createElement('a')
-      a.href = URL.createObjectURL(blob)
-      a.download = 'pixiv_toolkit_settings-' + Date.now() + '.json'
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-    },
-
-    importSettings() {
-      let input = document.createElement('input');
-
-      input.type = 'file'
-      input.addEventListener('change', (e) => {
-        const files = e.target.files
-
-        let fileReader = new FileReader()
-
-        fileReader.addEventListener('load', () => {
-          try {
-            let importSettings = JSON.parse(fileReader.result);
-
-            if (importSettings) {
-              let setting;
-
-              Object.keys(defaultSettings).forEach(key => {
-                if (importSettings[key] &&
-                  (typeof defaultSettings[key] === typeof importSettings[key] || typeof importSettings[key] === 'string') // checking logical need improve
-                ) {
-                  defaultSettings[key] = importSettings[key];
-                }
-              });
-
-              browser.storage.local.set(defaultSettings);
-
-              alert('Settings imported');
-
-              window.location.reload();
-            }
-          } catch (e) {
-            console.log(e)
-          }
-        });
-
-        fileReader.readAsText(files[0])
-      });
-
-      input.click();
-    }
   }
 }
 </script>

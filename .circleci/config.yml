@@ -3,7 +3,7 @@ jobs:
   build:
     working_directory: ~/webext-pixiv-toolkit
     docker:
-      - image: circleci/node:8.10.0
+      - image: circleci/node:12.9.1
     steps:
       - checkout
       - run:
@@ -20,8 +20,20 @@ jobs:
           paths:
             - ./node_modules
       - run:
+          name: "Rebuild node-sass"
+          command: "npm rebuild node-sass"
+      - run:
           name: "Build extension for Chrome"
           command: "npm run build"
       - run:
           name: "Build exntesion for Firefox"
           command: "npm run build:firefox"
+      - run:
+          name: "Create artifacts"
+          command: |
+            tar -cvzf ./chrome.tar.gz ./dist/chrome/
+            tar -cvzf ./firefox.tar.gz ./dist/firefox/
+      - store_artifacts:
+          path: ./chrome.tar.gz
+      - store_artifacts:
+          path: ./firefox.tar.gz

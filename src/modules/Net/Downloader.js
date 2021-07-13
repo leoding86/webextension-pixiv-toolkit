@@ -8,10 +8,14 @@ import Queue from '@/modules/Queue';
 class Downloader extends Event {
   /**
    * @constructor
+   * @param {Object} arguments
+   * @param {Number} [arguments.processors=1]
+   * @param {Object} [requestOptions={}]
    */
-  constructor({ processors = 1 }) {
+  constructor({ processors = 1, requestOptions = {} }) {
     super();
     this.processors = processors;
+    this.requestOptions = requestOptions;
     this.files = [];
     this.successIndexes = [];
     this.failIndexes = [];
@@ -56,7 +60,7 @@ class Downloader extends Event {
 
     this.queue.start(({file, index}) => {
       return new Promise((resolve, reject) => {
-        let download = new Download(file, { method: 'GET' });
+        let download = new Download(file, Object.assign({ method: 'GET' }, this.requestOptions));
 
         download.asBlob = this.asBlob;
 

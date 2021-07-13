@@ -113,8 +113,10 @@ export default class PostAdapter {
   filterImagesFromArticlePost(data) {
     let images = [];
 
-    Object.keys(data.body.body.imageMap).forEach(imageId => {
-      images.push(data.body.body.imageMap[imageId].originalUrl);
+    data.body.body.blocks.forEach(item => {
+      if (item.type === 'image' && data.body.body.imageMap[item.imageId]) {
+        images.push(data.body.body.imageMap[item.imageId].originalUrl);
+      }
     });
 
     return images;

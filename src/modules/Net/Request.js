@@ -17,10 +17,16 @@ class Request extends Event {
     this.responseData = null;
     this.responseType = 'arrayBuffer';
 
-    if (AbortController) {
+    if (window.AbortController) {
       this.fetchAbortController = new AbortController();
       this.fetchInit.signal = this.fetchAbortController.signal;
     }
+  }
+
+  static globalOptions = {};
+
+  static setGlobalOptions(globalOptions) {
+    Request.globalOptions = globalOptions;
   }
 
   abort() {
@@ -79,6 +85,14 @@ class Request extends Event {
 
     if (method !== 'HEAD' && method !== 'GET' && !!data) {
       this.fetchInit.body = data;
+    }
+
+    if (Request.globalOptions.headers) {
+      if (this.fetchInit.headers) {
+        Object.assign(this.fetchInit.headers, Request.globalOptions.headers);
+      } else {
+        this.fetchInit.headers = Request.globalOptions.headers;
+      }
     }
 
     fetch(this.url, this.fetchInit).then(response => {
