@@ -1,10 +1,10 @@
 <template>
   <a class="button"
-    :class="buttonColor"
+    :class="classnames"
     :href="href"
     :download="download"
     :title="title"
-    @click="$emit('click')"><slot>{{ text }}</slot></a>
+    @click="handleClick"><slot>{{ text }}</slot></a>
 </template>
 
 <script>
@@ -17,15 +17,34 @@ export default {
     type: {
       required: false,
       type: String
+    },
+    disabled: {
+      required: false,
+      type: Boolean,
+      default: false
     }
   },
 
   computed: {
-    buttonColor() {
+    classnames() {
+      let classnames = [];
+
       if (this.type) {
-        return `button--${this.type}`;
-      } else {
-        return null;
+        classnames.push(`button--${this.type}`);
+      }
+
+      if (this.disabled) {
+        classnames.push(`button--disabled`);
+      }
+
+      return classnames.join(' ');
+    }
+  },
+
+  methods: {
+    handleClick() {
+      if (!this.disabled) {
+        this.$emit('click');
       }
     }
   }
@@ -49,5 +68,9 @@ export default {
 
   .button--success {
     border-color:#00dc68;
+  }
+
+  .button--disabled {
+    opacity: 0.3;
   }
 </style>

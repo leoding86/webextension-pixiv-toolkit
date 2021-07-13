@@ -74,6 +74,8 @@ export default {
   width: 100%;
   height: 100%;
   overflow: visible;
+  justify-content: center;
+  align-items: center;
   position: fixed;
   top: 0;
   left: 0;
@@ -84,8 +86,9 @@ export default {
     flex-direction: column;
     justify-content: center;
     width: 50%;
-    height: 100%;
     margin: 0 auto;
+    border-radius: 8px;
+    overflow: hidden;
   }
 
   .ptk__dialog-head {
@@ -106,6 +109,6 @@ export default {
 }
 
 .ptk__dialog--show {
-  display: block;
+  display: flex;
 }
 </style>

@@ -37,7 +37,7 @@
         </div>
       </div>
       <template slot="foot">
-        <ptk-button @click="downloadSelectedImages" v-if="selectedImageIndexes.length > 0">
+        <ptk-button @click="downloadSelectedImages" :disabled="selectedImageIndexes.length < 1">
           <template v-if="downloadSelectedImagesStatus === 1">
             {{ downloadSelectedImagesNotice }}
           </template>
@@ -321,7 +321,6 @@ export default {
 
     openSelectionDialog() {
       this.showSelectionDialog = true;
-      console.log('open selection dialog');
     },
 
     selectImage(idx) {
@@ -361,7 +360,7 @@ export default {
     downloadSelectedImages() {
       if (this.downloadSelectedImagesStatus === 0) {
         this.downloadSelectedImagesStatus = 1;
-        this.downloadSelectedImagesStatus = this.tl('_pending');
+        this.downloadSelectedImagesNotice = this.tl('_pending');
         this.selectedImageIndexes.sort();
         this.tool.downloadSelected(this.selectedImageIndexes);
       }
