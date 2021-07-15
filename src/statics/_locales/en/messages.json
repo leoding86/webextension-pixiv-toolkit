@@ -676,5 +676,11 @@
    },
    "_pending": {
        "message": "Pending"
+   },
+   "_start_page_number": {
+       "message": "Start Page Number"
+   },
+   "_last_page_number": {
+       "message": "Last Page Number"
    }
 }

@@ -676,5 +676,11 @@
    },
    "_pending": {
        "message": "准备中"
+   },
+   "_start_page_number": {
+       "message": "首页页码"
+   },
+   "_last_page_number": {
+       "message": "终页页码"
    }
 }
