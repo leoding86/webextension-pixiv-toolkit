@@ -75,6 +75,14 @@ export default {
         {
           title: this.tl("day"),
           holder: "{day}"
+        },
+        {
+          title: this.tl('_start_page_number'),
+          holder: "{startPageNum}"
+        },
+        {
+          title: this.tl('_last_page_number'),
+          holder: "{lastPageNum}"
         }
       ]
     };

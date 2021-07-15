@@ -42,7 +42,10 @@ class IllustTool extends Event {
     this.illustrationImageRenameFormat = illustrationImageRenameFormat;
     this.pageNumberStartWithOne = pageNumberStartWithOne;
     this.illustrationPageNumberLength = illustrationPageNumberLength;
-    this.processors = processors
+    this.processors = processors;
+
+    this.addContext('startPageNum', this.getPageNum(1, false));
+    this.addContext('lastPageNum', this.getPageNum(this.context.pages.length, false));
 
     return this;
   }
@@ -109,15 +112,25 @@ class IllustTool extends Event {
 
   getPageRange(chunk) {
     if (chunk.start == chunk.end) {
-      return parseInt(chunk.start);
+      return this.getPageNum(parseInt(chunk.start));
     } else {
-      return (parseInt(chunk.start + 1)) + '-' + (parseInt(chunk.end + 1));
+      return this.getPageNum(parseInt(chunk.start)) + '-' + this.getPageNum(parseInt(chunk.end));
     }
   }
 
+  /**
+   * If there is only one chunk, then delete # the tags in rename format.
+   * Otherwise, in addition to deleting the # tags, delete the content
+   * which is wrapped in the # tags too, and suffix chunk page range to filename.
+   * @param {any[]} chunk
+   * @returns {string}
+   */
   getFilename(chunk) {
-    let pageSuffix = this.chunks.length > 1 ? ('_' + this.getPageRange(chunk)) : '';
-    return formatName(this.illustrationRenameFormat, this.context, this.context.illustId) + pageSuffix + '.zip';
+    if (this.chunks.length > 1) {
+      return formatName(this.illustrationRenameFormat.replace(/#.*#/g, ''), this.context, this.context.illustId) + '_' + this.getPageRange(chunk) + '.zip';
+    } else {
+      return formatName(this.illustrationRenameFormat.replace(/#/g, ''), this.context, this.context.illustId) + '.zip';
+    }
   }
 
   /**
@@ -199,7 +212,7 @@ class IllustTool extends Event {
     });
 
     downloader.addListener('item-finish', ({data, index, download}) => {
-      let pageNum = chunk.start + index + (this.pageNumberStartWithOne ? 1 : 0);
+      let pageNum = this.getPageNum(chunk.start + index);
       let filename = null;
 
       this.context.pageNum = this.getPageNumberString(pageNum);
@@ -254,7 +267,7 @@ class IllustTool extends Event {
     });
 
     downloader.addListener('item-finish', ({data, index, download}) => {
-      let pageNum = index + (this.pageNumberStartWithOne ? 1 : 0);
+      let pageNum = this.getPageNum(index);
       let filename = null;
 
       this.context.pageNum = this.getPageNumberString(pageNum);
@@ -288,7 +301,7 @@ class IllustTool extends Event {
           [
             {
               blob,
-              filename: formatName(this.illustrationRenameFormat, this.context, this.context.illustId) + '.zip'
+              filename: formatName(this.illustrationRenameFormat.replace(/#.*#/g, ''), this.context, this.context.illustId) + '_selected.zip'
             },
             context,
             {
@@ -300,6 +313,16 @@ class IllustTool extends Event {
     });
 
     downloader.download();
+  }
+
+  /**
+   * Get page number based on page index
+   * @param {number} page
+   * @param {boolean} baseZero True for basing 0, or basing 1
+   * @returns {number}
+   */
+  getPageNum(page, baseZero = true) {
+    return (page + (baseZero ? 0 : -1)) + (this.pageNumberStartWithOne ? 1 : 0);
   }
 
   /**
@@ -322,6 +345,15 @@ class IllustTool extends Event {
 
     return pageNumStr.length < pageNumberLength ?
       ('0'.repeat(pageNumberLength - pageNumStr.length) + pageNumStr) : pageNum;
+  }
+
+  /**
+   *
+   * @param {string} prop
+   * @param {*} value
+   */
+  addContext(prop, value) {
+    this.context[prop] = value;
   }
 }
 
