@@ -87,6 +87,7 @@ export default {
       downloadSelectedImageButton: {},
       images: [],
       selectedImageIndexes: [],
+      packFiles: false
     }
   },
 
@@ -118,7 +119,9 @@ export default {
       pageNumberStartWithOne: this.browserItems.illustrationPageNumberStartWithOne,
       illustrationPageNumberLength: this.browserItems.illustrationPageNumberLength,
       processors: parseInt(this.browserItems.downloadTasksWhenDownloadingImages)
-    }).init()
+    }).init();
+
+    this.packFiles = this.browserItems.downloadPackFiles;
 
     this.chunks = this.illustTool.chunks
 
@@ -177,7 +180,8 @@ export default {
           chunk: chunk,
           isSingle: isSingle,
           type: '',
-          blob: null
+          blob: null,
+          files: []
         }
       })
 
@@ -227,6 +231,45 @@ export default {
       }
     },
 
+    saveDownloadedFiles(files) {
+      let savePath = this.getSubfolder(this.browserItems.illustrationRelativeLocation, this.tool.context) + '/';
+
+      if (savePath.indexOf('/') === 0) {
+        savePath = savePath.substr(1);
+      }
+
+      if (this.packFiles) {
+        this.tool.getPackedFile(files).then(file => {
+          /**
+           * Download zip file
+           */
+          this.downloadFile(file.data, file.filename, {
+            folder: savePath,
+            statType: 'illust'
+          });
+        });
+      } else {
+        savePath += this.tool.relativePath + '/';
+
+        /**
+         * Cache files and change button type
+         */
+
+        files.forEach(file => {
+          this.downloadFile(
+            new Blob([file.data], { type: file.mimeType }),
+            file.filename,
+            {
+              folder: savePath,
+              statType: 'illust'
+            }
+          );
+        });
+      }
+
+      this.saveDownloadRecord({ illust: 1 });
+    },
+
     downloadButtonClicked(buttonInfo) {
       if (!this.allowDownload(this.isSaved)) {
         return;
@@ -242,17 +285,15 @@ export default {
             this.browserItems.pageNumberStartWithOne ? 1 : 0
           );
         } else {
-          this.tool.downloadChunk(buttonInfo.chunk, buttonInfo);
+          this.tool.downloadRange({ range: buttonInfo.chunk }, buttonInfo).then(files => {
+            this.updateButtonInfo(buttonInfo, { files });
+            this.saveDownloadedFiles(files, buttonInfo);
+          });
         }
+
+        this.updateButtonInfo(buttonInfo, { type: 'succcess' });
       } else if (buttonInfo.downloadStatus === 2) {
-        this.updateButtonInfo(buttonInfo, { type: 'success' });
-
-        this.downloadFile(buttonInfo.blob, buttonInfo.filename, {
-          folder: this.getSubfolder(this.browserItems.illustrationRelativeLocation, this.tool.context),
-          statType: 'illust'
-        });
-
-        this.saveDownloadRecord({ illust: 1 });
+        this.saveDownloadedFiles(buttonInfo.files, buttonInfo);
       }
     },
 
@@ -272,7 +313,7 @@ export default {
       //
     },
 
-    downloadFinishEventHandle({ blob, filename }, buttonInfo, extra) {
+    downloadFinishEventHandle(buttonInfo, extra) {
       if (extra && extra.selected === true) {
         /**
          * Initial properties for downloading selected images
@@ -284,19 +325,10 @@ export default {
 
         this.updateButtonInfo(buttonInfo, {
           text: (buttonInfo.isSingle ? this.tl('_save_image') : text) + ' ✔️',
-          blob: blob,
-          filename: filename,
           downloadStatus: 2,
           type: 'success'
         });
       }
-
-      this.downloadFile(blob, filename, {
-        folder: this.getSubfolder(this.browserItems.illustrationRelativeLocation, this.illustTool.context),
-        statType: 'illust',
-      });
-
-      this.saveDownloadRecord({ illust: 1 });
     },
 
     handleDownloadRecord(message, port) {
@@ -362,7 +394,9 @@ export default {
         this.downloadSelectedImagesStatus = 1;
         this.downloadSelectedImagesNotice = this.tl('_pending');
         this.selectedImageIndexes.sort();
-        this.tool.downloadSelected(this.selectedImageIndexes);
+        this.tool.downloadSelected(this.selectedImageIndexes).then(files => {
+          this.saveDownloadedFiles(files);
+        });
       }
     }
   }

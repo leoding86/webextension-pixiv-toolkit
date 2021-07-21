@@ -7,6 +7,11 @@ import Retryer from '@/modules/Manager/Retryer';
 import formatName from '@/modules/Util/formatName';
 
 /**
+ * @typedef DownloadedFile
+ * @property {Blob|ArrayBuffer} data
+ * @property {string} filename
+ * @property {string} mimeType
+ *
  * @class IllustTool
  * @extends {Event}
  * @property context
@@ -35,19 +40,23 @@ class IllustTool extends Event {
     illustrationImageRenameFormat,
     pageNumberStartWithOne = false,
     illustrationPageNumberLength,
-    processors = 2
+    processors = 2,
+    pack = true
   }) {
     this.splitSize = splitSize;
     this.illustrationRenameFormat = illustrationRenameFormat
     this.illustrationImageRenameFormat = illustrationImageRenameFormat;
     this.pageNumberStartWithOne = pageNumberStartWithOne;
     this.illustrationPageNumberLength = illustrationPageNumberLength;
-    this.processors = processors
+    this.processors = processors;
+    this.pack = pack;
+    this.relativePath = '';
 
     return this;
   }
 
   init() {
+    this.relativePath = formatName(this.illustrationRenameFormat, this.context, this.context.illustId);
     this.chunks = [];
     this.filename = null;
     this.zips = null;
@@ -139,6 +148,63 @@ class IllustTool extends Event {
   }
 
   /**
+   *
+   * @param {{indexes: number[], extra: object}} options
+   * @param {*} that
+   * @returns {Promise.<DownloadedFile[], Error>}
+   */
+  downloadFiles({ indexes, extra = {} }, that) {
+    return new Promise((resolve, reject) => {
+      let files = [],
+          downloader = new Downloader({ processors: this.processors });
+
+      downloader.asBlob = false;
+
+      /**
+       * Append files that need to download
+       */
+      indexes.forEach(idx => {
+        downloader.appendFile(this.context.pages[idx].urls.original);
+      });
+
+      downloader.addListener('progress', progress => {
+        this.dispatch('download-progress', [progress, that, { selected: true }]);
+      });
+
+      downloader.addListener('item-error', error => {
+        this.dispatch('download-error', error);
+      });
+
+      downloader.addListener('item-finish', ({data, index, download}) => {
+        let pageNum = index + (this.pageNumberStartWithOne ? 1 : 0),
+            filename = null;
+
+        this.context.pageNum = this.getPageNumberString(pageNum);
+
+        filename = formatName(
+          this.illustrationImageRenameFormat.replace(this.isSingle() ? /#.*#/g: /#/g, ''),
+          this.context,
+          pageNum
+        );
+
+        let mimeType = download.getResponseHeader('Content-Type');
+
+        filename += '.' + MimeType.getExtenstion(mimeType);
+
+        files.push({ data, filename, mimeType });
+      });
+
+      downloader.addListener('finish', () => {
+        this.dispatch('download-finish', [that, extra]);
+
+        resolve(files);
+      });
+
+      downloader.download();
+    });
+  }
+
+  /**
    * Download file
    * @param {String} url
    * @param {*} [context]
@@ -180,92 +246,44 @@ class IllustTool extends Event {
     });
   }
 
-  downloadChunk(chunk, context) {
-    let downloader = new Downloader({ processors: this.processors });
-    downloader.asBlob = false;
+  /**
+   * Download multiple files. The browser will popup a confirm dialog for user for asking user if
+   * he/she agree to download multiple files from the website. The user MUST allow it, then the
+   * browser will process the download.
+   * @typedef DownloadFilesOptions
+   * @property {{start: number, end: number}} range
+   *
+   * @param {DownloadFilesOptions} options The range number is based on 0
+   * @param {any} that The context that will send back via event emit
+   */
+  downloadRange({
+    range
+  }, that) {
+    let indexes = [],
+        start = Math.min(range.start, range.end),
+        end = Math.max(range.start, range.end);
 
-    let zip = new JSZip();
+    while (start <= end) {
+      indexes.push(start);
 
-    for (let i = chunk.start; i <= chunk.end; i++) {
-      downloader.appendFile(this.context.pages[i].urls.original);
+      start++;
     }
 
-    downloader.addListener('progress', progress => {
-      this.dispatch('download-progress', [progress, context]);
-    });
-
-    downloader.addListener('item-error', error => {
-      this.dispatch('download-error', error);
-    });
-
-    downloader.addListener('item-finish', ({data, index, download}) => {
-      let pageNum = chunk.start + index + (this.pageNumberStartWithOne ? 1 : 0);
-      let filename = null;
-
-      this.context.pageNum = this.getPageNumberString(pageNum);
-
-      filename = formatName(
-        this.illustrationImageRenameFormat.replace(this.isSingle() ? /#.*#/g: /#/g, ''),
-        this.context,
-        pageNum
-      );
-
-      filename += '.' + MimeType.getExtenstion(download.getResponseHeader('Content-Type'))
-
-      /**
-       * Fix jszip date issue which jszip will save the UTC time as the local time to files in zip
-       */
-      let now = new Date();
-      now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-
-      /**
-       * Firefox related issue, cannot use blob as a given data to zip.file function
-       */
-      zip.file(filename, data, {
-        date: now
-      });
-    });
-
-    downloader.addListener('finish', () => {
-      zip.generateAsync({ type: 'blob' }).then(blob => {
-        this.dispatch('download-finish', [{blob, filename: this.getFilename(chunk)}, context]);
-      }).catch(error => console.error(error));
-    });
-
-    downloader.download();
+    return this.downloadFiles({ indexes }, that);
   }
 
-  downloadSelected(indexes, context) {
-    let downloader = new Downloader({ processors: this.processors });
-    downloader.asBlob = false;
+  downloadSelected(indexes, that) {
+    return this.downloadFiles({ indexes, extra: { selected: true } }, that);
+  }
 
-    let zip = new JSZip();
-
-    indexes.forEach(idx => {
-      downloader.appendFile(this.context.pages[idx].urls.original);
-    });
-
-    downloader.addListener('progress', progress => {
-      this.dispatch('download-progress', [progress, context, { selected: true }]);
-    });
-
-    downloader.addListener('item-error', error => {
-      this.dispatch('download-error', error);
-    });
-
-    downloader.addListener('item-finish', ({data, index, download}) => {
-      let pageNum = index + (this.pageNumberStartWithOne ? 1 : 0);
-      let filename = null;
-
-      this.context.pageNum = this.getPageNumberString(pageNum);
-
-      filename = formatName(
-        this.illustrationImageRenameFormat.replace(this.isSingle() ? /#.*#/g: /#/g, ''),
-        this.context,
-        pageNum
-      );
-
-      filename += '.' + MimeType.getExtenstion(download.getResponseHeader('Content-Type'))
+  /**
+   * Get packed file
+   * @param {DownloadedFile[]} files
+   * @return {Promise.<{ data: Blob, filename: string },Error>}
+   */
+  getPackedFile(files) {
+    return new Promise((resolve, reject) => {
+      let zip = new JSZip();
 
       /**
        * Fix jszip date issue which jszip will save the UTC time as the local time to files in zip
@@ -273,33 +291,24 @@ class IllustTool extends Event {
       let now = new Date();
       now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
 
-      /**
-       * Firefox related issue, cannot use blob as a given data to zip.file function
-       */
-      zip.file(filename, data, {
-        date: now
+      files.forEach(file => {
+        /**
+        * Firefox related issue, cannot use blob as a given data to zip.file function
+        */
+        zip.file(file.filename, file.data, {
+          date: now
+        });
+      });
+
+      zip.generateAsync({ type: 'blob' }).then(blob => {
+        resolve({
+          data: blob,
+          filename: formatName(this.illustrationRenameFormat, this.context, this.context.illustId) + '.zip'
+        });
+      }).catch(error => {
+        reject(error);
       });
     });
-
-    downloader.addListener('finish', () => {
-      zip.generateAsync({ type: 'blob' }).then(blob => {
-        this.dispatch(
-          'download-finish',
-          [
-            {
-              blob,
-              filename: formatName(this.illustrationRenameFormat, this.context, this.context.illustId) + '.zip'
-            },
-            context,
-            {
-              selected: true
-            }
-          ]
-        );
-      }).catch(error => console.error(error));
-    });
-
-    downloader.download();
   }
 
   /**
