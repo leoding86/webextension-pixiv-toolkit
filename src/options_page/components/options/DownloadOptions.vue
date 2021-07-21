@@ -21,6 +21,16 @@
 
         <v-list-tile>
           <v-list-tile-content>
+            <v-list-tile-title>{{ tl('_pack_files') }}</v-list-tile-title>
+            <v-list-tile-sub-title>{{ tl('_pack_downloaded_files_to_a_zip_file') }}</v-list-tile-sub-title>
+          </v-list-tile-content>
+          <v-list-tile-action>
+            <v-switch v-model="downloadPackFiles"></v-switch>
+          </v-list-tile-action>
+        </v-list-tile>
+
+        <v-list-tile>
+          <v-list-tile-content>
             <v-list-tile-title>{{ tl('_ask_whether_to_download_the_work_may_has_been_downloaded') }}</v-list-tile-title>
           </v-list-tile-content>
           <v-list-tile-action>
@@ -92,7 +102,9 @@ export default {
 
       downloadSaveAs: false,
 
-      downloadTasksWhenDownloadingImages: 3
+      downloadTasksWhenDownloadingImages: 3,
+
+      downloadPackFiles: true,
     };
   },
 
@@ -125,6 +137,12 @@ export default {
       browser.storage.local.set({
         downloadTasksWhenDownloadingImages: val
       });
+    },
+
+    downloadPackFiles(val) {
+      browser.storage.local.set({
+        downloadPackFiles: !!val
+      });
     }
   },
 
@@ -136,6 +154,8 @@ export default {
     this.downloadSaveAs = !!this.browserItems.downloadSaveAs;
 
     this.downloadTasksWhenDownloadingImages = this.browserItems.downloadTasksWhenDownloadingImages;
+
+    this.downloadPackFiles = !!this.browserItems.downloadPackFiles;
   },
 
   methods: {
