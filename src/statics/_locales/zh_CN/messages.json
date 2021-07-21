@@ -676,5 +676,11 @@
    },
    "_pending": {
        "message": "准备中"
+   },
+   "_pack_files": {
+       "message": "打包文件"
+   },
+   "_pack_downloaded_files_to_a_zip_file": {
+       "message": "将下载的文件打包成ZIP文件"
    }
 }

@@ -676,5 +676,11 @@
    },
    "_pending": {
        "message": "Pending"
+   },
+   "_pack_files": {
+       "message": "Pack Files"
+   },
+   "_pack_downloaded_files_to_a_zip_file": {
+       "message": "Pack downloaded file(s) to a zip file"
    }
 }
