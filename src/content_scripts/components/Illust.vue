@@ -54,7 +54,6 @@
 <script>
 import Button from '@/content_scripts/components/Button'
 import Dialog from '@/content_scripts/components/Dialog'
-import formatName from '@/modules/Util/formatName'
 import downloadFileMixin from '@/content_scripts/mixins/downloadFileMixin'
 import IllustTool from '@/content_scripts/illust/Illust'
 import DownloadRecordPort from '@/modules/Ports/DownloadRecordPort/RendererPort'
@@ -175,12 +174,10 @@ export default {
         buttonsInfo[i] = {
           index: i,
           text: ((isSingle && !this.alwaysPack) ? this.tl('_dl_image') : vm.getChunkTitle(chunk, { singular: this.tl('_dl_page'), plural: this.tl('_dl_pages')})) + (vm.isSaved ? ' ✔️' : ''),
-          filename: null,
           downloadStatus: 0,
           chunk: chunk,
           isSingle: isSingle,
           type: '',
-          blob: null,
           files: []
         }
       })
@@ -407,7 +404,7 @@ export default {
         this.downloadSelectedImagesNotice = this.tl('_pending');
         this.selectedImageIndexes.sort();
 
-        this.tool.downloadFiles({ indexes: this.selectedImageIndexes}).then(files => {
+        this.tool.downloadFiles({ indexes: this.selectedImageIndexes, extra: {selected: true}}).then(files => {
           this.saveDownloadedFiles(files);
         });
       }

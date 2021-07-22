@@ -4,6 +4,11 @@ import MimeType from '@/modules/Util/MimeType';
 import formatName from '@/modules/Util/formatName';
 
 /**
+ * @typedef DownloadedFile
+ * @property {Blob|ArrayBuffer} data
+ * @property {string} filename
+ * @property {string} mimeType
+ *
  * @class
  */
 class FilesDownloader extends Event {
@@ -17,8 +22,9 @@ class FilesDownloader extends Event {
   /**
    * Get file url using index
    * @param {number} index
+   * @param {object} extra
    */
-  getFileUrlByIndex(index) {
+  getFileUrlByIndex(index, extra) {
     throw new Error('FilesDownloader.getFileUrlByIndex(index: number) has not been implemented');
   }
 
@@ -65,10 +71,11 @@ class FilesDownloader extends Event {
 
   /**
    * Download files via giving indexes.
-   * @param {{ indexes: number[], extra: ?any }} param
+   * @param {{ indexes: number[], getFilenameFunc: ?Function, extra: ?any }} param
    * @param {*} that
+   * @returns {DownloadedFile[]}
    */
-  downloadFiles({ indexes, extra = {} }, that) {
+  downloadFiles({ indexes, getFilenameFunc = null, extra = {} }, that) {
     return new Promise((resolve, reject) => {
       let files = [],
           downloader = new Downloader({ processors: this.processors });
@@ -79,7 +86,7 @@ class FilesDownloader extends Event {
        * Append files that need to download
        */
       indexes.forEach(idx => {
-        downloader.appendFile(this.getFileUrlByIndex(idx));
+        downloader.appendFile(this.getFileUrlByIndex(idx, extra));
       });
 
       downloader.addListener('progress', progress => {
@@ -91,7 +98,7 @@ class FilesDownloader extends Event {
       });
 
       downloader.addListener('item-finish', ({data, index, download}) => {
-        let filename = this.getSingleFilename(index),
+        let filename = (typeof getFilenameFunc == 'function') ? getFilenameFunc(index) : this.getSingleFilename(index),
             mimeType = download.getResponseHeader('Content-Type');
 
         filename += '.' + MimeType.getExtenstion(mimeType);
@@ -111,10 +118,10 @@ class FilesDownloader extends Event {
 
   /**
    * Get packed file
-   * @param {{ files: DownloadedFile[] }} param
+   * @param {{ files: DownloadedFile[], getFilenameFunc: ?Function }} param
    * @return {Promise.<{ data: Blob, filename: string },Error>}
    */
-  getPackedFile({ files }) {
+  getPackedFile({ files, getFilenameFunc = null }) {
     return new Promise((resolve, reject) => {
       let zip = new JSZip();
 
@@ -136,7 +143,7 @@ class FilesDownloader extends Event {
       zip.generateAsync({ type: 'blob' }).then(blob => {
         resolve({
           data: blob,
-          filename: this.getPackedFilename() + '.zip'
+          filename: ((typeof getFilenameFunc == 'function') ? getFilenameFunc() : this.getPackedFilename()) + '.zip'
         });
       }).catch(error => {
         reject(error);

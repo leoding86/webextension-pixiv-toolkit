@@ -8,11 +8,6 @@ import formatName from '@/modules/Util/formatName';
 import FilesDownloader from '@/content_scripts/FilesDownloader';
 
 /**
- * @typedef DownloadedFile
- * @property {Blob|ArrayBuffer} data
- * @property {string} filename
- * @property {string} mimeType
- *
  * @class IllustTool
  * @extends {Event}
  * @property context
@@ -53,8 +48,8 @@ class IllustTool extends FilesDownloader {
     this.pack = pack;
     this.relativePath = '';
 
-    this.addContext('startPageNum', this.getPageNum(1, false));
-    this.addContext('lastPageNum', this.getPageNum(this.context.pages.length, false));
+    this.addContext('startPageNum', this.getPageNum(1));
+    this.addContext('lastPageNum', this.getPageNum(this.context.pages.length));
 
     return this;
   }
@@ -90,6 +85,15 @@ class IllustTool extends FilesDownloader {
     ) {
       self.illustrationImageRenameFormat += '{pageNum}';
     }
+  }
+
+  /**
+   * Add context
+   * @param {string} key
+   * @param {any} value
+   */
+  addContext(key, value) {
+    this.context[key] = value;
   }
 
   getUserId() {
@@ -136,6 +140,15 @@ class IllustTool extends FilesDownloader {
    */
   pagesNumber() {
     return this.context.pages.length;
+  }
+
+  /**
+   * Get page number
+   * @param {number} pageNum First page is based 1
+   * @returns {number}
+   */
+  getPageNum(pageNum) {
+    return pageNum - (this.pageNumberStartWithOne ? 0 : 1);
   }
 
   /**

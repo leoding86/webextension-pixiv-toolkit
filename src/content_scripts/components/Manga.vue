@@ -12,7 +12,6 @@
 
 <script>
 import Button from '@/content_scripts/components/Button'
-import formatName from '@/modules/Util/formatName'
 import downloadFileMixin from '@/content_scripts/mixins/downloadFileMixin'
 import DownloadRecordPort from '@/modules/Ports/DownloadRecordPort/RendererPort'
 import MangaTool from '@/content_scripts/manga/Manga'
@@ -85,11 +84,10 @@ export default {
       buttonsInfo[i] = {
         index: i,
         text: vm.getChunkTitle(chunk, { singular: this.tl('_dl_page'), plural: this.tl('_dl_pages') }) + (vm.isSaved ? ' ✔️' : ''),
-        filename: vm.mangaTool.getFilename(chunk),
         downloadStatus: 0,
         chunk: chunk,
         type: '',
-        blob: null
+        files: []
       }
     })
 
@@ -154,25 +152,77 @@ export default {
       this.$set(this.buttonsInfo, buttonInfo.index, Object.assign(buttonInfo, data));
     },
 
+    /**
+     * Download multiple files. The browser will popup a confirm dialog for user
+     * for asking user if he/she agree to download multiple files from the website.
+     * The user MUST allow it, then the browser will process the download.
+     * @param {object[]} files
+     * @param {{start: number, end: number}}
+     * @returns {void}
+     */
+    saveDownloadedFiles(files, chunk) {
+      let savePath = this.getSubfolder(
+        this.browserItems.mangaRelativeLocation, this.tool.context
+      ) + '/';
+
+      if (savePath.indexOf('/') === 0) {
+        savePath = savePath.substr(1);
+      }
+
+      if (this.packFiles || (files.length === 1 && this.alwaysPack)) {
+        this.tool.getPackedChunkFile({files}).then(file => {
+          /**
+           * Download zip file
+           */
+          this.downloadFile(file.data, file.filename, {
+            folder: savePath,
+            statType: 'manga'
+          });
+        });
+      } else {
+        savePath += this.tool.relativePath + '/';
+
+        /**
+         * Cache files and change button type
+         */
+
+        files.forEach(file => {
+          this.downloadFile(
+            new Blob([file.data], { type: file.mimeType }),
+            file.filename,
+            {
+              folder: savePath,
+              statType: 'manga'
+            }
+          );
+        });
+      }
+
+      this.saveDownloadRecord({ manga: 1 });
+    },
+
     downloadButtonClicked(buttonInfo) {
       if (!this.allowDownload(this.isSaved)) {
         return;
       }
 
       if (buttonInfo.downloadStatus === 0) {
-        buttonInfo.downloadStatus = 1;
+        this.updateButtonInfo(buttonInfo, { downloadStatus: 1 });
 
-        this.mangaTool.downloadChunk(buttonInfo.chunk, buttonInfo);
-      } else if (buttonInfo.downloadStatus === 2) {
-        this.updateButtonInfo(buttonInfo, { type: 'success' });
-
-        this.downloadFile(buttonInfo.blob, this.getFilename(buttonInfo.chunk), {
-          folder: this.getSubfolder(this.browserItems.mangaRelativeLocation, this.mangaTool.context),
-          statType: 'manga'
+        this.mangaTool.downloadChunk(buttonInfo.chunk, buttonInfo).then(files => {
+          /**
+           * Cache files
+           */
+          this.updateButtonInfo(buttonInfo, { files });
+          this.saveDownloadedFiles(files, buttonInfo.chunk);
+        }).catch(error => {
+          console.error(error);
         });
-
-        this.saveDownloadRecord({ manga: 1 });
+      } else if (buttonInfo.downloadStatus === 2) {
+        this.saveDownloadedFiles(buttonInfo.files, buttonInfo.chunk);
       }
+
+      this.updateButtonInfo(buttonInfo, { type: 'success' });
     },
 
     downloadProgressEventHandle({ progress, failCount}, buttonInfo) {
@@ -185,27 +235,15 @@ export default {
       //
     },
 
-    downloadFinishEventHandle(blob, buttonInfo) {
+    downloadFinishEventHandle(buttonInfo, extra) {
       let text = this.getChunkTitle(buttonInfo.chunk, { singular: this.tl('_save_page'), plural: this.tl('_save_pages') })
 
       this.updateButtonInfo(buttonInfo, {
         text: text + ' ✔️',
-        blob: blob,
         downloadStatus: 2
       });
 
       this.updateButtonInfo(buttonInfo, { type: 'success' });
-
-      this.downloadFile(buttonInfo.blob, this.getFilename(buttonInfo.chunk), {
-        folder: this.getSubfolder(this.browserItems.mangaRelativeLocation, this.mangaTool.context),
-        statType: 'manga',
-      });
-
-      this.saveDownloadRecord({ manga: 1 });
-    },
-
-    getFilename(chunk) {
-      return formatName(this.browserItems.mangaRenameFormat, this.mangaTool.context, this.mangaTool.context.illustId) + '_' + (chunk.start - 0 + 1) + '-' + (chunk.end - 0 + 1) + '.zip'
     },
 
     handleDownloadRecord(message, port) {
