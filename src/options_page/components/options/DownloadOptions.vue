@@ -22,7 +22,10 @@
         <v-list-tile>
           <v-list-tile-content>
             <v-list-tile-title>{{ tl('_pack_files') }}</v-list-tile-title>
-            <v-list-tile-sub-title>{{ tl('_pack_downloaded_files_to_a_zip_file') }}</v-list-tile-sub-title>
+            <v-list-tile-sub-title>
+              {{ tl('_pack_downloaded_files_to_a_zip_file') }}
+              (<a href="https://github.com/leoding86/webextension-pixiv-toolkit/tree/master/help/about_the_pack_files_settings.md" target="_blank"><strong>{{ tl('_more_info') }}</strong></a>)
+            </v-list-tile-sub-title>
           </v-list-tile-content>
           <v-list-tile-action>
             <v-switch v-model="downloadPackFiles"></v-switch>
