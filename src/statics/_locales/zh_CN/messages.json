@@ -691,5 +691,8 @@
    },
    "_example_authorId_id_if_you_use_start_page_num_or_last_page_num_you_should_place_the_page_section_between_the_two_hash_tags_like_id_startPageNum_lastPageNum": {
        "message": "例子：{authorId}_{id}。 如果你使用了'首页页码'或'终页页码'，你应该将页面信息放在两个#符号之间，例如：{id}_#{startPageNum}-{lastPageNum}#"
+   },
+   "_more_info": {
+       "message": "更多信息"
    }
 }
