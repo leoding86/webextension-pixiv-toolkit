@@ -72,6 +72,16 @@ export default (renameFormat, context, fallback) => {
         content: i18n.getMessage('day'),
         key: 'day',
         possibleKeys: ['day']
+      },
+      startPageNum: {
+        content: i18n.getMessage('start_page_number'),
+        key: 'startPageNum',
+        possibleKeys: ['startPageNum']
+      },
+      lastPageNum: {
+        content: i18n.getMessage('last_page_number'),
+        key: 'lastPageNum',
+        possibleKeys: ['lastPageNum']
       }
     };
 

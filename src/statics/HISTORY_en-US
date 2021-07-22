@@ -1,3 +1,7 @@
+v4.11.0
+Add `Start Page Num` meta and `Last Page Num` meta to illustration rename format setting;
+Fix issue about the page range of the chunk file don't respect `Page number start with 1` setting sometimes.
+
 v4.10.0
 Display download progress when downloading selected pictures;
 Add sponsors list at the top of the change history page;

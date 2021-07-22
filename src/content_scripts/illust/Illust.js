@@ -53,6 +53,9 @@ class IllustTool extends FilesDownloader {
     this.pack = pack;
     this.relativePath = '';
 
+    this.addContext('startPageNum', this.getPageNum(1, false));
+    this.addContext('lastPageNum', this.getPageNum(this.context.pages.length, false));
+
     return this;
   }
 
