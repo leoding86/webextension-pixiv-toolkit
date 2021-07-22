@@ -5,6 +5,7 @@ import MimeType from '@/modules/Util/MimeType';
 import Queue from '@/modules/Queue';
 import Retryer from '@/modules/Manager/Retryer';
 import formatName from '@/modules/Util/formatName';
+import FilesDownloader from '@/content_scripts/FilesDownloader';
 
 /**
  * @typedef DownloadedFile
@@ -19,7 +20,7 @@ import formatName from '@/modules/Util/formatName';
  * @property filename
  * @property zips
  */
-class IllustTool extends Event {
+class IllustTool extends FilesDownloader {
 
   /**
    * @constructor
@@ -116,19 +117,6 @@ class IllustTool extends Event {
     return !!this.context.r
   }
 
-  getPageRange(chunk) {
-    if (chunk.start == chunk.end) {
-      return parseInt(chunk.start);
-    } else {
-      return (parseInt(chunk.start + 1)) + '-' + (parseInt(chunk.end + 1));
-    }
-  }
-
-  getFilename(chunk) {
-    let pageSuffix = this.chunks.length > 1 ? ('_' + this.getPageRange(chunk)) : '';
-    return formatName(this.illustrationRenameFormat, this.context, this.context.illustId) + pageSuffix + '.zip';
-  }
-
   /**
    * Check if there is a single in the set
    *
@@ -148,60 +136,40 @@ class IllustTool extends Event {
   }
 
   /**
-   *
-   * @param {{indexes: number[], extra: object}} options
-   * @param {*} that
-   * @returns {Promise.<DownloadedFile[], Error>}
+   * @override
+   * @inheritdoc
+   * @param {number} index
+   * @returns {string}
    */
-  downloadFiles({ indexes, extra = {} }, that) {
-    return new Promise((resolve, reject) => {
-      let files = [],
-          downloader = new Downloader({ processors: this.processors });
+  getFileUrlByIndex(index) {
+    return this.context.pages[index].urls.original;
+  }
 
-      downloader.asBlob = false;
+  /**
+   * @inheritdoc
+   * @param {number} index
+   * @returns {string}
+   */
+  getSingleFilename(index) {
+    let pageNum = index + (this.pageNumberStartWithOne ? 1 : 0);
 
-      /**
-       * Append files that need to download
-       */
-      indexes.forEach(idx => {
-        downloader.appendFile(this.context.pages[idx].urls.original);
-      });
+    this.context.pageNum = this.getPageNumberString(
+      pageNum, this.context.pages.length, this.illustrationPageNumberLength
+    );
 
-      downloader.addListener('progress', progress => {
-        this.dispatch('download-progress', [progress, that, { selected: true }]);
-      });
+    return formatName(
+      this.illustrationImageRenameFormat.replace(this.isSingle() ? /#.*#/g: /#/g, ''),
+      this.context,
+      pageNum
+    );
+  }
 
-      downloader.addListener('item-error', error => {
-        this.dispatch('download-error', error);
-      });
-
-      downloader.addListener('item-finish', ({data, index, download}) => {
-        let pageNum = index + (this.pageNumberStartWithOne ? 1 : 0),
-            filename = null;
-
-        this.context.pageNum = this.getPageNumberString(pageNum);
-
-        filename = formatName(
-          this.illustrationImageRenameFormat.replace(this.isSingle() ? /#.*#/g: /#/g, ''),
-          this.context,
-          pageNum
-        );
-
-        let mimeType = download.getResponseHeader('Content-Type');
-
-        filename += '.' + MimeType.getExtenstion(mimeType);
-
-        files.push({ data, filename, mimeType });
-      });
-
-      downloader.addListener('finish', () => {
-        this.dispatch('download-finish', [that, extra]);
-
-        resolve(files);
-      });
-
-      downloader.download();
-    });
+  /**
+   * @inheritdoc
+   * @returns {string}
+   */
+  getPackedFilename() {
+    return formatName(this.illustrationRenameFormat, this.context, this.context.illustId);
   }
 
   /**
@@ -244,93 +212,6 @@ class IllustTool extends Event {
         download.download();
       });
     });
-  }
-
-  /**
-   * Download multiple files. The browser will popup a confirm dialog for user for asking user if
-   * he/she agree to download multiple files from the website. The user MUST allow it, then the
-   * browser will process the download.
-   * @typedef DownloadFilesOptions
-   * @property {{start: number, end: number}} range
-   *
-   * @param {DownloadFilesOptions} options The range number is based on 0
-   * @param {any} that The context that will send back via event emit
-   */
-  downloadRange({
-    range
-  }, that) {
-    let indexes = [],
-        start = Math.min(range.start, range.end),
-        end = Math.max(range.start, range.end);
-
-    while (start <= end) {
-      indexes.push(start);
-
-      start++;
-    }
-
-    return this.downloadFiles({ indexes }, that);
-  }
-
-  downloadSelected(indexes, that) {
-    return this.downloadFiles({ indexes, extra: { selected: true } }, that);
-  }
-
-  /**
-   * Get packed file
-   * @param {DownloadedFile[]} files
-   * @return {Promise.<{ data: Blob, filename: string },Error>}
-   */
-  getPackedFile(files) {
-    return new Promise((resolve, reject) => {
-      let zip = new JSZip();
-
-      /**
-       * Fix jszip date issue which jszip will save the UTC time as the local time to files in zip
-       */
-      let now = new Date();
-      now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-
-      files.forEach(file => {
-        /**
-        * Firefox related issue, cannot use blob as a given data to zip.file function
-        */
-        zip.file(file.filename, file.data, {
-          date: now
-        });
-      });
-
-      zip.generateAsync({ type: 'blob' }).then(blob => {
-        resolve({
-          data: blob,
-          filename: formatName(this.illustrationRenameFormat, this.context, this.context.illustId) + '.zip'
-        });
-      }).catch(error => {
-        reject(error);
-      });
-    });
-  }
-
-  /**
-   * Format page number
-   * @param {Number|String} pageNum
-   * @returns {String}
-   */
-  getPageNumberString(pageNum) {
-    if (this.illustrationPageNumberLength === 0) {
-      return pageNum;
-    }
-
-    let pageNumStr = pageNum + '', pageNumberLength = 0;
-
-    if (this.illustrationPageNumberLength > 1) {
-      pageNumberLength = this.illustrationPageNumberLength;
-    } else if (this.illustrationPageNumberLength === -1) {
-      pageNumberLength = (this.context.pages.length + '').length;
-    }
-
-    return pageNumStr.length < pageNumberLength ?
-      ('0'.repeat(pageNumberLength - pageNumStr.length) + pageNumStr) : pageNum;
   }
 }
 

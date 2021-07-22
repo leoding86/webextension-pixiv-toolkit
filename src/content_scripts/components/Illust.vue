@@ -231,15 +231,24 @@ export default {
       }
     },
 
+    /**
+     * Download multiple files. The browser will popup a confirm dialog for user
+     * for asking user if he/she agree to download multiple files from the website.
+     * The user MUST allow it, then the browser will process the download.
+     * @property {object[]} files
+     * @returns {void}
+     */
     saveDownloadedFiles(files) {
-      let savePath = this.getSubfolder(this.browserItems.illustrationRelativeLocation, this.tool.context) + '/';
+      let savePath = this.getSubfolder(
+        this.browserItems.illustrationRelativeLocation, this.tool.context
+      ) + '/';
 
       if (savePath.indexOf('/') === 0) {
         savePath = savePath.substr(1);
       }
 
-      if (this.packFiles) {
-        this.tool.getPackedFile(files).then(file => {
+      if (this.packFiles || (files.length === 1 && this.alwaysPack)) {
+        this.tool.getPackedFile({files}).then(file => {
           /**
            * Download zip file
            */
@@ -278,18 +287,19 @@ export default {
       if (buttonInfo.downloadStatus === 0) {
         buttonInfo.downloadStatus = 1;
 
-        if (buttonInfo.isSingle && !this.alwaysPack) {
-          this.tool.downloadFile(
-            this.tool.context.pages[0].urls.original,
-            buttonInfo,
-            this.browserItems.pageNumberStartWithOne ? 1 : 0
-          );
-        } else {
-          this.tool.downloadRange({ range: buttonInfo.chunk }, buttonInfo).then(files => {
-            this.updateButtonInfo(buttonInfo, { files });
-            this.saveDownloadedFiles(files, buttonInfo);
-          });
+        let indexes = [],
+            start = Math.min(buttonInfo.chunk.start, buttonInfo.chunk.end),
+            end = Math.max(buttonInfo.chunk.start, buttonInfo.chunk.end);
+
+        while (start <= end) {
+          indexes.push(start);
+          start++;
         }
+
+        this.tool.downloadFiles({ indexes }, buttonInfo).then(files => {
+          this.updateButtonInfo(buttonInfo, { files });
+          this.saveDownloadedFiles(files, buttonInfo);
+        });
 
         this.updateButtonInfo(buttonInfo, { type: 'succcess' });
       } else if (buttonInfo.downloadStatus === 2) {
@@ -321,7 +331,9 @@ export default {
         this.downloadSelectedImagesStatus = 0;
         this.downloadSelectedImagesNotice = '';
       } else {
-        let text = this.getChunkTitle(buttonInfo.chunk, { singular: this.tl('_save_page'), plural: this.tl('_save_pages')})
+        let text = this.getChunkTitle(
+          buttonInfo.chunk, { singular: this.tl('_save_page'), plural: this.tl('_save_pages') }
+        );
 
         this.updateButtonInfo(buttonInfo, {
           text: (buttonInfo.isSingle ? this.tl('_save_image') : text) + ' ✔️',
@@ -394,7 +406,8 @@ export default {
         this.downloadSelectedImagesStatus = 1;
         this.downloadSelectedImagesNotice = this.tl('_pending');
         this.selectedImageIndexes.sort();
-        this.tool.downloadSelected(this.selectedImageIndexes).then(files => {
+
+        this.tool.downloadFiles({ indexes: this.selectedImageIndexes}).then(files => {
           this.saveDownloadedFiles(files);
         });
       }
