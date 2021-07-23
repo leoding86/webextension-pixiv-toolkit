@@ -1,12 +1,7 @@
-import Download from '@/modules/Net/Download';
-import Downloader from '@/modules/Net/Downloader'
-import Event from '@/modules/Event';
-import MimeType from '@/modules/Util/MimeType';
-import Queue from '@/modules/Queue';
-import Retryer from '@/modules/Manager/Retryer';
 import formatName from '@/modules/Util/formatName';
+import FilesDownloader from '@/content_scripts/FilesDownloader';
 
-class MangaTool extends Event {
+class MangaTool extends FilesDownloader {
   constructor(context) {
     super();
     this.context = context;
@@ -26,9 +21,16 @@ class MangaTool extends Event {
     this.splitSize = splitSize;
     this.mangaRenameFormat = mangaRenameFormat;
     this.mangaImageRenameFormat = mangaImageRenameFormat;
-    this.pageNumberStartWithOne = pageNumberStartWithOne;
+    this.pageNumberStartWithOne = pageNumberStartWithOne || false;
     this.mangaPageNumberLength = mangaPageNumberLength;
     this.processors = processors
+
+    /**
+     * The relativePath is the folder name when pack files setting is disabled or
+     * the filename of the pack file without pages range when the setting is enable
+     * @type {string}
+     */
+    this.relativePath = '';
 
     return this;
   }
@@ -37,6 +39,7 @@ class MangaTool extends Event {
     this.chunks = [];
     this.filename = null;
     this.zips = null;
+    this.relativePath = formatName(this.mangaRenameFormat, this.context, this.context.illustId);
 
     let self = this,
       startIndex = 0;
@@ -93,88 +96,96 @@ class MangaTool extends Event {
     return !!this.context.r
   }
 
-  getPageRange(chunk) {
-    if (chunk.start == chunk.end) {
-      return parseInt(chunk.start);
-    } else {
-      return (parseInt(chunk.start + 1)) + '-' + (parseInt(chunk.end + 1));
-    }
-  }
+  /**
+   * @inheritdoc
+   * @param {number} index
+   * @param {{start: number, end: number}} chunk
+   * @returns {Function}
+   */
+  getSingleFilenameFunc(chunk) {
+    return index => {
+      let pageNum = index + chunk.start + (this.pageNumberStartWithOne ? 1 : 0);
 
-  getFilename(chunk) {
-    return formatName(this.mangaRenameFormat, this.context, this.context.illustId) + '_' + this.getPageRange(chunk) + '.zip';
+      this.context.pageNum = this.getPageNumberString(
+        pageNum, this.context.pages.length, this.mangaPageNumberLength
+      );
+
+      return formatName(this.mangaImageRenameFormat, this.context, pageNum);
+    };
   }
 
   /**
-   * @param {{start: Number, end: Number}} chunk
-   * @param {*} context The context used pass to downloads events
+   * @inheritdoc
+   * @param {{start: number, end: number}} chunk
+   * @returns {Function}
    */
-  downloadChunk(chunk, context) {
-    let zip = new JSZip();
-    let downloader = new Downloader({ processors: this.processors });
-    downloader.asBlob = false;
-
-    for (let i = chunk.start; i <= chunk.end; i++) {
-      downloader.appendFile(this.context.pages[i].urls.original);
-    }
-
-    downloader.addListener('progress', progress => {
-      this.dispatch('download-progress', [progress, context]);
-    });
-
-    downloader.addListener('item-error', error => {
-      this.dispatch('download-error', error);
-    });
-
-    downloader.addListener('item-finish', ({data, index, download}) => {
-      let pageNum = chunk.start + index + (this.pageNumberStartWithOne ? 1 : 0);
-
-      this.context.pageNum = this.getPageNumberString(pageNum);
-
-      let filename = formatName(
-        this.mangaImageRenameFormat,
-        this.context,
-        pageNum
-      ) + '.' + MimeType.getExtenstion(download.getResponseHeader('Content-Type'));
-
-      /**
-       * Fix jszip date issue which jszip will save the UTC time as the local time to files in zip
-       */
-      let now = new Date();
-      now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-
-      /**
-       * Firefox related issue, cannot use blob as a given data to zip.file function
-       */
-      zip.file(filename, data, {
-        date: now
-      });
-    });
-
-    downloader.addListener('finish', () => {
-      zip.generateAsync({ type: 'blob' }).then(blob => {
-        this.dispatch('download-finish', [blob, context]);
-      });
-    });
-
-    downloader.download();
+  getPackedFilenameFunc(chunk) {
+    return () => {
+      return this.relativePath + '_' + this.getPageRange(chunk);
+    };
   }
 
-  getPageNumberString(pageNum) {
-    if (this.mangaPageNumberLength === 0) {
-      return pageNum;
+  /**
+   *
+   * @param {{start: number, end: number}} chunk
+   * @returns {string}
+   */
+  getPageRange(chunk) {
+    if (chunk.start == chunk.end) {
+      return parseInt(chunk.start) + (this.pageNumberStartWithOne ? 1 : 0);
+    } else {
+      return (parseInt(chunk.start + 1) + (this.pageNumberStartWithOne ? 1 : 0))
+        + '-'
+        + (parseInt(chunk.end + 1) + this.pageNumberStartWithOne ? 1 : 0);
+    }
+  }
+
+  /**
+   *
+   * @param {number} index
+   * @param {object} extra
+   * @return {string}
+   */
+  getFileUrlByIndex(index, extra) {
+    return this.context.pages[extra.chunk.start + index].urls.original;
+  }
+
+  /**
+   * Download files
+   * @param {{start: number, end: number}} chunk
+   * @param {*} that The context used pass to downloads events
+   * @returns {Promise.<import('@/content_scripts/FilesDownloader').DownloadedFile, Error>}
+   */
+  downloadChunk(chunk, that) {
+    let indexes = [],
+        start = Math.min(chunk.start, chunk.end),
+        end = Math.max(chunk.start, chunk.end);
+
+    while (start <= end) {
+      indexes.push(start);
+      start++;
     }
 
-    let pageNumStr = pageNum + '', pageNumberLength = 0;
+    return this.downloadFiles({
+      indexes,
+      getFilenameFunc: this.getSingleFilenameFunc(chunk),
+      extra: {
+        chunk
+      }
+    }, that);
+  }
 
-    if (this.mangaPageNumberLength > 1) {
-      pageNumberLength = this.mangaPageNumberLength;
-    } else if (this.mangaPageNumberLength === -1) {
-      pageNumberLength = (this.context.pages.length + '').length;
-    }
-
-    return pageNumStr.length < pageNumberLength ?
-      ('0'.repeat(pageNumberLength - pageNumStr.length) + pageNumStr) : pageNum;
+  /**
+   * Get packed file of chunk
+   * @param {import('@/content_scripts/FilesDownloader').DownloadedFile[]}
+   * @param {{start: number, end: number}} chunk
+   * @returns {Promise.<any, Error>}
+   */
+  getPackedChunkFile(files, chunk) {
+    return this.getPackedFile({
+      files,
+      getFilenameFunc: this.getPackedFilenameFunc(chunk)
+    });
   }
 }
 

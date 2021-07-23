@@ -54,7 +54,6 @@
 <script>
 import Button from '@/content_scripts/components/Button'
 import Dialog from '@/content_scripts/components/Dialog'
-import formatName from '@/modules/Util/formatName'
 import downloadFileMixin from '@/content_scripts/mixins/downloadFileMixin'
 import IllustTool from '@/content_scripts/illust/Illust'
 import DownloadRecordPort from '@/modules/Ports/DownloadRecordPort/RendererPort'
@@ -87,6 +86,7 @@ export default {
       downloadSelectedImageButton: {},
       images: [],
       selectedImageIndexes: [],
+      packFiles: false
     }
   },
 
@@ -118,7 +118,9 @@ export default {
       pageNumberStartWithOne: this.browserItems.illustrationPageNumberStartWithOne,
       illustrationPageNumberLength: this.browserItems.illustrationPageNumberLength,
       processors: parseInt(this.browserItems.downloadTasksWhenDownloadingImages)
-    }).init()
+    }).init();
+
+    this.packFiles = this.browserItems.downloadPackFiles;
 
     this.chunks = this.illustTool.chunks
 
@@ -172,12 +174,11 @@ export default {
         buttonsInfo[i] = {
           index: i,
           text: ((isSingle && !this.alwaysPack) ? this.tl('_dl_image') : vm.getChunkTitle(chunk, { singular: this.tl('_dl_page'), plural: this.tl('_dl_pages')})) + (vm.isSaved ? ' ✔️' : ''),
-          filename: null,
           downloadStatus: 0,
           chunk: chunk,
           isSingle: isSingle,
           type: '',
-          blob: null
+          files: []
         }
       })
 
@@ -227,6 +228,54 @@ export default {
       }
     },
 
+    /**
+     * Download multiple files. The browser will popup a confirm dialog for user
+     * for asking user if he/she agree to download multiple files from the website.
+     * The user MUST allow it, then the browser will process the download.
+     * @property {object[]} files
+     * @returns {void}
+     */
+    saveDownloadedFiles(files) {
+      let savePath = this.getSubfolder(
+        this.browserItems.illustrationRelativeLocation, this.tool.context
+      ) + '/';
+
+      if (savePath.indexOf('/') === 0) {
+        savePath = savePath.substr(1);
+      }
+
+      if (this.packFiles || (files.length === 1 && this.alwaysPack)) {
+        this.tool.getPackedFile({files}).then(file => {
+          /**
+           * Download zip file
+           */
+          this.downloadFile(file.data, file.filename, {
+            folder: savePath,
+            statType: 'illust'
+          });
+        });
+      } else {
+        savePath += this.tool.relativePath + '/';
+
+        /**
+         * Cache files and change button type
+         */
+
+        files.forEach(file => {
+          this.downloadFile(
+            new Blob([file.data], { type: file.mimeType }),
+            file.filename,
+            {
+              folder: savePath,
+              statType: 'illust'
+            }
+          );
+        });
+      }
+
+      this.saveDownloadRecord({ illust: 1 });
+    },
+
     downloadButtonClicked(buttonInfo) {
       if (!this.allowDownload(this.isSaved)) {
         return;
@@ -235,24 +284,23 @@ export default {
       if (buttonInfo.downloadStatus === 0) {
         buttonInfo.downloadStatus = 1;
 
-        if (buttonInfo.isSingle && !this.alwaysPack) {
-          this.tool.downloadFile(
-            this.tool.context.pages[0].urls.original,
-            buttonInfo,
-            this.browserItems.pageNumberStartWithOne ? 1 : 0
-          );
-        } else {
-          this.tool.downloadChunk(buttonInfo.chunk, buttonInfo);
-        }
-      } else if (buttonInfo.downloadStatus === 2) {
-        this.updateButtonInfo(buttonInfo, { type: 'success' });
+        let indexes = [],
+            start = Math.min(buttonInfo.chunk.start, buttonInfo.chunk.end),
+            end = Math.max(buttonInfo.chunk.start, buttonInfo.chunk.end);
 
-        this.downloadFile(buttonInfo.blob, buttonInfo.filename, {
-          folder: this.getSubfolder(this.browserItems.illustrationRelativeLocation, this.tool.context),
-          statType: 'illust'
+        while (start <= end) {
+          indexes.push(start);
+          start++;
+        }
+
+        this.tool.downloadFiles({ indexes }, buttonInfo).then(files => {
+          this.updateButtonInfo(buttonInfo, { files });
+          this.saveDownloadedFiles(files, buttonInfo);
         });
 
-        this.saveDownloadRecord({ illust: 1 });
+        this.updateButtonInfo(buttonInfo, { type: 'succcess' });
+      } else if (buttonInfo.downloadStatus === 2) {
+        this.saveDownloadedFiles(buttonInfo.files, buttonInfo);
       }
     },
 
@@ -272,7 +320,7 @@ export default {
       //
     },
 
-    downloadFinishEventHandle({ blob, filename }, buttonInfo, extra) {
+    downloadFinishEventHandle(buttonInfo, extra) {
       if (extra && extra.selected === true) {
         /**
          * Initial properties for downloading selected images
@@ -280,23 +328,16 @@ export default {
         this.downloadSelectedImagesStatus = 0;
         this.downloadSelectedImagesNotice = '';
       } else {
-        let text = this.getChunkTitle(buttonInfo.chunk, { singular: this.tl('_save_page'), plural: this.tl('_save_pages')})
+        let text = this.getChunkTitle(
+          buttonInfo.chunk, { singular: this.tl('_save_page'), plural: this.tl('_save_pages') }
+        );
 
         this.updateButtonInfo(buttonInfo, {
           text: (buttonInfo.isSingle ? this.tl('_save_image') : text) + ' ✔️',
-          blob: blob,
-          filename: filename,
           downloadStatus: 2,
           type: 'success'
         });
       }
-
-      this.downloadFile(blob, filename, {
-        folder: this.getSubfolder(this.browserItems.illustrationRelativeLocation, this.illustTool.context),
-        statType: 'illust',
-      });
-
-      this.saveDownloadRecord({ illust: 1 });
     },
 
     handleDownloadRecord(message, port) {
@@ -362,7 +403,10 @@ export default {
         this.downloadSelectedImagesStatus = 1;
         this.downloadSelectedImagesNotice = this.tl('_pending');
         this.selectedImageIndexes.sort();
-        this.tool.downloadSelected(this.selectedImageIndexes);
+
+        this.tool.downloadFiles({ indexes: this.selectedImageIndexes, extra: {selected: true}}).then(files => {
+          this.saveDownloadedFiles(files);
+        });
       }
     }
   }

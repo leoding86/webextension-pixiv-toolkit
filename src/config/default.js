@@ -184,4 +184,9 @@ export default Object.assign({}, {
      * @since 4.10.0
      */
     showUpdateChangeLog: false,
+
+    /**
+     * @since 4.11.0
+     */
+    downloadPackFiles: true,
   });
