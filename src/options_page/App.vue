@@ -101,9 +101,11 @@
       v-if="displayAppSuggest"
       icon="https://raw.githubusercontent.com/leoding86/webextension-pixiv-toolkit/master/src/statics/remote/img/pixiv-omina.png"
       title="Pixiv Omina"
-      subTitle="A Pixiv works downloader"
+      subTitle="A more powerful Pixiv downloader"
       link="https://github.com/leoding86/pixiv-omina"
     ></app-suggest>
+
+    <startup-dialog :show.sync="showStartupDialog"></startup-dialog>
   </div>
 </template>
 
@@ -112,6 +114,7 @@ import Vue from 'vue'
 import Supports from '@@/components/Supports';
 import AppSuggest from '@@/components/AppSuggest';
 import UpdateNotice from '@@/components/UpdateNotice';
+import StartupDialog from '@@/components/StartupDialog';
 
 export default {
   name: 'App',
@@ -119,7 +122,8 @@ export default {
   components: {
     'supports': Supports,
     'app-suggest': AppSuggest,
-    'update-notice': UpdateNotice
+    'update-notice': UpdateNotice,
+    'startup-dialog': StartupDialog,
   },
 
   data () {
@@ -127,7 +131,8 @@ export default {
       drawer: true,
       drawerTemporary: false,
       displayAppSuggest: false,
-      showAppSuggest: false
+      showAppSuggest: false,
+      showStartupDialog: false,
     }
   },
 
@@ -138,6 +143,7 @@ export default {
   },
 
   created() {
+    this.showStartupDialog = true;
   },
 
   beforeMount() {
