@@ -196,49 +196,50 @@ export default {
         /**
          * Create the generator with the type argument
          */
-        let generator = this.tool.makeGenerator(type);
+        // let generator = this.tool.makeGenerator(type);
+        this.tool.getGenerator(type, this.browserItems.ugoiraConvertTool).then(generator => {
+          // if (this.browserItems.enableExtend) {
+          //   if (this.tool.context.illustDuration < this.browserItems.enableWhenUnderSeconds * 1000) {
+          //     generator.setRepeat(Math.floor(this.browserItems.extendDuration * 1000 / this.tool.context.illustDuration) + 1);
+          //   }
+          // }
 
-        if (this.browserItems.enableExtend) {
-          if (this.tool.context.illustDuration < this.browserItems.enableWhenUnderSeconds * 1000) {
-            generator.setRepeat(Math.floor(this.browserItems.extendDuration * 1000 / this.tool.context.illustDuration) + 1);
-          }
-        }
+          generator.addListener('data', (totalFrames, loadedFrames) => {
+            /**
+             * Update the generator button status
+             */
+            button.status = 2;
+            button.text = `${this.tl('_preparing')} ${Math.floor(loadedFrames / totalFrames * 100)}%`;
+          });
 
-        generator.addListener('data', (totalFrames, loadedFrames) => {
           /**
-           * Update the generator button status
+           * Add the listener to the generator's generating progress event
            */
-          button.status = 2;
-          button.text = `${this.tl('_preparing')} ${Math.floor(loadedFrames / totalFrames * 100)}%`;
-        });
+          generator.addListener('progress', progress => {
+            // update text
+            button.text = `${this.tl('_generating')} ${Math.round(progress * 100)}%`;
+          });
 
-        /**
-         * Add the listener to the generator's generating progress event
-         */
-        generator.addListener('progress', progress => {
-          // update text
-          button.text = `${this.tl('_generating')} ${Math.round(progress * 100)}%`;
-        });
-
-        /**
-         * Add the listener to the generator's finish event
-         */
-        generator.addListener('finish', blob => {
           /**
-           * Update status, text and style type
+           * Add the listener to the generator's finish event
            */
-          button.status = 1;
-          button.text = this.tl('_save') + ' ' + type.toUpperCase();
-          button.type = 'success';
-          button.blob = blob;
+          generator.addListener('finish', blob => {
+            /**
+             * Update status, text and style type
+             */
+            button.status = 1;
+            button.text = this.tl('_save') + ' ' + type.toUpperCase();
+            button.type = 'success';
+            button.blob = blob;
 
-          this.saveFile(blob, type);
+            this.saveFile(blob, type);
+          });
+
+          /**
+           * Start generate target file
+           */
+          generator.generate();
         });
-
-        /**
-         * Start generate target file
-         */
-        generator.generate();
       } else if (button.status === 1) {
         this.saveFile(button.blob, type);
       } else if (button.status === 2) {
