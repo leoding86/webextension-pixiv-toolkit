@@ -118,7 +118,7 @@ Main.prototype = {
       if (details.type === 'xmlhttprequest') {
         details.responseHeaders.forEach((header, i) => {
           if (header.name.toLowerCase() === 'access-control-allow-origin') {
-            details.requestHeaders.splice(i, 1);
+            details.responseHeaders.splice(i, 1);
           }
         });
 
