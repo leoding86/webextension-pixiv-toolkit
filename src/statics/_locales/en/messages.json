@@ -694,5 +694,14 @@
    },
    "_more_info": {
        "message": "More info"
+   },
+   "_convert_tool": {
+       "message": "Convert Tool"
+   },
+   "_ffmpeg": {
+       "message": "FFmpeg"
+   },
+   "_select_gif_convert_tool": {
+       "message": "Select GIF convert tool"
    }
 }

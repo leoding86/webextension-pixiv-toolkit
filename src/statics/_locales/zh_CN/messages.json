@@ -694,5 +694,14 @@
    },
    "_more_info": {
        "message": "更多信息"
+   },
+   "_convert_tool": {
+       "message": "转化工具"
+   },
+   "_ffmpeg": {
+       "message": "FFmpeg"
+   },
+   "_select_gif_convert_tool": {
+       "message": "选择GIF转化工具"
    }
 }
