@@ -29,7 +29,7 @@
               <v-list-tile-title>{{ tl('_convert_tool') }}</v-list-tile-title>
               <v-list-tile-sub-title>
                 {{ tl('_select_gif_convert_tool') }}
-                (<a href="#" target="_blank"><strong>{{ tl('_more_info') }}</strong></a>)
+                (<a href="https://github.com/leoding86/webextension-pixiv-toolkit/blob/master/help/about_ugoira_convert_tool.md" target="_blank"><strong>{{ tl('_more_info') }}</strong></a>)
               </v-list-tile-sub-title>
             </v-list-tile-content>
             <v-list-tile-action>
