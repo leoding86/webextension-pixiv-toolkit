@@ -138,9 +138,24 @@ Main.prototype = {
           name: 'Access-Control-Allow-Origin',
           value: accessControlAllowOrigin
         });
+      } else {
+        details.responseHeaders.push({
+          name: 'Cross-Origin-Embedder-Policy',
+          value: 'require-corp'
+        });
 
-        return { responseHeaders: details.responseHeaders };
+        details.responseHeaders.push({
+          name: 'Cross-Origin-Opener-Policy',
+          value: 'same-origin'
+        });
+
+        details.responseHeaders.push({
+          name: 'Cross-Origin-Resource-Policy',
+          value: 'cross-origin'
+        });
       }
+
+      return { responseHeaders: details.responseHeaders };
     }, {
       urls: filter
     }, opt_onHeadersReceived_extraInfoSpec);
