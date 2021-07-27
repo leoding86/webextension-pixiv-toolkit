@@ -206,9 +206,7 @@ class UgoiraTool extends Event {
       log: true,
     });
 
-    return generator.init().then(() => {
-      return generator.prepareGenerator(this.zip, this.context.illustMimeType, this.context.illustFrames);
-    });
+    return generator.prepareGenerator(this.zip, this.context.illustMimeType, this.context.illustFrames);
   }
 }
 

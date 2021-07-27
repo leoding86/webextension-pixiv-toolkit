@@ -148,7 +148,6 @@ class FFmpegGenerator extends Event {
   destroy() {
     try {
       this.ffmpeg.exit();
-      FFmpegGenerator.instance = null;
     } catch (e) {
       console.error(e);
     }
