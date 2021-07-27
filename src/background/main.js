@@ -341,7 +341,7 @@ Main.prototype = {
         updater.mergeSettings({
           version: version,
           showUpdateChangeLog: false,
-          importantNoticeDisplayed: updateSettings.importantNoticeDisplayed || true
+          importantNoticeDisplayed: updateSettings.importantNoticeDisplayed || false
         }).then(() => {
           /**
            * Attach a badge with text 'NEW'
