@@ -7,7 +7,7 @@
 
         <p class="notice-text">
           <strong>{{ tl('_notice') }}</strong><br>
-          {{ tl('_since_version_v4_11_0_the_extension_could_save_images_seperately_without_have_to_pack_them_into_zip_file_to_save_but_it_require_user_authorization_to_do_it_please_click_more_info_to_get_details') }}
+          {{ tl('_startup_message') }}
         </p>
 
         <v-list two-line>
@@ -21,6 +21,25 @@
             </v-list-tile-content>
             <v-list-tile-action>
               <v-switch v-model="downloadPackFiles"></v-switch>
+            </v-list-tile-action>
+          </v-list-tile>
+
+          <v-list-tile>
+            <v-list-tile-content>
+              <v-list-tile-title>{{ tl('_convert_tool') }}</v-list-tile-title>
+              <v-list-tile-sub-title>
+                {{ tl('_select_gif_convert_tool') }}
+                (<a href="#" target="_blank"><strong>{{ tl('_more_info') }}</strong></a>)
+              </v-list-tile-sub-title>
+            </v-list-tile-content>
+            <v-list-tile-action>
+              <v-select
+                :items="convertTools"
+                v-model="ugoiraConvertTool"
+                type="value"
+                @change="onUgoiraConvertToolChangeHandler"
+                style="width:150px"
+              ></v-select>
             </v-list-tile-action>
           </v-list-tile>
         </v-list>
@@ -52,12 +71,28 @@ export default {
     return {
       showDialog: false,
       downloadPackFiles: true,
+      ugoiraConvertTool: 'default',
     }
+  },
+
+  computed: {
+    convertTools() {
+      return [
+        {
+          text: this.tl("_default"),
+          value: 'default'
+        }, {
+          text: this.tl("_ffmpeg"),
+          value: 'ffmpeg'
+        }
+      ]
+    },
   },
 
   created() {
     this.showDialog = this.show;
     this.downloadPackFiles = this.browserItems.downloadPackFiles;
+    this.ugoiraConvertTool = this.browserItems.ugoiraConvertTool || 'default';
   },
 
   watch: {
@@ -67,13 +102,25 @@ export default {
 
     showDialog (val) {
       this.$emit('update:show', val);
+
+      if (!val) {
+        browser.storage.local.set({
+          importantNoticeDisplayed: true
+        });
+      }
     },
 
     downloadPackFiles(val) {
       browser.storage.local.set({
         downloadPackFiles: !!val
       });
-    }
+    },
+
+    onUgoiraConvertToolChangeHandler() {
+      browser.storage.local.set({
+        ugoiraConvertTool: this.ugoiraConvertTool
+      });
+    },
   }
 }
 </script>

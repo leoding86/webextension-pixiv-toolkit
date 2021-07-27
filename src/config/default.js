@@ -186,7 +186,8 @@ export default Object.assign({}, {
     showUpdateChangeLog: false,
 
     /**
-     * @since 4.11.0
+     * @since 5.0.0
      */
     downloadPackFiles: true,
+    ugoiraConvertTool: 'default'
   });

@@ -78,7 +78,8 @@ module.exports = env => {
     ],
     externals: {
       browser: 'browser',
-      chrome: 'chrome'
+      chrome: 'chrome',
+      FFmpeg: 'FFmpeg'
     }
   });
 };

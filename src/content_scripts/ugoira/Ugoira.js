@@ -3,7 +3,11 @@ import Download from '@/modules/Net/Download';
 import Event from '@/modules/Event';
 import GifGenerator from '@/modules/Generator/GifGenerator'
 import Retryer from '@/modules/Manager/Retryer';
-import WebMGenerator from '@/modules/Generator/WebMGenerator'
+import WebMGenerator from '@/modules/Generator/WebMGenerator';
+import FFmpegGIFGenerator from '@/modules/Generator/FFmpeg/GIFGenerator';
+import FFmpegAPNGGenerator from '@/modules/Generator/FFmpeg/APNGGenerator';
+import FFmpegWebMGenerator from '@/modules/Generator/FFmpeg/WebMGenerator';
+import browser from '@/modules/Extension/browser';
 
 /**
  * @class
@@ -144,6 +148,19 @@ class UgoiraTool extends Event {
   }
 
   /**
+   *
+   * @param {'gif'|'webm'|'apng'} type
+   * @param {'default'|'ffmpeg'} [tool=default]
+   */
+  getGenerator(type, tool = 'default') {
+    if (tool === 'default') {
+      return Promise.resolve(this.makeGenerator(type));
+    } else if (tool === 'ffmpeg') {
+      return Promise.resolve(this.makeFFmpegGenerator(type));
+    }
+  }
+
+  /**
    * Make the file generator
    * @param {'gif'|'webm'|'apng'} type
    */
@@ -165,6 +182,31 @@ class UgoiraTool extends Event {
     }
 
     return new GeneratorConstructor(this.zip, this.context.illustMimeType, this.context.illustFrames);
+  }
+
+  makeFFmpegGenerator(type) {
+    let GeneratorConstructor = null;
+
+    switch (type) {
+      case 'gif':
+        GeneratorConstructor = FFmpegGIFGenerator;
+        break;
+      case 'webm':
+        GeneratorConstructor = FFmpegWebMGenerator;
+        break;
+      case 'apng':
+        GeneratorConstructor = FFmpegAPNGGenerator;
+        break;
+      default:
+        throw new Error('Invliad generator type')
+    }
+
+    let generator = new GeneratorConstructor({
+      corePath: browser.extension.getURL('lib/ffmpeg/ffmpeg-core.js'),
+      log: true,
+    });
+
+    return generator.prepareGenerator(this.zip, this.context.illustMimeType, this.context.illustFrames);
   }
 }
 

@@ -35,6 +35,12 @@
     "optional_permissions": [
         "downloads"
     ],
+    "web_accessible_resources": [
+        "lib/ffmpeg/ffmpeg.min.js",
+        "lib/ffmpeg/ffmpeg-core.js",
+        "lib/ffmpeg/ffmpeg-core.wasm",
+        "lib/ffmpeg/ffmpeg-core.worker.js"
+    ],
     "content_scripts": [
         {
             "matches": [
@@ -54,6 +60,8 @@
                 "lib/js-epub-maker/js-epub-maker.js",
                 "lib/gifjs/gif.js",
                 "lib/whammy.js",
+                "lib/ffmpeg/ffmpeg.min.js",
+                "lib/ffmpeg/ffmpeg-core.js",
                 "content_scripts/app.js"
             ]
         }, {
