@@ -57,6 +57,8 @@ export default {
         webm: {}
       },
 
+      isGenerating: false,
+
       forceDownload: false
     }
   },
@@ -68,6 +70,7 @@ export default {
     Object.keys(this.generatorButtons).forEach(type => {
       this.$set(this.generatorButtons, type, {
         type: '',
+        extName: '',
         blob: null,
 
         /**
@@ -81,6 +84,17 @@ export default {
         text: `${this.tl('_generate')} ${type.toUpperCase()}`
       });
     });
+
+    if (this.browserItems.ugoiraCustomFFmpegCommand) {
+      this.$set(this.generatorButtons, 'custom', {
+        type: '',
+        extName: '',
+        blob: null,
+        status: 0,
+        saved: false,
+        text: `${this.tl('_generate')} ${this.tl('_custom').toUpperCase()}`
+      });
+    }
 
     /**
      * Add listener to download resource progress event
@@ -172,13 +186,11 @@ export default {
       }
     },
 
-    saveFile(blob, type) {
-      this.downloadFile(blob, this.getFilename() + '.' + type, {
+    saveFile(button, blob, type) {
+      this.downloadFile(blob, this.getFilename() + '.' + button.extName, {
         folder: this.getSubfolder(this.browserItems.ugoiraRelativeLocation, this.tool.context),
         statType: 'ugoira'
       });
-
-      this.generatorButtons[type].saved = 1;
 
       let data = {};
       data[type] = 1;
@@ -193,11 +205,18 @@ export default {
       let button = this.generatorButtons[type];
 
       if (button.status === 0 || button.status === 4) {
+        if (this.browserItems.ugoiraConvertTool === 'ffmpeg' && this.isGenerating) {
+          alert('Please waiting another generation task done');
+          return;
+        }
+
+        this.isGenerating = true;
+
         /**
          * Create the generator with the type argument
          */
         // let generator = this.tool.makeGenerator(type);
-        this.tool.getGenerator(type, this.browserItems.ugoiraConvertTool).then(generator => {
+        this.tool.getGenerator(type, type === 'custom' ? this.browserItems.ugoiraCustomFFmpegCommand : this.browserItems.ugoiraConvertTool).then(generator => {
           // if (this.browserItems.enableExtend) {
           //   if (this.tool.context.illustDuration < this.browserItems.enableWhenUnderSeconds * 1000) {
           //     generator.setRepeat(Math.floor(this.browserItems.extendDuration * 1000 / this.tool.context.illustDuration) + 1);
@@ -223,25 +242,32 @@ export default {
           /**
            * Add the listener to the generator's finish event
            */
-          generator.addListener('finish', blob => {
+          generator.addListener('finish', (blob, ext) => {
             /**
              * Update status, text and style type
              */
             button.status = 1;
             button.text = this.tl('_save') + ' ' + type.toUpperCase();
             button.type = 'success';
+            button.extName = ext ? ext : type;
             button.blob = blob;
+            button.saved = 1;
 
-            this.saveFile(blob, type);
+            this.saveFile(button, blob, type);
+
+            this.isGenerating = false;
           });
 
-          /**
-           * Start generate target file
-           */
-          generator.generate();
+          generator.generate().then(() => {
+            //
+          }).catch(error => {
+            console.error(error);
+          }).finally(() => {
+            this.isGenerating = false;
+          });
         });
       } else if (button.status === 1) {
-        this.saveFile(button.blob, type);
+        this.saveFile(button, button.blob, type);
       } else if (button.status === 2) {
         alert(this.tl('_generating_please_wait'));
       }

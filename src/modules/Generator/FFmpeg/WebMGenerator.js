@@ -5,7 +5,7 @@ class WebMGenerator extends Generator {
     this.init().then(() => {
       return this.loadFrames()
     }).then(() => {
-      return this.runFFmpeg('-r', this.frameRate, '-i', '%06d.jpg', '-c:v', 'libvpx', 'out.webm');
+      return this.runFFmpeg('-r', this.frameRate, '-i', '%06d.jpg', '-c:v', 'libvpx', '-b:v', '2500k', 'out.webm');
     }).then(() => {
       let data = this.ffmpeg.FS('readFile', 'out.webm');
 
