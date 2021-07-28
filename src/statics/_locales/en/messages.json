@@ -706,5 +706,11 @@
    },
    "_startup_message": {
        "message": "Sine version v5.0.0, the extension could save images seperately without have to pack them into a zip file to save. But it require user authorization to do it. Please click more info to get details. You can change any settings in settings page later."
+   },
+   "_ffmpeg_custom_convert_command": {
+       "message": "FFmpeg custom convert command"
+   },
+   "_custom": {
+       "message": "Custom"
    }
 }
