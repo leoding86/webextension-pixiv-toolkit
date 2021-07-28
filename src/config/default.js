@@ -189,5 +189,6 @@ export default Object.assign({}, {
      * @since 5.0.0
      */
     downloadPackFiles: true,
-    ugoiraConvertTool: 'default'
+    ugoiraConvertTool: 'default',
+    ugoiraCustomFFmpegCommand: '',
   });
