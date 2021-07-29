@@ -695,7 +695,16 @@
    "_more_info": {
        "message": "更多信息"
    },
-   "_since_version_v4_11_0_the_extension_could_save_images_seperately_without_have_to_pack_them_into_zip_file_to_save_but_it_require_user_authorization_to_do_it_please_click_more_info_to_get_details": {
-       "message": "自从版本v4.11.0开始，插件可以独立保存每个图片，而不需要一定将他们打包才能保存。但是这个需要用户授权这样做。请点击更多信息以获取详情。你可以稍后在下载设置中修改。"
+   "_convert_tool": {
+       "message": "转化工具"
+   },
+   "_ffmpeg": {
+       "message": "FFmpeg"
+   },
+   "_select_gif_convert_tool": {
+       "message": "选择GIF转化工具"
+   },
+   "_startup_message": {
+       "message": "自从版本v5.0.0开始，插件可以独立保存每个图片，而不需要一定将他们打包才能保存。但是这个需要用户授权这样做。请点击更多信息以获取详情。你可以稍后在设置中修改以下设置。"
    }
 }

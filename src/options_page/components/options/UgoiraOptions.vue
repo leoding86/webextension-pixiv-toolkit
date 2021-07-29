@@ -14,6 +14,26 @@
             </v-btn>
           </v-list-tile-action>
         </v-list-tile>
+
+        <v-list-tile>
+          <v-list-tile-content>
+            <v-list-tile-title>{{ tl('_convert_tool') }}</v-list-tile-title>
+            <v-list-tile-sub-title>
+              {{ tl('_select_gif_convert_tool') }}
+                (<a href="https://github.com/leoding86/webextension-pixiv-toolkit/blob/master/help/about_ugoira_convert_tool.md" target="_blank"><strong>{{ tl('_more_info') }}</strong></a>)
+            </v-list-tile-sub-title>
+          </v-list-tile-content>
+          <v-list-tile-action>
+            <v-select
+              :items="convertTools"
+              v-model="ugoiraConvertTool"
+              type="value"
+              @change="onUgoiraConvertToolChangeHandler"
+              style="width:150px"
+            ></v-select>
+          </v-list-tile-action>
+        </v-list-tile>
+
         <v-list-tile>
           <v-list-tile-content>
             <v-list-tile-title>{{ tl('quality') }}</v-list-tile-title>
@@ -99,6 +119,8 @@ export default {
 
   data() {
     return {
+      ugoiraConvertTool: 'default',
+
       ugoiraQuanlity: 10,
 
       ugoiraRenameFormat: "",
@@ -110,6 +132,7 @@ export default {
   },
 
   beforeMount() {
+    this.ugoiraConvertTool = this.browserItems.ugoiraConvertTool || 'default';
     this.ugoiraQuanlity = this.browserItems.ugoiraQuanlity || 10;
     this.ugoiraRenameFormat = this.browserItems.ugoiraRenameFormat;
     this.enablePackUgoiraFramesInfo = this.browserItems.enablePackUgoiraFramesInfo;
@@ -125,6 +148,18 @@ export default {
       } else {
         return "Not set";
       }
+    },
+
+    convertTools() {
+      return [
+        {
+          text: this.tl("_default"),
+          value: 'default'
+        }, {
+          text: this.tl("_ffmpeg"),
+          value: 'ffmpeg'
+        }
+      ]
     },
 
     qualityItems() {
@@ -169,6 +204,12 @@ export default {
   },
 
   methods: {
+    onUgoiraConvertToolChangeHandler() {
+      browser.storage.local.set({
+        ugoiraConvertTool: this.ugoiraConvertTool
+      });
+    },
+
     onUgoiraQualityChangeHandler() {
       browser.storage.local.set({
         ugoiraQuanlity: this.ugoiraQuanlity

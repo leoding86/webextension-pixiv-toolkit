@@ -118,7 +118,7 @@ Main.prototype = {
       if (details.type === 'xmlhttprequest') {
         details.responseHeaders.forEach((header, i) => {
           if (header.name.toLowerCase() === 'access-control-allow-origin') {
-            details.requestHeaders.splice(i, 1);
+            details.responseHeaders.splice(i, 1);
           }
         });
 
@@ -138,9 +138,24 @@ Main.prototype = {
           name: 'Access-Control-Allow-Origin',
           value: accessControlAllowOrigin
         });
+      } else {
+        details.responseHeaders.push({
+          name: 'Cross-Origin-Embedder-Policy',
+          value: 'require-corp'
+        });
 
-        return { responseHeaders: details.responseHeaders };
+        details.responseHeaders.push({
+          name: 'Cross-Origin-Opener-Policy',
+          value: 'same-origin'
+        });
+
+        details.responseHeaders.push({
+          name: 'Cross-Origin-Resource-Policy',
+          value: 'cross-origin'
+        });
       }
+
+      return { responseHeaders: details.responseHeaders };
     }, {
       urls: filter
     }, opt_onHeadersReceived_extraInfoSpec);
@@ -326,7 +341,7 @@ Main.prototype = {
         updater.mergeSettings({
           version: version,
           showUpdateChangeLog: false,
-          importantNoticeDisplayed: updateSettings.importantNoticeDisplayed || true
+          importantNoticeDisplayed: updateSettings.importantNoticeDisplayed || false
         }).then(() => {
           /**
            * Attach a badge with text 'NEW'

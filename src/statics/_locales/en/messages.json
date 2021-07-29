@@ -695,7 +695,16 @@
    "_more_info": {
        "message": "More info"
    },
-   "_since_version_v4_11_0_the_extension_could_save_images_seperately_without_have_to_pack_them_into_zip_file_to_save_but_it_require_user_authorization_to_do_it_please_click_more_info_to_get_details": {
-       "message": "Sine version v4.11.0, the extension could save images seperately without have to pack them into a zip file to save. But it require user authorization to do it. Please click more info to get details. You can change the setting in download settings later."
+   "_convert_tool": {
+       "message": "Convert Tool"
+   },
+   "_ffmpeg": {
+       "message": "FFmpeg"
+   },
+   "_select_gif_convert_tool": {
+       "message": "Select GIF convert tool"
+   },
+   "_startup_message": {
+       "message": "Sine version v5.0.0, the extension could save images seperately without have to pack them into a zip file to save. But it require user authorization to do it. Please click more info to get details. You can change any settings in settings page later."
    }
 }

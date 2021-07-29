@@ -143,7 +143,7 @@ export default {
   },
 
   created() {
-    this.showStartupDialog = true;
+    this.showStartupDialog = !this.browserItems.importantNoticeDisplayed;
   },
 
   beforeMount() {
