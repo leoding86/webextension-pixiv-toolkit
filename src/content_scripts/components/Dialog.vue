@@ -6,14 +6,16 @@
     <div class="ptk__dialog-container"
       @click="hanldeDialogContainerClick"
     >
-      <div class="ptk__dialog-head" v-if="hasHead">
-        <slot name="head"></slot>
-      </div>
-      <div class="ptk__dialog-body">
-        <slot></slot>
-      </div>
-      <div class="ptk__dialog-foot" v-if="hasFoot">
-        <slot name="foot"></slot>
+      <div class="ptk__dialog-wrapper">
+        <div class="ptk__dialog-head" v-if="hasHead">
+          <slot name="head"></slot>
+        </div>
+        <div class="ptk__dialog-body">
+          <slot></slot>
+        </div>
+        <div class="ptk__dialog-foot" v-if="hasFoot">
+          <slot name="foot"></slot>
+        </div>
       </div>
     </div>
   </div>
@@ -75,7 +77,6 @@ export default {
   height: 100%;
   overflow: visible;
   justify-content: center;
-  align-items: center;
   position: fixed;
   top: 0;
   left: 0;
@@ -87,6 +88,11 @@ export default {
     justify-content: center;
     width: 50%;
     margin: 0 auto;
+  }
+
+  .ptk__dialog-wrapper {
+    display: flex;
+    flex-direction: column;
     border-radius: 8px;
     overflow: hidden;
   }
