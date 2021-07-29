@@ -4,6 +4,17 @@
       <h1><span>Pixiv</span>Toolkit</h1>
       <a href="#" @click="openGithub" class="starit"><img src="../options_page/assets/github.svg">{{ tl('_star_it') }} !</a>
     </div>
+    <div class="entries">
+      <div class="entry">
+        <a href="#" @click="openReportIssue" class="button">{{ tl('_report_issue') }}</a>
+      </div>
+      <div class="entry">
+        <a href="#" @click="openOptionsPage" class="button">{{ tl('_settings') }}</a>
+      </div>
+      <div class="entry">
+        <a href="#" @click="openVisitHistory" class="button">{{ tl('illust_history') }}</a>
+      </div>
+    </div>
     <div class="header">
       <h2>{{ tl('_number_of_works_downloaded') }}</h2>
     </div>
@@ -27,11 +38,6 @@
           </ul>
         </div>
       </div>
-    </div>
-    <div class="footer">
-      <a href="#" @click="openReportIssue" class="button">{{ tl('_report_issue') }}</a>
-      <a href="#" @click="openOptionsPage" class="button">{{ tl('_settings') }}</a>
-      <a href="#" @click="openVisitHistory" class="button">{{ tl('illust_history') }}</a>
     </div>
   </div>
 </template>
@@ -141,7 +147,6 @@ body {
     margin: auto -20px;
     padding: 20px;
     background: #0097FA;
-    border-bottom: 1px solid #ddd;
 
     h1 {
       font-weight: 500;
@@ -175,6 +180,34 @@ body {
         padding-right: 5px;
         width: 15px;
         vertical-align: middle;
+      }
+    }
+  }
+
+  .entries {
+    margin: auto -20px;
+    padding: 0 10px;
+    display: flex;
+    background: #fff;
+
+    .entry {
+      flex: 1;
+      position: relative;
+    }
+
+    a {
+      margin: 8px;
+      display: block;
+      padding: 8px 0;
+      text-align: center;
+      border-radius: 3px;
+      background: #fff;
+      text-decoration: none;
+      color: #000;
+      box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+
+      &:hover {
+      box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
       }
     }
   }
