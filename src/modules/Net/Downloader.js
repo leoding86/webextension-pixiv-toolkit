@@ -77,7 +77,7 @@ class Downloader extends Event {
         download.addListener('onfinish', data => {
           this.successIndexes.push(index);
 
-          this.dispatch('item-finish', [{blob: this.asBlob ? data : null, data: this.asBlob ? null : data, index, download}]);
+          this.dispatch('item-finish', [{blob: this.asBlob ? data : null, data: this.asBlob ? null : data, index, download, file}]);
 
           resolve();
         });
