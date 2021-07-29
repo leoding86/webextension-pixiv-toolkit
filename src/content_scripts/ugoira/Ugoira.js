@@ -213,7 +213,8 @@ class UgoiraTool extends Event {
     }
 
     let generator = new GeneratorConstructor({
-      corePath: browser.extension.getURL('lib/ffmpeg/ffmpeg-core.js'),
+      // corePath: browser.extension.getURL('lib/ffmpeg/ffmpeg-core.js'),
+      corePath: 'https://unpkg.com/@ffmpeg/core@0.10.0/dist/ffmpeg-core.js',
       log: true,
     });
 
