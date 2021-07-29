@@ -78,6 +78,7 @@ class FilesDownloader extends Event {
   downloadFiles({ indexes, getFilenameFunc = null, extra = {} }, that) {
     return new Promise((resolve, reject) => {
       let files = [],
+          filesNeedDownload = [],
           downloader = new Downloader({ processors: this.processors });
 
       downloader.asBlob = false;
@@ -86,7 +87,14 @@ class FilesDownloader extends Event {
        * Append files that need to download
        */
       indexes.forEach(idx => {
-        downloader.appendFile(this.getFileUrlByIndex(idx, extra));
+        let fileUrl = this.getFileUrlByIndex(idx, extra);
+
+        filesNeedDownload.push({
+          url: fileUrl,
+          realIndex: idx
+        });
+
+        downloader.appendFile(fileUrl, idx);
       });
 
       downloader.addListener('progress', progress => {
@@ -97,8 +105,10 @@ class FilesDownloader extends Event {
         this.dispatch('download-error', error);
       });
 
-      downloader.addListener('item-finish', ({data, index, download}) => {
-        let filename = (typeof getFilenameFunc == 'function') ? getFilenameFunc(index) : this.getSingleFilename(index),
+      downloader.addListener('item-finish', ({data, index, download, file}) => {
+        let targetFile = filesNeedDownload.find(fileNeedDownload => fileNeedDownload.url === file),
+            _index = targetFile !== undefined ? targetFile.realIndex : index,
+            filename = (typeof getFilenameFunc == 'function') ? getFilenameFunc(_index) : this.getSingleFilename(_index),
             mimeType = download.getResponseHeader('Content-Type');
 
         filename += '.' + MimeType.getExtenstion(mimeType);
