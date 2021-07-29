@@ -712,5 +712,8 @@
    },
    "_custom": {
        "message": "自定义"
+   },
+   "_need_permission_to_load_library_from_unpkg_com_go_to_the_next_step": {
+       "message": "需要从 unpkg.com 载入库的权限。进入下一步？"
    }
 }
