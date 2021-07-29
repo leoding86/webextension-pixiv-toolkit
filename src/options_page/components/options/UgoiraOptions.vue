@@ -15,24 +15,7 @@
           </v-list-tile-action>
         </v-list-tile>
 
-        <v-list-tile>
-          <v-list-tile-content>
-            <v-list-tile-title>{{ tl('_convert_tool') }}</v-list-tile-title>
-            <v-list-tile-sub-title>
-              {{ tl('_select_gif_convert_tool') }}
-                (<a href="https://github.com/leoding86/webextension-pixiv-toolkit/blob/master/docs/help.md#about-ugoira-convert-tools-en_us" target="_blank"><strong>{{ tl('_more_info') }}</strong></a>)
-            </v-list-tile-sub-title>
-          </v-list-tile-content>
-          <v-list-tile-action>
-            <v-select
-              :items="convertTools"
-              v-model="ugoiraConvertTool"
-              type="value"
-              @change="onUgoiraConvertToolChangeHandler"
-              style="width:150px"
-            ></v-select>
-          </v-list-tile-action>
-        </v-list-tile>
+        <ugoira-converter-option></ugoira-converter-option>
 
         <v-list-tile>
           <v-list-tile-content>
@@ -123,16 +106,16 @@
 
 <script>
 import ChangeLocationSetting from '@@/components/options/ChangeLocationSetting';
+import UgoiraConverterOption from '@@/components/options/UgoiraConverterOption';
 
 export default {
   components: {
-    'change-location-setting': ChangeLocationSetting
+    'change-location-setting': ChangeLocationSetting,
+    'ugoira-converter-option': UgoiraConverterOption,
   },
 
   data() {
     return {
-      ugoiraConvertTool: 'default',
-
       ugoiraQuanlity: 10,
 
       ugoiraRenameFormat: "",
@@ -146,7 +129,6 @@ export default {
   },
 
   beforeMount() {
-    this.ugoiraConvertTool = this.browserItems.ugoiraConvertTool || 'default';
     this.ugoiraQuanlity = this.browserItems.ugoiraQuanlity || 10;
     this.ugoiraRenameFormat = this.browserItems.ugoiraRenameFormat;
     this.ugoiraCustomFFmpegCommand = this.browserItems.ugoiraCustomFFmpegCommand || '';
@@ -219,12 +201,6 @@ export default {
   },
 
   methods: {
-    onUgoiraConvertToolChangeHandler() {
-      browser.storage.local.set({
-        ugoiraConvertTool: this.ugoiraConvertTool
-      });
-    },
-
     onUgoiraCustomFFmpegCommandChangeHandler() {
       browser.storage.local.set({
         ugoiraCustomFFmpegCommand: this.ugoiraCustomFFmpegCommand

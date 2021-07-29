@@ -24,24 +24,7 @@
             </v-list-tile-action>
           </v-list-tile>
 
-          <v-list-tile>
-            <v-list-tile-content>
-              <v-list-tile-title>{{ tl('_convert_tool') }}</v-list-tile-title>
-              <v-list-tile-sub-title>
-                {{ tl('_select_gif_convert_tool') }}
-                (<a href="https://github.com/leoding86/webextension-pixiv-toolkit/blob/master/help/about_ugoira_convert_tool.md" target="_blank"><strong>{{ tl('_more_info') }}</strong></a>)
-              </v-list-tile-sub-title>
-            </v-list-tile-content>
-            <v-list-tile-action>
-              <v-select
-                :items="convertTools"
-                v-model="ugoiraConvertTool"
-                type="value"
-                @change="onUgoiraConvertToolChangeHandler"
-                style="width:150px"
-              ></v-select>
-            </v-list-tile-action>
-          </v-list-tile>
+          <ugoira-converter-option></ugoira-converter-option>
         </v-list>
       </v-card-text>
 
@@ -56,7 +39,13 @@
 </template>
 
 <script>
+import UgoiraConverterOption from '@@/components/options/UgoiraConverterOption';
+
 export default {
+  components: {
+    'ugoira-converter-option': UgoiraConverterOption,
+  },
+
   props: {
     /**
      * @readonly
