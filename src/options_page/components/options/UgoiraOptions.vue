@@ -31,7 +31,7 @@
         <v-list-tile>
           <v-list-tile-content>
             <v-list-tile-title>{{ tl('quality') }}</v-list-tile-title>
-            <v-list-tile-sub-title>{{ tl('Has no effect if selected converter is FFmpeg') }}</v-list-tile-sub-title>
+            <v-list-tile-sub-title>{{ tl('_has_not_effect_if_selected_converter_is_ffmpeg') }}</v-list-tile-sub-title>
           </v-list-tile-content>
           <v-list-tile-action>
             <v-select
