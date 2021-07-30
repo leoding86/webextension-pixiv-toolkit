@@ -58,7 +58,6 @@
                 "lib/gifjs/gif.js",
                 "lib/whammy.js",
                 "lib/ffmpeg/ffmpeg.min.js",
-                "lib/ffmpeg/ffmpeg-core.js",
                 "content_scripts/app.js"
             ]
         }, {
