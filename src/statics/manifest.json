@@ -36,10 +36,7 @@
         "downloads"
     ],
     "web_accessible_resources": [
-        "lib/ffmpeg/ffmpeg.min.js",
-        "lib/ffmpeg/ffmpeg-core.js",
-        "lib/ffmpeg/ffmpeg-core.wasm",
-        "lib/ffmpeg/ffmpeg-core.worker.js"
+        "lib/ffmpeg/ffmpeg.min.js"
     ],
     "content_scripts": [
         {
