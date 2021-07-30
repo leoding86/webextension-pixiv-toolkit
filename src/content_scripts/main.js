@@ -13,7 +13,7 @@ Vue.prototype.$browser = window.browser /* For back compatible */ = Browser.getB
 Vue.mixin(SuperMixin);
 
 browser.storage.local.get(null, items => {
-  let i18n = I18n.i18n(items.language);
+  let i18n = I18n.i18n(items.language, browser.i18n.getUILanguage());
 
   /**
    * Create app mount point

@@ -55,7 +55,7 @@ export default {
             return;
           }
 
-          if (window.confirm('Need permission to load library from unpkg.com. Go to the next step ?')) {
+          if (window.confirm(this.tl('_need_permission_to_load_library_from_unpkg_com_go_to_the_next_step'))) {
             browser.permissions.request({
               origins: [origin]
             }, granted => {

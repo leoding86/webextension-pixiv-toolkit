@@ -55,7 +55,7 @@ export default {
 
     loadHistory () {
       return new Promise(resolve => {
-        let language = browser.i18n.getUILanguage();
+        let language = this.$i18n.locale.replace('_', '-');
         let history = 'en-US';
 
         if (histories.indexOf(language) > -1) {

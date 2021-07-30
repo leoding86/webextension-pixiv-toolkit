@@ -1,3 +1,9 @@
+v5.0.0
+Add a setting of enable pack images to a zip file or not;
+Add FFmpeg as optional converter which convert ugoira to animiation;
+Fix issue about download button can't be reachable when there're too many images displayed in image selection dialog;
+🖐🐞.
+
 v4.11.0
 Add `Start Page Num` meta and `Last Page Num` meta to illustration rename format setting;
 Fix issue about the page range of the chunk file don't respect `Page number start with 1` setting sometimes.

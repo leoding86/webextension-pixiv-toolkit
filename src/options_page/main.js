@@ -53,7 +53,7 @@ try {
     });
 
     browser.storage.local.get(null, items => {
-      const i18n = I18n.i18n(items.language);
+      const i18n = I18n.i18n(items.language, browser.i18n.getUILanguage());
 
       moment.locale(i18n.locale);
 

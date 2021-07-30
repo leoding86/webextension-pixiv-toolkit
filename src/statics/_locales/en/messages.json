@@ -30,7 +30,7 @@
       "message": "Metas can use (Drag to select)"
    },
    "extDescription": {
-      "message": "Convert ugoira to gif or/and webm, pack manga for downloading and download novel on Pixiv."
+      "message": "Download ugoira, illustrations, manga and novel on Pixiv, Pixiv Fanbox and Pixiv Comic."
    },
    "extName": {
       "message": "Pixiv Toolkit"
@@ -702,7 +702,7 @@
        "message": "FFmpeg"
    },
    "_select_gif_convert_tool": {
-       "message": "Select GIF convert tool"
+       "message": "Select ugoira convert tool"
    },
    "_startup_message": {
        "message": "Sine version v5.0.0, the extension could save images seperately without have to pack them into a zip file to save. But it require user authorization to do it. Please click more info to get details. You can change any settings in settings page later."
@@ -715,5 +715,11 @@
    },
    "_need_permission_to_load_library_from_unpkg_com_go_to_the_next_step": {
        "message": "Need permission to load library from unpkg.com. Go to the next step ?"
+   },
+   "_not_set": {
+       "message": "Not set"
+   },
+   "_has_not_effect_if_selected_converter_is_ffmpeg": {
+       "message": "Has no effect if selected converter is FFmpeg"
    }
 }

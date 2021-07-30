@@ -30,7 +30,7 @@
       "message": "可用的元数据（拖动选择）"
    },
    "extDescription": {
-      "message": "一个用于将P站动图转化成gif或webm格式，将漫画打包下载和下载小说的工具包。"
+      "message": "下载Pixiv，Fanbox、Comic上的动图、图片、漫画和小说等"
    },
    "extName": {
       "message": "Pixiv工具箱"
@@ -702,7 +702,7 @@
        "message": "FFmpeg"
    },
    "_select_gif_convert_tool": {
-       "message": "选择GIF转化工具"
+       "message": "选择动图转化工具"
    },
    "_startup_message": {
        "message": "自从版本v5.0.0开始，插件可以独立保存每个图片，而不需要一定将他们打包才能保存。但是这个需要用户授权这样做。请点击更多信息以获取详情。你可以稍后在设置中修改以下设置。"
@@ -715,5 +715,11 @@
    },
    "_need_permission_to_load_library_from_unpkg_com_go_to_the_next_step": {
        "message": "需要从 unpkg.com 载入库的权限。进入下一步？"
+   },
+   "_not_set": {
+       "message": "未设置"
+   },
+   "_has_not_effect_if_selected_converter_is_ffmpeg": {
+       "message": "当选择FFmpeg为转换器时没有效果"
    }
 }

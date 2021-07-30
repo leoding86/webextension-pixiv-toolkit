@@ -121,8 +121,12 @@ export default {
       autoActivateDownloadPanel: false,
 
       language: 'en',
+    };
+  },
 
-      languageOptions: [
+  computed: {
+    languageOptions() {
+      return [
         {
           text: this.tl('_default'),
           value: 'default'
@@ -133,8 +137,8 @@ export default {
           text: 'English',
           value: 'en'
         }
-      ]
-    };
+      ];
+    }
   },
 
   beforeMount() {
