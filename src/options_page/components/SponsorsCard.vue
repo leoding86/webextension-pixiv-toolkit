@@ -44,12 +44,6 @@ export default {
     };
 
     xhr.send();
-  },
-
-  methods: {
-    tl(string) {
-      return cr._e(string);
-    }
   }
 }
 </script>

@@ -8,7 +8,7 @@ Vue.config.productionTip = false;
 window.browser = Browser.getBrowser();
 
 browser.storage.local.get(null, items => {
-  const i18n = I18n.i18n(items.language);
+  const i18n = I18n.i18n(items.language, browser.i18n.getUILanguage());
 
   new Vue({
     el: '#app',
