@@ -33,7 +33,8 @@
         "*://*.fanbox.cc/*"
     ],
     "optional_permissions": [
-        "downloads"
+        "downloads",
+        "https://unpkg.com/*"
     ],
     "web_accessible_resources": [
         "lib/ffmpeg/ffmpeg.min.js"

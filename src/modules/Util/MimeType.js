@@ -1,11 +1,14 @@
 class MimeType {
   static types = {
     'image/png'       : 'png',
+    'image/apng'      : 'apng',
     'image/gif'       : 'gif',
     'image/jpeg'      : 'jpg',
     'image/jpg'       : 'jpg',
     'text/plain'      : 'txt',
     'text/html'       : 'html',
+    'video/webm'      : 'webm',
+    'video/mp4'       : 'mp4',
     'application/json': 'json'
   }
 
@@ -31,6 +34,18 @@ class MimeType {
     }
 
     return null;
+  }
+
+  static getMimeType(ext) {
+    let targetType = '';
+
+    Object.keys(MimeType.types).forEach(type => {
+      if (MimeType.types[type] === ext) {
+        targetType = type;
+      }
+    });
+
+    return targetType;
   }
 }
 

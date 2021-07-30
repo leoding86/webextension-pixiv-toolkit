@@ -1,4 +1,5 @@
 import Event from '@/modules/Event';
+import MimeType from '@/modules/Util/MimeType';
 import getImageSize from '../../Util/getImageSize';
 
 /**
@@ -49,11 +50,16 @@ class FFmpegGenerator extends Event {
     this.loadedFiles = [];
 
     /**
+     * @type {string}
+     */
+    this.commandLine = '';
+
+    /**
      * @type {any} FFmpeg
      */
     this.ffmpeg = FFmpeg.createFFmpeg({
       corePath: options.corePath,
-      // log: options.log
+      log: options.log
     });
 
     this.ffmpeg.setProgress(this.handleProgress.bind(this));
@@ -61,6 +67,14 @@ class FFmpegGenerator extends Event {
 
   init() {
     return this.ffmpeg.load();
+  }
+
+  /**
+   *
+   * @param {string} commandLine
+   */
+  setCommandLine(commandLine) {
+    this.commandLine = commandLine;
   }
 
   /**
@@ -143,6 +157,37 @@ class FFmpegGenerator extends Event {
     args = args.map(arg => arg + '');
 
     return this.ffmpeg.run.apply(this.ffmpeg, args);
+  }
+
+  /**
+   *
+   * @returns {Promise}
+   */
+  generate() {
+    let commandLine = this.commandLine.toLowerCase().trim();
+
+    if (commandLine.indexOf('ffmpeg ') === 0) {
+      commandLine = commandLine.substr(7);
+    }
+
+    commandLine = commandLine.replace('{framerate}', this.frameRate);
+
+    let output = commandLine.substr(commandLine.lastIndexOf(' ') + 1).trim(),
+        extName = output.substr(output.lastIndexOf('.') + 1).trim();
+
+    return this.init().then(() => {
+      return this.loadFrames();
+    }).then(() => {
+      // return this.runFFmpeg('-r', this.frameRate, '-i', '%06d.jpg', '-plays', 0, 'out.apng');
+      return this.runFFmpeg.apply(this, commandLine.split(' '));
+    }).then(() => {
+      let data = this.ffmpeg.FS('readFile', output),
+          type = MimeType.getMimeType(extName);
+
+      this.dispatch('finish', [new Blob([data], { type }), extName]);
+    }).finally(() => {
+      this.destroy();
+    });
   }
 
   destroy() {

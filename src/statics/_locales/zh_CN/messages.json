@@ -706,5 +706,14 @@
    },
    "_startup_message": {
        "message": "自从版本v5.0.0开始，插件可以独立保存每个图片，而不需要一定将他们打包才能保存。但是这个需要用户授权这样做。请点击更多信息以获取详情。你可以稍后在设置中修改以下设置。"
+   },
+   "_ffmpeg_custom_convert_command": {
+       "message": "FFmpeg自定义转换命令"
+   },
+   "_custom": {
+       "message": "自定义"
+   },
+   "_need_permission_to_load_library_from_unpkg_com_go_to_the_next_step": {
+       "message": "需要从 unpkg.com 载入库的权限。进入下一步？"
    }
 }

@@ -8,6 +8,7 @@ import FFmpegGIFGenerator from '@/modules/Generator/FFmpeg/GIFGenerator';
 import FFmpegAPNGGenerator from '@/modules/Generator/FFmpeg/APNGGenerator';
 import FFmpegWebMGenerator from '@/modules/Generator/FFmpeg/WebMGenerator';
 import browser from '@/modules/Extension/browser';
+import FFmpegGenerator from '@/modules/Generator/FFmpeg/Generator';
 
 /**
  * @class
@@ -150,13 +151,20 @@ class UgoiraTool extends Event {
   /**
    *
    * @param {'gif'|'webm'|'apng'} type
-   * @param {'default'|'ffmpeg'} [tool=default]
+   * @param {'default'|'ffmpeg'|string} [tool=default]
    */
   getGenerator(type, tool = 'default') {
-    if (tool === 'default') {
-      return Promise.resolve(this.makeGenerator(type));
-    } else if (tool === 'ffmpeg') {
-      return Promise.resolve(this.makeFFmpegGenerator(type));
+    if (type === 'custom') {
+      /**
+       * Param tool is custom command line
+       */
+      return Promise.resolve(this.makeFFmpegGenerator(type, tool));
+    } else {
+      if (tool === 'default') {
+        return Promise.resolve(this.makeGenerator(type));
+      } else if (tool === 'ffmpeg') {
+        return Promise.resolve(this.makeFFmpegGenerator(type));
+      }
     }
   }
 
@@ -184,7 +192,7 @@ class UgoiraTool extends Event {
     return new GeneratorConstructor(this.zip, this.context.illustMimeType, this.context.illustFrames);
   }
 
-  makeFFmpegGenerator(type) {
+  makeFFmpegGenerator(type, commandLine = '') {
     let GeneratorConstructor = null;
 
     switch (type) {
@@ -197,14 +205,22 @@ class UgoiraTool extends Event {
       case 'apng':
         GeneratorConstructor = FFmpegAPNGGenerator;
         break;
+      case 'custom':
+        GeneratorConstructor = FFmpegGenerator;
+        break;
       default:
         throw new Error('Invliad generator type')
     }
 
     let generator = new GeneratorConstructor({
-      corePath: browser.extension.getURL('lib/ffmpeg/ffmpeg-core.js'),
+      // corePath: browser.extension.getURL('lib/ffmpeg/ffmpeg-core.js'),
+      corePath: 'https://unpkg.com/@ffmpeg/core@0.10.0/dist/ffmpeg-core.js',
       log: true,
     });
+
+    if (commandLine) {
+      generator.setCommandLine(commandLine);
+    }
 
     return generator.prepareGenerator(this.zip, this.context.illustMimeType, this.context.illustFrames);
   }
