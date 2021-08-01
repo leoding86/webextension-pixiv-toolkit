@@ -132,7 +132,6 @@ Main.prototype = {
           });
         }
       } else {
-        console.log(details);
         /**
          * If the page is pixiv artwork page, enable page corss isolation.
          */
