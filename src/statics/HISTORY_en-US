@@ -1,3 +1,6 @@
+v5.0.1
+Fix issue about recaptcha won't load when login.
+
 v5.0.0
 Add a setting of enable pack images to a zip file or not;
 Add FFmpeg as optional converter which convert ugoira to animiation;
