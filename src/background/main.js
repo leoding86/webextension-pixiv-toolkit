@@ -115,6 +115,8 @@ Main.prototype = {
     }, opt_onBeforeSendHeaders_extraInfoSpec);
 
     browser.webRequest.onHeadersReceived.addListener(details => {
+      let accessControlAllowOrigin = '*';
+
       if (details.type === 'xmlhttprequest') {
         details.responseHeaders.forEach((header, i) => {
           if (header.name.toLowerCase() === 'access-control-allow-origin') {
@@ -122,38 +124,42 @@ Main.prototype = {
           }
         });
 
-        let accessControlAllowOrigin = '';
-
         if (details.frameId === 0 && /^https:\/\/[^.]+\.fanbox\.cc/.test(details.initiator)) {
           accessControlAllowOrigin = details.initiator;
           details.responseHeaders.push({
             name: 'Access-Control-Allow-Credentials',
             value: 'true'
           });
-        } else {
-          accessControlAllowOrigin = '*';
         }
-
-        details.responseHeaders.push({
-          name: 'Access-Control-Allow-Origin',
-          value: accessControlAllowOrigin
-        });
       } else {
-        details.responseHeaders.push({
-          name: 'Cross-Origin-Embedder-Policy',
-          value: 'require-corp'
-        });
+        console.log(details);
+        /**
+         * If the page is pixiv artwork page, enable page corss isolation.
+         */
+        if (this.items.ugoiraConvertTool === 'ffmpeg' &&
+          /^https:\/\/(www\.)?pixiv\.net\/artworks/.test(details.url)
+        ) {
+          details.responseHeaders.push({
+            name: 'Cross-Origin-Embedder-Policy',
+            value: 'require-corp'
+          });
 
-        details.responseHeaders.push({
-          name: 'Cross-Origin-Opener-Policy',
-          value: 'same-origin'
-        });
-
-        details.responseHeaders.push({
-          name: 'Cross-Origin-Resource-Policy',
-          value: 'cross-origin'
-        });
+          details.responseHeaders.push({
+            name: 'Cross-Origin-Opener-Policy',
+            value: 'same-origin'
+          });
+        }
       }
+
+      details.responseHeaders.push({
+        name: 'Cross-Origin-Resource-Policy',
+        value: 'cross-origin'
+      });
+
+      details.responseHeaders.push({
+        name: 'Access-Control-Allow-Origin',
+        value: accessControlAllowOrigin
+      });
 
       return { responseHeaders: details.responseHeaders };
     }, {
