@@ -1,3 +1,11 @@
+v5.0.3
+Fix issue about downloaded images will not be packed into a zip file when "Pack File" setting is enabled;
+Fix issue about Fanbox download button is missing;
+Fix issue about downloaded image of illustration which has only one image will be packed into a zip file when "Always pack" setting is enabled;
+Fix issue about download behavior won't respect download relative location settings;
+Fix issue about ffmpeg can't be loaded;
+Minor fixes.
+
 v5.0.2
 Fix issue about webm can't be generated properly.
 
