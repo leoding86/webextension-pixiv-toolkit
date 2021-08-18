@@ -131,12 +131,14 @@ class MangaTool extends FilesDownloader {
    * @returns {string}
    */
   getPageRange(chunk) {
-    if (chunk.start == chunk.end) {
-      return parseInt(chunk.start) + (this.pageNumberStartWithOne ? 1 : 0);
+    let offset = this.pageNumberStartWithOne ? 1 : 0;
+    let start = parseInt(chunk.start) + offset,
+        end = parseInt(chunk.end) + offset;
+
+    if (start === end) {
+      return start;
     } else {
-      return (parseInt(chunk.start + 1) + (this.pageNumberStartWithOne ? 1 : 0))
-        + '-'
-        + (parseInt(chunk.end + 1) + this.pageNumberStartWithOne ? 1 : 0);
+      return `${start}-${end}`;
     }
   }
 
