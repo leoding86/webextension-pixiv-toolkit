@@ -37,7 +37,8 @@ export default {
       chunks: [],
       buttonsInfo: {},
       isSaved: false,
-      forceDownload: false
+      forceDownload: false,
+      packFiles: false
     }
   },
 
@@ -78,6 +79,8 @@ export default {
       mangaPageNumberLength: this.browserItems.mangaPageNumberLength,
       processors: parseInt(this.browserItems.downloadTasksWhenDownloadingImages)
     }).init()
+
+    this.packFiles = this.browserItems.downloadPackFiles;
 
     this.chunks = this.mangaTool.chunks
 
@@ -142,10 +145,13 @@ export default {
     },
 
     getChunkTitle(chunk, { singular, plural }) {
-      if (chunk.start === chunk.end) {
-        return singular + ' ' + (chunk.start + 1)
+      let offset = this.mangaTool.pageNumberStartWithOne ? 1 : 0;
+      let start = parseInt(chunk.start) + offset, end = parseInt(chunk.end) + offset;
+
+      if (start === end) {
+        return singular + ' ' + end
       } else {
-        return plural + ' ' + (chunk.start - 0 + 1) + '-' + (chunk.end - 0 + 1);
+        return plural + ' ' + start + '-' + end;
       }
     },
 
@@ -176,7 +182,7 @@ export default {
       }
 
       if (this.packFiles || (files.length === 1 && this.alwaysPack)) {
-        this.tool.getPackedChunkFile({files}).then(file => {
+        this.tool.getPackedChunkFile(files, chunk).then(file => {
           /**
            * Download zip file
            */
