@@ -132,12 +132,11 @@ Main.prototype = {
           });
         }
       } else {
-        console.log(details);
         /**
          * If the page is pixiv artwork page, enable page corss isolation.
          */
         if (this.items.ugoiraConvertTool === 'ffmpeg' &&
-          /^https:\/\/(www\.)?pixiv\.net\/artworks/.test(details.url)
+          /^https:\/\/(www\.)?pixiv\.net\/([a-z\d\-_]*\/)?artworks/i.test(details.url)
         ) {
           details.responseHeaders.push({
             name: 'Cross-Origin-Embedder-Policy',

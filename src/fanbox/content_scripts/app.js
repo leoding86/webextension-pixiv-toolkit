@@ -10,8 +10,6 @@ import Vue from 'vue';
 Vue.prototype.$browser = window.browser /* For back compatible */ = Browser.getBrowser();
 Vue.mixin(SuperMixin);
 
-let i18n = I18n.i18n();
-
 const settings = [
   'language',
   'illustrationRelativeLocation', 'illustrationRenameFormat', 'illustrationImageRenameFormat',
@@ -19,7 +17,7 @@ const settings = [
 ];
 
 browser.storage.local.get(settings, items => {
-  i18n.locale = items.language || 'default';
+  let i18n = I18n.i18n(items.language, browser.i18n.getUILanguage());
 
   /**
    * Create app mount point

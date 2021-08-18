@@ -57,6 +57,7 @@ import Dialog from '@/content_scripts/components/Dialog'
 import downloadFileMixin from '@/content_scripts/mixins/downloadFileMixin'
 import IllustTool from '@/content_scripts/illust/Illust'
 import DownloadRecordPort from '@/modules/Ports/DownloadRecordPort/RendererPort'
+import pathjoin from '@/modules/Util/pathjoin';
 
 export default {
   mixins: [
@@ -236,15 +237,20 @@ export default {
      * @returns {void}
      */
     saveDownloadedFiles(files) {
-      let savePath = this.getSubfolder(
-        this.browserItems.illustrationRelativeLocation, this.tool.context
-      ) + '/';
+      /**
+       * Initial savePath start with relative root path
+       */
+      let savePath = this.browserItems.illustrationRelativeLocation ?
+        this.getSubfolder(this.browserItems.illustrationRelativeLocation, this.tool.context) :
+        this.browserItems.downloadRelativeLocation;
+
+      savePath = pathjoin(savePath, '/');
 
       if (savePath.indexOf('/') === 0) {
         savePath = savePath.substr(1);
       }
 
-      if (this.packFiles || (files.length === 1 && this.alwaysPack)) {
+      if ((files.length === 1 && this.alwaysPack) || (files.length > 1 && this.packFiles)) {
         this.tool.getPackedFile({files}).then(file => {
           /**
            * Download zip file
@@ -255,7 +261,7 @@ export default {
           });
         });
       } else {
-        savePath += this.tool.relativePath + '/';
+        savePath = pathjoin(savePath, this.tool.relativePath, '/');
 
         /**
          * Cache files and change button type
