@@ -250,7 +250,7 @@ export default {
         savePath = savePath.substr(1);
       }
 
-      if (this.packFiles || (files.length === 1 && this.alwaysPack)) {
+      if ((files.length === 1 && this.alwaysPack) || (files.length > 1 && this.packFiles)) {
         this.tool.getPackedFile({files}).then(file => {
           /**
            * Download zip file
