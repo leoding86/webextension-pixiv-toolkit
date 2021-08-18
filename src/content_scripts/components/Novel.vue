@@ -152,8 +152,12 @@ export default {
           download: true
         });
 
+        let savePath = this.browserItems.novelRelativeLocation ?
+          this.getSubfolder(this.browserItems.novelRelativeLocation, this.tool.context) :
+          this.browserItems.downloadRelativeLocation;
+
         this.downloadFile(blob, this.getFilename(type), {
-          folder: this.getSubfolder(this.browserItems.novelRelativeLocation, this.tool.context),
+          folder: savePath,
           statType: 'novel'
         });
 

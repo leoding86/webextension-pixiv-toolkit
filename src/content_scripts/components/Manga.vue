@@ -15,6 +15,7 @@ import Button from '@/content_scripts/components/Button'
 import downloadFileMixin from '@/content_scripts/mixins/downloadFileMixin'
 import DownloadRecordPort from '@/modules/Ports/DownloadRecordPort/RendererPort'
 import MangaTool from '@/content_scripts/manga/Manga'
+import pathjoin from '@/modules/Util/pathjoin'
 
 export default {
   mixins: [
@@ -161,9 +162,14 @@ export default {
      * @returns {void}
      */
     saveDownloadedFiles(files, chunk) {
-      let savePath = this.getSubfolder(
-        this.browserItems.mangaRelativeLocation, this.tool.context
-      ) + '/';
+      /**
+       * Initial savePath start with relative root path
+       */
+      let savePath = this.browserItems.mangaRelativeLocation ?
+        this.getSubfolder(this.browserItems.mangaRelativeLocation, this.tool.context) :
+        this.browserItems.downloadRelativeLocation;
+
+      savePath = pathjoin(savePath, '/');
 
       if (savePath.indexOf('/') === 0) {
         savePath = savePath.substr(1);
@@ -180,7 +186,7 @@ export default {
           });
         });
       } else {
-        savePath += this.tool.relativePath + '/';
+        savePath = pathjoin(savePath, this.tool.relativePath, '/');
 
         /**
          * Cache files and change button type

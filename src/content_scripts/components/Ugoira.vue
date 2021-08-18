@@ -163,6 +163,12 @@ export default {
       return true;
     },
 
+    getSavePath() {
+      return this.browserItems.ugoiraRelativeLocation ?
+        this.getSubfolder(this.browserItems.ugoiraRelativeLocation, this.tool.context) :
+        this.browserItems.downloadRelativeLocation;
+    },
+
     zipButtonClickHandle() {
       if (!this.allowDownload(this.zipButton.saved)) {
         return;
@@ -173,8 +179,10 @@ export default {
       } else if (this.tool.isReady()) {
         this.zipButton.type = 'success';
 
+        let savePath = this.getSavePath();
+
         this.downloadFile(this.tool.zipBlob, this.getFilename() + '.zip', {
-          folder: this.getSubfolder(this.browserItems.ugoiraRelativeLocation, this.tool.context),
+          folder: savePath,
           statType: 'ugoira',
         });
 
@@ -187,8 +195,10 @@ export default {
     },
 
     saveFile(button, blob, type) {
+      let savePath = this.getSavePath();
+
       this.downloadFile(blob, this.getFilename() + '.' + button.extName, {
-        folder: this.getSubfolder(this.browserItems.ugoiraRelativeLocation, this.tool.context),
+        folder: savePath,
         statType: 'ugoira'
       });
 

@@ -4,6 +4,7 @@ import {
 } from '@/content_scripts/Browser';
 import browser from '@/modules/Extension/browser';
 import formatName from "@/modules/Util/formatName";
+import pathjoin from '@/modules/Util/pathjoin';
 
 export default {
   methods: {
@@ -24,15 +25,10 @@ export default {
           permissions: ['downloads']
         }).then(result => {
           if (result) {
-            let filepath = '';
-
-            if (folder) {
-              filepath += folder;
-            } else if (vm.browserItems.downloadRelativeLocation) {
-              filepath += vm.browserItems.downloadRelativeLocation;
-            }
-
-            filepath += filename;
+            let filepath = pathjoin(
+              folder ? folder : vm.browserItems.downloadRelativeLocation,
+              filename
+            );
 
             if (this.isFirefox && blob) {
               let fileReader = new FileReader();
