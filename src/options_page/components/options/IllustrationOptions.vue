@@ -30,6 +30,16 @@
 
         <v-list-tile>
           <v-list-tile-content>
+            <v-list-tile-title>Create Subdirectory</v-list-tile-title>
+            <v-list-tile-sub-title>Create subdirectory when download Pack Files setting is disabled</v-list-tile-sub-title>
+          </v-list-tile-content>
+          <v-list-tile-action>
+            <v-switch v-model="createSubdirectory"></v-switch>
+          </v-list-tile-action>
+        </v-list-tile>
+
+        <v-list-tile>
+          <v-list-tile-content>
             <v-list-tile-title>{{ tl('_always_pack') }}</v-list-tile-title>
             <v-list-tile-sub-title>{{ tl('_always_pack_images_into_zip_file_even_if_there_is_only_one_image_in_the_illustration') }}</v-list-tile-sub-title>
           </v-list-tile-content>
@@ -94,6 +104,8 @@ export default {
 
       location: '',
 
+      createSubdirectory: true,
+
       pageNumberLengthOptions: [{
         text: 'Disable',
         value: 0,
@@ -155,6 +167,12 @@ export default {
       browser.storage.local.set({
         alwaysPack: !!val
       });
+    },
+
+    createSubdirectory(val) {
+      browser.storage.local.set({
+        illustrationCreateSubdirectory: !!val
+      });
     }
   },
 
@@ -164,6 +182,7 @@ export default {
 
     this.location = this.browserItems.illustrationRelativeLocation;
     this.alwaysPack = this.browserItems.alwaysPack;
+    this.createSubdirectory = this.browserItems.illustrationCreateSubdirectory;
   },
 
   methods: {
