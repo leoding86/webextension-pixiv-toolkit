@@ -97,6 +97,10 @@ export default {
     }
   },
 
+  created() {
+    this.createSubdirectory = this.browserItems.illustrationCreateSubdirectory;
+  },
+
   mounted() {
     /**
      * @var {IllustTool}
@@ -261,7 +265,11 @@ export default {
           });
         });
       } else {
-        savePath = pathjoin(savePath, this.tool.relativePath, '/');
+        if (this.createSubdirectory) {
+          savePath = pathjoin(savePath, this.tool.relativePath, '/');
+        } else {
+          savePath = pathjoin(savePath, '/');
+        }
 
         /**
          * Cache files and change button type
