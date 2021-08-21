@@ -41,7 +41,7 @@ a.maintitle {
 }
 
 a.subtitle {
-  @extend a.maintitle;
+  @extend a, .maintitle;
   color: #999;
 }
 

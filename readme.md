@@ -23,7 +23,6 @@ If you are not using Chrome or Firefox, you can try clone the project to your lo
 To build the extension, you need these tools below:
 
 * nodejs
-* python2
 
 After you install these, run commands step by step:
 
