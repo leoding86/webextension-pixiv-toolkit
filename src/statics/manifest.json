@@ -34,6 +34,7 @@
     ],
     "optional_permissions": [
         "downloads",
+        "downloads.shelf",
         "https://unpkg.com/*"
     ],
     "web_accessible_resources": [
