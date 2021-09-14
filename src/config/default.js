@@ -196,4 +196,9 @@ export default Object.assign({}, {
      * @since 5.1.0
      */
     illustrationCreateSubdirectory: true,
+
+    /**
+     * @since 5.2.0
+     */
+    disableDownloadsShelf: false,
   });
