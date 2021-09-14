@@ -52,6 +52,8 @@
           </v-list-tile-action>
         </v-list-tile>
 
+        <downloads-shelf-option></downloads-shelf-option>
+
         <v-list-tile>
           <v-list-tile-content>
             <v-list-tile-title>{{ tl('setting_relative_location') }}</v-list-tile-title>
@@ -89,10 +91,13 @@
 
 <script>
 import GrantPermissionsBtn from "@@/components/options/GrantPermissionsBtn";
+import DownloadsShelfOption from "@@/components/options/DownloadsShelfOption";
+import browser from '@/modules/Extension/browser';
 
 export default {
   components: {
-    'grant-permissions-btn': GrantPermissionsBtn
+    'grant-permissions-btn': GrantPermissionsBtn,
+    'downloads-shelf-option': DownloadsShelfOption
   },
 
   data() {
@@ -149,10 +154,26 @@ export default {
     }
   },
 
+  created() {
+    this.enableExtTakeOverDownloads = !!this.browserItems.enableExtTakeOverDownloads;
+
+    if (this.enableExtTakeOverDownloads) {
+      browser.permissions.contains({
+        permissions: ['downloads', 'downloads.shelf'],
+      }, result => {
+        if (!result) {
+          this.enableExtTakeOverDownloads = false;
+
+          browser.storage.local.set({
+            enableExtTakeOverDownloads: this.enableExtTakeOverDownloads,
+          });
+        }
+      });
+    }
+  },
+
   beforeMount() {
     this.askDownloadSavedWork = !!this.browserItems.askDownloadSavedWork;
-
-    this.enableExtTakeOverDownloads = !!this.browserItems.enableExtTakeOverDownloads;
 
     this.downloadSaveAs = !!this.browserItems.downloadSaveAs;
 
@@ -163,26 +184,23 @@ export default {
 
   methods: {
     onEnableExtTakeOverDownloadsChange(val) {
-      let vm = this,
-          permissionsOperation = !val ? 'remove' : 'request';
+      if (val) {
+        browser.permissions.request({
+          permissions: ['downloads', 'downloads.shelf'],
+        }, result => {
+          this.enableExtTakeOverDownloads = !!result;
 
-      browser.permissions[permissionsOperation](
-        {
-          permissions: ["downloads"]
-        },
-        result => {
-          /**
-           * result will be undefined if the permissions have been granted or removed
-           */
-          if (typeof result !== "undefined") {
-            vm.enableExtTakeOverDownloads = !val ? !result : result;
+          browser.storage.local.set({
+            enableExtTakeOverDownloads: this.enableExtTakeOverDownloads,
+          });
+        });
+      } else {
+        this.enableExtTakeOverDownloads = false;
 
-            browser.storage.local.set({
-              enableExtTakeOverDownloads: vm.enableExtTakeOverDownloads
-            });
-          }
-        }
-      );
+        browser.storage.local.set({
+          enableExtTakeOverDownloads: this.enableExtTakeOverDownloads,
+        });
+      }
     },
 
     showDownloadRelativeLocationDialog() {

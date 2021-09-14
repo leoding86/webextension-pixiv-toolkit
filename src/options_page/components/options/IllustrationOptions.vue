@@ -30,6 +30,16 @@
 
         <v-list-tile>
           <v-list-tile-content>
+            <v-list-tile-title>{{ tl('_create_subdirectory') }}</v-list-tile-title>
+            <v-list-tile-sub-title>{{ tl('_create_subdirectory_when_download_Pack_Files_setting_is_disabled') }}</v-list-tile-sub-title>
+          </v-list-tile-content>
+          <v-list-tile-action>
+            <v-switch v-model="createSubdirectory"></v-switch>
+          </v-list-tile-action>
+        </v-list-tile>
+
+        <v-list-tile>
+          <v-list-tile-content>
             <v-list-tile-title>{{ tl('_always_pack') }}</v-list-tile-title>
             <v-list-tile-sub-title>{{ tl('_always_pack_images_into_zip_file_even_if_there_is_only_one_image_in_the_illustration') }}</v-list-tile-sub-title>
           </v-list-tile-content>
@@ -94,11 +104,17 @@ export default {
 
       location: '',
 
-      pageNumberLengthOptions: [{
-        text: 'Disable',
+      createSubdirectory: true,
+    };
+  },
+
+  computed: {
+    pageNumberLengthOptions() {
+      return [{
+        text: this.tl('_disable'),
         value: 0,
       }, {
-        text: 'Dynamic',
+        text: this.tl('_dynamic'),
         value: -1,
       }, {
         text: '2',
@@ -109,11 +125,9 @@ export default {
       }, {
         text: '4',
         value: 4
-      }]
-    };
-  },
+      }];
+    },
 
-  computed: {
     renameFormatPreview() {
       if (!!this.browserItems.illustrationRenameFormat) {
         return this.browserItems.illustrationRenameFormat;
@@ -155,6 +169,12 @@ export default {
       browser.storage.local.set({
         alwaysPack: !!val
       });
+    },
+
+    createSubdirectory(val) {
+      browser.storage.local.set({
+        illustrationCreateSubdirectory: !!val
+      });
     }
   },
 
@@ -164,6 +184,7 @@ export default {
 
     this.location = this.browserItems.illustrationRelativeLocation;
     this.alwaysPack = this.browserItems.alwaysPack;
+    this.createSubdirectory = this.browserItems.illustrationCreateSubdirectory;
   },
 
   methods: {

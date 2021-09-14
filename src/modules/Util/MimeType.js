@@ -3,13 +3,14 @@ class MimeType {
     'image/png'       : 'png',
     'image/apng'      : 'apng',
     'image/gif'       : 'gif',
+    'image/jpeg'      : 'jpeg',
     'image/jpeg'      : 'jpg',
-    'image/jpg'       : 'jpg',
     'text/plain'      : 'txt',
     'text/html'       : 'html',
     'video/webm'      : 'webm',
     'video/mp4'       : 'mp4',
-    'application/json': 'json'
+    'application/json': 'json',
+    'application/zip' : 'zip',
   }
 
   /**
@@ -46,6 +47,15 @@ class MimeType {
     });
 
     return targetType;
+  }
+
+  /**
+   *
+   * @param {string} file
+   * @returns {string}
+   */
+  static getFileMimeType(file) {
+    return MimeType.getMimeType(file.substr(file.lastIndexOf('.') + 1));
   }
 }
 

@@ -181,10 +181,12 @@ export default {
 
         let savePath = this.getSavePath();
 
-        this.downloadFile(this.tool.zipBlob, this.getFilename() + '.zip', {
+        this.downloadFile({
+          src: this.tool.zipBlob,
+          filename: this.getFilename() + '.zip',
           folder: savePath,
-          statType: 'ugoira',
-        });
+        })
+        .then(() => this.updateDownloadStat('ugoira'));
 
         this.saveDownloadRecord({
           zip: 1
@@ -197,10 +199,12 @@ export default {
     saveFile(button, blob, type) {
       let savePath = this.getSavePath();
 
-      this.downloadFile(blob, this.getFilename() + '.' + button.extName, {
+      this.downloadFile({
+        src: blob,
+        filename: this.getFilename() + '.' + button.extName,
         folder: savePath,
-        statType: 'ugoira'
-      });
+      })
+      .then(() => this.updateDownloadStat('ugoira'));
 
       let data = {};
       data[type] = 1;

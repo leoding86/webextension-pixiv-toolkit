@@ -191,4 +191,14 @@ export default Object.assign({}, {
     downloadPackFiles: true,
     ugoiraConvertTool: 'default',
     ugoiraCustomFFmpegCommand: '',
+
+    /**
+     * @since 5.1.0
+     */
+    illustrationCreateSubdirectory: true,
+
+    /**
+     * @since 5.2.0
+     */
+    disableDownloadsShelf: false,
   });

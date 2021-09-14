@@ -16,7 +16,7 @@
               <v-list-tile-title>{{ tl('_pack_files') }}</v-list-tile-title>
               <v-list-tile-sub-title>
                 {{ tl('_pack_downloaded_files_to_a_zip_file') }}
-                (<a href="https://github.com/leoding86/webextension-pixiv-toolkit/tree/master/help/about_the_pack_files_settings.md" target="_blank"><strong>{{ tl('_more_info') }}</strong></a>)
+                (<a href="https://github.com/leoding86/webextension-pixiv-toolkit/blob/master/docs/help.md" target="_blank"><strong>{{ tl('_more_info') }}</strong></a>)
               </v-list-tile-sub-title>
             </v-list-tile-content>
             <v-list-tile-action>
@@ -25,6 +25,8 @@
           </v-list-tile>
 
           <ugoira-converter-option></ugoira-converter-option>
+
+          <downloads-shelf-option></downloads-shelf-option>
         </v-list>
       </v-card-text>
 
@@ -39,10 +41,12 @@
 </template>
 
 <script>
+import DownloadsShelfOption from '@@/components/options/DownloadsShelfOption';
 import UgoiraConverterOption from '@@/components/options/UgoiraConverterOption';
 
 export default {
   components: {
+    'downloads-shelf-option': DownloadsShelfOption,
     'ugoira-converter-option': UgoiraConverterOption,
   },
 

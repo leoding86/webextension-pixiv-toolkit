@@ -58,12 +58,22 @@ module.exports = env => {
 
               json.version_name = json.version = packageInfo.version;
 
+              /**
+               * About manifest file, there are some differences between FireFox and browsers which based Chromium.
+               * So we need do some extra works to make the target browser manifest file.
+               */
               if (json.options_page && platform === 'firefox') {
                 console.log(`rename options_page to options_ui`);
 
                 json.options_ui = {};
                 json.options_ui.page = json.options_page;
                 json.options_ui.open_in_tab = true;
+
+                json.optional_permissions.forEach(permission => {
+                  json.permissions.push(permission);
+                });
+
+                delete json.optional_permissions;
                 delete json.options_page;
 
                 console.log(`remove version_name property from manifest`);

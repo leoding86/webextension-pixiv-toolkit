@@ -150,9 +150,9 @@ class FilesDownloader extends Event {
         });
       });
 
-      zip.generateAsync({ type: 'blob' }).then(blob => {
+      zip.generateAsync({ type: 'arraybuffer' }).then(ab => {
         resolve({
-          data: blob,
+          data: ab,
           filename: ((typeof getFilenameFunc == 'function') ? getFilenameFunc() : this.getPackedFilename()) + '.zip'
         });
       }).catch(error => {

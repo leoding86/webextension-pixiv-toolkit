@@ -34,6 +34,7 @@
     ],
     "optional_permissions": [
         "downloads",
+        "downloads.shelf",
         "https://unpkg.com/*"
     ],
     "web_accessible_resources": [
@@ -81,7 +82,5 @@
             ]
         }
     ],
-    "version": "5.0.3",
-    "version_name": "5.0.3",
     "options_page": "options_page/index.html"
 }

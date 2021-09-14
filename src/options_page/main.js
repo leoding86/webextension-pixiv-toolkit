@@ -92,6 +92,8 @@ try {
                 }
 
                 moment.locale(i18n.locale);
+              } else if (key === 'disableDownloadsShelf') {
+                browser.downloads.setShelfEnabled(!items[key].newValue);
               }
             }
           });
@@ -102,9 +104,12 @@ try {
           browser.permissions.getAll(permissions => {
             let settings = {};
 
-            settings.enableExtTakeOverDownloads = permissions.permissions.indexOf('downloads') > -1;
-
-            browser.storage.local.set(settings);
+            if (settings.enableExtTakeOverDownloads) {
+              if (permissions.permissions.indexOf('downloads') < 0) {
+                browser.enableExtTakeOverDownloads = false;
+                browser.storage.local.set({ enableExtTakeOverDownloads: false });
+              }
+            }
           });
         }
       })

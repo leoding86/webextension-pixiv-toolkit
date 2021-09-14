@@ -97,6 +97,10 @@ export default {
     }
   },
 
+  created() {
+    this.createSubdirectory = this.browserItems.illustrationCreateSubdirectory;
+  },
+
   mounted() {
     /**
      * @var {IllustTool}
@@ -230,6 +234,27 @@ export default {
     },
 
     /**
+     * Download multiple files
+     *
+     * @param {Object[]} files
+     * @param {{savePath: string}} options
+     * @param {number} [index=0]
+     * @returns {Promise}
+     */
+    downloadMultipleFiles(files, { savePath }, index = 0) {
+      let file = files[index];
+
+      if (!file) {
+        return Promise.resolve();
+      }
+
+      return this.downloadFile({
+        src: file.data, filename: file.filename, folder: savePath
+      })
+      .then(() => this.downloadMultipleFiles(files, { savePath }, index + 1));
+    },
+
+    /**
      * Download multiple files. The browser will popup a confirm dialog for user
      * for asking user if he/she agree to download multiple files from the website.
      * The user MUST allow it, then the browser will process the download.
@@ -251,32 +276,29 @@ export default {
       }
 
       if ((files.length === 1 && this.alwaysPack) || (files.length > 1 && this.packFiles)) {
-        this.tool.getPackedFile({files}).then(file => {
+        this.tool.getPackedFile({files}).then(result => {
           /**
            * Download zip file
            */
-          this.downloadFile(file.data, file.filename, {
-            folder: savePath,
-            statType: 'illust'
-          });
+          this.downloadFile({
+            src: result.data,
+            filename: result.filename,
+            folder: savePath
+          })
+          .then(() => this.updateDownloadStat('illust'));
         });
       } else {
-        savePath = pathjoin(savePath, this.tool.relativePath, '/');
+        if (this.createSubdirectory) {
+          savePath = pathjoin(savePath, this.tool.relativePath, '/');
+        } else {
+          savePath = pathjoin(savePath, '/');
+        }
 
         /**
          * Cache files and change button type
          */
-
-        files.forEach(file => {
-          this.downloadFile(
-            new Blob([file.data], { type: file.mimeType }),
-            file.filename,
-            {
-              folder: savePath,
-              statType: 'illust'
-            }
-          );
-        });
+        this.downloadMultipleFiles(files, { savePath })
+        .then(() => this.updateDownloadStat('illust'));
       }
 
       this.saveDownloadRecord({ illust: 1 });

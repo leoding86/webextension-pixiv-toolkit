@@ -721,5 +721,20 @@
    },
    "_has_not_effect_if_selected_converter_is_ffmpeg": {
        "message": "当选择FFmpeg为转换器时没有效果"
+   },
+   "_disable_downloads_shelf": {
+       "message": "禁用下载架"
+   },
+   "_create_subdirectory": {
+       "message": "创建子目录"
+   },
+   "_create_subdirectory_when_download_Pack_Files_setting_is_disabled": {
+       "message": "当下载\"打包文件\"禁用时为下载的作品创建子目录"
+   },
+   "_dynamic": {
+       "message": "动态"
+   },
+   "_relative_location_enabled_notice": {
+       "message": "（需要启用设置“允许扩展程序接管下载”）"
    }
 }

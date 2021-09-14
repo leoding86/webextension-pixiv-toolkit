@@ -156,10 +156,12 @@ export default {
           this.getSubfolder(this.browserItems.novelRelativeLocation, this.tool.context) :
           this.browserItems.downloadRelativeLocation;
 
-        this.downloadFile(blob, this.getFilename(type), {
+        this.downloadFile({
+          src: blob,
+          filename: this.getFilename(type),
           folder: savePath,
-          statType: 'novel'
-        });
+        })
+        .then(() => this.updateDownloadStat('novel'));
 
         let record = {};
 
