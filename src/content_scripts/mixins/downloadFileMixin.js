@@ -5,76 +5,92 @@ import {
 import browser from '@/modules/Extension/browser';
 import formatName from "@/modules/Util/formatName";
 import pathjoin from '@/modules/Util/pathjoin';
+import MimeType from '@/modules/Util/MimeType';
 
 export default {
   methods: {
-    downloadFile(url, filename, { folder = null, statType = null }) {
-      let vm = this;
-      let blob = null;
-
-      if (url instanceof Blob) {
-        blob = url;
-        url = URL.createObjectURL(url);
-      }
+    /**
+     *
+     * @param {{url: string, filename: string}} param
+     */
+    downloadFileUsingLink({ url, filename }) {
+      let a = document.createElement('a');
+      a.setAttribute('href', url);
+      a.setAttribute('download', filename);
 
       /**
-       * Because some sercurity reason of Firefox, the background script cannot download blob url from other sites.
+       * The a element must append to document to make download working in Firefox
+       */
+      document.body.appendChild(a);
+
+      a.click();
+      a.remove();
+    },
+
+    /**
+     *
+     * @param {{ data: ArrayBuffer, file: string, saveAs: boolean }} param
+     * @returns {Promise}
+     */
+    createBrowserDownload({ data, file, saveAs }) {
+      const mimeType = MimeType.getFileMimeType(file);
+      const url = URL.createObjectURL(new Blob([data], {type: mimeType}));
+      return browserDownloads.download({ url, filename: file, saveAs });
+    },
+
+    /**
+     * Update statistic of download
+     */
+    updateDownloadStat(type) {
+      browser.runtime.sendMessage({
+        action: 'updateDownloadedStat',
+        args: type,
+      });
+    },
+
+    /**
+     *
+     * @param {ArrayBuffer} src
+     * @param {string} filename
+     * @returns {Promise<number, Error>}
+     */
+    downloadFile({ src, filename, folder = null }) {
+      const saveAs = this.browserItems.saveAs;
+
+      /**
+       * Check if the extension takeover downloads setting is enabled
        */
       if (this.browserItems.enableExtTakeOverDownloads) {
-        browserPermissions.contains({
+        /**
+         * Check if the extension has the permission of downloads
+         */
+        return browserPermissions.contains({
           permissions: ['downloads']
         }).then(result => {
+          /**
+           * If the extension has the downloads permission, then pass the data to background for downloading item,
+           * otherwise, throw a alert prompt
+           */
           if (result) {
-            let filepath = pathjoin(
-              folder ? folder : vm.browserItems.downloadRelativeLocation,
-              filename
-            );
+            const file = pathjoin(folder ? folder : this.browserItems.downloadRelativeLocation, filename);
 
-            if (this.isFirefox && blob) {
-              let fileReader = new FileReader();
-
-              fileReader.readAsArrayBuffer(blob);
-
-              fileReader.onload = event => {
-                browser.runtime.sendMessage({
-                  action: 'download',
-                  options: {
-                    arrayBuffer: fileReader.result,
-                    filename: filepath,
-                    saveAs: vm.browserItems.downloadSaveAs
-                  }
-                });
-              }
-            } else {
-              browserDownloads.download({
-                url: url,
-                filename: filepath,
-                saveAs: vm.browserItems.downloadSaveAs
-              });
-            }
+            /**
+             * If the browser is Firefox, then call downloadFileUsingData because the Firefox don't support download
+             * file throught url using download api.
+             */
+            return this.createBrowserDownload({ data: src, file, saveAs });
           } else {
-            alert('You need grant download permission for downloading using downlads setting in extension');
+            throw new Error('You need grant download permission for downloading using downlads setting in extension');
           }
         })
       } else {
-        let a = document.createElement('a');
-        a.setAttribute('href', url);
-        a.setAttribute('download', filename);
+        let url = URL.createObjectURL(new Blob([src], { type: 'text/plain' }));
+        this.downloadFileUsingLink({ url, filename });
 
         /**
-         * The a element must append to document to make download working in Firefox
+         * Should return a Promise instance
          */
-        document.body.appendChild(a);
-
-        a.click()
-        a.remove()
-      }
-
-      if (statType) {
-        browser.runtime.sendMessage({
-          action: 'updateDownloadedStat',
-          args: statType
-        });
+        return Promise.resolve(0);
       }
     },
 

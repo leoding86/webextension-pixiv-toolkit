@@ -160,6 +160,27 @@ export default {
     },
 
     /**
+     * Download multiple files
+     *
+     * @param {Object[]} files
+     * @param {{savePath: string}} options
+     * @param {number} [index=0]
+     * @returns {Promise}
+     */
+    downloadMultipleFiles(files, { savePath }, index = 0) {
+      let file = files[index];
+
+      if (!file) {
+        return Promise.resolve();
+      }
+
+      return this.downloadFile({
+        src: file.data, filename: file.filename, folder: savePath
+      })
+      .then(() => this.downloadMultipleFiles(files, { savePath }, index + 1));
+    },
+
+    /**
      * Download multiple files. The browser will popup a confirm dialog for user
      * for asking user if he/she agree to download multiple files from the website.
      * The user MUST allow it, then the browser will process the download.
@@ -186,10 +207,12 @@ export default {
           /**
            * Download zip file
            */
-          this.downloadFile(file.data, file.filename, {
+          this.downloadFile({
+            src: file.data,
+            filename: file.filename,
             folder: savePath,
-            statType: 'manga'
-          });
+          })
+          .then(() => this.updateDownloadStat('manga'));
         });
       } else {
         savePath = pathjoin(savePath, this.tool.relativePath, '/');
@@ -197,17 +220,8 @@ export default {
         /**
          * Cache files and change button type
          */
-
-        files.forEach(file => {
-          this.downloadFile(
-            new Blob([file.data], { type: file.mimeType }),
-            file.filename,
-            {
-              folder: savePath,
-              statType: 'manga'
-            }
-          );
-        });
+        this.downloadMultipleFiles(files, { savePath })
+        .then(() => this.updateDownloadStat('manga'));
       }
 
       this.saveDownloadRecord({ manga: 1 });
