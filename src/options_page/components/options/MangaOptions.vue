@@ -98,12 +98,16 @@ export default {
       pageNumberLength: 0,
 
       location: '',
+    };
+  },
 
-      pageNumberLengthOptions: [{
-        text: 'Disable',
+  computed: {
+    pageNumberLengthOptions() {
+      return [{
+        text: this.tl('_disable'),
         value: 0,
       }, {
-        text: 'Dynamic',
+        text: this.tl('_dynamic'),
         value: -1,
       }, {
         text: '2',
@@ -114,11 +118,9 @@ export default {
       }, {
         text: '4',
         value: 4
-      }]
-    };
-  },
+      }];
+    },
 
-  computed: {
     mangaRenameFormatPreview() {
       if (!!this.browserItems.mangaRenameFormat) {
         return this.browserItems.mangaRenameFormat;
