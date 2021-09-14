@@ -471,7 +471,7 @@
        "message": "Change"
    },
    "_must_enable_extension_take_over_downloads_setting": {
-       "message": "Must enable \"extension takes over downloads\" setting"
+       "message": "Require enabling \"extension takes over downloads\" setting"
    },
    "_rename_illustration_image_hint": {
        "message": "Example: {authorId}_{id}_{pageNum}. You can place the deleted part between the two # tags when there is only one image in the illustration."
@@ -721,5 +721,17 @@
    },
    "_has_not_effect_if_selected_converter_is_ffmpeg": {
        "message": "Has no effect if selected converter is FFmpeg"
+   },
+   "_disable_downloads_shelf": {
+       "message": "Disable downloads shelf"
+   },
+   "_create_subdirectory": {
+       "message": "Create Subdirectory"
+   },
+   "_create_subdirectory_when_download_Pack_Files_setting_is_disabled": {
+       "message": "Create subdirectory when download \"Pack Files\" setting is disabled"
+   },
+   "_dynamic": {
+       "message": "Dynamic"
    }
 }
