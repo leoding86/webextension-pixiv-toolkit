@@ -29,12 +29,19 @@ export default {
 
     /**
      *
-     * @param {{ data: ArrayBuffer, file: string, saveAs: boolean }} param
+     * @param {{ data: ArrayBuffer|Blob, file: string, saveAs: boolean }} param
      * @returns {Promise}
      */
     createBrowserDownload({ data, file, saveAs }) {
-      const mimeType = MimeType.getFileMimeType(file);
-      const url = URL.createObjectURL(new Blob([data], {type: mimeType}));
+      let url = null;
+
+      if (data instanceof Blob) {
+        url = URL.createObjectURL(data);
+      } else {
+        const mimeType = MimeType.getFileMimeType(file);
+        url = URL.createObjectURL(new Blob([data], {type: mimeType}));
+      }
+
       return browserDownloads.download({ url, filename: file, saveAs });
     },
 
@@ -50,7 +57,7 @@ export default {
 
     /**
      *
-     * @param {ArrayBuffer} src
+     * @param {ArrayBuffer|Blob} src
      * @param {string} filename
      * @returns {Promise<number, Error>}
      */
@@ -84,7 +91,14 @@ export default {
           }
         })
       } else {
-        let url = URL.createObjectURL(new Blob([src], { type: 'text/plain' }));
+        let url = null;
+
+        if (src instanceof Blob) {
+          url = URL.createObjectURL(src);
+        } else {
+          url = URL.createObjectURL(new Blob([src], { type: MimeType.getFileMimeType(filename) }));
+        }
+
         this.downloadFileUsingLink({ url, filename });
 
         /**
