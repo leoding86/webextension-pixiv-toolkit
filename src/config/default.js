@@ -194,8 +194,9 @@ export default Object.assign({}, {
 
     /**
      * @since 5.1.0
+     * @var {number} 0: disable, 1: enable, 2: only for multiple files
      */
-    illustrationCreateSubdirectory: true,
+    illustrationCreateSubdirectory: 1,
 
     /**
      * @since 5.2.0

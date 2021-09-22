@@ -288,7 +288,7 @@ export default {
           .then(() => this.updateDownloadStat('illust'));
         });
       } else {
-        if (this.createSubdirectory) {
+        if (this.createSubdirectory === 1 || (this.createSubdirectory === 2 && files.length > 1)) {
           savePath = pathjoin(savePath, this.tool.relativePath, '/');
         } else {
           savePath = pathjoin(savePath, '/');
