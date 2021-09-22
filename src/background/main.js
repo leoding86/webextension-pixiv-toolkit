@@ -277,6 +277,10 @@ Main.prototype = {
       delete args.message.options.arrayBuffer;
     }
 
+    if (args.message.options.filename.indexOf('/') === 0) {
+      args.message.options.filename = args.message.options.filename.substr(1);
+    }
+
     browser.downloads.download(args.message.options, function (downloadId) {
       if (!!args.sendResponse && typeof args.sendResponse === 'function') {
         args.sendResponse(downloadId);
@@ -346,7 +350,10 @@ Main.prototype = {
         updater.mergeSettings({
           version: version,
           showUpdateChangeLog: false,
-          importantNoticeDisplayed: updateSettings.importantNoticeDisplayed || false
+          importantNoticeDisplayed: updateSettings.importantNoticeDisplayed || false,
+
+          // update setting type
+          illustrationCreateSubdirectory: items.illustrationCreateSubdirectory ? 1 : 0
         }).then(() => {
           /**
            * Attach a badge with text 'NEW'

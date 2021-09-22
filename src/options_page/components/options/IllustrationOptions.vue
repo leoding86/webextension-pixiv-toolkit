@@ -34,7 +34,9 @@
             <v-list-tile-sub-title>{{ tl('_create_subdirectory_when_download_Pack_Files_setting_is_disabled') }}</v-list-tile-sub-title>
           </v-list-tile-content>
           <v-list-tile-action>
-            <v-switch v-model="createSubdirectory"></v-switch>
+            <v-select :items="createSubdirectoryOptions" v-model="createSubdirectory"
+              style="width:220px;"
+            ></v-select>
           </v-list-tile-action>
         </v-list-tile>
 
@@ -104,11 +106,24 @@ export default {
 
       location: '',
 
-      createSubdirectory: true,
+      createSubdirectory: 1,
     };
   },
 
   computed: {
+    createSubdirectoryOptions() {
+      return [{
+        text: this.tl('_disable'),
+        value: 0,
+      }, {
+        text: this.tl('_enable'),
+        value: 1,
+      }, {
+        text: this.tl('_when_multiple_images'),
+        value: 2,
+      }]
+    },
+
     pageNumberLengthOptions() {
       return [{
         text: this.tl('_disable'),
@@ -173,7 +188,7 @@ export default {
 
     createSubdirectory(val) {
       browser.storage.local.set({
-        illustrationCreateSubdirectory: !!val
+        illustrationCreateSubdirectory: val
       });
     }
   },

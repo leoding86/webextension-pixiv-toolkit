@@ -736,5 +736,8 @@
    },
    "_relative_location_enabled_notice": {
        "message": "（需要启用设置“允许扩展程序接管下载”）"
+   },
+   "_when_multiple_images": {
+       "message": "当多张图片时"
    }
 }
