@@ -71,6 +71,7 @@ export default {
         this.ready = false;
         this.lastError = null;
         this.lastBlob = null;
+        this.lastData = null;
         this.lastFilename = null;
         this.downloading = false;
         this.totalCount = 0;
@@ -114,8 +115,10 @@ export default {
     downloadImages() {
       let vm = this;
 
-      if (this.lastBlob) {
-        this.downloadFile(this.lastBlob, this.lastFilename, {
+      if (this.lastData) {
+        this.downloadFile({
+          src: this.lastData,
+          filename: this.lastFilename,
           folder: this.getSubfolder(vm.getItem('illustrationRelativeLocation'), post.context),
         });
       } else if (!this.downloading) {
@@ -140,12 +143,14 @@ export default {
           this.failCount = progress.failCount;
         });
 
-        post.addListener('download-finish', ({ blob, filename }) => {
-          this.lastBlob = blob;
+        post.addListener('download-finish', ({ ab, filename }) => {
+          this.lastData = ab;
           this.lastFilename = filename;
           this.downloading = false;
 
-          this.downloadFile(blob, filename, {
+          this.downloadFile({
+            src: this.lastData,
+            filename: this.lastFilename,
             folder: this.getSubfolder(vm.getItem('illustrationRelativeLocation'), post.context),
           });
         });

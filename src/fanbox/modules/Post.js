@@ -224,8 +224,8 @@ export default class Post extends Event {
     });
 
     downloader.addListener('finish', () => {
-      zip.generateAsync({ type: 'blob' }).then(blob => {
-        this.dispatch('download-finish', [{blob, filename: this.getFilename()}, context]);
+      zip.generateAsync({ type: 'arraybuffer' }).then(ab => {
+        this.dispatch('download-finish', [{ab, filename: this.getFilename()}, context]);
       });
     });
 
