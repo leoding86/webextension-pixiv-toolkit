@@ -1,3 +1,9 @@
+v5.2.0
+Fix issue about download options;
+Fix issue about download files to relative location;
+Add "Disable downloads shelf" setting;
+Minor fixes.
+
 v5.0.3
 Fix issue about downloaded images will not be packed into a zip file when "Pack File" setting is enabled;
 Fix issue about Fanbox download button is missing;
