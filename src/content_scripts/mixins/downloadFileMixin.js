@@ -10,6 +10,32 @@ import MimeType from '@/modules/Util/MimeType';
 export default {
   methods: {
     /**
+     * Download multiple files
+     *
+     * @param {Object[]} files
+     * @param {{savePath: string}} options
+     * @param {number} [index=0]
+     * @returns {Promise}
+     */
+    downloadMultipleFiles(files, { savePath }, index = 0) {
+      let file = files[index];
+
+      if (!file) {
+        return Promise.resolve();
+      }
+
+      return this.downloadFile({
+        src: file.data, filename: file.filename, folder: savePath
+      })
+      .then(() => {
+        console.log(`Index ${index} downloaded`);
+        setTimeout(() => {
+          this.downloadMultipleFiles(files, { savePath }, index + 1);
+        }, this.browserItems.multipleDownloadsGapTime);
+      });
+    },
+
+    /**
      *
      * @param {{url: string, filename: string}} param
      */

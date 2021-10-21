@@ -84,10 +84,13 @@ export default {
 
     this.chunks = this.mangaTool.chunks
 
+    /**
+     * Create download buttons from download chunks
+     */
     this.chunks.forEach((chunk, i) => {
       buttonsInfo[i] = {
         index: i,
-        text: vm.getChunkTitle(chunk, { singular: this.tl('_dl_page'), plural: this.tl('_dl_pages') }) + (vm.isSaved ? ' ✔️' : ''),
+        text: vm.getChunkTitle(chunk, this.tl('_download')) + (vm.isSaved ? ' ✔️' : ''),
         downloadStatus: 0,
         chunk: chunk,
         type: '',
@@ -144,40 +147,19 @@ export default {
       return true;
     },
 
-    getChunkTitle(chunk, { singular, plural }) {
+    getChunkTitle(chunk, text) {
       let offset = this.mangaTool.pageNumberStartWithOne ? 1 : 0;
       let start = parseInt(chunk.start) + offset, end = parseInt(chunk.end) + offset;
 
       if (start === end) {
-        return singular + ' ' + end
+        return text + ' p' + start;
       } else {
-        return plural + ' ' + start + '-' + end;
+        return text + ' p' + start + '-p' + end;
       }
     },
 
     updateButtonInfo(buttonInfo, data) {
       this.$set(this.buttonsInfo, buttonInfo.index, Object.assign(buttonInfo, data));
-    },
-
-    /**
-     * Download multiple files
-     *
-     * @param {Object[]} files
-     * @param {{savePath: string}} options
-     * @param {number} [index=0]
-     * @returns {Promise}
-     */
-    downloadMultipleFiles(files, { savePath }, index = 0) {
-      let file = files[index];
-
-      if (!file) {
-        return Promise.resolve();
-      }
-
-      return this.downloadFile({
-        src: file.data, filename: file.filename, folder: savePath
-      })
-      .then(() => this.downloadMultipleFiles(files, { savePath }, index + 1));
     },
 
     /**
@@ -232,23 +214,28 @@ export default {
         return;
       }
 
-      if (buttonInfo.downloadStatus === 0) {
-        this.updateButtonInfo(buttonInfo, { downloadStatus: 1 });
-
-        this.mangaTool.downloadChunk(buttonInfo.chunk, buttonInfo).then(files => {
-          /**
-           * Cache files
-           */
-          this.updateButtonInfo(buttonInfo, { files });
-          this.saveDownloadedFiles(files, buttonInfo.chunk);
-        }).catch(error => {
-          console.error(error);
-        });
-      } else if (buttonInfo.downloadStatus === 2) {
-        this.saveDownloadedFiles(buttonInfo.files, buttonInfo.chunk);
+      if (buttonInfo.downloadStatus === 1) {
+        return;
       }
 
-      this.updateButtonInfo(buttonInfo, { type: 'success' });
+      /**
+       * Marking download status to downloading
+       */
+      this.updateButtonInfo(buttonInfo, { downloadStatus: 1 });
+
+      this.mangaTool.downloadChunk(buttonInfo.chunk, buttonInfo).then(files => {
+        /**
+         * Reset download status to ready and update button's type to success
+         */
+        this.updateButtonInfo(buttonInfo, { type: 'success', downloadStatus: 0 });
+
+        /**
+         * Save downloaded files
+         */
+        this.saveDownloadedFiles(files, buttonInfo.chunk);
+      }).catch(error => {
+        console.error(error);
+      });
     },
 
     downloadProgressEventHandle({ progress, failCount}, buttonInfo) {
@@ -262,7 +249,7 @@ export default {
     },
 
     downloadFinishEventHandle(buttonInfo, extra) {
-      let text = this.getChunkTitle(buttonInfo.chunk, { singular: this.tl('_save_page'), plural: this.tl('_save_pages') })
+      let text = this.getChunkTitle(buttonInfo.chunk, this.tl('_redownload'))
 
       this.updateButtonInfo(buttonInfo, {
         text: text + ' ✔️',
