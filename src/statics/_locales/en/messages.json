@@ -736,5 +736,26 @@
    },
    "_when_multiple_images": {
        "message": "When multiple images"
+   },
+   "_redownload": {
+       "message": "Re-download"
+   },
+   "_select_all": {
+       "message": "Select All"
+   },
+   "_unselect_all": {
+       "message": "Unselect All"
+   },
+   "_select_invert": {
+       "message": "Select Invert"
+   },
+   "_multiple_downloads_time_gap": {
+       "message": "Multiple downloads time gap"
+   },
+   "_unit_ms": {
+       "message": "Unit: ms"
+   },
+   "_add_time_gap_between_each_file_download_to_prevent_download_issue": {
+       "message": "Add time gap between each file download to prevent download issue"
    }
 }

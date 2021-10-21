@@ -739,5 +739,26 @@
    },
    "_when_multiple_images": {
        "message": "当多张图片时"
+   },
+   "_redownload": {
+       "message": "重新下载"
+   },
+   "_select_all": {
+       "message": "选择全部"
+   },
+   "_unselect_all": {
+       "message": "全部取消"
+   },
+   "_select_invert": {
+       "message": "反向选择"
+   },
+   "_multiple_downloads_time_gap": {
+       "message": "多文件下载时间间隔"
+   },
+   "_unit_ms": {
+       "message": "单位：毫秒"
+   },
+   "_add_time_gap_between_each_file_download_to_prevent_download_issue": {
+       "message": "在每个文件下载之间添加时间间隔以防止下载问题"
    }
 }
