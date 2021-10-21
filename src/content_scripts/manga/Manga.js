@@ -143,13 +143,13 @@ class MangaTool extends FilesDownloader {
   }
 
   /**
-   *
+   * @override
+   * @inheritdoc
    * @param {number} index
-   * @param {object} extra
-   * @return {string}
+   * @returns {string}
    */
-  getFileUrlByIndex(index, extra) {
-    return this.context.pages[extra.chunk.start + index].urls.original;
+  getFileUrlByIndex(index) {
+    return this.context.pages[index].urls.original;
   }
 
   /**
