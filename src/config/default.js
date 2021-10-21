@@ -202,4 +202,9 @@ export default Object.assign({}, {
      * @since 5.2.0
      */
     disableDownloadsShelf: false,
+
+    /**
+     * @since 5.3.0
+     */
+    multipleDownloadsGapTime: 150,
   });
