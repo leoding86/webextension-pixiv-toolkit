@@ -1,0 +1,9 @@
+{
+  "collectCoverage": true,
+
+  "transform": {
+    "\\.js$": "babel-jest"
+  },
+
+  "testRegex": "((\\.|/*.)(spec))\\.js?$"
+}

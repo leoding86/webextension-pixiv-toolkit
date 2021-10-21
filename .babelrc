@@ -9,7 +9,8 @@
             "last 2 versions",
             "not ie <= 8",
             "chrome >= 48"
-          ]
+          ],
+          "node": "current"
         }
       }
     ]
@@ -21,5 +22,17 @@
     "@babel/plugin-transform-arrow-functions",
     "@babel/plugin-transform-block-scoping",
     "@vue/babel-plugin-transform-vue-jsx"
-  ]
+  ],
+  "env": {
+    "test": {
+      "plugins": [
+        "@babel/plugin-syntax-jsx",
+        "@babel/plugin-transform-runtime",
+        "@babel/plugin-proposal-class-properties",
+        "@babel/plugin-transform-arrow-functions",
+        "@babel/plugin-transform-block-scoping",
+        "@babel/plugin-transform-modules-commonjs"
+      ]
+    }
+  }
 }
