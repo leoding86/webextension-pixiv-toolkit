@@ -37,6 +37,9 @@
         </div>
       </div>
       <template slot="foot">
+        <ptk-button @click="selectAll">{{ tl('_select_all') }}</ptk-button>
+        <ptk-button @click="unselectAll">{{ tl('_unselect_all') }}</ptk-button>
+        <ptk-button @click="selectInvert">{{ tl('_select_invert') }}</ptk-button>
         <ptk-button @click="downloadSelectedImages" :disabled="selectedImageIndexes.length < 1">
           <template v-if="downloadSelectedImagesStatus === 1">
             {{ downloadSelectedImagesNotice }}
@@ -173,21 +176,27 @@ export default {
       let vm = this,
           buttonsInfo = {};
 
+      /**
+       * Create download buttons from download chunks
+       */
       vm.chunks.forEach((chunk, i) => {
-        let isSingle = vm.illustTool.isSingle()
-
         buttonsInfo[i] = {
           index: i,
-          text: ((isSingle && !this.alwaysPack) ? this.tl('_dl_image') : vm.getChunkTitle(chunk, { singular: this.tl('_dl_page'), plural: this.tl('_dl_pages')})) + (vm.isSaved ? ' ✔️' : ''),
+          text: '',
           downloadStatus: 0,
-          chunk: chunk,
-          isSingle: isSingle,
-          type: '',
-          files: []
-        }
-      })
+          chunk,
+          isSingle: false,
+          type: ''
+        };
 
-      vm.buttonsInfo = buttonsInfo
+        if (chunk.start >= 0 && chunk.end >= 0) {
+          buttonsInfo[i].isSingle = chunk.start === chunk.end;
+        }
+
+        buttonsInfo[i].text = ((buttonsInfo[i].isSingle && !this.alwaysPack) ? this.tl('_dl_image') : vm.getChunkTitle(chunk, this.tl('_download'))) + (vm.isSaved ? ' ✔️' : '')
+      });
+
+      vm.buttonsInfo = buttonsInfo;
     },
 
     saveDownloadRecord(record) {
@@ -225,33 +234,12 @@ export default {
       )
     },
 
-    getChunkTitle(chunk, { singular, plural }) {
+    getChunkTitle(chunk, text) {
       if (chunk.start === chunk.end) {
-        return singular + ' ' + (chunk.start + 1)
+        return text + ' p' + (chunk.start + 1)
       } else {
-        return plural + ' ' + (chunk.start - 0 + 1) + '-' + (chunk.end - 0 + 1);
+        return text + ' p' + (chunk.start - 0 + 1) + '-p' + (chunk.end - 0 + 1);
       }
-    },
-
-    /**
-     * Download multiple files
-     *
-     * @param {Object[]} files
-     * @param {{savePath: string}} options
-     * @param {number} [index=0]
-     * @returns {Promise}
-     */
-    downloadMultipleFiles(files, { savePath }, index = 0) {
-      let file = files[index];
-
-      if (!file) {
-        return Promise.resolve();
-      }
-
-      return this.downloadFile({
-        src: file.data, filename: file.filename, folder: savePath
-      })
-      .then(() => this.downloadMultipleFiles(files, { savePath }, index + 1));
     },
 
     /**
@@ -309,27 +297,37 @@ export default {
         return;
       }
 
-      if (buttonInfo.downloadStatus === 0) {
-        buttonInfo.downloadStatus = 1;
-
-        let indexes = [],
-            start = Math.min(buttonInfo.chunk.start, buttonInfo.chunk.end),
-            end = Math.max(buttonInfo.chunk.start, buttonInfo.chunk.end);
-
-        while (start <= end) {
-          indexes.push(start);
-          start++;
-        }
-
-        this.tool.downloadFiles({ indexes }, buttonInfo).then(files => {
-          this.updateButtonInfo(buttonInfo, { files });
-          this.saveDownloadedFiles(files, buttonInfo);
-        });
-
-        this.updateButtonInfo(buttonInfo, { type: 'succcess' });
-      } else if (buttonInfo.downloadStatus === 2) {
-        this.saveDownloadedFiles(buttonInfo.files, buttonInfo);
+      if (buttonInfo.downloadStatus === 1) {
+        return;
       }
+
+      /**
+       * Marking download status to downloading
+       */
+      buttonInfo.downloadStatus = 1;
+
+      let indexes = [],
+          start = Math.min(buttonInfo.chunk.start, buttonInfo.chunk.end),
+          end = Math.max(buttonInfo.chunk.start, buttonInfo.chunk.end);
+
+      while (start <= end) {
+        indexes.push(start);
+        start++;
+      }
+
+      this.tool.downloadFiles({ indexes }, buttonInfo).then(files => {
+        /**
+         * Reset download status to ready and update button's type to success
+         */
+        this.updateButtonInfo(buttonInfo, { type: 'succcess', downloadStatus: 0 });
+
+        /**
+         * Save downloaded files
+         */
+        this.saveDownloadedFiles(files, buttonInfo);
+      }).catch(error => {
+        console.error(error);
+      });
     },
 
     downloadProgressEventHandle({ progress, failCount }, buttonInfo, extra) {
@@ -356,9 +354,7 @@ export default {
         this.downloadSelectedImagesStatus = 0;
         this.downloadSelectedImagesNotice = '';
       } else {
-        let text = this.getChunkTitle(
-          buttonInfo.chunk, { singular: this.tl('_save_page'), plural: this.tl('_save_pages') }
-        );
+        let text = this.getChunkTitle(buttonInfo.chunk, this.tl('_redownload'));
 
         this.updateButtonInfo(buttonInfo, {
           text: (buttonInfo.isSingle ? this.tl('_save_image') : text) + ' ✔️',
@@ -415,6 +411,37 @@ export default {
         }
 
         this.$set(this.images, idx, image);
+      }
+    },
+
+    selectAll() {
+      for (let idx in this.images) {
+        this.$set(this.images, idx, Object.assign(this.images[idx], { selected: true }));
+        this.selectedImageIndexes.push(idx);
+      }
+    },
+
+    unselectAll() {
+      for (let idx in this.images) {
+        this.$set(this.images, idx, Object.assign(this.images[idx], { selected: false }));
+        this.selectedImageIndexes = [];
+      }
+    },
+
+    selectInvert() {
+      /**
+       * Clear selections
+       */
+      this.selectedImageIndexes = [];
+
+      for (let idx in this.images) {
+        let selectedValue = this.images[idx].hasOwnProperty('selected') ?
+          !this.images[idx].selected : true;
+        this.$set(this.images, idx, Object.assign(this.images[idx], { selected: selectedValue }));
+
+        if (selectedValue) {
+          this.selectedImageIndexes.push(idx);
+        }
       }
     },
 

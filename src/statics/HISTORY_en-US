@@ -1,7 +1,14 @@
+v5.3.0
+Add "Select All", "Unselect All" and "Select Invert" button in "SELECT & DL" dialog;
+Add "Multiple downloads time gap" setting;
+Fix issue about it can't download files in incognite mode when the setting "Allow extension takes over downloads" is enabled;
+Fix issue about it can't download all files without zipping when the setting "Allow extension takes over downloads" is disabled;
+Fix issue about cannot download second and later chunk in illustrations or mangas;
+Minor fixes.
+
 v5.2.1
 Fix downloading issues;
 Update "Create subdirectory" setting;
-Minor fixes.
 
 v5.2.0
 Fix issue about download options;

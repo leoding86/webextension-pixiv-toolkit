@@ -82,6 +82,25 @@
             ></v-switch>
           </v-list-tile-action>
         </v-list-tile>
+
+        <v-list-tile>
+          <v-list-tile-content>
+            <v-list-tile-title>
+              {{ tl('_multiple_downloads_time_gap') }} {{ tl('_unit_ms') }}
+            </v-list-tile-title>
+            <v-list-tile-sub-title>
+              {{ tl('_add_time_gap_between_each_file_download_to_prevent_download_issue') }}
+            </v-list-tile-sub-title>
+          </v-list-tile-content>
+          <v-list-tile-action>
+            <v-text-field
+              reverse
+              v-model="multipleDownloadsGapTime"
+              type="number"
+              style="width:100px;"
+            ></v-text-field>
+          </v-list-tile-action>
+        </v-list-tile>
       </v-list>
     </v-card>
 
@@ -113,6 +132,8 @@ export default {
       downloadTasksWhenDownloadingImages: 3,
 
       downloadPackFiles: true,
+
+      multipleDownloadsGapTime: 150,
     };
   },
 
@@ -151,6 +172,12 @@ export default {
       browser.storage.local.set({
         downloadPackFiles: !!val
       });
+    },
+
+    multipleDownloadsGapTime(val) {
+      browser.storage.local.set({
+        multipleDownloadsGapTime: parseInt(val)
+      });
     }
   },
 
@@ -180,6 +207,8 @@ export default {
     this.downloadTasksWhenDownloadingImages = this.browserItems.downloadTasksWhenDownloadingImages;
 
     this.downloadPackFiles = !!this.browserItems.downloadPackFiles;
+
+    this.multipleDownloadsGapTime = parseInt(this.browserItems.multipleDownloadsGapTime) || 150;
   },
 
   methods: {

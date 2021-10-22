@@ -4,6 +4,7 @@ import IllustHistoryPort from '@/modules/Ports/IllustHistoryPort/BackgroundPort'
 import { Updater } from '@/modules/Util';
 import defaultSettings from '@/config/default';
 import updateSettings from '@/config/update';
+import MimeType from '@/modules/Util/MimeType';
 
 const browser = window.browser = Browser.getBrowser();
 
@@ -272,16 +273,28 @@ Main.prototype = {
    * @param {Object} args
    */
   downloadAction: function (args) {
-    if (args.message.options.arrayBuffer) {
-      args.message.options.url = URL.createObjectURL(new Blob([args.message.options.arrayBuffer], { type: 'text/plain' }));
-      delete args.message.options.arrayBuffer;
-    }
+    let downloadOptions = {
+      saveAs: !!args.message.options.saveAs
+    };
 
     if (args.message.options.filename.indexOf('/') === 0) {
-      args.message.options.filename = args.message.options.filename.substr(1);
+      downloadOptions.filename = args.message.options.filename.substr(1);
+    } else {
+      downloadOptions.filename = args.message.options.filename;
     }
 
-    browser.downloads.download(args.message.options, function (downloadId) {
+    if (args.message.options.data) {
+      downloadOptions.url = URL.createObjectURL(new Blob(
+        [new Uint8Array(args.message.options.data).buffer],
+        {
+          type: MimeType.getFileMimeType(downloadOptions.filename)
+        }
+      ));
+    } else {
+      downloadOptions.url = args.message.options.url;
+    }
+
+    browser.downloads.download(downloadOptions, function (downloadId) {
       if (!!args.sendResponse && typeof args.sendResponse === 'function') {
         args.sendResponse(downloadId);
       }

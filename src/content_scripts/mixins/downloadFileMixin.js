@@ -10,6 +10,33 @@ import MimeType from '@/modules/Util/MimeType';
 export default {
   methods: {
     /**
+     * Download multiple files
+     *
+     * @param {Object[]} files
+     * @param {{savePath: string}} options
+     * @param {number} [index=0]
+     * @returns {Promise}
+     */
+    downloadMultipleFiles(files, { savePath }, index = 0) {
+      let file = files[index];
+
+      if (!file) {
+        return Promise.resolve();
+      }
+
+      return this.downloadFile({
+        src: file.data, filename: file.filename, folder: savePath
+      })
+      .then(() => {
+        console.log(`Index ${index} downloaded`);
+
+        setTimeout(() => {
+          this.downloadMultipleFiles(files, { savePath }, index + 1);
+        }, this.browserItems.multipleDownloadsGapTime);
+      });
+    },
+
+    /**
      *
      * @param {{url: string, filename: string}} param
      */
@@ -33,16 +60,38 @@ export default {
      * @returns {Promise}
      */
     createBrowserDownload({ data, file, saveAs }) {
-      let url = null;
-
-      if (data instanceof Blob) {
-        url = URL.createObjectURL(data);
-      } else {
+      return new Promise((resolve, reject) => {
+        let url = null;
+        let dataArr = null;
         const mimeType = MimeType.getFileMimeType(file);
-        url = URL.createObjectURL(new Blob([data], {type: mimeType}));
-      }
 
-      return browserDownloads.download({ url, filename: file, saveAs });
+        if (data instanceof Blob) {
+          if (browser.extension.inIncognitoContext) {
+            let fileReader = new FileReader();
+            fileReader.onload = event => {
+              dataArr = Array.from(new Uint8Array(event.target.result));
+              resolve(browserDownloads.download({ data: dataArr, filename: file, saveAs }));
+            };
+            fileReader.readAsArrayBuffer(data);
+          } else {
+            url = URL.createObjectURL(data);
+          }
+
+          return;
+        } else {
+          if (browser.extension.inIncognitoContext) {
+            dataArr = Array.from(new Uint8Array(data));
+          } else {
+            url = URL.createObjectURL(new Blob([data], {type: mimeType}));
+          }
+        }
+
+        if (dataArr) {
+          resolve(browserDownloads.download({ data: dataArr, filename: file, saveAs }));
+        } else {
+          resolve(browserDownloads.download({ url, filename: file, saveAs }));
+        }
+      });
     },
 
     /**
