@@ -73,11 +73,11 @@ export default {
               resolve(browserDownloads.download({ data: dataArr, filename: file, saveAs }));
             };
             fileReader.readAsArrayBuffer(data);
+
+            return;
           } else {
             url = URL.createObjectURL(data);
           }
-
-          return;
         } else {
           if (browser.extension.inIncognitoContext) {
             dataArr = Array.from(new Uint8Array(data));
