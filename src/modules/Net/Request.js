@@ -41,6 +41,8 @@ class Request extends Event {
       return;
     }
 
+    let textDecoder = new TextDecoder();
+
     setTimeout(() => {
       reader.read().then(({ done, value }) => {
         if (done) {
@@ -55,7 +57,7 @@ class Request extends Event {
               index += 10000;
 
               if (arrayBuffer.length > 0) {
-                this.responseData += String.fromCharCode.apply(null, arrayBuffer);
+                this.responseData += textDecoder.decode(arrayBuffer);
               } else {
                 break;
               }
