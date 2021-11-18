@@ -49,19 +49,7 @@ class Request extends Event {
           this.dispatch('onload', [this.responseType === 'arrayBuffer' ? new Uint8Array(this.responseData) : this.responseData]);
         } else {
           if (this.responseType === 'plain') {
-            let index = 0;
-
-            while (true) {
-              let arrayBuffer = value.slice(index, index + 10000);
-
-              index += 10000;
-
-              if (arrayBuffer.length > 0) {
-                this.responseData += textDecoder.decode(arrayBuffer);
-              } else {
-                break;
-              }
-            }
+            this.responseData += textDecoder.decode(value);
           } else if (this.responseType === 'arrayBuffer') {
             value.forEach(char => {
               this.responseData.push(char);
