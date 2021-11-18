@@ -760,5 +760,23 @@
    },
    "_add_time_gap_between_each_file_download_to_prevent_download_issue": {
        "message": "在每个文件下载之间添加时间间隔以防止下载问题"
+   },
+   "_diagnosis_messages": {
+       "message": "诊断信息"
+   },
+   "_error_messages": {
+       "message": "错误信息"
+   },
+   "_history_backup": {
+       "message": "记录备份"
+   },
+   "_permission": {
+       "message": "权限"
+   },
+   "_open": {
+       "message": "打开"
+   },
+   "_view": {
+       "message": "查看"
    }
 }
