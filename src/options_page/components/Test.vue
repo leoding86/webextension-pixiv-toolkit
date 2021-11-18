@@ -21,10 +21,18 @@
       <v-btn @click="resetVersionNumber">Reset version number</v-btn>
       <v-btn @click="insertData">Insert histories</v-btn>
     </div>
+    <h1>Debug Request module</h1>
+    <div>
+      <v-text-field v-model="requestUrl" label="Request URL"></v-text-field>
+      <v-text-field v-model="requestOptions" label="Request Options"></v-text-field>
+      <v-text-field v-model="requestResponseType" label="Response Type"></v-text-field>
+      <v-btn @click="fireRequest">Fire</v-btn>
+    </div>
   </div>
 </template>
 
 <script>
+import Request from '@/modules/Net/Request';
 import CacheableImage from './CacheableImage';
 import AppSuggest from './AppSuggest';
 import IllustHistory from '@/repositories/IllustHistory';
@@ -38,7 +46,10 @@ export default {
   data() {
     return {
       image: 'https://s.pximg.net/www/images/logo/pixiv-logo.svg',
-      pixivOminaIcon: 'https://raw.githubusercontent.com/leoding86/webextension-pixiv-toolkit/master/src/statics/remote/img/pixiv-omina.png'
+      pixivOminaIcon: 'https://raw.githubusercontent.com/leoding86/webextension-pixiv-toolkit/master/src/statics/remote/img/pixiv-omina.png',
+      requestUrl: '',
+      requestOptions: '',
+      requestResponseType: ''
     }
   },
 
@@ -112,6 +123,18 @@ export default {
         })
         xhr.send()
       })
+    },
+
+    fireRequest() {
+      let request = new Request(this.requestUrl, JSON.parse(this.requestOptions));
+      request.responseType = this.requestResponseType;
+      request.addListener('onload', responseData => {
+        console.log(responseData);
+      });
+      request.addListener('onerror', error => {
+        console.log(error);
+      });
+      request.send();
     }
   }
 }
