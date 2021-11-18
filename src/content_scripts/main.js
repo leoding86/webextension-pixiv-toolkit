@@ -5,12 +5,24 @@ import Browser from '@/modules/Browser/Browser';
 import I18n from '@/modules/I18n';
 import SuperMixin from '@/mixins/SuperMixin';
 import Vue from 'vue';
+import ErrorTracker from '@/modules/ErrorTracker';
 
 /**
  * Configurate Vue
  */
 Vue.prototype.$browser = window.browser /* For back compatible */ = Browser.getBrowser();
 Vue.mixin(SuperMixin);
+
+let errorTracker = new ErrorTracker();
+errorTracker.addListener('error', errorMessage => {
+  console.log(errorMessage);
+  browser.runtime.sendMessage({
+    action: 'trackError',
+    args: {
+      errorMessage
+    }
+  });
+});
 
 browser.storage.local.get(null, items => {
   let i18n = I18n.i18n(items.language, browser.i18n.getUILanguage());
