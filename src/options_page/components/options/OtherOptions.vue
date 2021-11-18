@@ -108,6 +108,17 @@
           </v-list-tile-action>
         </v-list-tile>
       </v-list>
+
+      <v-list two-line>
+        <v-list-tile>
+          <v-list-tile-content>
+            <v-list-tile-title>{{ tl('_diagnosis_messages') }}</v-list-tile-title>
+          </v-list-tile-content>
+          <v-list-tile-action>
+            <v-btn depressed @click="viewDiagnosis">{{ tl('_view') }}</v-btn>
+          </v-list-tile-action>
+        </v-list-tile>
+      </v-list>
     </v-card>
   </div>
 </template>
@@ -226,6 +237,10 @@ export default {
 
     reload() {
       browser.runtime.reload();
+    },
+
+    viewDiagnosis() {
+      this.$router.push({ name: 'DiagnosisMessages'});
     }
   }
 };

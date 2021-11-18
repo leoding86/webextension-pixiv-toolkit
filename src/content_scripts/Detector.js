@@ -89,7 +89,8 @@ class Detector {
       this.request = new Request(this.getIllustUrl(illustId), { method: 'GET' });
 
       this.request.addExclusiveListener('onload', data => {
-        let json = JSON.parse(String.fromCharCode.apply(null, data));
+        let textDecoder = new TextDecoder();
+        let json = JSON.parse(textDecoder.decode(data));
 
         if (json && json.body) {
           self.contextData = json.body;

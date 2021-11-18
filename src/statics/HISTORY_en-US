@@ -1,3 +1,8 @@
+v5.4.0
+Add diagnosis messages page, you can open it in "other" section of setting page;
+Fix issue about the extension can't download anything when the extension takes over downloads;
+Minor fixes.
+
 v5.3.0
 Add "Select All", "Unselect All" and "Select Invert" button in "SELECT & DL" dialog;
 Add "Multiple downloads time gap" setting;

@@ -757,5 +757,23 @@
    },
    "_add_time_gap_between_each_file_download_to_prevent_download_issue": {
        "message": "Add time gap between each file download to prevent download issue"
+   },
+   "_diagnosis_messages": {
+       "message": "Diagnosis Messages"
+   },
+   "_error_messages": {
+       "message": "Error Messages"
+   },
+   "_history_backup": {
+       "message": "History Backup"
+   },
+   "_permissions": {
+       "message": "Permissions"
+   },
+   "_open": {
+       "message": "Open"
+   },
+   "_view": {
+       "message": "View"
    }
 }
