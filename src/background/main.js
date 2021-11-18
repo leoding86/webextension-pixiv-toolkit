@@ -13,6 +13,7 @@ function Main() {
   this.logs = [];
   this.logsMax = 200;
   this.ports = {};
+  this.errorMessages = [];
 }
 
 Main.prototype = {
@@ -350,6 +351,28 @@ Main.prototype = {
       : args.message;
 
     this.logs.push(errorMsg);
+  },
+
+  /**
+   * Store error
+   * @param {{errorMessage: string}} args.message.args
+   */
+  trackErrorAction: function(args) {
+    if (this.errorMessages.length > 500) {
+      this.errorMessages.shift();
+    }
+
+    this.errorMessages.push(args.message.args.errorMessage);
+  },
+
+  /**
+   * Get tracked error messages
+   * @param {*} args
+   */
+  getTrackedErrorMessagesAction: function(args) {
+    if (args.sendResponse && typeof args.sendResponse === 'function') {
+      args.sendResponse(this.errorMessages);
+    }
   },
 
   update: function () {
