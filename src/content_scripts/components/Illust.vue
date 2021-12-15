@@ -406,7 +406,7 @@ export default {
           image.selected = true;
 
           if (this.selectedImageIndexes.indexOf(idx) < 0) {
-            this.selectedImageIndexes.push(idx);
+            this.selectedImageIndexes.push(parseInt(idx));
           }
         }
 
@@ -417,7 +417,7 @@ export default {
     selectAll() {
       for (let idx in this.images) {
         this.$set(this.images, idx, Object.assign(this.images[idx], { selected: true }));
-        this.selectedImageIndexes.push(idx);
+        this.selectedImageIndexes.push(parseInt(idx));
       }
     },
 
@@ -440,7 +440,7 @@ export default {
         this.$set(this.images, idx, Object.assign(this.images[idx], { selected: selectedValue }));
 
         if (selectedValue) {
-          this.selectedImageIndexes.push(idx);
+          this.selectedImageIndexes.push(parseInt(idx));
         }
       }
     },
