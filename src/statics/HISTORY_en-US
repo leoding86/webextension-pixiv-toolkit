@@ -1,3 +1,6 @@
+v5.4.1
+Fix issue about rename filename incorrectly when downloading invert selected images.
+
 v5.4.0
 Add diagnosis messages page, you can open it in "other" section of setting page;
 Fix issue about the extension can't download anything when the extension takes over downloads;
