@@ -1,3 +1,7 @@
+v5.5.0
+Add settings for changing the position and the style of download panel;
+Fix issue of overwriting the http headers multiple times.
+
 v5.4.0
 Add diagnosis messages page, you can open it in "other" section of setting page;
 Fix issue about the extension can't download anything when the extension takes over downloads;
