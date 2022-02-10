@@ -775,5 +775,23 @@
    },
    "_view": {
        "message": "View"
+   },
+   "_interface": {
+       "message": "Interface"
+   },
+   "_center": {
+       "message": "Center"
+   },
+   "_left": {
+       "message": "Left"
+   },
+   "_right": {
+       "message": "Right"
+   },
+   "_download_panel_position": {
+       "message": "Download panel position"
+   },
+   "_download_panel_style": {
+       "message": "Download panel style"
    }
 }

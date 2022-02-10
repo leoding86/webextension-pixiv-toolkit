@@ -778,5 +778,23 @@
    },
    "_view": {
        "message": "查看"
+   },
+   "_interface": {
+       "message": "界面"
+   },
+   "_center": {
+       "message": "中"
+   },
+   "_left": {
+       "message": "左"
+   },
+   "_right": {
+       "message": "右"
+   },
+   "_download_panel_position": {
+       "message": "下载面板位置"
+   },
+   "_download_panel_style": {
+       "message": "下载面板样式"
    }
 }
