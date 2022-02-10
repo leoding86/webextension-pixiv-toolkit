@@ -207,4 +207,10 @@ export default Object.assign({}, {
      * @since 5.3.0
      */
     multipleDownloadsGapTime: 150,
+
+    /**
+     * @since 5.5.0
+     */
+    downloadPanelPosition: 'center',
+    downloadPanelStyle: 1,
   });
