@@ -55,7 +55,7 @@ export default {
   .button {
     display:inline-block;
     margin-right: 5px;
-    padding: 3px 13px;
+    padding: 6px 22px;
     border-radius: 50px;
     font-size: 12px;
     background: rgb(0, 150, 250);
