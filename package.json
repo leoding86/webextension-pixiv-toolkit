@@ -54,7 +54,7 @@
     "json-loader": "^0.5.7",
     "mini-css-extract-plugin": "^0.10.0",
     "node-notifier": "8.0.1",
-    "node-sass": "^4.14.1",
+    "node-sass": "^7.0.0",
     "optimize-css-assets-webpack-plugin": "^5.0.3",
     "portfinder": "^1.0.28",
     "postcss-import": "^11.0.0",
