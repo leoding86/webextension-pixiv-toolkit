@@ -31,7 +31,7 @@ $side-width: 300px;
   max-width: 700px;
 }
 
-a.maintitle {
+%a-maintitle, a.maintitle {
   text-decoration: none;
   color: #333;
 
@@ -41,7 +41,7 @@ a.maintitle {
 }
 
 a.subtitle {
-  @extend a.maintitle;
+  @extend %a-maintitle;
   color: #999;
 }
 
