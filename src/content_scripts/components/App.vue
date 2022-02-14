@@ -1,14 +1,8 @@
 <template>
-  <div class="ptk__container" :id="isDark ? 'ptk-theme__dark' : ''">
-    <div class="ptk__container__body"
-      :class="{
-        'ptk__container__body--panel-left': browserItems.downloadPanelPosition == 'left',
-        'ptk__container__body--panel-right': browserItems.downloadPanelPosition == 'right',
-      }"
-    >
+  <div class="ptk__container" :class="ptkContainerClasses" :id="isDark ? 'ptk-theme__dark' : ''">
+    <div class="ptk__container__body" :class="ptkCOntainerBodyClasses">
       <div class="ptk__container__body-container"
         :class="{
-          'ptk__container__body-container--show': showContainer,
           'ptk__container__body-container--hide': !showApp,
         }"
       >
@@ -45,14 +39,14 @@
             </svg>
           </div>
         </div>
-        <div id="ptk__action__wrapper" :class="{'ptk__action__wrapper--collapse': collapse}">
+        <div id="ptk__action__wrapper">
           <ptk-button class="ptk__inline-handler"
-            v-if="browserItems.downloadPanelStyle == 2 && browserItems.downloadPanelPosition == 'left'"
-            @click="collapse = !collapse"
+            v-if="browserItems.downloadPanelStyle == 2 && ['left', 'center'].indexOf(browserItems.downloadPanelPosition) >= 0"
+            @click="handlerClickHandle"
           >
             <span>P*</span>
           </ptk-button>
-          <div class="ptk__action__wrapper__body" v-show="!collapse">
+          <div class="ptk__action__wrapper__body">
             <ugoira-tool v-if="isUgoira" :tool="tool">ugoira</ugoira-tool>
             <manga-tool v-else-if="isManga" :tool="tool">manga</manga-tool>
             <illust-tool v-else-if="isIllust" :tool="tool">illust</illust-tool>
@@ -61,7 +55,7 @@
           </div>
           <ptk-button class="ptk__inline-handler ptk__inline-handler--right"
             v-if="browserItems.downloadPanelStyle == 2 && browserItems.downloadPanelPosition == 'right'"
-            @click="collapse = !collapse"
+            @click="handlerClickHandle"
           >
             <span>P*</span>
           </ptk-button>
@@ -136,14 +130,6 @@ export default {
       return this.isUndetermined ? 'P?' : 'P*';
     },
 
-    showContainer() {
-      if (this.browserItems.downloadPanelStyle == 2) {
-        return true;
-      } else {
-        return this.containerShowed
-      }
-    },
-
     userId() {
       if (this.tool) {
         return parseInt(this.tool.getUserId())
@@ -158,6 +144,30 @@ export default {
 
     handlerForeground() {
       return '#ffffff';
+    },
+
+    ptkContainerClasses() {
+      let classes = [];
+
+      if (this.browserItems.downloadPanelStyle) {
+        classes.push(`ptk__container--type-${this.browserItems.downloadPanelStyle}`);
+      }
+
+      if (this.browserItems.downloadPanelPosition) {
+        classes.push(`ptk__container--position-${this.browserItems.downloadPanelPosition}`);
+      }
+
+      return classes;
+    },
+
+    ptkCOntainerBodyClasses() {
+      let classes = [];
+
+      if (this.collapse) {
+        classes.push('ptk__container__body--collapse');
+      }
+
+      return classes;
     }
   },
 
@@ -224,7 +234,7 @@ export default {
           vm.pageType = vm.detector.currentType;
 
           // show container
-          vm.containerShowed = vm.browserItems.autoActivateDownloadPanel;
+          vm.collapse = !vm.browserItems.autoActivateDownloadPanel;
 
           if (!vm.browserItems.enableSaveVisitHistory) {
             return;
@@ -273,17 +283,26 @@ export default {
         });
     },
 
-    handlerClickHandle() {
-      if (this.hasError) {
-        alert(`Error: ${this.lastError}, try refresh.`);
-        return;
-      }
-
-      this.containerShowed = !this.containerShowed
-
+    disableGuide() {
       browser.storage.local.set({
         guideShowed: true
-      })
+      });
+    },
+
+    checkError() {
+      if (this.hasError) {
+        throw new Error(`Error: ${this.lastError}, try refresh.`);
+      }
+    },
+
+    handlerClickHandle() {
+      try {
+        this.checkError();
+        this.collapse = !this.collapse
+        this.disableGuide();
+      } catch (error) {
+        alert(error.message);
+      }
     },
 
     passToPixivOmina() {
@@ -320,10 +339,10 @@ export default {
 
   .ptk__container__body-container {
     position: relative;
-    top: 0;
+    top: -50px;
     background: #fff;
     border-radius: 30px;
-    box-shadow: 0 -5px 8px rgba(0,0,0,0.3);
+    box-shadow: 0 0 8px rgba(0,0,0,0.3);
     overflow: hidden;
     transition: all 0.5s;
     box-sizing: border-box;
@@ -339,20 +358,6 @@ export default {
   #ptk__action__wrapper {
     display: flex;
     padding: 5px;
-  }
-
-  .ptk__container__body-container--show {
-    top: -65px;
-    box-shadow: 0 0 8px rgba(0,0,0,0.3);
-
-    #ptk__new-handler-arrow {
-      transform: rotate(180deg);
-    }
-
-    #ptk__new-handler__wrapper {
-      top: -18px;
-      height: 18px;
-    }
   }
 
   .ptk__action__wrapper--collapse {
@@ -483,6 +488,42 @@ export default {
 
     100% {
       top: -70px;
+    }
+  }
+}
+
+.ptk__container--type-1 {
+  .ptk__container__body-container {
+    #ptk__new-handler-arrow {
+      transform: rotate(180deg);
+    }
+
+    #ptk__new-handler__wrapper {
+      top: -18px;
+      height: 18px;
+    }
+  }
+
+  .ptk__container__body--collapse {
+    #ptk__new-handler-arrow {
+      transform: rotate(0deg);
+    }
+
+    .ptk__container__body-container {
+      top: 0px;
+      box-shadow: 0 -5px 8px rgba(0,0,0,0.3);
+    }
+  }
+}
+
+.ptk__container--type-2 {
+  .ptk__container__body--collapse {
+    .ptk__inline-handler {
+      margin-right: 0;
+    }
+
+    .ptk__action__wrapper__body {
+      display: none;
     }
   }
 }
