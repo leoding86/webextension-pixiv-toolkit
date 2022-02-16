@@ -26,6 +26,11 @@ class Novel {
     return !!this.context.r
   }
 
+  inSeries() {
+    return this.context.hasOwnProperty('seriesId')
+           && this.context.hasOwnProperty('seriesTitle');
+  }
+
   getCover() {
     return this.context.novelCover;
   }

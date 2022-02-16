@@ -82,6 +82,21 @@ export default (renameFormat, context, fallback) => {
         content: i18n.getMessage('last_page_number'),
         key: 'lastPageNum',
         possibleKeys: ['lastPageNum']
+      },
+      seriesId: {
+        content: i18n.getMessage('_series_id'),
+        key: 'seriesId',
+        possibleKeys: ['seriesId']
+      },
+      seriesTitle: {
+        content: i18n.getMessage('_series_title'),
+        key: 'seriesTitle',
+        possibleKeys: ['seriesTitle']
+      },
+      "seriesOrder": {
+        content: i18n.getMessage('_series_order'),
+        key: 'seriesOrder',
+        possibleKeys: ['seriesOrder']
       }
     };
 

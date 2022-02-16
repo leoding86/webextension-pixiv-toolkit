@@ -118,7 +118,8 @@ export default {
 
     getFilename(type) {
       return formatName(
-        this.browserItems.novelRenameFormat,
+        this.tool.inSeries() ? this.browserItems.novelRenameFormat
+                             : this.browserItems.novelRenameFormat.replace(/#.*#/, ''),
         this.tool.context,
         this.tool.context.novelId + "_" + this.tool.context.novelTitle
       ) + '.' + type;
