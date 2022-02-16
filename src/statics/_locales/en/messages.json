@@ -793,5 +793,17 @@
    },
    "_download_panel_style": {
        "message": "Download panel style"
+   },
+   "_series_id": {
+       "message": "Series ID"
+   },
+   "_series_title": {
+       "message": "Series Title"
+   },
+   "_series_order": {
+       "message": "Series Order"
+   },
+   "novel_rename_hint": {
+       "message": "Example: {authorId}_{author}_{id}_{title}. You can place the deleted part between the two # tags when the novel isn't in any series like this {author}#-{seriesTitle}-{seriesOrder}#-{title}-{id}"
    }
 }

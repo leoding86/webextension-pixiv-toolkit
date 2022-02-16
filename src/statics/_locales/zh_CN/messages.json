@@ -796,5 +796,17 @@
    },
    "_download_panel_style": {
        "message": "下载面板样式"
+   },
+   "_series_id": {
+       "message": "系列ID"
+   },
+   "_series_title": {
+       "message": "系列标题"
+   },
+   "_series_order": {
+       "message": "系列序号"
+   },
+   "novel_rename_hint": {
+       "message": "例子: {authorId}_{author}_{id}_{title}. 你可以将小说不是系列作品时想要移除的部分放在两个#标签之间。例如：{author}#-{seriesTitle}-{seriesOrder}#-{title}-{id}"
    }
 }
