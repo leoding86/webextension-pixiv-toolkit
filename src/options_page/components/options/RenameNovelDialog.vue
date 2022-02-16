@@ -21,7 +21,7 @@
             ref="renameInput"
             v-model="renameFormat"
             placeholder="Not set"
-            hint="Example: {authorId}_{author}_{id}_{title}"
+            :hint="tl('novel_rename_hint')"
             :persistent-hint=true
             @focus="updateInputPos"
             @keyup="updateInputPos"
@@ -74,6 +74,18 @@ export default {
         {
           title: this.tl("day"),
           holder: "{day}"
+        },
+        {
+          title: this.tl("_series_id"),
+          holder: "{seriesId}"
+        },
+        {
+          title: this.tl("_series_title"),
+          holder: "{seriesTitle}"
+        },
+        {
+          title: this.tl("_series_order"),
+          holder: "{seriesOrder}"
         }
       ]
     };
