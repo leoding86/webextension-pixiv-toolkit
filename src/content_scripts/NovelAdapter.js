@@ -55,6 +55,13 @@ class NovelAdapter {
       month: dateFormatter.getMonth(),
       day: dateFormatter.getDay()
     }
+
+    // series data
+    if (context.seriesNavData) {
+      this.novelContext.seriesId = context.seriesNavData.seriesId;
+      this.novelContext.seriesTitle = context.seriesNavData.title;
+      this.novelContext.seriesOrder = context.seriesNavData.order;
+    }
   }
 
   makeTool() {
