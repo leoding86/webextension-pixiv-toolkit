@@ -54,7 +54,6 @@
     "json-loader": "^0.5.7",
     "mini-css-extract-plugin": "^0.10.0",
     "node-notifier": "8.0.1",
-    "node-sass": "^4.14.1",
     "optimize-css-assets-webpack-plugin": "^5.0.3",
     "portfinder": "^1.0.28",
     "postcss-import": "^11.0.0",
@@ -62,6 +61,7 @@
     "postcss-url": "^7.2.1",
     "rollup": "^1.32.1",
     "rollup-plugin-commonjs": "^9.3.4",
+    "sass": "^1.49.7",
     "sass-loader": "^10.0.1",
     "semver": "^5.7.1",
     "shelljs": "^0.7.6",
@@ -81,7 +81,6 @@
   },
   "browserslist": [
     "> 1%",
-    "last 2 versions",
-    "not ie <= 8"
+    "last 2 versions"
   ]
 }

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="ptk__tool">
     <ptk-button
       :type="zipButton.type"
       @click="zipButtonClickHandle"

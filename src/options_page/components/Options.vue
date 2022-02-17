@@ -14,6 +14,8 @@
 
     <search-options v-if="false"></search-options>
 
+    <interface-options></interface-options>
+
     <other-options></other-options>
   </v-container>
 </template>
@@ -28,6 +30,7 @@ import NovelOptions from '@@/components/options/NovelOptions';
 import DownloadOptions from '@@/components/options/DownloadOptions';
 import HistoryOptions from '@@/components/options/HistoryOptions';
 import SearchOptions from '@@/components/options/SearchOptions';
+import InterfaceOptions from '@@/components/options/InterfaceOptions';
 import OtherOptions from '@@/components/options/OtherOptions';
 import defaultSettings from '@/config/default';
 
@@ -42,6 +45,7 @@ export default {
     'download-options': DownloadOptions,
     'history-options': HistoryOptions,
     'search-options': SearchOptions,
+    'interface-options': InterfaceOptions,
     'other-options': OtherOptions
   }
 }

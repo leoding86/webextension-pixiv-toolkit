@@ -100,6 +100,7 @@ export default {
   .ptk__dialog-head {
     padding: 20px 0 10px 0;
     background: #fff;
+    text-align: center;
   }
 
   .ptk__dialog-body {
@@ -109,6 +110,8 @@ export default {
   }
 
   .ptk__dialog-foot {
+    display: flex;
+    justify-content: center;
     padding: 10px 0 20px 0;
     background: #fff;
   }

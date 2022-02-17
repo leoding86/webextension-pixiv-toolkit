@@ -1,16 +1,5 @@
 <template>
-  <div v-if="show">
-    <ptk-button
-      v-for="buttonInfo in buttonsInfo"
-      :key="buttonInfo.index"
-      :text="buttonInfo.text"
-      :type="buttonInfo.type"
-      @click="downloadButtonClicked(buttonInfo)"
-    ></ptk-button>
-    <ptk-button
-      :text="tl('_select_and_dl')"
-      @click="openSelectionDialog()"
-    ></ptk-button>
+  <div class="ptk__tool" v-if="show">
     <ptk-dialog
       :show.sync="showSelectionDialog"
     >
@@ -51,6 +40,17 @@
         <ptk-button @click="closeSelectionDialog">{{ tl('_close') }}</ptk-button>
       </template>
     </ptk-dialog>
+    <ptk-button
+      v-for="buttonInfo in buttonsInfo"
+      :key="buttonInfo.index"
+      :text="buttonInfo.text"
+      :type="buttonInfo.type"
+      @click="downloadButtonClicked(buttonInfo)"
+    ></ptk-button>
+    <ptk-button
+      :text="tl('_select_and_dl')"
+      @click="openSelectionDialog()"
+    ></ptk-button>
   </div>
 </template>
 

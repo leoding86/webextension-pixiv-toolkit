@@ -1,3 +1,8 @@
+v5.5.0
+Add settings for changing the position and the style of download panel;
+Add new novel rename tags, include series id, series order and series title;
+Fix issue of overwriting the http headers multiple times.
+
 v5.4.1
 Fix issue about rename filename incorrectly when downloading invert selected images.
 

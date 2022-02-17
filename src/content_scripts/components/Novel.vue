@@ -1,5 +1,5 @@
 <template>
-  <div v-if="show">
+  <div class="ptk__tool" v-if="show">
     <ptk-button
       v-for="(button, i) in buttons"
       :key="i"
@@ -118,7 +118,8 @@ export default {
 
     getFilename(type) {
       return formatName(
-        this.browserItems.novelRenameFormat,
+        this.tool.inSeries() ? this.browserItems.novelRenameFormat
+                             : this.browserItems.novelRenameFormat.replace(/#.*#/, ''),
         this.tool.context,
         this.tool.context.novelId + "_" + this.tool.context.novelTitle
       ) + '.' + type;

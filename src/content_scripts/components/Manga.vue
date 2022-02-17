@@ -1,5 +1,5 @@
 <template>
-  <div v-if="show">
+  <div class="ptk__tool" v-if="show">
     <ptk-button
       v-for="buttonInfo in buttonsInfo"
       :key="buttonInfo.index"

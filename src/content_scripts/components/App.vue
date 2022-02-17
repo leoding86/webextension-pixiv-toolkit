@@ -1,9 +1,10 @@
 <template>
-  <div :class="{'ptk__container': true}" :id="isDark ? 'ptk-theme__dark' : ''">
-
-    <div class="ptk__container__body">
+  <div class="ptk__container" :class="ptkContainerClasses" :id="isDark ? 'ptk-theme__dark' : ''">
+    <div class="ptk__container__body" :class="ptkCOntainerBodyClasses">
       <div class="ptk__container__body-container"
-        :class="{'ptk__container__body-container--show': showContainer, 'ptk__container__body-container--hide': !showApp}"
+        :class="{
+          'ptk__container__body-container--hide': !showApp,
+        }"
       >
         <div v-if="showApp && !isUndetermined && !browserItems.guideShowed"
           class="ptk__guide">
@@ -14,7 +15,9 @@
             </svg>
           </div>
         </div>
-        <div id="ptk__new-handler__wrapper">
+        <div id="ptk__new-handler__wrapper"
+          v-if="browserItems.downloadPanelStyle == 1"
+        >
           <div id="ptk__new-handler"
             @click="handlerClickHandle"
           >
@@ -36,16 +39,26 @@
             </svg>
           </div>
         </div>
-        <ugoira-tool v-if="isUgoira" :tool="tool" class="ptk-tool__component">ugoira</ugoira-tool>
-        <manga-tool v-else-if="isManga" :tool="tool" class="ptk-tool__component">manga</manga-tool>
-        <illust-tool v-else-if="isIllust" :tool="tool" class="ptk-tool__component">illust</illust-tool>
-        <novel-tool v-else-if="isNovel" :tool="tool" class="ptk-tool__component">novel</novel-tool>
-        <div class="ptk-tool__component" v-else>
-          <ptk-button text="Parsing information"></ptk-button>
-        </div>
-        <div class="ptk-pixiv-omina-content" v-if="isUgoira || isManga || isIllust">
-          <ptk-button @click="passToPixivOmina"
-            :title="tl('_you_need_to_download_Pixiv_Omina_for_the_button_to_work')">Pixiv Omina</ptk-button>
+        <div id="ptk__action__wrapper">
+          <ptk-button class="ptk__inline-handler"
+            v-if="browserItems.downloadPanelStyle == 2 && ['left', 'center'].indexOf(browserItems.downloadPanelPosition) >= 0"
+            @click="handlerClickHandle"
+          >
+            <span>P*</span>
+          </ptk-button>
+          <div class="ptk__action__wrapper__body">
+            <ugoira-tool v-if="isUgoira" :tool="tool">ugoira</ugoira-tool>
+            <manga-tool v-else-if="isManga" :tool="tool">manga</manga-tool>
+            <illust-tool v-else-if="isIllust" :tool="tool">illust</illust-tool>
+            <novel-tool v-else-if="isNovel" :tool="tool">novel</novel-tool>
+            <ptk-button v-else text="Parsing information"></ptk-button>
+          </div>
+          <ptk-button class="ptk__inline-handler ptk__inline-handler--right"
+            v-if="browserItems.downloadPanelStyle == 2 && browserItems.downloadPanelPosition == 'right'"
+            @click="handlerClickHandle"
+          >
+            <span>P*</span>
+          </ptk-button>
         </div>
       </div>
     </div>
@@ -79,7 +92,8 @@ export default {
       tool: null,
       containerShowed: false,
       lastError: null,
-      isDark: false
+      isDark: false,
+      collapse: false,
     };
   },
 
@@ -116,10 +130,6 @@ export default {
       return this.isUndetermined ? 'P?' : 'P*';
     },
 
-    showContainer() {
-      return this.containerShowed
-    },
-
     userId() {
       if (this.tool) {
         return parseInt(this.tool.getUserId())
@@ -134,6 +144,30 @@ export default {
 
     handlerForeground() {
       return '#ffffff';
+    },
+
+    ptkContainerClasses() {
+      let classes = [];
+
+      if (this.browserItems.downloadPanelStyle) {
+        classes.push(`ptk__container--type-${this.browserItems.downloadPanelStyle}`);
+      }
+
+      if (this.browserItems.downloadPanelPosition) {
+        classes.push(`ptk__container--position-${this.browserItems.downloadPanelPosition}`);
+      }
+
+      return classes;
+    },
+
+    ptkCOntainerBodyClasses() {
+      let classes = [];
+
+      if (this.collapse) {
+        classes.push('ptk__container__body--collapse');
+      }
+
+      return classes;
     }
   },
 
@@ -200,7 +234,7 @@ export default {
           vm.pageType = vm.detector.currentType;
 
           // show container
-          vm.containerShowed = vm.browserItems.autoActivateDownloadPanel;
+          vm.collapse = !vm.browserItems.autoActivateDownloadPanel;
 
           if (!vm.browserItems.enableSaveVisitHistory) {
             return;
@@ -249,17 +283,26 @@ export default {
         });
     },
 
-    handlerClickHandle() {
-      if (this.hasError) {
-        alert(`Error: ${this.lastError}, try refresh.`);
-        return;
-      }
-
-      this.containerShowed = !this.containerShowed
-
+    disableGuide() {
       browser.storage.local.set({
         guideShowed: true
-      })
+      });
+    },
+
+    checkError() {
+      if (this.hasError) {
+        throw new Error(`Error: ${this.lastError}, try refresh.`);
+      }
+    },
+
+    handlerClickHandle() {
+      try {
+        this.checkError();
+        this.collapse = !this.collapse
+        this.disableGuide();
+      } catch (error) {
+        alert(error.message);
+      }
     },
 
     passToPixivOmina() {
@@ -279,20 +322,27 @@ export default {
   z-index: 99999;
 
   .ptk__container__body {
-    position: absolute;
-    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin: 0 80px 0 20px;
     overflow: visible;
-    text-align: center;
     transition: all 0.5s;
+
+    &--panel-left {
+      justify-content: left;
+    }
+
+    &--panel-right {
+      justify-content: right;
+    }
   }
 
   .ptk__container__body-container {
-    display: inline-block;
     position: relative;
-    top: 0;
+    top: -50px;
     background: #fff;
     border-radius: 30px;
-    box-shadow: 0 -5px 8px rgba(0,0,0,0.3);
+    box-shadow: 0 0 8px rgba(0,0,0,0.3);
     overflow: hidden;
     transition: all 0.5s;
     box-sizing: border-box;
@@ -305,17 +355,29 @@ export default {
     }
   }
 
-  .ptk__container__body-container--show {
-    top: -50px;
-    box-shadow: 0 0 8px rgba(0,0,0,0.3);
+  #ptk__action__wrapper {
+    display: flex;
+    padding: 5px;
+  }
 
-    #ptk__new-handler-arrow {
-      transform: rotate(180deg);
+  .ptk__action__wrapper--collapse {
+    .ptk__inline-handler {
+      margin: 0;
+    }
+  }
+
+  .ptk__inline-handler {
+    padding: 0;
+
+    &--right {
+      margin-left: 5px;
     }
 
-    #ptk__new-handler__wrapper {
-      top: -18px;
-      height: 18px;
+    span {
+      display: block;
+      width: 27px;
+      line-height: 27px;
+      text-align: center;
     }
   }
 
@@ -391,12 +453,6 @@ export default {
       transition: all 500ms;
   }
 
-  .ptk-tool__component {
-    position: relative;
-    display: inline-block;
-    padding: 8px 12px;
-  }
-
   .ptk-pixiv-omina-content {
     display: inline-block;
     padding-right: 12px;
@@ -414,7 +470,10 @@ export default {
   }
 
   .ptk__guide-body {
-    width: 120px;
+    width: 140px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     margin: 0 auto;
   }
 
@@ -430,6 +489,74 @@ export default {
     100% {
       top: -70px;
     }
+  }
+}
+
+.ptk__container--type-1 {
+  .ptk__container__body-container {
+    #ptk__new-handler-arrow {
+      transform: rotate(180deg);
+    }
+
+    #ptk__new-handler__wrapper {
+      top: -18px;
+      height: 18px;
+    }
+  }
+
+  .ptk__container__body--collapse {
+    #ptk__new-handler-arrow {
+      transform: rotate(0deg);
+    }
+
+    .ptk__container__body-container {
+      top: 0px;
+      box-shadow: 0 -5px 8px rgba(0,0,0,0.3);
+    }
+  }
+}
+
+.ptk__container--type-2 {
+  .ptk__container__body--collapse {
+    .ptk__inline-handler {
+      margin-right: 0;
+    }
+
+    .ptk__action__wrapper__body {
+      display: none;
+    }
+  }
+}
+
+.ptk__container--position-left {
+  .ptk__container__body {
+    justify-content: start;
+  }
+}
+
+.ptk__container--position-right {
+  .ptk__container__body {
+    justify-content: end;
+  }
+}
+
+.ptk__container--style-1 {
+  .ptk__inline-handler {
+    display: none;
+  }
+}
+
+.ptk__container--style-2 {
+  #ptk__new-handler__wrapper {
+    display: none;
+  }
+}
+
+.ptk__tool {
+  display: flex;
+
+  a:last-child {
+    margin-right: 0;
   }
 }
 </style>

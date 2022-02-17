@@ -76,6 +76,8 @@ Main.prototype = {
     ];
 
     browser.webRequest.onBeforeSendHeaders.addListener(details => {
+      let requestHeadersNeedOverride = [];
+
       if (details.type === 'xmlhttprequest') {
         let hasOriginHeader = false;
         let hasReferer = false;
@@ -87,7 +89,10 @@ Main.prototype = {
             hasReferer = true;
 
             if (details.url.indexOf('i.pximg.net') > -1 && !savePattern.test(header.value)) {
-              details.requestHeaders[i].value = 'https://www.pixiv.net/';
+              requestHeadersNeedOverride.push({
+                name: 'referer',
+                value: 'https://www.pixiv.net/'
+              });
             }
           } else if (headerName === 'origin') {
             hasOriginHeader = true;
@@ -96,7 +101,7 @@ Main.prototype = {
 
         if (details.url.indexOf('api.fanbox.cc') > -1) {
           if (!hasOriginHeader) {
-            details.requestHeaders.push({
+            requestHeadersNeedOverride.push({
               name: 'Origin',
               value: details.initiator ? details.initiator : 'https://www.fanbox.cc'
             });
@@ -104,10 +109,14 @@ Main.prototype = {
         }
 
         if (!hasReferer) {
-          details.requestHeaders.push({
+          requestHeadersNeedOverride.push({
             name: 'referer',
             value: 'https://www.pixiv.net/'
           });
+        }
+
+        if (requestHeadersNeedOverride.length > 0) {
+          this.overrideHttpHeaders(details.requestHeaders, requestHeadersNeedOverride);
         }
 
         return { requestHeaders: details.requestHeaders }
@@ -117,18 +126,14 @@ Main.prototype = {
     }, opt_onBeforeSendHeaders_extraInfoSpec);
 
     browser.webRequest.onHeadersReceived.addListener(details => {
-      let accessControlAllowOrigin = '*';
+      let accessControlAllowOrigin = '*',
+          responseHeadersNeedOverride = [];
 
       if (details.type === 'xmlhttprequest') {
-        details.responseHeaders.forEach((header, i) => {
-          if (header.name.toLowerCase() === 'access-control-allow-origin') {
-            details.responseHeaders.splice(i, 1);
-          }
-        });
-
         if (details.frameId === 0 && /^https:\/\/[^.]+\.fanbox\.cc/.test(details.initiator)) {
           accessControlAllowOrigin = details.initiator;
-          details.responseHeaders.push({
+
+          responseHeadersNeedOverride.push({
             name: 'Access-Control-Allow-Credentials',
             value: 'true'
           });
@@ -140,27 +145,29 @@ Main.prototype = {
         if (this.items.ugoiraConvertTool === 'ffmpeg' &&
           /^https:\/\/(www\.)?pixiv\.net\/([a-z\d\-_]*\/)?artworks/i.test(details.url)
         ) {
-          details.responseHeaders.push({
+          responseHeadersNeedOverride.push({
             name: 'Cross-Origin-Embedder-Policy',
             value: 'require-corp'
           });
 
-          details.responseHeaders.push({
+          responseHeadersNeedOverride.push({
             name: 'Cross-Origin-Opener-Policy',
             value: 'same-origin'
           });
         }
       }
 
-      details.responseHeaders.push({
+      responseHeadersNeedOverride.push({
         name: 'Cross-Origin-Resource-Policy',
         value: 'cross-origin'
       });
 
-      details.responseHeaders.push({
+      responseHeadersNeedOverride.push({
         name: 'Access-Control-Allow-Origin',
         value: accessControlAllowOrigin
       });
+
+      this.overrideHttpHeaders(details.responseHeaders, responseHeadersNeedOverride);
 
       return { responseHeaders: details.responseHeaders };
     }, {
@@ -214,6 +221,32 @@ Main.prototype = {
         self.ports[port.name].getInstance(port);
       }
     });
+  },
+
+  /**
+   *
+   * @param {{name: string, value: string}[]} headers
+   * @param {{name: string, value: string}[]} headersNeedOverride
+   * @returns {void}
+   */
+   overrideHttpHeaders(headers, headersNeedOverride) {
+    let headerNames = headersNeedOverride.map(header => header.name);
+
+    /**
+     * Let's keep thing simple, delete headers which are need to be
+     * override first, then set new headers to the  headers.
+     */
+    for (let i = 0; headers[i];) {
+      if (headerNames.indexOf(headers[i].name.toLowerCase()) >= 0) {
+        headers.splice(i, 1);
+      } else {
+        i++;
+      }
+    }
+
+    /**
+     */
+    headersNeedOverride.forEach(header => headers.push(header));
   },
 
   /**
