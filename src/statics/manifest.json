@@ -44,7 +44,7 @@
     "content_scripts": [
         {
             "matches": [
-                "*://*.pixiv.net/*"
+                "*://www.pixiv.net/*"
             ],
             "css": [
                 "content_scripts/static/css/app.css"
