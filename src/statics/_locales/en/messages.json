@@ -805,5 +805,8 @@
    },
    "novel_rename_hint": {
        "message": "Example: {authorId}_{author}_{id}_{title}. You can place the deleted part between the two # tags when the novel isn't in any series like this {author}#-{seriesTitle}-{seriesOrder}#-{title}-{id}"
+   },
+   "_show_reload_in_popup": {
+       "message": "Show reload in extension popup page"
    }
 }
