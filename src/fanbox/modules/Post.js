@@ -2,17 +2,20 @@ import Download from '@/modules/Net/Download';
 import Downloader from '@/modules/Net/Downloader';
 import Event from '@/modules/Event';
 import MimeType from '@/modules/Util/MimeType';
+import Queue from '@/modules/Queue';
 import Retryer from '@/modules/Manager/Retryer';
 import formatName from '@/modules/Util/formatName';
+import FilesDownloader from '@/content_scripts/FilesDownloader';
 
 /**
  * @class Post
  * @extends {Event}
  * @property context
+ * @property chunks
  * @property filename
  * @property zips
  */
-export default class Post extends Event {
+class Post extends FilesDownloader {
 
   /**
    * @constructor
@@ -32,46 +35,65 @@ export default class Post extends Event {
     illustrationRenameFormat,
     illustrationImageRenameFormat,
     pageNumberStartWithOne = false,
-    processors = 2
+    illustrationPageNumberLength,
+    processors = 2,
+    pack = true
   }) {
     this.splitSize = splitSize;
     this.illustrationRenameFormat = illustrationRenameFormat
     this.illustrationImageRenameFormat = illustrationImageRenameFormat;
     this.pageNumberStartWithOne = pageNumberStartWithOne;
-    this.processors = processors
+    this.illustrationPageNumberLength = illustrationPageNumberLength;
+    this.processors = processors;
+    this.pack = pack;
+    this.relativePath = '';
+
+    this.addContext('startPageNum', this.getPageNum(1));
+    this.addContext('lastPageNum', this.getPageNum(this.context.pages.length));
 
     return this;
   }
 
   init() {
+    this.relativePath = formatName(this.illustrationRenameFormat, this.context, this.context.illustId);
     this.chunks = [];
     this.filename = null;
     this.zips = null;
 
-    let startIndex = 0;
+    let self = this,
+        startIndex = 0;
 
-    while (startIndex <= this.pagesNumber() - 1) {
+    while (startIndex <= self.context.pages.length - 1) {
       let chunk = {},
-          endIndex = startIndex + this.splitSize - 1;
+          endIndex = startIndex + self.splitSize - 1;
 
       chunk.start = startIndex;
 
-      if (endIndex >= this.pagesNumber()) {
-        endIndex = this.pagesNumber() - 1;
+      if (endIndex >= self.context.pages.length) {
+        endIndex = self.context.pages.length - 1;
       }
 
       chunk.end = endIndex;
 
-      this.chunks.push(chunk);
+      self.chunks.push(chunk);
 
       startIndex = chunk.end + 1;
     }
 
-    if (!this.illustrationImageRenameFormat ||
-        this.illustrationImageRenameFormat.indexOf('{pageNum}') < 0
+    if (!self.illustrationImageRenameFormat ||
+        self.illustrationImageRenameFormat.indexOf('{pageNum}') < 0
     ) {
-      this.illustrationImageRenameFormat += '{pageNum}';
+      self.illustrationImageRenameFormat += '{pageNum}';
     }
+  }
+
+  /**
+   * Add context
+   * @param {string} key
+   * @param {any} value
+   */
+  addContext(key, value) {
+    this.context[key] = value;
   }
 
   getUserId() {
@@ -83,11 +105,15 @@ export default class Post extends Event {
   }
 
   getId() {
-    return this.context.postId
+    return this.context.illustId
   }
 
   getImages() {
-    return this.context.images
+    return this.context.urls
+  }
+
+  getThumb() {
+    return this.getImages().thumb;
   }
 
   getTitle() {
@@ -96,18 +122,6 @@ export default class Post extends Event {
 
   isR() {
     return !!this.context.r
-  }
-
-  getPageRange(chunk) {
-    if (chunk.start == chunk.end) {
-      return parseInt(chunk.start);
-    } else {
-      return (parseInt(chunk.start + 1)) + '-' + (parseInt(chunk.end + 1));
-    }
-  }
-
-  getFilename(chunk) {
-    return formatName(this.illustrationRenameFormat, this.context, this.getId()) + '.zip';
   }
 
   /**
@@ -125,7 +139,53 @@ export default class Post extends Event {
    * @return {Number}
    */
   pagesNumber() {
-    return this.context.images.length;
+    return this.context.pages.length;
+  }
+
+  /**
+   * Get page number
+   * @param {number} pageNum First page is based 1
+   * @returns {number}
+   */
+  getPageNum(pageNum) {
+    return pageNum - (this.pageNumberStartWithOne ? 0 : 1);
+  }
+
+  /**
+   * @override
+   * @inheritdoc
+   * @param {number} index
+   * @returns {string}
+   */
+  getFileUrlByIndex(index) {
+    return this.context.pages[index];
+  }
+
+  /**
+   * @inheritdoc
+   * @param {number} index
+   * @returns {string}
+   */
+  getSingleFilename(index) {
+    let pageNum = index + (this.pageNumberStartWithOne ? 1 : 0);
+
+    this.context.pageNum = this.getPageNumberString(
+      pageNum, this.context.pages.length, this.illustrationPageNumberLength
+    );
+
+    return formatName(
+      this.illustrationImageRenameFormat.replace(this.isSingle() ? /#.*#/g: /#/g, ''),
+      this.context,
+      pageNum
+    );
+  }
+
+  /**
+   * @inheritdoc
+   * @returns {string}
+   */
+  getPackedFilename() {
+    return formatName(this.illustrationRenameFormat, this.context, this.context.illustId);
   }
 
   /**
@@ -143,7 +203,7 @@ export default class Post extends Event {
         let download = new Download(url, { method: 'GET' });
 
         download.addListener('onprogress', ({ totalLength, loadedLength }) => {
-          this.dispatch('progress', [{ progress: loadedLength / totalLength }, context])
+          this.dispatch('download-progress', [{ progress: loadedLength / totalLength }, context])
         });
 
         download.addListener('onerror', error => {
@@ -156,9 +216,7 @@ export default class Post extends Event {
 
           this.context.pageNum = pageNum;
 
-          let format = null;
-
-          format = this.illustrationImageRenameFormat.replace(/#.*#/g, '');
+          let format = this.illustrationImageRenameFormat.replace(/#.*#/g, '');
 
           let filename = formatName(format, this.context, pageNum) + '.' + MimeType.getExtenstion(download.getResponseHeader('Content-Type'));
 
@@ -171,64 +229,6 @@ export default class Post extends Event {
       });
     });
   }
-
-  downloadChunk(context) {
-    let downloader = new Downloader({
-      processors: this.processors,
-      requestOptions: {
-        credentials: 'include'
-      }
-    });
-    let zip = new JSZip();
-
-    /**
-     * Firefox can't use blob for saving data into zip file
-     */
-    downloader.asBlob = false;
-
-    this.context.images.forEach(image => {
-      downloader.appendFile(image);
-    });
-
-    downloader.addListener('progress', progress => {
-      this.dispatch('download-progress', [progress, context]);
-    });
-
-    downloader.addListener('item-error', error => {
-      this.dispatch('download-error', error);
-    });
-
-    downloader.addListener('item-finish', ({data, index, download}) => {
-      let pageNum = index + (this.pageNumberStartWithOne ? 1 : 0);
-      let filename = null;
-
-      this.context.pageNum = pageNum;
-
-      filename = formatName(
-        this.illustrationImageRenameFormat.replace(/#/g, ''),
-        this.context,
-        pageNum
-      );
-
-      filename += '.' + MimeType.getExtenstion(download.getResponseHeader('Content-Type'))
-
-      /**
-       * Fix jszip date issue which jszip will save the UTC time as the local time to files in zip
-       */
-      let now = new Date();
-      now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-
-      zip.file(filename, data, {
-        date: now
-      });
-    });
-
-    downloader.addListener('finish', () => {
-      zip.generateAsync({ type: 'arraybuffer' }).then(ab => {
-        this.dispatch('download-finish', [{ab, filename: this.getFilename()}, context]);
-      });
-    });
-
-    downloader.download();
-  }
 }
+
+export default Post;

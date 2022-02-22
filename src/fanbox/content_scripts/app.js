@@ -13,7 +13,9 @@ Vue.mixin(SuperMixin);
 const settings = [
   'language',
   'illustrationRelativeLocation', 'illustrationRenameFormat', 'illustrationImageRenameFormat',
-  'illustrationPageNumberStartWithOne', 'illustrationKeepPageNumber'
+  'illustrationPageNumberStartWithOne', 'illustrationKeepPageNumber',
+  'downloadPanelStyle', 'downloadPanelPosition',
+  'guideShowed'
 ];
 
 browser.storage.local.get(settings, items => {
