@@ -213,4 +213,10 @@ export default Object.assign({}, {
      */
     downloadPanelPosition: 'center',
     downloadPanelStyle: 1,
+
+    /**
+     * @since 5.5.1
+     */
+    showReloadInPopup: false,
+    showPixivOmina: true,
   });
