@@ -1,6 +1,6 @@
 import '@/content_scripts/styles/dark.scss';
 
-import App from './components/App';
+import App2 from './components/App';
 import Browser from '@/modules/Browser/Browser';
 import I18n from '@/modules/I18n';
 import SuperMixin from '@/mixins/SuperMixin';
@@ -73,7 +73,7 @@ browser.storage.local.get(null, items => {
       });
     },
 
-    render: h => h(App),
+    render: h => h(App2),
 
     methods: {
       getItem(offset) {
