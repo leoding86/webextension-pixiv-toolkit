@@ -808,5 +808,20 @@
    },
    "_show_reload_in_popup": {
        "message": "Show reload in extension popup page"
-   }
+   },
+   "_show": {
+        "message": "Show"
+   },
+   "_pixiv_comic": {
+       "message": "Pixiv Comic"
+   },
+   "_rename_comic": {
+        "message": "Rename comic"
+    },
+    "_rename_comic_image": {
+        "message": "Rename comic image"
+    },
+    "_save_comic_in_relative_location": {
+        "message": "Save comic in relative location"
+    }
 }

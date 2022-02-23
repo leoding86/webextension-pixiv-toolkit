@@ -811,5 +811,20 @@
    },
    "_show_reload_in_popup": {
        "message": "在插件弹出框中显示重载插件"
-   }
+   },
+   "_show": {
+        "message": "显示"
+   },
+   "_pixiv_comic": {
+       "message": "Pixiv漫画"
+   },
+   "_rename_comic": {
+        "message": "重命名漫画"
+    },
+    "_rename_comic_image": {
+        "message": "重命名漫画图片"
+    },
+    "_save_comic_in_relative_location": {
+        "message": "保存漫画到相对位置"
+    }
 }
