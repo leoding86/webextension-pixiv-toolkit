@@ -8,6 +8,8 @@
 
     <novel-options></novel-options>
 
+    <pixiv-comic-options></pixiv-comic-options>
+
     <download-options ></download-options>
 
     <history-options></history-options>
@@ -27,6 +29,7 @@ import UgoiraOptions from '@@/components/options/UgoiraOptions';
 import IllustrationOptions from '@@/components/options/IllustrationOptions';
 import MangaOptions from '@@/components/options/MangaOptions';
 import NovelOptions from '@@/components/options/NovelOptions';
+import PixivComicOptions from '@@/components/options/PixivComicOptions';
 import DownloadOptions from '@@/components/options/DownloadOptions';
 import HistoryOptions from '@@/components/options/HistoryOptions';
 import SearchOptions from '@@/components/options/SearchOptions';
@@ -42,6 +45,7 @@ export default {
     'illustration-options': IllustrationOptions,
     'manga-options': MangaOptions,
     'novel-options': NovelOptions,
+    'pixiv-comic-options': PixivComicOptions,
     'download-options': DownloadOptions,
     'history-options': HistoryOptions,
     'search-options': SearchOptions,
