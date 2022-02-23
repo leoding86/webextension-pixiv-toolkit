@@ -80,6 +80,22 @@
                 "lib/jszip/jszip-utils.min.js",
                 "content_scripts/fanbox-cs.js"
             ]
+        }, {
+            "matches": [
+                "*://comic.pixiv.net/viewer/*"
+            ],
+            "css": [
+                "content_scripts/static/css/pixivcomic-cs.css"
+            ],
+            "js": [
+                "lib/global.js",
+                "lib/vue.min.js",
+                "lib/vue-i18n.min.js",
+                "lib/locales.js",
+                "lib/jszip/jszip.js",
+                "lib/jszip/jszip-utils.min.js",
+                "content_scripts/pixivcomic-cs.js"
+            ]
         }
     ],
     "options_page": "options_page/index.html"
