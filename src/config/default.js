@@ -219,4 +219,13 @@ export default Object.assign({}, {
      */
     showReloadInPopup: false,
     showPixivOmina: true,
+
+    /**
+     * @sinace 5.6.0
+     */
+    pixivComicRenameFormat: '{episodeId}_{episodeTitle}',
+    pixivComicImageRenameFormat: '{episodeId}_{episodeTitle}_p{pageNum}',
+    pixivComicRelativeLocation: '',
+    pixivComicPageNumberStartWithOne: false,
+    pixivComicPageNumberLength: 0,
   });
