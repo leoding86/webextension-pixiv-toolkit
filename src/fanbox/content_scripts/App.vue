@@ -140,7 +140,7 @@ export default {
       let post = new Post(this.context);
 
       let savePath = this.browserItems.illustrationRelativeLocation ?
-            this.getSubfolder(this.browserItems.illustrationRelativeLocation, this.post.context) :
+            this.getSubfolder(this.browserItems.illustrationRelativeLocation, post.context) :
             this.browserItems.downloadRelativeLocation;
 
       if (this.lastData) {
