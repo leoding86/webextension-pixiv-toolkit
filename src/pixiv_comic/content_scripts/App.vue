@@ -4,6 +4,7 @@
     :panelPosition="browserItems.downloadPanelPosition"
   >
     <ptk-button class="download-btn download-btn--min-70"
+      :class="downloaded ? 'button--success' : ''"
       @click="downloadImages"
     >{{ downloadText }}</ptk-button>
   </control-panel>
@@ -37,7 +38,8 @@ export default {
       successCount: 0,
       failCount: 0,
       downloading: false,
-      unsupportedPostType: false
+      unsupportedPostType: false,
+      downloaded: false
     }
   },
 
@@ -96,6 +98,7 @@ export default {
         this.totalCount = 0;
         this.successCount = 0;
         this.failCount = 0;
+        this.downloaded = false;
 
         this.injectPage();
       }
@@ -139,8 +142,8 @@ export default {
        */
       let episode = new Episode(this.context);
 
-      let savePath = this.browserItems.illustrationRelativeLocation ?
-            this.getSubfolder(this.browserItems.illustrationRelativeLocation, episode.context) :
+      let savePath = this.browserItems.pixivComicRelativeLocation ?
+            this.getSubfolder(this.browserItems.pixivComicRelativeLocation, episode.context) :
             this.browserItems.downloadRelativeLocation;
 
       if (this.lastData) {
@@ -155,11 +158,10 @@ export default {
         this.totalCount = episode.pagesNumber();
 
         episode.initOptions({
-          splitSize: 99,
-          illustrationRenameFormat: vm.getItem('illustrationRenameFormat'),
-          illustrationImageRenameFormat: vm.getItem('illustrationImageRenameFormat'),
-          pageNumberStartWithOne: vm.getItem('illustrationPageNumberStartWithOne'),
-          illustrationPageNumberLength: 0,
+          renameFormat: vm.getItem('pixivComicRenameFormat'),
+          imageRenameFormat: vm.getItem('pixivComicImageRenameFormat'),
+          pageNumberStartWithOne: vm.getItem('pixivComicPageNumberStartWithOne'),
+          pageNumberLength: vm.getItem('pixivComicPageNumberLength'),
         }).init();
 
         episode.addListener('download-progress', progress => {
@@ -176,16 +178,21 @@ export default {
         }
 
         episode.downloadFiles({ indexes }, episode).then(files => {
-          episode.getPackedFile({ files }).then(result => {
-            this.lastData = result.data;
-            this.lastFilename = result.filename;
+          if (vm.getItem('downloadPackFiles') == false) {
+            this.downloadMultipleFiles(files, { savePath })
+                .then(() => this.downloaded = true);
+          } else {
+            episode.getPackedFile({ files }).then(result => {
+              this.lastData = result.data;
+              this.lastFilename = result.filename;
 
-            this.downloadFile({
-              src: result.data,
-              filename: result.filename,
-              folder: savePath,
+              this.downloadFile({
+                src: result.data,
+                filename: result.filename,
+                folder: savePath,
+              }).then(() => this.downloaded = true);
             });
-          });
+          }
         }).finally(() => {
           this.downloading = false;
         });

@@ -33,7 +33,7 @@
             <v-list-tile-sub-title>{{ tl('_page_number_start_with_1_otherwise_start_with_0') }}</v-list-tile-sub-title>
           </v-list-tile-content>
           <v-list-tile-action>
-            <v-switch v-model="pixivComicNumberStartWithOne"></v-switch>
+            <v-switch v-model="pixivComicPageNumberStartWithOne"></v-switch>
           </v-list-tile-action>
         </v-list-tile>
 
@@ -152,13 +152,13 @@ export default {
       });
     },
 
-    pageNumberStartWithOne(val) {
+    pixivComicPageNumberStartWithOne(val) {
       browser.storage.local.set({
         pixivComicPageNumberStartWithOne: val
       });
     },
 
-    pageNumberLength(val) {
+    pixivComicPageNumberLength(val) {
       browser.storage.local.set({
         pixivComicPageNumberLength: val
       });
