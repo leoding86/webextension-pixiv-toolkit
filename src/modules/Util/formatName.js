@@ -36,12 +36,12 @@ export default (renameFormat, context, fallback) => {
       id: {
         content: i18n.getMessage('id'),
         key: 'illustId',
-        possibleKeys: ['illustId', 'novelId', 'postId']
+        possibleKeys: ['id', 'illustId', 'novelId', 'postId']
       },
       title: {
         content: i18n.getMessage('title'),
         key: 'illustTitle',
-        possibleKeys: ['illustTitle', 'novelTitle', 'postTitle']
+        possibleKeys: ['title', 'illustTitle', 'novelTitle', 'postTitle']
       },
       author: {
         content: i18n.getMessage('author'),
@@ -103,14 +103,16 @@ export default (renameFormat, context, fallback) => {
     let meta = metas[key];
 
     if (!meta) {
-      return;
-    }
+      if (context.hasOwnProperty(key)) {
+        return context[key];
+      }
+    } else {
+      let keys = meta.possibleKeys;
 
-    var keys = meta.possibleKeys;
-
-    for (var i = 0, l = keys.length; i < l; i++) {
-      if (context[keys[i]] !== undefined) {
-        return context[keys[i]];
+      for (let i = 0, l = keys.length; i < l; i++) {
+        if (context[keys[i]] !== undefined) {
+          return context[keys[i]];
+        }
       }
     }
 
