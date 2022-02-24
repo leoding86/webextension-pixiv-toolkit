@@ -4,6 +4,7 @@
     :panelPosition="browserItems.downloadPanelPosition"
   >
     <ptk-button class="download-btn download-btn--min-70"
+      :class="downloaded ? 'button--success' : ''"
       @click="downloadImages"
     >{{ downloadText }}</ptk-button>
   </control-panel>
@@ -37,7 +38,8 @@ export default {
       successCount: 0,
       failCount: 0,
       downloading: false,
-      unsupportedPostType: false
+      unsupportedPostType: false,
+      downloaded: false,
     }
   },
 
@@ -96,6 +98,7 @@ export default {
         this.totalCount = 0;
         this.successCount = 0;
         this.failCount = 0;
+        this.downloaded = false;
 
         this.injectPage();
       }
@@ -179,6 +182,7 @@ export default {
           post.getPackedFile({ files }).then(result => {
             this.lastData = result.data;
             this.lastFilename = result.filename;
+            this.downloaded = true;
 
             this.downloadFile({
               src: result.data,
