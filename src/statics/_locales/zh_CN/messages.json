@@ -826,5 +826,26 @@
     },
     "_save_comic_in_relative_location": {
         "message": "保存漫画到相对位置"
+    },
+    "_id": {
+        "message": "编号"
+    },
+    "_title": {
+        "message": "标题"
+    },
+    "_sub_title": {
+        "message": "子标题"
+    },
+    "_numbering_title": {
+        "message": "章节标题"
+    },
+    "_work_id": {
+        "message": "作品编号"
+    },
+    "_work_title": {
+        "message": "作品标题"
+    },
+    "_page_num": {
+        "message": "页码"
     }
 }

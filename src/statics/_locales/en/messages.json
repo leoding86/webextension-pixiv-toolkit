@@ -823,5 +823,26 @@
     },
     "_save_comic_in_relative_location": {
         "message": "Save comic in relative location"
+    },
+    "_id": {
+        "message": "ID"
+    },
+    "_title": {
+        "message": "Title"
+    },
+    "_sub_title": {
+        "message": "Sub title"
+    },
+    "_numbering_title": {
+        "message": "Numbering title"
+    },
+    "_work_id": {
+        "message": "Work ID"
+    },
+    "_work_title": {
+        "message": "Work title"
+    },
+    "_page_num": {
+        "message": "Page number"
     }
 }
