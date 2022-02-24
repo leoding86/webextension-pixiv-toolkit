@@ -1,3 +1,8 @@
+v5.5.1
+Add download work on Pixiv Comic feature;
+Add highlight on download button when download is complete;
+Minor fixes.
+
 v5.5.0
 Add settings for changing the position and the style of download panel;
 Add new novel rename tags, include series id, series order and series title;
