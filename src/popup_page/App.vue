@@ -14,6 +14,9 @@
       <div class="entry">
         <a href="#" @click="openVisitHistory" class="button">{{ tl('illust_history') }}</a>
       </div>
+      <div class="entry" v-if="browserItems.showReloadInPopup">
+        <a href="#" @click="reloadExtension" class="button">{{ tl('Reload') }}</a>
+      </div>
     </div>
     <div class="header">
       <h2>{{ tl('_number_of_works_downloaded') }}</h2>
@@ -123,6 +126,10 @@ export default {
       browser.tabs.create({
         url: browser.runtime.getURL('options_page/index.html#/visit-history')
       });
+    },
+
+    reloadExtension() {
+      browser.runtime.reload();
     }
   }
 }

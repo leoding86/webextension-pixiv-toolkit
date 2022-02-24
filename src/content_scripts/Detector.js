@@ -17,6 +17,8 @@ class Detector {
 
   static NOVEL_TYPE = 9;
 
+  static UNSUPPORTED_TYPE = -1;
+
   constructor() {
     this.request;
     this.currentUrl;

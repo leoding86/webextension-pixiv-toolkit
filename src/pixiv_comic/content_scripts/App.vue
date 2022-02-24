@@ -1,5 +1,5 @@
 <template>
-  <control-panel id="__ptk-fanbox-app" v-show="ready"
+  <control-panel id="__ptk-pixiv-comic-app" v-show="ready"
     :panelStyle="browserItems.downloadPanelStyle"
     :panelPosition="browserItems.downloadPanelPosition"
   >
@@ -11,8 +11,8 @@
 </template>
 
 <script>
-import Detector from '@/fanbox/modules/Detector';
-import Post from '@/fanbox/modules/Post';
+import Detector from '@/pixiv_comic/modules/Detector';
+import Episode from '@/pixiv_comic/modules/Episode';
 import downloadFileMixin from '@/content_scripts/mixins/downloadFileMixin';
 import Button from '@/content_scripts/components/Button';
 import ControlPanel from '@/content_scripts/components/ControlPanel.vue';
@@ -39,7 +39,7 @@ export default {
       failCount: 0,
       downloading: false,
       unsupportedPostType: false,
-      downloaded: false,
+      downloaded: false
     }
   },
 
@@ -116,8 +116,8 @@ export default {
   methods: {
     injectPage() {
       try {
-        let postAdatper = this.detector.getPostAdapter(window.location.href);
-        postAdatper.getContext().then(context => {
+        let episodeAdapter = this.detector.getEpisodeAdapter(window.location.href);
+        episodeAdapter.getContext().then(context => {
           if (context.pages.length > 0) {
             this.ready = true;
             this.isUnsupportedPostType = false;
@@ -138,12 +138,12 @@ export default {
       let vm = this;
 
       /**
-       * @type {Post}
+       * @type {Episode}
        */
-      let post = new Post(this.context);
+      let episode = new Episode(this.context);
 
-      let savePath = this.browserItems.illustrationRelativeLocation ?
-            this.getSubfolder(this.browserItems.illustrationRelativeLocation, post.context) :
+      let savePath = this.browserItems.pixivComicRelativeLocation ?
+            this.getSubfolder(this.browserItems.pixivComicRelativeLocation, episode.context) :
             this.browserItems.downloadRelativeLocation;
 
       if (this.lastData) {
@@ -155,17 +155,16 @@ export default {
       } else if (!this.downloading) {
         this.downloading = true;
 
-        this.totalCount = post.pagesNumber();
+        this.totalCount = episode.pagesNumber();
 
-        post.initOptions({
-          splitSize: 99,
-          illustrationRenameFormat: vm.getItem('illustrationRenameFormat'),
-          illustrationImageRenameFormat: vm.getItem('illustrationImageRenameFormat'),
-          pageNumberStartWithOne: vm.getItem('illustrationPageNumberStartWithOne'),
-          illustrationPageNumberLength: 0,
+        episode.initOptions({
+          renameFormat: vm.getItem('pixivComicRenameFormat'),
+          imageRenameFormat: vm.getItem('pixivComicImageRenameFormat'),
+          pageNumberStartWithOne: vm.getItem('pixivComicPageNumberStartWithOne'),
+          pageNumberLength: vm.getItem('pixivComicPageNumberLength'),
         }).init();
 
-        post.addListener('download-progress', progress => {
+        episode.addListener('download-progress', progress => {
           this.successCount = progress.successCount;
           this.failCount = progress.failCount;
           this.progress = progress.progress;
@@ -178,18 +177,22 @@ export default {
           pos++;
         }
 
-        post.downloadFiles({ indexes }, post).then(files => {
-          post.getPackedFile({ files }).then(result => {
-            this.lastData = result.data;
-            this.lastFilename = result.filename;
-            this.downloaded = true;
+        episode.downloadFiles({ indexes }, episode).then(files => {
+          if (vm.getItem('downloadPackFiles') == false) {
+            this.downloadMultipleFiles(files, { savePath })
+                .then(() => this.downloaded = true);
+          } else {
+            episode.getPackedFile({ files }).then(result => {
+              this.lastData = result.data;
+              this.lastFilename = result.filename;
 
-            this.downloadFile({
-              src: result.data,
-              filename: result.filename,
-              folder: savePath,
+              this.downloadFile({
+                src: result.data,
+                filename: result.filename,
+                folder: savePath,
+              }).then(() => this.downloaded = true);
             });
-          });
+          }
         }).finally(() => {
           this.downloading = false;
         });
@@ -206,7 +209,7 @@ export default {
 </script>
 
 <style lang="scss">
-#__ptk-fanbox-app {
+#__ptk-pixiv-comic-app {
 
   .download-btn {
     min-width: 70px;

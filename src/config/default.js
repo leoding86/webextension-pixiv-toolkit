@@ -213,4 +213,19 @@ export default Object.assign({}, {
      */
     downloadPanelPosition: 'center',
     downloadPanelStyle: 1,
+
+    /**
+     * @since 5.5.1
+     */
+    showReloadInPopup: false,
+    showPixivOmina: true,
+
+    /**
+     * @sinace 5.6.0
+     */
+    pixivComicRenameFormat: '{episodeId}_{episodeTitle}',
+    pixivComicImageRenameFormat: '{episodeId}_{episodeTitle}_p{pageNum}',
+    pixivComicRelativeLocation: '',
+    pixivComicPageNumberStartWithOne: false,
+    pixivComicPageNumberLength: 0,
   });

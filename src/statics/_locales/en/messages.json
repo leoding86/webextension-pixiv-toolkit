@@ -805,5 +805,44 @@
    },
    "novel_rename_hint": {
        "message": "Example: {authorId}_{author}_{id}_{title}. You can place the deleted part between the two # tags when the novel isn't in any series like this {author}#-{seriesTitle}-{seriesOrder}#-{title}-{id}"
-   }
+   },
+   "_show_reload_in_popup": {
+       "message": "Show reload in extension popup page"
+   },
+   "_show": {
+        "message": "Show"
+   },
+   "_pixiv_comic": {
+       "message": "Pixiv Comic"
+   },
+   "_rename_comic": {
+        "message": "Rename comic"
+    },
+    "_rename_comic_image": {
+        "message": "Rename comic image"
+    },
+    "_save_comic_in_relative_location": {
+        "message": "Save comic in relative location"
+    },
+    "_id": {
+        "message": "ID"
+    },
+    "_title": {
+        "message": "Title"
+    },
+    "_sub_title": {
+        "message": "Sub title"
+    },
+    "_numbering_title": {
+        "message": "Numbering title"
+    },
+    "_work_id": {
+        "message": "Work ID"
+    },
+    "_work_title": {
+        "message": "Work title"
+    },
+    "_page_num": {
+        "message": "Page number"
+    }
 }

@@ -1,4 +1,4 @@
-import App from '@/fanbox/content_scripts/App.vue';
+import App from '@/pixiv_comic/content_scripts/App.vue';
 import Browser from '@/modules/Browser/Browser';
 import I18n from '@/modules/I18n';
 import SuperMixin from '@/mixins/SuperMixin';
@@ -10,15 +10,7 @@ import Vue from 'vue';
 Vue.prototype.$browser = window.browser /* For back compatible */ = Browser.getBrowser();
 Vue.mixin(SuperMixin);
 
-const settings = [
-  'language',
-  'illustrationRelativeLocation', 'illustrationRenameFormat', 'illustrationImageRenameFormat',
-  'illustrationPageNumberStartWithOne', 'illustrationKeepPageNumber',
-  'downloadPanelStyle', 'downloadPanelPosition',
-  'guideShowed'
-];
-
-browser.storage.local.get(settings, items => {
+browser.storage.local.get(null, items => {
   let i18n = I18n.i18n(items.language, browser.i18n.getUILanguage());
 
   /**
@@ -26,7 +18,7 @@ browser.storage.local.get(settings, items => {
    */
   let container = document.createElement('div');
 
-  container.id = '__ptk-fanbox-app';
+  container.id = '__ptk-pixiv-comic-app';
   container.style.position = 'fixed';
   container.style.left = '0';
   container.style.bottom = '0';

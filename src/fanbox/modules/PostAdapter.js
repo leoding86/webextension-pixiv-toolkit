@@ -85,7 +85,7 @@ export default class PostAdapter {
         this.context.year = dateFormatter.getYear();
         this.context.month = dateFormatter.getMonth();
         this.context.day = dateFormatter.getDay();
-        this.context.images = this.findImages(jsonData);
+        this.context.pages = this.findImages(jsonData);
 
         resolve(this.context);
       });

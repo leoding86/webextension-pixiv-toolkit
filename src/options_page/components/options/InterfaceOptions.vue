@@ -64,6 +64,28 @@
           </v-list-tile-action>
         </v-list-tile>
       </v-list>
+
+      <v-list two-line>
+        <v-list-tile>
+          <v-list-tile-content>
+            <v-list-tile-title>{{ tl('_show') }} Pixiv Omina</v-list-tile-title>
+          </v-list-tile-content>
+          <v-list-tile-action>
+            <v-switch v-model="showPixivOmina"></v-switch>
+          </v-list-tile-action>
+        </v-list-tile>
+      </v-list>
+
+      <v-list two-line>
+        <v-list-tile>
+          <v-list-tile-content>
+            <v-list-tile-title>{{ tl('_show_reload_in_popup') }}</v-list-tile-title>
+          </v-list-tile-content>
+          <v-list-tile-action>
+            <v-switch v-model="showReloadInPopup"></v-switch>
+          </v-list-tile-action>
+        </v-list-tile>
+      </v-list>
     </v-card>
   </div>
 </template>
@@ -81,7 +103,11 @@ export default {
 
       downloadPanelStyle: 1,
 
-      downloadPanelPosition: 'center'
+      downloadPanelPosition: 'center',
+
+      showReloadInPopup: false,
+
+      showPixivOmina: true,
     };
   },
 
@@ -134,12 +160,26 @@ export default {
     this.language = this.browserItems.language || 'default';
     this.downloadPanelPosition = this.browserItems.downloadPanelPosition;
     this.downloadPanelStyle = this.browserItems.downloadPanelStyle;
+    this.showReloadInPopup = this.browserItems.showReloadInPopup;
+    this.showPixivOmina = this.browserItems.showPixivOmina;
   },
 
   watch: {
     autoActivateDownloadPanel(val) {
       browser.storage.local.set({
         autoActivateDownloadPanel: !!val
+      });
+    },
+
+    showReloadInPopup(val) {
+      browser.storage.local.set({
+        showReloadInPopup: val
+      });
+    },
+
+    showPixivOmina(val) {
+      browser.storage.local.set({
+        showPixivOmina: val
       });
     }
   },

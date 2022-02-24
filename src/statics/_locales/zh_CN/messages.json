@@ -808,5 +808,44 @@
    },
    "novel_rename_hint": {
        "message": "例子: {authorId}_{author}_{id}_{title}. 你可以将小说不是系列作品时想要移除的部分放在两个#标签之间。例如：{author}#-{seriesTitle}-{seriesOrder}#-{title}-{id}"
-   }
+   },
+   "_show_reload_in_popup": {
+       "message": "在插件弹出框中显示重载插件"
+   },
+   "_show": {
+        "message": "显示"
+   },
+   "_pixiv_comic": {
+       "message": "Pixiv漫画"
+   },
+   "_rename_comic": {
+        "message": "重命名漫画"
+    },
+    "_rename_comic_image": {
+        "message": "重命名漫画图片"
+    },
+    "_save_comic_in_relative_location": {
+        "message": "保存漫画到相对位置"
+    },
+    "_id": {
+        "message": "编号"
+    },
+    "_title": {
+        "message": "标题"
+    },
+    "_sub_title": {
+        "message": "子标题"
+    },
+    "_numbering_title": {
+        "message": "章节标题"
+    },
+    "_work_id": {
+        "message": "作品编号"
+    },
+    "_work_title": {
+        "message": "作品标题"
+    },
+    "_page_num": {
+        "message": "页码"
+    }
 }

@@ -1,21 +1,19 @@
 import Download from '@/modules/Net/Download';
-import Downloader from '@/modules/Net/Downloader';
 import Event from '@/modules/Event';
 import MimeType from '@/modules/Util/MimeType';
-import Queue from '@/modules/Queue';
 import Retryer from '@/modules/Manager/Retryer';
 import formatName from '@/modules/Util/formatName';
 import FilesDownloader from '@/content_scripts/FilesDownloader';
 
 /**
- * @class Post
+ * @class Episode
  * @extends {Event}
  * @property context
  * @property chunks
  * @property filename
  * @property zips
  */
-class Post extends FilesDownloader {
+class Episode extends FilesDownloader {
 
   /**
    * @constructor
@@ -31,19 +29,19 @@ class Post extends FilesDownloader {
   }
 
   initOptions({
-    splitSize,
-    illustrationRenameFormat,
-    illustrationImageRenameFormat,
+    splitSize = 1000,
+    renameFormat,
+    imageRenameFormat,
     pageNumberStartWithOne = false,
-    illustrationPageNumberLength,
+    pageNumberLength,
     processors = 2,
     pack = true
   }) {
     this.splitSize = splitSize;
-    this.illustrationRenameFormat = illustrationRenameFormat
-    this.illustrationImageRenameFormat = illustrationImageRenameFormat;
+    this.renameFormat = renameFormat
+    this.imageRenameFormat = imageRenameFormat;
     this.pageNumberStartWithOne = pageNumberStartWithOne;
-    this.illustrationPageNumberLength = illustrationPageNumberLength;
+    this.pageNumberLength = pageNumberLength;
     this.processors = processors;
     this.pack = pack;
     this.relativePath = '';
@@ -55,7 +53,7 @@ class Post extends FilesDownloader {
   }
 
   init() {
-    this.relativePath = formatName(this.illustrationRenameFormat, this.context, this.context.illustId);
+    this.relativePath = formatName(this.renameFormat, this.context, this.getId());
     this.chunks = [];
     this.filename = null;
     this.zips = null;
@@ -80,10 +78,10 @@ class Post extends FilesDownloader {
       startIndex = chunk.end + 1;
     }
 
-    if (!self.illustrationImageRenameFormat ||
-        self.illustrationImageRenameFormat.indexOf('{pageNum}') < 0
+    if (!self.imageRenameFormat ||
+        self.imageRenameFormat.indexOf('{pageNum}') < 0
     ) {
-      self.illustrationImageRenameFormat += '{pageNum}';
+      self.imageRenameFormat += '{pageNum}';
     }
   }
 
@@ -96,32 +94,28 @@ class Post extends FilesDownloader {
     this.context[key] = value;
   }
 
-  getUserId() {
-    return this.context.userId
-  }
-
-  getUserName() {
-    return this.context.userName
-  }
-
   getId() {
-    return this.context.illustId
+    return this.context.id
+  }
+
+  getUniqueId() {
+    return `pixiv-comic-episode:${this.getId()}`;
   }
 
   getImages() {
-    return this.context.urls
+    return this.context.pages
   }
 
   getThumb() {
-    return this.getImages().thumb;
+    return this.getImages()[0];
   }
 
   getTitle() {
-    return this.context.illustTitle
+    return this.context.title;
   }
 
   isR() {
-    return !!this.context.r
+    return false;
   }
 
   /**
@@ -130,7 +124,7 @@ class Post extends FilesDownloader {
    * @returns {Boolean}
    */
   isSingle() {
-    return this.pagesNumber() === 1
+    return false;
   }
 
   /**
@@ -170,11 +164,11 @@ class Post extends FilesDownloader {
     let pageNum = index + (this.pageNumberStartWithOne ? 1 : 0);
 
     this.context.pageNum = this.getPageNumberString(
-      pageNum, this.context.pages.length, this.illustrationPageNumberLength
+      pageNum, this.context.pages.length, this.pageNumberLength
     );
 
     return formatName(
-      this.illustrationImageRenameFormat.replace(this.isSingle() ? /#.*#/g: /#/g, ''),
+      this.imageRenameFormat.replace(this.isSingle() ? /#.*#/g: /#/g, ''),
       this.context,
       pageNum
     );
@@ -185,7 +179,7 @@ class Post extends FilesDownloader {
    * @returns {string}
    */
   getPackedFilename() {
-    return formatName(this.illustrationRenameFormat, this.context, this.context.illustId);
+    return formatName(this.renameFormat, this.context, this.getId());
   }
 
   /**
@@ -216,7 +210,7 @@ class Post extends FilesDownloader {
 
           this.context.pageNum = pageNum;
 
-          let format = this.illustrationImageRenameFormat.replace(/#.*#/g, '');
+          let format = this.imageRenameFormat.replace(/#.*#/g, '');
 
           let filename = formatName(format, this.context, pageNum) + '.' + MimeType.getExtenstion(download.getResponseHeader('Content-Type'));
 
@@ -231,4 +225,4 @@ class Post extends FilesDownloader {
   }
 }
 
-export default Post;
+export default Episode;
