@@ -38,8 +38,8 @@ class EpisodeAdapter {
       title: '',
       subTitle: '',
       numberingTitle: '',
-      workerId: '',
-      workerTitle: '',
+      workId: '',
+      workTitle: '',
       images: [],
     };
   }
@@ -93,8 +93,8 @@ class EpisodeAdapter {
         this.context.title = jsonData.data.reading_episode.title;
         this.context.subTitle = jsonData.data.reading_episode.sub_title;
         this.context.numberingTitle = jsonData.data.reading_episode.numbering_title;
-        this.context.workerId = jsonData.data.reading_episode.work_id;
-        this.context.workerTitle = jsonData.data.reading_episode.work_title;
+        this.context.workId = jsonData.data.reading_episode.work_id;
+        this.context.workTitle = jsonData.data.reading_episode.work_title;
         this.context.pages = jsonData.data.reading_episode.pages.map(item => this.getImage(item));
 
         resolve(this.context);
