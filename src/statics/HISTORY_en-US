@@ -1,3 +1,7 @@
+v5.5.2
+Fix issue about non-free Fanbox work can't be downloaded;
+Fix issue about downloaded filename is 'undefined' on Fanbox when the illustration rename setting is empty.
+
 v5.5.1
 Add download work on Pixiv Comic feature;
 Add highlight on download button when download is complete;
