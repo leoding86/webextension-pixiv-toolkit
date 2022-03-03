@@ -6,6 +6,10 @@ export default {
 
     isFirefox() {
       return this.$root.isFirefox_;
+    },
+
+    $_browser() {
+      return window.$_browser;
     }
   },
 

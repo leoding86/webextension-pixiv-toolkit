@@ -43,6 +43,12 @@ browser.storage.local.get(null, items => {
 
   document.body.appendChild(container);
 
+  if (PRESET_BROWSER === 'firefox') {
+    window.$_browser = 'firefox';
+  } else {
+    window.$_browser = 'default';
+  }
+
   window.$extension = new Vue({
     el: '#__ptk-app',
 

@@ -38,6 +38,12 @@ try {
 
     window.browser = browser;
 
+    if (PRESET_BROWSER === 'firefox') {
+      window.$_browser = 'firefox';
+    } else {
+      window.$_browser = 'default';
+    }
+
     /**
      * Update browser action badge
      */
@@ -73,7 +79,7 @@ try {
           return {
             plusVersion: null, // deprecated
             browserItems: items,
-            isFirefox_: navigator.userAgent.toLocaleLowerCase().indexOf('firefox') > -1
+            isFirefox_: $_browser === 'firefox'
           }
         },
 
