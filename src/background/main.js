@@ -164,7 +164,8 @@ Main.prototype = {
 
       responseHeadersNeedOverride.push({
         name: 'Access-Control-Allow-Origin',
-        value: accessControlAllowOrigin
+        value: accessControlAllowOrigin,
+        soft: true
       });
 
       this.overrideHttpHeaders(details.responseHeaders, responseHeadersNeedOverride);
@@ -226,27 +227,28 @@ Main.prototype = {
   /**
    *
    * @param {{name: string, value: string}[]} headers
-   * @param {{name: string, value: string}[]} headersNeedOverride
+   * @param {{name: string, value: string, soft: ?boolean}[]} headersNeedOverride
    * @returns {void}
    */
-   overrideHttpHeaders(headers, headersNeedOverride) {
-    let headerNames = headersNeedOverride.map(header => header.name);
-
-    /**
-     * Let's keep thing simple, delete headers which are need to be
-     * override first, then set new headers to the  headers.
-     */
-    for (let i = 0; headers[i];) {
-      if (headerNames.indexOf(headers[i].name.toLowerCase()) >= 0) {
-        headers.splice(i, 1);
-      } else {
-        i++;
+  overrideHttpHeaders(headers, headersNeedOverride) {
+    headersNeedOverride.forEach((headerNeedOverride, i) => {
+      for (let j in headers) {
+        if (headers[j].name.toLocaleLowerCase() === headerNeedOverride.name.toLocaleLowerCase()) {
+          if (!headerNeedOverride.soft) {
+            headers.splice(j);
+          } else {
+            headersNeedOverride.splice(i);
+          }
+          break;
+        }
       }
-    }
+    });
 
-    /**
-     */
-    headersNeedOverride.forEach(header => headers.push(header));
+    headersNeedOverride.forEach(header => {
+      delete header.soft;
+
+      headers.push(header);
+    });
   },
 
   /**
