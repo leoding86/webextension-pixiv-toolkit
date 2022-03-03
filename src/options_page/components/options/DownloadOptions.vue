@@ -52,7 +52,7 @@
           </v-list-tile-action>
         </v-list-tile>
 
-        <downloads-shelf-option></downloads-shelf-option>
+        <downloads-shelf-option v-if="$_browser !== 'firefox'"></downloads-shelf-option>
 
         <v-list-tile>
           <v-list-tile-content>
@@ -185,8 +185,14 @@ export default {
     this.enableExtTakeOverDownloads = !!this.browserItems.enableExtTakeOverDownloads;
 
     if (this.enableExtTakeOverDownloads) {
+      let permissions = ['downloads'];
+      
+      if (this.$_browser !== 'firefox') {
+        permissions.push('downloads.shelf');
+      }
+
       browser.permissions.contains({
-        permissions: ['downloads', 'downloads.shelf'],
+        permissions,
       }, result => {
         if (!result) {
           this.enableExtTakeOverDownloads = false;
@@ -214,20 +220,28 @@ export default {
   methods: {
     onEnableExtTakeOverDownloadsChange(val) {
       if (val) {
-        browser.permissions.request({
-          permissions: ['downloads', 'downloads.shelf'],
-        }, result => {
-          this.enableExtTakeOverDownloads = !!result;
+        let permissions = ['downloads'];
+        
+        if (this.$_browser !== 'firefox') {
+          permissions.push('downloads.shelf');
+        }
 
-          browser.storage.local.set({
-            enableExtTakeOverDownloads: this.enableExtTakeOverDownloads,
-          });
+        browser.permissions.request({
+          permissions,
+        }, result => {
+          if (result) {
+            this.enableExtTakeOverDownloads = true;
+          } else {
+            browser.storage.local.set({
+              enableExtTakeOverDownloads: val,
+            });
+          }
         });
       } else {
         this.enableExtTakeOverDownloads = false;
 
         browser.storage.local.set({
-          enableExtTakeOverDownloads: this.enableExtTakeOverDownloads,
+          enableExtTakeOverDownloads: val,
         });
       }
     },
