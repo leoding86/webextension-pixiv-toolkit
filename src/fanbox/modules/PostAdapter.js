@@ -78,6 +78,11 @@ export default class PostAdapter {
       this.request.addListener('onload', data => {
         let jsonData = JSON.parse(String.fromCharCode.apply(null, data));
 
+        if (!jsonData.body) {
+          reject(new Error('Empty body context'));
+          return;
+        }
+
         let dateFormatter = new DateFormatter(jsonData.body.publishedDatetime);
 
         this.context.illustId = jsonData.body.id;
