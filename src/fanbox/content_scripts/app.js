@@ -15,7 +15,7 @@ const settings = [
   'illustrationRelativeLocation', 'illustrationRenameFormat', 'illustrationImageRenameFormat',
   'illustrationPageNumberStartWithOne', 'illustrationKeepPageNumber',
   'downloadPanelStyle', 'downloadPanelPosition',
-  'guideShowed'
+  'guideShowed', 'autoActivateDownloadPanel'
 ];
 
 browser.storage.local.get(settings, items => {
