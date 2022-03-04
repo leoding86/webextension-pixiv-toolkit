@@ -235,9 +235,9 @@ Main.prototype = {
       for (let j in headers) {
         if (headers[j].name.toLocaleLowerCase() === headerNeedOverride.name.toLocaleLowerCase()) {
           if (!headerNeedOverride.soft) {
-            headers.splice(j);
+            headers.splice(j, 1);
           } else {
-            headersNeedOverride.splice(i);
+            headersNeedOverride.splice(i, 1);
           }
           break;
         }
