@@ -90,7 +90,7 @@ export default {
     return {
       currentUrl: null,
       isDark: false,
-      collapse: false,
+      collapse: true,
     };
   },
 
@@ -137,6 +137,10 @@ export default {
 
       return classes;
     }
+  },
+
+  created() {
+    this.collapse = !this.browserItems.autoActivateDownloadPanel;
   },
 
   beforeMount() {
