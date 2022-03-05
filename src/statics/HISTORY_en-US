@@ -1,3 +1,8 @@
+v5.5.3
+Fix issue about download panel can't collapse when "Activate download panel automatically" setting is disabled;
+Fix issue about Fanbox can't be opened when using Firefox;
+Fix issue about extension can't take over downloads when using Firefox.
+
 v5.5.2
 Fix issue about non-free Fanbox work can't be downloaded;
 Fix issue about downloaded filename is 'undefined' on Fanbox when the illustration rename setting is empty.

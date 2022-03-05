@@ -1,6 +1,11 @@
+v5.5.3
+修复下载面板不能正确收起的问题；
+修复Firefox不能正常留言Fanbox的问题；
+修复Firefox下插接不能正确接管下载的问题。
+
 v5.5.2
-Fix issue about non-free Fanbox work can't be downloaded;
-Fix issue about downloaded filename is 'undefined' on Fanbox when the illustration rename setting is empty.
+修复Fanbox上不能下载收费作品的问题；
+修复Fanbox下载文件的文件名为undefined的问题。
 
 v5.5.1
 新增下载Pixiv Comic上作品的功能；
