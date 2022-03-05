@@ -221,10 +221,10 @@ export default Object.assign({}, {
     showPixivOmina: true,
 
     /**
-     * @sinace 5.6.0
+     * @sinace 5.5.3
      */
-    pixivComicRenameFormat: '{episodeId}_{episodeTitle}',
-    pixivComicImageRenameFormat: '{episodeId}_{episodeTitle}_p{pageNum}',
+    pixivComicRenameFormat: '{id}_{title}',
+    pixivComicImageRenameFormat: '{id}_{title}_p{pageNum}',
     pixivComicRelativeLocation: '',
     pixivComicPageNumberStartWithOne: false,
     pixivComicPageNumberLength: 0,
