@@ -1,5 +1,6 @@
 import 'vuetify/dist/vuetify.min.css'
 
+import '@/core/global';
 import App from './App'
 import Browser from '@/modules/Browser/Browser'
 import I18n from '@/modules/I18n';
@@ -37,12 +38,6 @@ try {
     });
 
     window.browser = browser;
-
-    if (PRESET_BROWSER === 'firefox') {
-      window.$_browser = 'firefox';
-    } else {
-      window.$_browser = 'default';
-    }
 
     /**
      * Update browser action badge

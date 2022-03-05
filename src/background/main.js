@@ -1,3 +1,4 @@
+import '@/core/global';
 import Browser from '@/modules/Browser/Browser';
 import DownloadRecordPort from '@/modules/Ports/DownloadRecordPort/BackgroundPort';
 import IllustHistoryPort from '@/modules/Ports/IllustHistoryPort/BackgroundPort';

@@ -1,3 +1,4 @@
+import '@/core/global';
 import App from '@/pixiv_comic/content_scripts/App.vue';
 import Browser from '@/modules/Browser/Browser';
 import I18n from '@/modules/I18n';
