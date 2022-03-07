@@ -844,5 +844,11 @@
     },
     "_page_num": {
         "message": "Page number"
+    },
+    "_download_metadata": {
+        "message": "Download metadata"
+    },
+    "_download_metadata_when_downloading_works_only_support_works_from_pixiv_main_site": {
+        "message": "Download metadata when downloading works. Only support works (novel not included) from Pixiv main site"
     }
 }

@@ -847,5 +847,11 @@
     },
     "_page_num": {
         "message": "页码"
+    },
+    "_download_metadata": {
+        "message": "下载元数据"
+    },
+    "_download_metadata_when_downloading_works_only_support_works_from_pixiv_main_site": {
+        "message": "下载作品时同时下载元数据，仅支持Pixiv主站点（不支持小说类型）"
     }
 }
