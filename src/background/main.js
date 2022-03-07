@@ -423,9 +423,6 @@ Main.prototype = {
           version: version,
           showUpdateChangeLog: false,
           importantNoticeDisplayed: updateSettings.importantNoticeDisplayed || false,
-
-          // update setting type
-          illustrationCreateSubdirectory: items.illustrationCreateSubdirectory ? 1 : 0
         }).then(() => {
           /**
            * Attach a badge with text 'NEW'
