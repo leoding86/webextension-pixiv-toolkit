@@ -221,11 +221,16 @@ export default Object.assign({}, {
     showPixivOmina: true,
 
     /**
-     * @sinace 5.5.3
+     * @since 5.5.3
      */
     pixivComicRenameFormat: '{id}_{title}',
     pixivComicImageRenameFormat: '{id}_{title}_p{pageNum}',
     pixivComicRelativeLocation: '',
     pixivComicPageNumberStartWithOne: false,
     pixivComicPageNumberLength: 0,
+
+    /**
+     * @since 5.5.4
+     */
+    enableDownloadMetadata: false
   });
