@@ -5,12 +5,14 @@ import UgoiraTool from '@/content_scripts/ugoira/Ugoira'
 class UgoiraAdapter {
   constructor() {
     this.illustContext
+    this.rawContext;
     this.ugoiraTool
     this.options = {};
   }
 
   inital({ context, options }) {
     this.options = options;
+    this.rawContext = context;
 
     return new Promise((resolve, reject) => {
       this.parseContext(context).then(context => {
@@ -68,6 +70,7 @@ class UgoiraAdapter {
         self.illustContext.illustOriginalSrc = response.body.originalSrc;
         self.illustContext.illustFrames = response.body.frames;
         self.illustContext.illustMimeType = response.body.mime_type;
+        self.illustContext.__metadata = this.rawContext;
 
         let duration = 0
 
@@ -95,6 +98,7 @@ class UgoiraAdapter {
 
     this.ugoiraTool.context = this.illustContext;
     this.ugoiraTool.animationJsonFormat = this.options.animationJsonFormat;
+    this.ugoiraTool.saveMetadata = this.options.saveMetadata;
 
     return this.ugoiraTool;
   }

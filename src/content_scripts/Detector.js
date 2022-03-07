@@ -211,7 +211,8 @@ class Detector {
       self.ugoiraAdapter.inital({
         context: self.contextData,
         options: {
-          animationJsonFormat: window.$extension.getItem('animationJsonFormat')
+          animationJsonFormat: window.$extension.getItem('animationJsonFormat'),
+          saveMetadata: window.$extension.getItem('enableDownloadMetadata')
         }
       }).then(context => {
         let ugoiraTool = self.currentTool = self.ugoiraAdapter.makeTool();

@@ -42,6 +42,11 @@ class UgoiraTool extends Event {
      * @property {Number}
      */
     this.animationJsonFormat;
+
+    /**
+     * @type {Boolean}
+     */
+    this.saveMetadata;
   }
 
   init() {
@@ -54,6 +59,10 @@ class UgoiraTool extends Event {
     return this.downloadResource().then(blob => {
       if (this.animationJsonFormat > 0) {
         self.zip.file('animation.json', self.makeAnimationJsonContent());
+      }
+
+      if (this.saveMetadata) {
+        self.zip.file('metadata.json', self.makeMetadataJsonContent());
       }
 
       return self.zip.loadAsync(blob)
@@ -118,6 +127,13 @@ class UgoiraTool extends Event {
     } else {
       return '';
     }
+  }
+
+  /**
+   * @returns {String}
+   */
+  makeMetadataJsonContent() {
+    return JSON.stringify(this.context.__metadata);
   }
 
   downloadResource() {
