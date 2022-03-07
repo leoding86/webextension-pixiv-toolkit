@@ -1,5 +1,6 @@
 import '@/content_scripts/styles/dark.scss';
 
+import '@/core/global';
 import App2 from './components/App';
 import Browser from '@/modules/Browser/Browser';
 import I18n from '@/modules/I18n';

@@ -66,7 +66,7 @@ export default {
         const mimeType = MimeType.getFileMimeType(file);
 
         if (data instanceof Blob) {
-          if (browser.extension.inIncognitoContext) {
+          if (browser.extension.inIncognitoContext || window.$_browser === 'firefox') {
             let fileReader = new FileReader();
             fileReader.onload = event => {
               dataArr = Array.from(new Uint8Array(event.target.result));
@@ -79,7 +79,7 @@ export default {
             url = URL.createObjectURL(data);
           }
         } else {
-          if (browser.extension.inIncognitoContext) {
+          if (browser.extension.inIncognitoContext || window.$_browser === 'firefox') {
             dataArr = Array.from(new Uint8Array(data));
           } else {
             url = URL.createObjectURL(new Blob([data], {type: mimeType}));

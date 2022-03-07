@@ -178,7 +178,12 @@ export default {
           pos++;
         }
 
-        post.downloadFiles({ indexes }, post).then(files => {
+        post.downloadFiles({
+          indexes,
+          downloaderRequestOptions: {
+            credentials: 'include'
+          }
+        }, post).then(files => {
           post.getPackedFile({ files }).then(result => {
             this.lastData = result.data;
             this.lastFilename = result.filename;

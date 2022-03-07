@@ -1,3 +1,4 @@
+import '@/core/global';
 import App from '@/fanbox/content_scripts/App.vue';
 import Browser from '@/modules/Browser/Browser';
 import I18n from '@/modules/I18n';
@@ -15,7 +16,7 @@ const settings = [
   'illustrationRelativeLocation', 'illustrationRenameFormat', 'illustrationImageRenameFormat',
   'illustrationPageNumberStartWithOne', 'illustrationKeepPageNumber',
   'downloadPanelStyle', 'downloadPanelPosition',
-  'guideShowed'
+  'guideShowed', 'autoActivateDownloadPanel'
 ];
 
 browser.storage.local.get(settings, items => {

@@ -71,15 +71,18 @@ class FilesDownloader extends Event {
 
   /**
    * Download files via giving indexes.
-   * @param {{ indexes: number[], getFilenameFunc: ?Function, extra: ?any }} param
+   * @param {{ indexes: number[], getFilenameFunc: ?Function, extra: ?any, downloaderRequestOptions: ?any }} param
    * @param {*} that
    * @returns {DownloadedFile[]}
    */
-  downloadFiles({ indexes, getFilenameFunc = null, extra = {} }, that) {
+  downloadFiles({ indexes, getFilenameFunc = null, extra = {}, downloaderRequestOptions = {} }, that) {
     return new Promise((resolve, reject) => {
       let files = [],
           filesNeedDownload = [],
-          downloader = new Downloader({ processors: this.processors });
+          downloader = new Downloader({
+            processors: this.processors,
+            requestOptions: downloaderRequestOptions
+          });
 
       downloader.asBlob = false;
 

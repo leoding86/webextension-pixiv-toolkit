@@ -1,5 +1,6 @@
 import 'vuetify/dist/vuetify.min.css'
 
+import '@/core/global';
 import App from './App'
 import Browser from '@/modules/Browser/Browser'
 import I18n from '@/modules/I18n';
@@ -73,7 +74,7 @@ try {
           return {
             plusVersion: null, // deprecated
             browserItems: items,
-            isFirefox_: navigator.userAgent.toLocaleLowerCase().indexOf('firefox') > -1
+            isFirefox_: $_browser === 'firefox'
           }
         },
 
