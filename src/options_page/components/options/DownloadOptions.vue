@@ -21,23 +21,20 @@
 
         <v-list-tile>
           <v-list-tile-content>
-            <v-list-tile-title>{{ tl('_pack_files') }}</v-list-tile-title>
-            <v-list-tile-sub-title>
-              {{ tl('_pack_downloaded_files_to_a_zip_file') }}
-              (<a href="https://github.com/leoding86/webextension-pixiv-toolkit/tree/master/docs/help.md#about-the-pack-files-setting-en_us" target="_blank"><strong>{{ tl('_more_info') }}</strong></a>)
-            </v-list-tile-sub-title>
+            <v-list-tile-title>{{ tl('_ask_whether_to_download_the_work_may_has_been_downloaded') }}</v-list-tile-title>
           </v-list-tile-content>
           <v-list-tile-action>
-            <v-switch v-model="downloadPackFiles"></v-switch>
+            <v-switch v-model="askDownloadSavedWork"></v-switch>
           </v-list-tile-action>
         </v-list-tile>
 
         <v-list-tile>
           <v-list-tile-content>
-            <v-list-tile-title>{{ tl('_ask_whether_to_download_the_work_may_has_been_downloaded') }}</v-list-tile-title>
+            <v-list-tile-title>{{ tl('_download_metadata') }}</v-list-tile-title>
+            <v-list-tile-sub-title>{{ tl('_download_metadata_when_downloading_works_only_support_works_from_pixiv_main_site') }}</v-list-tile-sub-title>
           </v-list-tile-content>
           <v-list-tile-action>
-            <v-switch v-model="askDownloadSavedWork"></v-switch>
+            <v-switch v-model="enableDownloadMetadata"></v-switch>
           </v-list-tile-action>
         </v-list-tile>
 
@@ -85,6 +82,21 @@
 
         <v-list-tile>
           <v-list-tile-content>
+            <v-list-tile-title>{{ tl('_pack_files') }}</v-list-tile-title>
+            <v-list-tile-sub-title>
+              {{ tl('_pack_downloaded_files_to_a_zip_file') }}
+              (<a href="https://github.com/leoding86/webextension-pixiv-toolkit/tree/master/docs/help.md#about-the-pack-files-setting-en_us" target="_blank"><strong>{{ tl('_more_info') }}</strong></a>)
+            </v-list-tile-sub-title>
+          </v-list-tile-content>
+          <v-list-tile-action>
+            <v-switch v-model="downloadPackFiles"
+              :disabled="!enableExtTakeOverDownloads"
+            ></v-switch>
+          </v-list-tile-action>
+        </v-list-tile>
+
+        <v-list-tile>
+          <v-list-tile-content>
             <v-list-tile-title>
               {{ tl('_multiple_downloads_time_gap') }} {{ tl('_unit_ms') }}
             </v-list-tile-title>
@@ -98,6 +110,7 @@
               v-model="multipleDownloadsGapTime"
               type="number"
               style="width:100px;"
+              :disabled="!enableExtTakeOverDownloads"
             ></v-text-field>
           </v-list-tile-action>
         </v-list-tile>
@@ -134,6 +147,8 @@ export default {
       downloadPackFiles: true,
 
       multipleDownloadsGapTime: 150,
+
+      enableDownloadMetadata: false,
     };
   },
 
@@ -178,15 +193,23 @@ export default {
       browser.storage.local.set({
         multipleDownloadsGapTime: parseInt(val)
       });
+    },
+
+    enableDownloadMetadata(val) {
+      browser.storage.local.set({
+        enableDownloadMetadata: !!val
+      });
     }
   },
 
   created() {
+    this.enableDownloadMetadata = !!this.browserItems.enableDownloadMetadata;
+
     this.enableExtTakeOverDownloads = !!this.browserItems.enableExtTakeOverDownloads;
 
     if (this.enableExtTakeOverDownloads) {
       let permissions = ['downloads'];
-      
+
       if (this.$_browser !== 'firefox') {
         permissions.push('downloads.shelf');
       }
@@ -221,7 +244,7 @@ export default {
     onEnableExtTakeOverDownloadsChange(val) {
       if (val) {
         let permissions = ['downloads'];
-        
+
         if (this.$_browser !== 'firefox') {
           permissions.push('downloads.shelf');
         }
@@ -231,7 +254,7 @@ export default {
         }, result => {
           if (result) {
             this.enableExtTakeOverDownloads = true;
-          } else {
+
             browser.storage.local.set({
               enableExtTakeOverDownloads: val,
             });
@@ -239,9 +262,11 @@ export default {
         });
       } else {
         this.enableExtTakeOverDownloads = false;
+        this.downloadPackFiles = true;
 
         browser.storage.local.set({
-          enableExtTakeOverDownloads: val,
+          enableExtTakeOverDownloads: this.enableExtTakeOverDownloads,
+          downloadPackFiles: this.downloadPackFiles
         });
       }
     },
