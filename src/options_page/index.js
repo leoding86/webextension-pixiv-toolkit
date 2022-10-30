@@ -1,7 +1,7 @@
 import 'vuetify/dist/vuetify.min.css'
 
 import '@/core/global';
-import App from './App'
+import Index from './Index'
 import Browser from '@/modules/Browser/Browser'
 import I18n from '@/modules/I18n';
 import SuperMixin from '@/mixins/SuperMixin';
@@ -42,12 +42,12 @@ try {
     /**
      * Update browser action badge
      */
-    browser.browserAction.getBadgeText({}, function (text) {
+    browser.action.getBadgeText({}, function (text) {
       if (text.toLowerCase() === 'new') {
         /**
          * If badge text is 'new', remove the badge text.
          */
-        browser.browserAction.setBadgeText({
+        browser.action.setBadgeText({
           text: ''
         });
       }
@@ -68,12 +68,12 @@ try {
 
         i18n,
 
-        render: h => h(App),
+        render: h => h(Index),
 
         data() {
           return {
             plusVersion: null, // deprecated
-            browserItems: items,
+            appSettings: items,
             isFirefox_: $_browser === 'firefox'
           }
         },
@@ -83,7 +83,7 @@ try {
 
           browser.storage.onChanged.addListener((items, scope) => {
             for (let key in items) {
-              vm.browserItems[key] = items[key].newValue;
+              vm.appSettings[key] = items[key].newValue;
 
               if (key === 'language') {
                 if (items[key].newValue === 'default') {

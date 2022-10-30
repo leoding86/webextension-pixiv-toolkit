@@ -9,5 +9,11 @@
     "exclude": [
         "node_modules",
         "dist"
-    ]
+    ],
+    "vueCompilerOptions": {
+        "target": 2,
+        "extensions": [
+            ".vue"
+        ]
+    }
 }

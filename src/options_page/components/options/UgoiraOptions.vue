@@ -15,8 +15,6 @@
           </v-list-tile-action>
         </v-list-tile>
 
-        <ugoira-converter-option></ugoira-converter-option>
-
         <v-list-tile>
           <v-list-tile-content>
             <v-list-tile-title>{{ tl('_ffmpeg_custom_convert_command') }} (<a href="https://github.com/leoding86/webextension-pixiv-toolkit/blob/master/docs/help.md#about-ffmpeg-custom-convert-command-en_us" target="_blank"><strong>{{ tl('_more_info') }}</strong></a>)</v-list-tile-title>
@@ -78,25 +76,6 @@
             ></v-switch> -->
           </v-list-tile-action>
         </v-list-tile>
-
-        <v-list-tile @click="showUgoiraExtendDialog()">
-          <v-list-tile-content>
-            <v-list-tile-title>{{ tl('extend_duration') }}</v-list-tile-title>
-            <v-list-tile-sub-title>{{ tl('extend_duration_desc') }}</v-list-tile-sub-title>
-          </v-list-tile-content>
-          <v-list-tile-action>
-            <v-btn icon ripple>
-              <v-icon>keyboard_arrow_right</v-icon>
-            </v-btn>
-          </v-list-tile-action>
-        </v-list-tile>
-
-        <change-location-setting
-          v-model="location"
-          :setting-title="tl('_save_ugoira_in_relative_location')"
-          :setting-tip="browserItems.enableExtTakeOverDownloads ? '' : tl('_must_enable_extension_take_over_downloads_setting')"
-          :dialog-hint="tl('_work_relative_location_desc')"
-        ></change-location-setting>
       </v-list>
     </v-card>
 

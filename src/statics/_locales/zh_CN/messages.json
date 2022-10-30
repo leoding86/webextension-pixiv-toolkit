@@ -853,5 +853,14 @@
     },
     "_download_metadata_when_downloading_works_only_support_works_from_pixiv_main_site": {
         "message": "下载作品时同时下载元数据，仅支持Pixiv主站点（不支持小说类型）"
+    },
+    "_all": {
+        "message": "全部"
+    },
+    "_download_manager": {
+        "message": "下载管理"
+    },
+    "_show_in_folder": {
+        "message": "在文件夹中显示"
     }
 }

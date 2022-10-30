@@ -12,14 +12,12 @@ class ErrorTracker extends Event {
   constructor() {
     super();
 
-    this.tracks = [];
-
     window.addEventListener('error', e => {
-      this.pushError(e.error);
+      this.emitError(e.error);
     });
 
     window.addEventListener('unhandledrejection', e => {
-      this.pushError(new Error(e.reason));
+      this.emitError(new Error(e.reason));
     });
   }
 
@@ -39,14 +37,8 @@ class ErrorTracker extends Event {
    *
    * @param {Error} error
    */
-  pushError(error) {
-    if (this.tracks.length >= 500) {
-      this.tracks.shift();
-    }
-
+  emitError(error) {
     let message = error.message + "\r\n" + error.stack
-
-    this.tracks.push(message);
 
     this.dispatch('error', [message]);
   }

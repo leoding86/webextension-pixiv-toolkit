@@ -97,14 +97,19 @@ class Detector {
         if (json && json.body) {
           self.contextData = json.body;
 
+          /**
+           * Append current url to context
+           */
+          self.contextData.targetUrl = self.currentUrl;
+
           browser.runtime.sendMessage({
-            action: 'activeIcon'
+            action: 'badge:activeIcon'
           });
 
           resolve(json.body.illustType);
         } else {
           browser.runtime.sendMessage({
-            action: 'deactiveIcon'
+            action: 'badge:deactiveIcon'
           });
         }
       });
@@ -174,16 +179,21 @@ class Detector {
         if (json && json.body) {
           self.contextData = json.body;
 
+          /**
+           * Append current url to context
+           */
+          self.contextData.targetUrl = this.currentUrl;
+
           resolve(self.injectNovelAdapter());
 
           browser.runtime.sendMessage({
-            action: 'activeIcon'
+            action: 'badge:activeIcon',
           });
 
           return;
         } else {
           browser.runtime.sendMessage({
-            action: 'deactiveIcon'
+            action: 'badge:deactiveIcon',
           });
         }
       });

@@ -6,8 +6,8 @@ export default {
       let browser = Browser.getBrowser();
 
       browser.runtime.sendMessage({
-        action: 'containsPermissions',
-        permissions: permissions
+        action: 'permission:containsPermissions',
+        args: { permissions }
       }, function (result) {
         resolve(result);
         return;
@@ -20,8 +20,8 @@ export default {
       let browser = Browser.getBrowser();
 
       browser.runtime.sendMessage({
-        action: 'requestPermissions',
-        permissions: permissions
+        action: 'permission:requestPermissions',
+        args: { permissions }
       }, function (granted) {
         resolve(granted);
         return;
@@ -34,8 +34,8 @@ export default {
       let browser = Browser.getBrowser();
 
       browser.runtime.sendMessage({
-        action: 'removePermissions',
-        permissions: permissions
+        action: 'permission:removePermissions',
+        args: { permissions }
       }, function (removed) {
         resolve(removed);
         return;

@@ -1,0 +1,48 @@
+[
+  {
+    "id": 1,
+    "priority": 1,
+    "action" : {
+      "type": "modifyHeaders",
+      "requestHeaders": [
+        {
+            "header": "Referer",
+            "operation": "set",
+            "value": "https://www.pixiv.net"
+        }
+      ]
+    },
+    "condition": {
+        "requestDomains": [
+            "pximg.net"
+        ],
+        "resourceType": [
+            "main_frame",
+            "xmlhttprequest",
+            "fetch",
+            "other"
+        ]
+    }
+  },
+  {
+    "id": 2,
+    "priority": 2,
+    "action" : {
+      "type": "modifyHeaders",
+      "requestHeaders": [
+        {
+            "header": "referer",
+            "operation": "set",
+            "value": "https://www.fanbox.cc"
+        }
+      ]
+    },
+    "condition": {
+        "urlFilter": "||fanbox.cc",
+        "resourceType": ["main_frame"],
+        "initiatorDomains": [
+            "options_page/downloads.html"
+        ]
+    }
+  }
+]

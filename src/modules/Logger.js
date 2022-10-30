@@ -5,7 +5,7 @@ class Logger {
 
   static log(level, message) {
     Logger.browser.runtime.sendMessage({
-      action: 'recordLog',
+      action: 'log:recordLog',
       message: message,
       level: level
     })

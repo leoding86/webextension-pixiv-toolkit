@@ -1,4 +1,5 @@
 import Request from '@/modules/Net/Request';
+import MimeType from '../Util/MimeType';
 
 class Download extends Request {
   /**
@@ -27,7 +28,8 @@ class Download extends Request {
     let self = this;
 
     this.addListener('onload', data => {
-      self.dispatch('onfinish', [self.asBlob ? new Blob([data.buffer], { type: self.getResponseHeader('Content-Type') }) : data.buffer]);
+      let mimeType = self.getResponseHeader('Content-Type');
+      self.dispatch('onfinish', [self.asBlob ? new Blob([data.buffer], { type: mimeType }) : data.buffer, mimeType]);
     });
 
     this.send(data)

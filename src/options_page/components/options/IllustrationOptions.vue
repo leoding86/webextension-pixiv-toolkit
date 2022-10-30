@@ -30,28 +30,6 @@
 
         <v-list-tile>
           <v-list-tile-content>
-            <v-list-tile-title>{{ tl('_create_subdirectory') }}</v-list-tile-title>
-            <v-list-tile-sub-title>{{ tl('_create_subdirectory_when_download_Pack_Files_setting_is_disabled') }}</v-list-tile-sub-title>
-          </v-list-tile-content>
-          <v-list-tile-action>
-            <v-select :items="createSubdirectoryOptions" v-model="createSubdirectory"
-              style="width:220px;"
-            ></v-select>
-          </v-list-tile-action>
-        </v-list-tile>
-
-        <v-list-tile>
-          <v-list-tile-content>
-            <v-list-tile-title>{{ tl('_always_pack') }}</v-list-tile-title>
-            <v-list-tile-sub-title>{{ tl('_always_pack_images_into_zip_file_even_if_there_is_only_one_image_in_the_illustration') }}</v-list-tile-sub-title>
-          </v-list-tile-content>
-          <v-list-tile-action>
-            <v-switch v-model="alwaysPack"></v-switch>
-          </v-list-tile-action>
-        </v-list-tile>
-
-        <v-list-tile>
-          <v-list-tile-content>
             <v-list-tile-title>{{ tl('_page_number_start_with_1') }}</v-list-tile-title>
             <v-list-tile-sub-title>{{ tl('_page_number_start_with_1_otherwise_start_with_0') }}</v-list-tile-sub-title>
           </v-list-tile-content>
@@ -72,13 +50,6 @@
             ></v-select>
           </v-list-tile-action>
         </v-list-tile>
-
-        <change-location-setting
-          v-model="location"
-          :setting-title="tl('_save_illustration_in_relative_location')"
-          :setting-tip="browserItems.enableExtTakeOverDownloads ? '' : tl('_must_enable_extension_take_over_downloads_setting')"
-          :dialog-hint="tl('_work_relative_location_desc')"
-        ></change-location-setting>
       </v-list>
     </v-card>
   </div>

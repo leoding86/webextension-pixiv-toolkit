@@ -49,29 +49,6 @@
             ></v-select>
           </v-list-tile-action>
         </v-list-tile>
-
-        <v-list-tile>
-          <v-list-tile-content>
-            <v-list-tile-title>{{ tl('number_of_pages_in_each_chunk') }}</v-list-tile-title>
-            <v-list-tile-sub-title>{{ tl('number_of_pages_in_each_chunk_desc') }}</v-list-tile-sub-title>
-          </v-list-tile-content>
-          <v-list-tile-action>
-            <v-text-field
-              reverse
-              v-model="mangaPagesInChunk"
-              @change="mangaPagesInChunkChanged"
-              type="number"
-              style="width:100px;"
-            ></v-text-field>
-          </v-list-tile-action>
-        </v-list-tile>
-
-        <change-location-setting
-          v-model="location"
-          :setting-title="tl('_save_manga_in_relative_location')"
-          :setting-tip="browserItems.enableExtTakeOverDownloads ? '' : tl('_must_enable_extension_take_over_downloads_setting')"
-          :dialog-hint="tl('_work_relative_location_desc')"
-        ></change-location-setting>
       </v-list>
     </v-card>
   </div>

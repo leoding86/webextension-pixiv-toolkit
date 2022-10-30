@@ -33,7 +33,7 @@ export default class Detector {
        * Highlight icon
        */
       browser.runtime.sendMessage({
-        action: 'activeIcon'
+        action: 'badge:activeIcon'
       });
 
       return episodeAdapter;
@@ -42,7 +42,7 @@ export default class Detector {
        * Deactive badge icon
        */
       browser.runtime.sendMessage({
-        action: 'deactiveIcon'
+        action: 'badge:deactiveIcon'
       });
 
       throw new InvalidPageError(url);

@@ -1,11 +1,22 @@
 import Download from '@/modules/Net/Download';
 import Event from '@/modules/Event';
 import Queue from '@/modules/Queue';
+import { RuntimeError } from '@/errors';
 
 /**
  * @class
  */
 class Downloader extends Event {
+  /**
+   * @type {Queue}
+   */
+  queue;
+
+  /**
+   * @type {Download[]}
+   */
+  downloads;
+
   /**
    * @constructor
    * @param {Object} arguments
@@ -17,24 +28,47 @@ class Downloader extends Event {
     this.processors = processors;
     this.requestOptions = requestOptions;
     this.files = [];
+    this.downloads = [];
     this.successIndexes = [];
     this.failIndexes = [];
     this.progresses = [];
-    this.queue = null;
     this.asBlob = true;
   }
 
   /**
    * @override
-   * @param {'start'|'progress'|'item-finish'|'finish'|'item-error'} eventName
+   * @param {'start'|'progress'|'item-finish'|'finish'|'item-error'|'pause'|'abort'} eventName
    */
   dispatch(eventName, args) {
     super.dispatch(eventName, args);
   }
 
+  removeDownloadFromCollection(download) {
+    this.downloads = this.downloads.splice(this.downloads.indexOf(download), 1);
+  }
+
+  /**
+   * Initialize downloader, should call it after `appendFile`
+   */
+  initial() {
+    this.queue = new Queue();
+    this.queue.setProcessors(this.processors);
+    this.queue.onDone = () => {
+      this.dispatch('finish');
+    };
+
+    this.queue.onPaused = () => {
+      this.dispatch('paused');
+    };
+
+    this.files.forEach((file, index) => {
+      this.queue.add({file, index});
+    });
+  }
+
   /**
    * @override
-   * @param {'start'|'progress'|'item-finish'|'finish'|'item-error'} eventName
+   * @param {'start'|'progress'|'item-finish'|'finish'|'item-error'|'pause'|'abort'} eventName
    * @param {Function} listener
    * @param {*} thisArg
    */
@@ -42,25 +76,24 @@ class Downloader extends Event {
     super.addListener(eventName, listener, thisArg);
   }
 
-  abort() {
-    this.queue.abort();
+  pause() {
+    this.queue.pause();
   }
 
   download() {
-    this.queue = new Queue();
-    this.queue.setProcessors(this.processors);
-
-    this.queue.onDone = () => {
-      this.dispatch('finish');
-    };
-
-    this.files.forEach((file, index) => {
-      this.queue.add({file, index});
-    });
+    if (this.queue.queuing) {
+      this.queue.cancelPause();
+      return;
+    }
 
     this.queue.start(({file, index}) => {
       return new Promise((resolve, reject) => {
         let download = new Download(file, Object.assign({ method: 'GET' }, this.requestOptions));
+
+        /**
+         * Append download to collection
+         */
+        this.downloads.push(download);
 
         download.asBlob = this.asBlob;
 
@@ -74,15 +107,23 @@ class Downloader extends Event {
           }]);
         });
 
-        download.addListener('onfinish', data => {
+        download.addListener('onfinish', (data, mimeType) => {
+          this.removeDownloadFromCollection(download);
+
           this.successIndexes.push(index);
 
-          this.dispatch('item-finish', [{blob: this.asBlob ? data : null, data: this.asBlob ? null : data, index, download, file}]);
+          this.dispatch('item-finish', [{
+            blob: this.asBlob ? data : null,
+            data: this.asBlob ? null : data,
+            index, download, file, mimeType
+          }]);
 
           resolve();
         });
 
         download.addListener('onerror', error => {
+          this.removeDownloadFromCollection(download);
+
           this.failIndexes.push(index);
           this.progresses[index] = 0;
 
@@ -99,6 +140,8 @@ class Downloader extends Event {
         download.download();
       });
     });
+
+    this.dispatch('start');
   }
 
   /**
@@ -106,7 +149,7 @@ class Downloader extends Event {
    * @param {String} file
    */
   appendFile(file) {
-    this.files.push(file)
+    this.files.push(file);
   }
 }
 

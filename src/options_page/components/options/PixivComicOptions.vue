@@ -49,13 +49,6 @@
             ></v-select>
           </v-list-tile-action>
         </v-list-tile>
-
-        <change-location-setting
-          v-model="location"
-          :setting-title="tl('_save_comic_in_relative_location')"
-          :setting-tip="browserItems.enableExtTakeOverDownloads ? '' : tl('_must_enable_extension_take_over_downloads_setting')"
-          :dialog-hint="tl('_work_relative_location_desc')"
-        ></change-location-setting>
       </v-list>
     </v-card>
 

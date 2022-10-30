@@ -1,18 +1,17 @@
 {
+    "manifest_version": 3,
     "background": {
-        "scripts": [
-            "lib/pouchdb.min.js",
-            "lib/pouchdb.find.min.js",
-            "backgrounds/background.js"
-        ]
+        "service_worker": "background/background.js"
     },
-    "browser_action": {
+    "action": {
         "default_icon": "icon.png",
         "default_title": "__MSG_extName__",
         "default_popup": "popup_page/index.html"
     },
     "short_name": "PTK",
-    "content_security_policy": "script-src 'self'; object-src 'self'",
+    "content_security_policy": {
+        "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self' 'wasm-unsafe-eval'"
+    },
     "default_locale": "en",
     "description": "__MSG_extDescription__",
     "icons": {
@@ -20,26 +19,37 @@
         "16": "icon16.png",
         "48": "icon48.png"
     },
-    "manifest_version": 2,
     "name": "__MSG_extName__",
+    "declarative_net_request" : {
+        "rule_resources": [{
+            "id": "ruleset_1",
+            "enabled": true,
+            "path": "net_request_rules_1.json"
+        }]
+    },
     "permissions": [
-        "webRequest",
-        "webRequestBlocking",
+        "declarativeNetRequest",
+        "declarativeNetRequestFeedback",
         "storage",
         "unlimitedStorage",
+        "downloads",
+        "downloads.shelf"
+    ],
+    "host_permissions": [
         "*://*.pixiv.net/*",
         "*://*.pximg.net/*",
         "*://*.techorus-cdn.com/*",
         "*://*.fanbox.cc/*"
     ],
-    "optional_permissions": [
-        "downloads",
-        "downloads.shelf",
-        "https://unpkg.com/*"
-    ],
     "web_accessible_resources": [
-        "lib/ffmpeg/ffmpeg.min.js",
-        "lib/ffmpeg/ffmpeg-core.js"
+        {
+            "resources": [
+                "lib/ffmpeg/ffmpeg-core.wasm"
+            ],
+            "matches": [
+                "<all_urls>"
+            ]
+        }
     ],
     "content_scripts": [
         {

@@ -15,12 +15,12 @@ Vue.prototype.$browser = window.browser /* For back compatible */ = Browser.getB
 Vue.mixin(SuperMixin);
 
 let errorTracker = new ErrorTracker();
-errorTracker.addListener('error', errorMessage => {
-  console.log(errorMessage);
+errorTracker.addListener('error', error => {
+  console.error(error);
   browser.runtime.sendMessage({
-    action: 'trackError',
+    service: 'log:trackError',
     args: {
-      errorMessage
+      error
     }
   });
 });

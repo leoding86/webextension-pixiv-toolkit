@@ -1,13 +1,13 @@
 function Queue() {
   this.stack = [];
-  this.index = 0;
   this.complete = 0;
   this.fail = 0;
   this.total = 0;
+  this.queuing = false;
   this.onItemComplete;
   this.onItemFail;
   this.onDone;
-  this.stopQueue = false;
+  this.pauseQueue = false;
   this.processors = 1;
   this.active = 0;
 };
@@ -18,66 +18,105 @@ Queue.prototype = {
   },
 
   add: function (item) {
-    this.stack.push(item);
+    this.stack.push({
+      item,
+      failure: false,
+    });
     this.total = this.stack.length;
   },
 
-  next: function () {
-    if (this.index < this.stack.length) {
-      this.index++;
-      return this.current();
-    } else {
-      return false;
+  renewFailureItems() {
+    for (let i in this.stack) {
+      this.stack[i].failure = false;
     }
+
+    this.fail = 0;
   },
 
   current: function () {
-    return this.stack[this.index];
+    if (this.stack[0] && !this.stack[0].failure) {
+      return this.stack.shift();
+    }
   },
 
   start: function (handle) {
+    if (this.queuing) {
+      return;
+    }
+
+    if (this.fail > 0) {
+      this.renewFailureItems();
+    }
+
+    this.queuing = true;
+
+    this.queue(handle);
+  },
+
+  queue: function(handle) {
     if (this.active >= this.processors) {
       return;
     }
 
-    let index = this.index;
     let item;
 
     if (item = this.current()) {
       this.active++;
 
-      handle(item).then(() => {
+      handle(item.item).then(() => {
         this.complete++;
+
         if (this.onItemComplete) {
           this.onItemComplete.call(this);
         }
       }).catch(() => {
         this.fail++;
+
+        item.failure = true;
+        this.stack.push(item);
+
         if (this.onItemFail) {
-          this.onItemFail.call(this, index);
+          this.onItemFail.call(this, item.item);
         }
       }).finally(() => {
         this.active--;
 
-        if (this.stopQueue) {
+        if (this.pauseQueue) {
+          /**
+           * If there is a pause signal, don't contiune and mark queuing to false
+           */
+          if (this.onPaused) {
+            this.queuing = false;
+            this.onPaused.call(this);
+          }
           return;
         }
 
-        if (this.total === (this.complete + this.fail)) {
+        if (this.stack.filter(item => item.failure === false).length === 0) {
           typeof this.onDone === 'function' && this.onDone.call(this);
-        } else if (this.next()) {
-          this.start(handle);
         }
+
+        /**
+         * Run next item
+         */
+        this.queue(handle);
       });
 
-      if (this.active < this.processors && this.next()) {
-        this.start(handle);
+      /**
+       * Run next item if the active item isn't reach processors limit
+       */
+      if (this.active < this.processors) {
+        this.queue(handle);
       }
     }
   },
 
-  abort: function () {
-    this.stopQueue = !0;
+  pause: function () {
+    this.pauseQueue = true;
+  },
+
+  cancelPause: function () {
+    this.pauseQueue = false;
   }
 };
 

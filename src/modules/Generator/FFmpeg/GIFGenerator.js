@@ -27,6 +27,8 @@ class GIFGenerator extends Generator {
       this.loadedFiles.forEach(file => this.ffmpeg.FS('unlink', file));
       this.ffmpeg.FS('unlink', 'out.gif');
       this.ffmpeg.FS('unlink', 'input.txt');
+    }).catch(e => {
+      console.error(e);
     }).finally(() => {
       this.destroy();
     });

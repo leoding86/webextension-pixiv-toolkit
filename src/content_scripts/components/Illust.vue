@@ -58,8 +58,8 @@
 import Button from '@/content_scripts/components/Button'
 import Dialog from '@/content_scripts/components/Dialog'
 import downloadFileMixin from '@/content_scripts/mixins/downloadFileMixin'
+import DownloadHistory from '@/content_scripts/modules/DownloadHistory';
 import IllustTool from '@/content_scripts/illust/Illust'
-import DownloadRecordPort from '@/modules/Ports/DownloadRecordPort/RendererPort'
 import pathjoin from '@/modules/Util/pathjoin';
 
 export default {
@@ -111,13 +111,10 @@ export default {
     this.illustTool = this.tool;
 
     /**
-     * @var {DownloadRecordPort}
+     * Create `DownloadHistory` instance
      */
-    this.downloadRecordPort = DownloadRecordPort.getInstance();
-
-    this.downloadRecordPort.port.onMessage.addListener(this.handleDownloadRecord);
-
-    this.downloadRecordPort.getDownloadRecord({ id: this.illustTool.getId(), type: DownloadRecordPort.illustType });
+    this.downloadHistory = DownloadHistory.create();
+    this.downloadHistory.addListener('getRecord', this.handleDownloadRecord, this);
 
     this.illustTool.initOptions({
       splitSize: 999,
@@ -149,7 +146,7 @@ export default {
 
   beforeDestroy() {
     browser.runtime.onConnect.removeListener(this.handleConnect);
-    this.downloadRecordPort.port.onMessage.removeListener(this.handleDownloadRecord);
+    this.downloadHistory.removeListener('getRecord', this.handleDownloadRecord);
     this.tool.removeListener('download-progress', this.downloadProgressEventHandle);
     this.tool.removeListener('download-finish', this.downloadFinishEventHandle);
   },
@@ -201,10 +198,11 @@ export default {
 
     saveDownloadRecord(record) {
       this.isSaved = true;
-      this.downloadRecordPort.saveDownloadRecord({
-        id: this.illustTool.getId(),
-        type: DownloadRecordPort.illustType,
+      this.downloadHisotry.putRecord({
+        id: 'pixiv-illust-' + this.illustTool.getId(),
+        type: 'PIXIV_ILLUST',
         record: Object.assign({
+          url: this.tool.getUrl(),
           title: this.tool.getTitle(),
           userId: this.tool.getUserId(),
           userName: this.tool.getUserName(),
@@ -365,9 +363,7 @@ export default {
     },
 
     handleDownloadRecord(message, port) {
-      if (message.channel === DownloadRecordPort.portName + ':get-download-record' && message.error === undefined) {
-        this.isSaved = true;
-      }
+      this.isSaved = true;
     },
 
     handleConnect(port) {

@@ -68,6 +68,10 @@ class MangaTool extends FilesDownloader {
     }
   }
 
+  getUrl() {
+    return this.context.targetUrl;
+  }
+
   getUserId() {
     return this.context.userId
   }

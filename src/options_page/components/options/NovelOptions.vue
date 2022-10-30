@@ -25,13 +25,6 @@
             <v-switch v-model="novelIncludeDescription"></v-switch>
           </v-list-tile-action>
         </v-list-tile>
-
-        <change-location-setting
-          v-model="location"
-          :setting-title="tl('_save_ugoira_in_relative_location')"
-          :setting-tip="browserItems.enableExtTakeOverDownloads ? '' : tl('_must_enable_extension_take_over_downloads_setting')"
-          :dialog-hint="tl('_work_relative_location_desc')"
-        ></change-location-setting>
       </v-list>
     </v-card>
 

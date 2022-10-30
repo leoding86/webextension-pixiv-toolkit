@@ -81,6 +81,10 @@ class UgoiraTool extends Event {
     return this.zipBlob;
   }
 
+  getUrl() {
+    return this.context.targetUrl;
+  }
+
   getUserId() {
     return this.context.userId
   }

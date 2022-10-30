@@ -95,7 +95,7 @@ import 'vue-virtual-scroller/dist/vue-virtual-scroller.css';
 import { RecycleScroller } from 'vue-virtual-scroller';
 import PageTitle from '@@/components/PageTitle';
 import CacheableImage from '@@/components/CacheableImage';
-import DownloadRecordPort from '@/modules/Ports/DownloadRecordPort/RendererPort';
+import DownloadHisotry from '@/options_page/modules/DownloadHistory';
 import moment from 'moment';
 
 export default {
@@ -121,9 +121,10 @@ export default {
 
   created() {
     this.windowScrollEventBinded = false;
-    this.downloadsPort = DownloadRecordPort.getInstance();
-    this.downloadsPort.port.onMessage.addListener(this.handleDownloadsPortResponse);
     this.latestListDate = null;
+
+    this.downloadHistory = DownloadHisotry.create();
+    this.downloadHistory.addListener('listRecords', this.handleListRecords);
 
     if (this.$i18n.locale === 'zh_CN') {
       this.dateFormat = 'YYYY[年]MMMMDD[日] dddd';
@@ -222,62 +223,56 @@ export default {
       window.open(this.caseWorkUrl(illust));
     },
 
-    handleDownloadsPortResponse(message, port) {
-      if (undefined !== message.error) {
-        throw message.error;
+    handleListRecords(message, port) {
+      if (!this.windowScrollEventBinded) {
+        window.addEventListener('scroll', this.handleScroll);
+        this.windowScrollEventBinded = false;
       }
 
-      if (this.downloadsPort.isChannel(message.channel, 'list-downloads')) {
-        if (!this.windowScrollEventBinded) {
-          window.addEventListener('scroll', this.handleScroll);
-          this.windowScrollEventBinded = false;
-        }
+      if (message.data.datasets.length > 0) {
+        for (let i = 0; i < message.data.datasets.length; i++) {
+          let item = message.data.datasets[i];
 
-        if (message.data.datasets.length > 0) {
-          for (let i = 0; i < message.data.datasets.length; i++) {
-            let item = message.data.datasets[i];
+          if (this.latestListDate === null) {
+            this.latestListDate = new Date(item.downloaded_at * 1000);
+            this.latestListDate.setHours(0);
+            this.latestListDate.setMinutes(0);
+            this.latestListDate.setSeconds(0);
+            this.latestListDate.setMilliseconds(0);
+            let time = this.latestListDate.getTime();
+            message.data.datasets.splice(i, 0, { _id: time, time: time });
+            i++;
+          } else {
+            let itemDate = new Date(item.downloaded_at * 1000);
 
-            if (this.latestListDate === null) {
-              this.latestListDate = new Date(item.downloaded_at * 1000);
-              this.latestListDate.setHours(0);
-              this.latestListDate.setMinutes(0);
-              this.latestListDate.setSeconds(0);
-              this.latestListDate.setMilliseconds(0);
-              let time = this.latestListDate.getTime();
+            if (this.latestListDate.getTime() > itemDate.getTime()) {
+              itemDate.setHours(0);
+              itemDate.setMinutes(0);
+              itemDate.setSeconds(0);
+              itemDate.setMilliseconds(0);
+              let time = itemDate.getTime();
               message.data.datasets.splice(i, 0, { _id: time, time: time });
+              this.latestListDate = itemDate;
               i++;
-            } else {
-              let itemDate = new Date(item.downloaded_at * 1000);
-
-              if (this.latestListDate.getTime() > itemDate.getTime()) {
-                itemDate.setHours(0);
-                itemDate.setMinutes(0);
-                itemDate.setSeconds(0);
-                itemDate.setMilliseconds(0);
-                let time = itemDate.getTime();
-                message.data.datasets.splice(i, 0, { _id: time, time: time });
-                this.latestListDate = itemDate;
-                i++;
-              }
             }
           }
-
-          this.datasets = this.datasets.concat(message.data.datasets);
-
-          if (message.data.datasets.length < this.step) {
-            this.allLoaded = true;
-          } else {
-            this.offset += this.skip;
-          }
         }
 
-        this.loading = false;
+        this.datasets = this.datasets.concat(message.data.datasets);
+
+        if (message.data.datasets.length < this.step) {
+          this.allLoaded = true;
+        } else {
+          this.offset += this.skip;
+        }
       }
+
+      this.loading = false;
     },
 
     deleteItem(item) {
       this.confirmDialog = true;
-      this.downloadsPort.deleteDownload({ id: item._id });
+      this.downloadHistory.deleteRecord({ id: item._id });
       this.datasets.splice(this.datasets.indexOf(item), 1);
     },
 
@@ -287,9 +282,9 @@ export default {
     getDatasets() {
       this.loading = true;
 
-      this.downloadsPort.listDownloads({
+      this.downloadHistory.listRecords({
         limit: this.step,
-        skip: this.offset
+        skip: this.offset,
       });
     },
 
@@ -297,14 +292,12 @@ export default {
      * Search in datasets
      */
     searchDatasets() {
-      let vm = this;
-
       this.loading = true;
 
-      this.downloadsPort.listDownloads({
+      this.downloadHistory.listRecords({
         limit: this.step,
         skip: this.offset,
-        query: this.searchQuery.toLowerCase()
+        query: this.searchQuery.toLowerCase(),
       });
     },
 
@@ -314,7 +307,7 @@ export default {
 
     clearAll() {
       if (window.confirm('Remove all downloads history? This operate cannot be reversed.')) {
-        this.downloadsPort.clearDownloads();
+        this.downloadHistory.clearRecords();
         this.datasets = [];
       }
     }

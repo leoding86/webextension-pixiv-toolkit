@@ -99,8 +99,8 @@ export default {
      */
     updateDownloadStat(type) {
       browser.runtime.sendMessage({
-        action: 'updateDownloadedStat',
-        args: type,
+        action: 'download:updateDownloadedStat',
+        args: { type },
       });
     },
 

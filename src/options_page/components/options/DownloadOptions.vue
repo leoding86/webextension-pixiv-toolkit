@@ -38,17 +38,6 @@
           </v-list-tile-action>
         </v-list-tile>
 
-        <v-list-tile>
-          <v-list-tile-content>
-            <v-list-tile-title>{{ tl('setting_ext_take_over_downloads') }}</v-list-tile-title>
-            <v-list-tile-sub-title>{{ tl('setting_ext_take_over_downloads_desc') }}</v-list-tile-sub-title>
-          </v-list-tile-content>
-          <v-list-tile-action>
-            <v-switch v-model="enableExtTakeOverDownloads"
-             @change="onEnableExtTakeOverDownloadsChange"></v-switch>
-          </v-list-tile-action>
-        </v-list-tile>
-
         <downloads-shelf-option v-if="$_browser !== 'firefox'"></downloads-shelf-option>
 
         <v-list-tile>
@@ -57,9 +46,7 @@
             <v-list-tile-sub-title>{{ downloadRelativeLocation }}</v-list-tile-sub-title>
           </v-list-tile-content>
           <v-list-tile-action>
-            <v-btn
-              depressed
-              :disabled="!enableExtTakeOverDownloads"
+            <v-btn depressed
               @click="showDownloadRelativeLocationDialog()"
             >{{ tl('Change') }}</v-btn>
           </v-list-tile-action>
@@ -73,10 +60,7 @@
             <v-list-tile-sub-title>{{ tl('This_setting_has_no_effect_if_the_similar_setting_of_your_Chrome_is_on') }}</v-list-tile-sub-title>
           </v-list-tile-content>
           <v-list-tile-action>
-            <v-switch
-              v-model="downloadSaveAs"
-              :disabled="!enableExtTakeOverDownloads"
-            ></v-switch>
+            <v-switch v-model="downloadSaveAs"></v-switch>
           </v-list-tile-action>
         </v-list-tile>
 
@@ -89,9 +73,7 @@
             </v-list-tile-sub-title>
           </v-list-tile-content>
           <v-list-tile-action>
-            <v-switch v-model="downloadPackFiles"
-              :disabled="!enableExtTakeOverDownloads"
-            ></v-switch>
+            <v-switch v-model="downloadPackFiles"></v-switch>
           </v-list-tile-action>
         </v-list-tile>
 
@@ -110,7 +92,6 @@
               v-model="multipleDownloadsGapTime"
               type="number"
               style="width:100px;"
-              :disabled="!enableExtTakeOverDownloads"
             ></v-text-field>
           </v-list-tile-action>
         </v-list-tile>
@@ -138,7 +119,7 @@ export default {
 
       hasDownloadsPermission: false,
 
-      enableExtTakeOverDownloads: false,
+      enableExtTakeOverDownloads: true,
 
       downloadSaveAs: false,
 
@@ -204,28 +185,6 @@ export default {
 
   created() {
     this.enableDownloadMetadata = !!this.browserItems.enableDownloadMetadata;
-
-    this.enableExtTakeOverDownloads = !!this.browserItems.enableExtTakeOverDownloads;
-
-    if (this.enableExtTakeOverDownloads) {
-      let permissions = ['downloads'];
-
-      if (this.$_browser !== 'firefox') {
-        permissions.push('downloads.shelf');
-      }
-
-      browser.permissions.contains({
-        permissions,
-      }, result => {
-        if (!result) {
-          this.enableExtTakeOverDownloads = false;
-
-          browser.storage.local.set({
-            enableExtTakeOverDownloads: this.enableExtTakeOverDownloads,
-          });
-        }
-      });
-    }
   },
 
   beforeMount() {
@@ -238,47 +197,6 @@ export default {
     this.downloadPackFiles = !!this.browserItems.downloadPackFiles;
 
     this.multipleDownloadsGapTime = parseInt(this.browserItems.multipleDownloadsGapTime) || 150;
-  },
-
-  methods: {
-    onEnableExtTakeOverDownloadsChange(val) {
-      if (val) {
-        let permissions = ['downloads'];
-
-        if (this.$_browser !== 'firefox') {
-          permissions.push('downloads.shelf');
-        }
-
-        browser.permissions.request({
-          permissions,
-        }, result => {
-          if (result) {
-            this.enableExtTakeOverDownloads = true;
-
-            browser.storage.local.set({
-              enableExtTakeOverDownloads: val,
-            });
-          }
-        });
-      } else {
-        this.enableExtTakeOverDownloads = false;
-        this.downloadPackFiles = true;
-
-        browser.storage.local.set({
-          enableExtTakeOverDownloads: this.enableExtTakeOverDownloads,
-          downloadPackFiles: this.downloadPackFiles
-        });
-      }
-    },
-
-    showDownloadRelativeLocationDialog() {
-      this.pushRoute({
-        name: "DownloadRelativeLocationDialog",
-        params: {
-          downloadRelativeLocation: ""
-        }
-      });
-    }
   }
 };
 </script>

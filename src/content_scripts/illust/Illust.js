@@ -96,6 +96,10 @@ class IllustTool extends FilesDownloader {
     this.context[key] = value;
   }
 
+  getUrl() {
+    return this.context.targetUrl;
+  }
+
   getUserId() {
     return this.context.userId
   }

@@ -14,6 +14,8 @@
     "build:firefox": "cross-env NODE_ENV=production PLATFORM_ENV=firefox webpack --config webpack.config.js --env.platform=firefox"
   },
   "dependencies": {
+    "@ffmpeg/core": "^0.11.0",
+    "@ffmpeg/ffmpeg": "^0.11.6",
     "md5": "^2.3.0",
     "moment": "^2.29.1",
     "pouchdb": "^7.2.2",
@@ -40,6 +42,7 @@
     "@babel/preset-env": "^7.11.0",
     "@vue/babel-helper-vue-jsx-merge-props": "^1.0.0",
     "@vue/babel-plugin-transform-vue-jsx": "^1.1.2",
+    "@vue/runtime-dom": "^3.2.41",
     "autoprefixer": "^7.1.2",
     "babel-jest": "^27.2.1",
     "babel-loader": "^8.1.0",

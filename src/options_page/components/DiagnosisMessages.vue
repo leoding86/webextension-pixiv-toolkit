@@ -36,7 +36,7 @@ export default {
       this.settings = JSON.stringify(settings);
 
       browser.runtime.sendMessage({
-        action: 'getTrackedErrorMessages'
+        action: 'log:getTrackedErrors'
       }, errorMessages => {
         errorMessages.forEach(errorMessage => {
           this.errors += errorMessage + "\r\n";

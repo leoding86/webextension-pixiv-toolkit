@@ -6,6 +6,10 @@ class Novel {
     this.context = context;
   }
 
+  getUrl() {
+    return this.context.targetUrl;
+  }
+
   getId() {
     return this.context.id;
   }

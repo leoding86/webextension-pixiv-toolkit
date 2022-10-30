@@ -18,8 +18,8 @@ export default {
       let browser = Browser.getBrowser();
 
       browser.runtime.sendMessage({
-        action: 'download',
-        options: options
+        action: 'download:download',
+        args: options
       }, function (downloadId) {
         if (downloadId === undefined) {
           reject(browser.runtime.lastError);

@@ -850,5 +850,14 @@
     },
     "_download_metadata_when_downloading_works_only_support_works_from_pixiv_main_site": {
         "message": "Download metadata when downloading works. Only support works (novel not included) from Pixiv main site"
+    },
+    "_all": {
+        "message": "All"
+    },
+    "_download_manager": {
+        "message": "Download Manager"
+    },
+    "_show_in_folder": {
+        "message": "Show in folder"
     }
 }
