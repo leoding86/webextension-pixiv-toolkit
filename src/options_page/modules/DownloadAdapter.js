@@ -1,13 +1,21 @@
 import { RuntimeError } from "@/errors";
 import Download from "@/modules/Net/Download";
-import { IllustAdapter, NovelAdapter } from "./DownloadAdapters";
+import {
+  FanboxPostAdapter,
+  PixivComicEpisodeAdapter,
+  PixivIllustAdapter,
+  PixivNovelAdapter,
+ } from "./DownloadAdapters";
 
 class DownloadAdapter {
+  /**
+   * The map keys MUST the match the keys in config/urlFilters.
+   */
   static adapterMap = {
-    'pixiv_illust': IllustAdapter,
-    'pixiv_novel': NovelAdapter,
-    'pixiv_comic_episode': '',
-    'fanbox_post': '',
+    'pixiv_illust': PixivIllustAdapter,
+    'pixiv_novel': PixivNovelAdapter,
+    'pixiv_comic_episode': PixivComicEpisodeAdapter,
+    'fanbox_post': FanboxPostAdapter,
   };
 
   type;
@@ -15,12 +23,12 @@ class DownloadAdapter {
   url;
 
   constructor(type, url) {
+    if (!DownloadAdapter.adapterMap[type]) {
+      throw new RuntimeError(`Invalid download adapter ${type}`);
+    }
+
     this.type = type;
     this.url = url;
-
-    if (!DownloadAdapter.adapterMap[this.type]) {
-      throw new RuntimeError(`Invalid download adapter ${this.type}`);
-    }
   }
 
   static create(type, url) {
@@ -28,10 +36,6 @@ class DownloadAdapter {
   }
 
   async createDownloadTask(options) {
-    if (!DownloadAdapter.adapterMap[this.type]) {
-      throw new RuntimeError(`Invalid type ${this.type}`);
-    }
-
     let adpater = DownloadAdapter.adapterMap[this.type].create(this.url);
     return await adpater.createDownloadTask(options);
   }

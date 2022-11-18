@@ -1,6 +1,6 @@
 <template>
   <div class="option-section">
-    <span class="option-card-title">{{ tl('Manga') }}</span>
+    <span class="option-card-title">Pixiv {{ tl('Manga') }}</span>
 
     <v-card style="margin-bottom:30px;">
       <v-list two-line>
@@ -8,17 +8,6 @@
           <v-list-tile-content>
             <v-list-tile-title>{{ tl('rename_manga') }}</v-list-tile-title>
             <v-list-tile-sub-title>{{ mangaRenameFormatPreview }}</v-list-tile-sub-title>
-          </v-list-tile-content>
-          <v-list-tile-action>
-            <v-btn icon ripple>
-              <v-icon>keyboard_arrow_right</v-icon>
-            </v-btn>
-          </v-list-tile-action>
-        </v-list-tile>
-        <v-list-tile @click="showRenameMangaImageDialog()">
-          <v-list-tile-content>
-            <v-list-tile-title>{{ tl('rename_manga_image') }}</v-list-tile-title>
-            <v-list-tile-sub-title>{{ mangaImageRenameFormatPreview }}</v-list-tile-sub-title>
           </v-list-tile-content>
           <v-list-tile-action>
             <v-btn icon ripple>
@@ -66,8 +55,6 @@ export default {
     return {
       mangaRenameFormat: "",
 
-      mangaImageRenameFormat: "",
-
       mangaPagesInChunk: 99,
 
       pageNumberStartWithOne: false,
@@ -105,14 +92,6 @@ export default {
         return "Not set";
       }
     },
-
-    mangaImageRenameFormatPreview() {
-      if (!!this.browserItems.mangaImageRenameFormat) {
-        return this.browserItems.mangaImageRenameFormat;
-      } else {
-        return "Not set";
-      }
-    }
   },
 
   watch: {
@@ -137,7 +116,6 @@ export default {
 
   beforeMount() {
     this.mangaRenameFormat = this.browserItems.mangaRenameFormat;
-    this.mangaImageRenameFormat = this.browserItems.mangaImageRenameFormat;
     this.mangaPagesInChunk = this.browserItems.mangaPagesInChunk;
     this.pageNumberStartWithOne = this.browserItems.mangaPageNumberStartWithOne;
     this.pageNumberLength = this.browserItems.mangaPageNumberLength;
@@ -151,15 +129,6 @@ export default {
         name: "RenameManga",
         params: {
           renameFormat: this.mangaRenameFormat
-        }
-      });
-    },
-
-    showRenameMangaImageDialog(evt) {
-      this.$router.push({
-        name: "RenameMangaImage",
-        params: {
-          renameFormat: this.mangaImageRenameFormat
         }
       });
     },

@@ -21,15 +21,6 @@
 
         <v-list-tile>
           <v-list-tile-content>
-            <v-list-tile-title>{{ tl('_ask_whether_to_download_the_work_may_has_been_downloaded') }}</v-list-tile-title>
-          </v-list-tile-content>
-          <v-list-tile-action>
-            <v-switch v-model="askDownloadSavedWork"></v-switch>
-          </v-list-tile-action>
-        </v-list-tile>
-
-        <v-list-tile>
-          <v-list-tile-content>
             <v-list-tile-title>{{ tl('_download_metadata') }}</v-list-tile-title>
             <v-list-tile-sub-title>{{ tl('_download_metadata_when_downloading_works_only_support_works_from_pixiv_main_site') }}</v-list-tile-sub-title>
           </v-list-tile-content>
@@ -49,31 +40,6 @@
             <v-btn depressed
               @click="showDownloadRelativeLocationDialog()"
             >{{ tl('Change') }}</v-btn>
-          </v-list-tile-action>
-        </v-list-tile>
-        <v-list-tile>
-          <v-list-tile-content>
-            <v-list-tile-title>
-              {{ tl('Ask_where_to_save_each_file_before_downloading') }}
-              <sup class="beta-notice">*</sup>
-            </v-list-tile-title>
-            <v-list-tile-sub-title>{{ tl('This_setting_has_no_effect_if_the_similar_setting_of_your_Chrome_is_on') }}</v-list-tile-sub-title>
-          </v-list-tile-content>
-          <v-list-tile-action>
-            <v-switch v-model="downloadSaveAs"></v-switch>
-          </v-list-tile-action>
-        </v-list-tile>
-
-        <v-list-tile>
-          <v-list-tile-content>
-            <v-list-tile-title>{{ tl('_pack_files') }}</v-list-tile-title>
-            <v-list-tile-sub-title>
-              {{ tl('_pack_downloaded_files_to_a_zip_file') }}
-              (<a href="https://github.com/leoding86/webextension-pixiv-toolkit/tree/master/docs/help.md#about-the-pack-files-setting-en_us" target="_blank"><strong>{{ tl('_more_info') }}</strong></a>)
-            </v-list-tile-sub-title>
-          </v-list-tile-content>
-          <v-list-tile-action>
-            <v-switch v-model="downloadPackFiles"></v-switch>
           </v-list-tile-action>
         </v-list-tile>
 
@@ -115,17 +81,11 @@ export default {
 
   data() {
     return {
-      askDownloadSavedWork: true,
-
       hasDownloadsPermission: false,
-
-      enableExtTakeOverDownloads: true,
 
       downloadSaveAs: false,
 
       downloadTasksWhenDownloadingImages: 3,
-
-      downloadPackFiles: true,
 
       multipleDownloadsGapTime: 150,
 
@@ -146,12 +106,6 @@ export default {
       });
     },
 
-    askDownloadSavedWork(val) {
-      browser.storage.local.set({
-        askDownloadSavedWork: val
-      });
-    },
-
     downloadTasksWhenDownloadingImages(val, oldVal) {
       val = parseInt(val);
 
@@ -161,12 +115,6 @@ export default {
 
       browser.storage.local.set({
         downloadTasksWhenDownloadingImages: val
-      });
-    },
-
-    downloadPackFiles(val) {
-      browser.storage.local.set({
-        downloadPackFiles: !!val
       });
     },
 
@@ -188,15 +136,22 @@ export default {
   },
 
   beforeMount() {
-    this.askDownloadSavedWork = !!this.browserItems.askDownloadSavedWork;
-
     this.downloadSaveAs = !!this.browserItems.downloadSaveAs;
 
     this.downloadTasksWhenDownloadingImages = this.browserItems.downloadTasksWhenDownloadingImages;
 
-    this.downloadPackFiles = !!this.browserItems.downloadPackFiles;
-
     this.multipleDownloadsGapTime = parseInt(this.browserItems.multipleDownloadsGapTime) || 150;
+  },
+
+  methods: {
+    showDownloadRelativeLocationDialog() {
+      this.pushRoute({
+        name: "DownloadRelativeLocationDialog",
+        params: {
+          downloadRelativeLocation: ""
+        }
+      });
+    }
   }
 };
 </script>

@@ -1,5 +1,4 @@
 import Request from '@/modules/Net/Request';
-import MimeType from '../Util/MimeType';
 
 class Download extends Request {
   /**
@@ -15,7 +14,7 @@ class Download extends Request {
 
   /**
    * @override
-   * @param {('onfinish')} eventName
+   * @param {('ondata'|'onprogress'|'onabort'|'onerror'|'onload'|'onfinish')} eventName
    */
   addListener(eventName, listener, thisArg) {
     super.addListener(eventName, listener, thisArg);

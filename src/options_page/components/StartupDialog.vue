@@ -9,25 +9,6 @@
           <strong>{{ tl('_notice') }}</strong><br>
           {{ tl('_startup_message') }}
         </p>
-
-        <v-list two-line>
-          <v-list-tile>
-            <v-list-tile-content>
-              <v-list-tile-title>{{ tl('_pack_files') }}</v-list-tile-title>
-              <v-list-tile-sub-title>
-                {{ tl('_pack_downloaded_files_to_a_zip_file') }}
-                (<a href="https://github.com/leoding86/webextension-pixiv-toolkit/blob/master/docs/help.md" target="_blank"><strong>{{ tl('_more_info') }}</strong></a>)
-              </v-list-tile-sub-title>
-            </v-list-tile-content>
-            <v-list-tile-action>
-              <v-switch v-model="downloadPackFiles"></v-switch>
-            </v-list-tile-action>
-          </v-list-tile>
-
-          <ugoira-converter-option></ugoira-converter-option>
-
-          <downloads-shelf-option></downloads-shelf-option>
-        </v-list>
       </v-card-text>
 
       <v-divider></v-divider>
@@ -42,12 +23,10 @@
 
 <script>
 import DownloadsShelfOption from '@@/components/options/DownloadsShelfOption';
-import UgoiraConverterOption from '@@/components/options/UgoiraConverterOption';
 
 export default {
   components: {
     'downloads-shelf-option': DownloadsShelfOption,
-    'ugoira-converter-option': UgoiraConverterOption,
   },
 
   props: {
@@ -63,8 +42,6 @@ export default {
   data() {
     return {
       showDialog: false,
-      downloadPackFiles: true,
-      ugoiraConvertTool: 'default',
     }
   },
 
@@ -84,8 +61,6 @@ export default {
 
   created() {
     this.showDialog = this.show;
-    this.downloadPackFiles = this.browserItems.downloadPackFiles;
-    this.ugoiraConvertTool = this.browserItems.ugoiraConvertTool || 'default';
   },
 
   watch: {
@@ -101,18 +76,6 @@ export default {
           importantNoticeDisplayed: true
         });
       }
-    },
-
-    downloadPackFiles(val) {
-      browser.storage.local.set({
-        downloadPackFiles: !!val
-      });
-    },
-
-    onUgoiraConvertToolChangeHandler() {
-      browser.storage.local.set({
-        ugoiraConvertTool: this.ugoiraConvertTool
-      });
     },
   }
 }

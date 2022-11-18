@@ -1,11 +1,10 @@
-import Downloader from "@/modules/Net/Downloader";
 import IllustDownloadTask from "./IllustDownloadTask";
 
 /**
  * @typedef IllustDownloadTaskOptions
  * @property {string} id
  * @property {string[]} pages
- * @property {number[]} selectedIndex
+ * @property {number[]} selectedIndexes
  * @property {string} renameRule
  * @property {any} context
  *

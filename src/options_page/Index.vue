@@ -85,7 +85,7 @@
         </v-btn>
         <span class="title v-primary header-title">
           Pixiv<strong>Toolkit</strong>
-          <span style="font-size:12px">{{ version }}</span>
+          <span style="font-size:12px">Next</span>
         </span>
 
         <v-spacer></v-spacer>
@@ -120,7 +120,6 @@
 </template>
 
 <script>
-import Vue from 'vue'
 import Supports from '@@/components/Supports';
 import AppSuggest from '@@/components/AppSuggest';
 import UpdateNotice from '@@/components/UpdateNotice';

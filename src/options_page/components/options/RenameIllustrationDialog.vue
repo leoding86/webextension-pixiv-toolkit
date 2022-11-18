@@ -65,6 +65,10 @@ export default {
           holder: '{author}'
         },
         {
+          title: this.tl("_page_num"),
+          holder: "{pageNum}"
+        },
+        {
           title: this.tl("year"),
           holder: "{year}"
         },
@@ -75,14 +79,6 @@ export default {
         {
           title: this.tl("day"),
           holder: "{day}"
-        },
-        {
-          title: this.tl('_start_page_number'),
-          holder: "{startPageNum}"
-        },
-        {
-          title: this.tl('_last_page_number'),
-          holder: "{lastPageNum}"
         }
       ]
     };

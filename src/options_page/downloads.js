@@ -5,7 +5,7 @@ import Application from "./DownloadsApplication";
 import Bootstrap from "./DownloadsBootstrap";
 import browser from "@/modules/Extension/browser";
 import I18n from '@/modules/I18n';
-import Downloads from './Downloads';
+import Downloads from './Downloads.vue';
 import moment from 'moment';
 import router from './router';
 import SuperMixin from '@/mixins/SuperMixin';
@@ -139,20 +139,6 @@ import Vuetify from 'vuetify';
               moment.locale(i18n.locale);
             } else if (key === 'disableDownloadsShelf') {
               browser.downloads.setShelfEnabled(!items[key].newValue);
-            }
-          }
-        });
-
-        /**
-         * Check if the extension has the downloads permission
-         */
-        browser.permissions.getAll(permissions => {
-          let settings = {};
-
-          if (settings.enableExtTakeOverDownloads) {
-            if (permissions.permissions.indexOf('downloads') < 0) {
-              browser.enableExtTakeOverDownloads = false;
-              browser.storage.local.set({ enableExtTakeOverDownloads: false });
             }
           }
         });

@@ -47,7 +47,7 @@ class UgoiraDownloadTask extends AbstractDownloadTask {
   /**
    * @type {number} FFmpeg process progress
    */
-  generateProgress = 0;
+  processProgress = 0;
 
   /**
    *
@@ -70,7 +70,7 @@ class UgoiraDownloadTask extends AbstractDownloadTask {
     this.downloader.addListener('item-finish', this.onItemFinish, this);
     this.downloader.addListener('finish', this.onFinish, this);
     this.downloader.addListener('item-error', this.onItemError, this);
-    this.downloader.addListener('abort', this.onAbort, this);
+    this.downloader.addListener('pause', this.onPause, this);
     this.downloader.initial();
   }
 
@@ -141,7 +141,7 @@ class UgoiraDownloadTask extends AbstractDownloadTask {
       corePath: browser.runtime.getURL('lib/ffmpeg/ffmpeg-core.js'),
     });
     ffmpeg.setProgress(progress => {
-      this.generateProgress = progress.ratio;
+      this.processProgress = progress.ratio;
     });
 
     await ffmpeg.load();
@@ -188,12 +188,11 @@ class UgoiraDownloadTask extends AbstractDownloadTask {
      */
     let animationFileUrl = URL.createObjectURL(new Blob([data], { type: 'image/gif' }));
     let nameFormatter = NameFormatter.getFormatter({ context: this.context });
-    let settings = app().settings;
 
     this.lastDownloadId = await FileSystem.getDefault().saveFile({
       url: animationFileUrl,
       filename: nameFormatter.format(
-        settings.ugoiraRenameFormat
+        this.options.renameRule
       ) + '.gif'
     });
 
@@ -218,7 +217,7 @@ class UgoiraDownloadTask extends AbstractDownloadTask {
   /**
    * Handle downloader abort event
    */
-  onAbort() {
+  onPause() {
     // this.state = this.PAUSED_STATE;
   }
 
@@ -264,7 +263,7 @@ class UgoiraDownloadTask extends AbstractDownloadTask {
    */
   toJson() {
     return Object.assign({}, super.toJson(), {
-      generateProgress: this.generateProgress
+      processProgress: this.processProgress
     });
   }
 }

@@ -4,7 +4,7 @@ export default (...args) => {
   args.forEach(arg => {
     if (arg === '..' && parts.length > 0) {
       parts.pop();
-    } else if (arg !== '' && arg !== '.') {
+    } else if (!!arg && arg !== '.') {
       parts.push(arg);
     }
   });

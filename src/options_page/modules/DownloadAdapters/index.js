@@ -1,7 +1,11 @@
-import IllustAdapter from "./Pixiv/IllustAdapter";
-import NovelAdapter from "./Pixiv/NovelAdapter";
+import FanboxPostAdapter from './Fanbox/PostAdapter';
+import PixivComicEpisodeAdapter from './PixivComic/EpisodeAdapter';
+import PixivIllustAdapter from "./Pixiv/IllustAdapter";
+import PixivNovelAdapter from "./Pixiv/NovelAdapter";
 
 export {
-  IllustAdapter,
-  NovelAdapter,
+  FanboxPostAdapter,
+  PixivComicEpisodeAdapter,
+  PixivIllustAdapter,
+  PixivNovelAdapter,
 };

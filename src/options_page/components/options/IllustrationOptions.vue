@@ -1,6 +1,6 @@
 <template>
   <div class="option-section">
-    <span class="option-card-title">{{ tl('Illustration') }}</span>
+    <span class="option-card-title">Pixiv {{ tl('Illustration') }}</span>
 
     <v-card style="margin-bottom:30px;">
       <v-list two-line>
@@ -16,15 +16,15 @@
           </v-list-tile-action>
         </v-list-tile>
 
-        <v-list-tile @click="showRenameImageDialog()">
+        <v-list-tile>
           <v-list-tile-content>
-            <v-list-tile-title>{{ tl('Rename_illustration_image') }}</v-list-tile-title>
-            <v-list-tile-sub-title>{{ imageRenameFormatPreview }}</v-list-tile-sub-title>
+            <v-list-tile-title>{{ tl('_create_subdirectory') }}</v-list-tile-title>
+            <v-list-tile-sub-title>{{ tl('_create_subdirectory_for_illustration') }}</v-list-tile-sub-title>
           </v-list-tile-content>
           <v-list-tile-action>
-            <v-btn icon ripple>
-              <v-icon>keyboard_arrow_right</v-icon>
-            </v-btn>
+            <v-select :items="createSubdirectoryOptions" v-model="createSubdirectory"
+              style="width:220px;"
+            ></v-select>
           </v-list-tile-action>
         </v-list-tile>
 
@@ -66,8 +66,6 @@ export default {
   data() {
     return {
       renameFormat: "",
-
-      imageRenameFormat: "",
 
       alwaysPack: false,
 
@@ -121,14 +119,6 @@ export default {
         return "Not set";
       }
     },
-
-    imageRenameFormatPreview() {
-      if (!!this.browserItems.illustrationImageRenameFormat) {
-        return this.browserItems.illustrationImageRenameFormat;
-      } else {
-        return "Not set";
-      }
-    }
   },
 
   watch: {
@@ -176,10 +166,6 @@ export default {
   methods: {
     showRenameDialog(evt) {
       this.routeTo('RenameIllustration');
-    },
-
-    showRenameImageDialog(evt) {
-      this.routeTo('RenameIllustrationImage');
     }
   }
 };

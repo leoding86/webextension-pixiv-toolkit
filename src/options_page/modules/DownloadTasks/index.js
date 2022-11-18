@@ -1,11 +1,15 @@
-import IllustDownloadTask from "./Pixiv/IllustDownloadTask";
-import MangaDownloadTask from "./Pixiv/MangaDownloadTask";
-import UgoiraDownloadTask from "./Pixiv/UgoiraDownloadTask";
-import NovelDownloadTask from "./Pixiv/NovelDownloadTask";
+import FanboxPostDownloadTask from './Fanbox/PostDownloadTask';
+import PixivComicEpisodeDownloadTask from './PixivComic/EpisodeDownloadTask';
+import PixivIllustDownloadTask from "./Pixiv/IllustDownloadTask";
+import PixivMangaDownloadTask from "./Pixiv/MangaDownloadTask";
+import PixivNovelDownloadTask from "./Pixiv/NovelDownloadTask";
+import PixivUgoiraDownloadTask from "./Pixiv/UgoiraDownloadTask";
 
 export {
-  IllustDownloadTask,
-  MangaDownloadTask,
-  UgoiraDownloadTask,
-  NovelDownloadTask,
+  FanboxPostDownloadTask,
+  PixivComicEpisodeDownloadTask,
+  PixivIllustDownloadTask,
+  PixivMangaDownloadTask,
+  PixivNovelDownloadTask,
+  PixivUgoiraDownloadTask,
 };

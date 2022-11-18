@@ -1,10 +1,11 @@
 import { RuntimeError } from '@/errors';
 import { SettingService } from './services';
-import { Updater } from '@/modules/Util';
+import Updater from './modules/Updater';
 import browser from '@/modules/Extension/browser';
 import defaultSettings from '@/config/default';
 import ServiceProvider from './services/ServiceProvider';
 import updateSettings from '@/config/update';
+import updates from './updates';
 
 class Application {
   /**
@@ -108,25 +109,38 @@ class Application {
    * @param {string} [previousVersion]
    * @param {string} reason [install, update, chrome_update, shared_module_updated]
    */
-  async onInstalled({ id = undefined, previousVersion = undefined, reason }) {
-    /**
-     * Edit here if there are settings need to be update while the update.
-     */
+  async onInstalled({ id = undefined, previousVersion = undefined, reason }) {console.log(reason);
     if (reason === 'install' || reason === 'update') {
-      let settingService = this.getService('setting');
-      let items = await settingService.getSettings();
-      let updater = new Updater(items, defaultSettings);
-      let version = browser.runtime.getManifest().version;
-
-      await updater.mergeSettings({
-        version,
-        showUpdateChangeLog: false,
-        importantNoticeDisplayed: updateSettings.importantNoticeDisplayed || false,
-      });
+      if (reason === 'install') {
+        this.getService('setting').updateSettings(defaultSettings);
+      } else if (reason === 'update') {
+        let currentVersion = browser.runtime.getManifest().version;
+        let updater = new Updater(currentVersion, previousVersion, updates());
+        await updater.update();
+      }
 
       browser.action.setBadgeText({ text: 'NEW' });
       browser.action.setBadgeBackgroundColor({ color: '#FF0000' });
     }
+
+    /**
+     * Edit here if there are settings need to be update while the update.
+     */
+    // if (reason === 'install' || reason === 'update') {
+    //   let settingService = this.getService('setting');
+    //   let items = await settingService.getSettings();
+    //   let updater = new Updater(items, defaultSettings);
+    //   let version = browser.runtime.getManifest().version;
+
+    //   await updater.mergeSettings({
+    //     version,
+    //     showUpdateChangeLog: false,
+    //     importantNoticeDisplayed: updateSettings.importantNoticeDisplayed || false,
+    //   });
+
+    //   browser.action.setBadgeText({ text: 'NEW' });
+    //   browser.action.setBadgeBackgroundColor({ color: '#FF0000' });
+    // }
   }
 
   /**

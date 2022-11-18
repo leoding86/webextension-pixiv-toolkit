@@ -1,12 +1,13 @@
 <template>
   <v-app>
     <template v-for="download in downloads">
-      <component :is="getComponentName(download)" :data="download"
+      <download-task :data="download"
         :key="download.id"
         style="margin-bottom:15px;"
+        :tag="getDownloadTaskTagName(download)"
         @delete="downloadTask"
         @show_in_folder="showInFolder"
-      ></component>
+      ></download-task>
     </template>
   </v-app>
 </template>
@@ -14,17 +15,11 @@
 <script>
 import { RuntimeError } from '@/errors';
 import { app } from '../DownloadsApplication';
-import PixivIllustDownloadTask from './DownloadTasks/Pixiv/IllustDownloadTask.vue';
-import PixivMangaDownloadTask from './DownloadTasks/Pixiv/MangaDownloadTask.vue';
-import PixivUgoiraDownloadTask from './DownloadTasks/Pixiv/UgoiraDownloadTask.vue';
-import PixivNovelDownloadTask from './DownloadTasks/Pixiv/NovelDownloadTask.vue';
+import DownloadTask from './DownloadTask.vue';
 
 export default {
   components: {
-    PixivIllustDownloadTask,
-    PixivMangaDownloadTask,
-    PixivUgoiraDownloadTask,
-    PixivNovelDownloadTask,
+    DownloadTask,
 },
 
   data() {
@@ -63,15 +58,19 @@ export default {
   },
 
   methods: {
-    getComponentName(download) {
+    getDownloadTaskTagName(download) {
       if (download.type === 'PIXIV_UGOIRA') {
-        return 'pixiv-ugoira-download-task';
+        return 'Pixiv Ugoira';
       } else if (download.type === 'PIXIV_ILLUST') {
-        return 'pixiv-illust-download-task';
+        return 'Pixiv Illust';
       } else if (download.type === 'PIXIV_MANGA') {
-        return 'pixiv-manga-download-task';
+        return 'Pixiv Manga';
       } else if (download.type === 'PIXIV_NOVEL') {
-        return 'pixiv-novel-download-task';
+        return 'Pixiv Novel';
+      } else if (download.type === 'PIXIV_COMIC_EPISODE') {
+        return 'Pixiv Comic Episode';
+      } else if (download.type === 'FANBOX_POST') {
+        return 'Fanbox Post';
       }
 
       throw new RuntimeError('Invalid download type');

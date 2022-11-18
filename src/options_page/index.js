@@ -1,7 +1,7 @@
 import 'vuetify/dist/vuetify.min.css'
 
 import '@/core/global';
-import Index from './Index'
+import Index from './Index.vue'
 import Browser from '@/modules/Browser/Browser'
 import I18n from '@/modules/I18n';
 import SuperMixin from '@/mixins/SuperMixin';

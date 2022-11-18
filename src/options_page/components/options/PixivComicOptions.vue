@@ -1,6 +1,6 @@
 <template>
   <div class="option-section">
-    <span class="option-card-title">{{ tl('_pixiv_comic') }}</span>
+    <span class="option-card-title">Pixiv Comic</span>
 
     <v-card style="margin-bottom:30px;">
       <v-list two-line>
@@ -8,17 +8,6 @@
           <v-list-tile-content>
             <v-list-tile-title>{{ tl('_rename_comic') }}</v-list-tile-title>
             <v-list-tile-sub-title>{{ pixivComicRenameFormatPreview }}</v-list-tile-sub-title>
-          </v-list-tile-content>
-          <v-list-tile-action>
-            <v-btn icon ripple>
-              <v-icon>keyboard_arrow_right</v-icon>
-            </v-btn>
-          </v-list-tile-action>
-        </v-list-tile>
-        <v-list-tile @click="showRenameImageDialog = true">
-          <v-list-tile-content>
-            <v-list-tile-title>{{ tl('_rename_comic_image') }}</v-list-tile-title>
-            <v-list-tile-sub-title>{{ pixivComicImageRenameFormatPreview }}</v-list-tile-sub-title>
           </v-list-tile-content>
           <v-list-tile-action>
             <v-btn icon ripple>
@@ -57,12 +46,6 @@
       :title="tl('_rename_comic')"
       :metas="renameMetas"
     ></rename-dialog>
-
-    <rename-dialog :show.sync="showRenameImageDialog"
-      v-model="pixivComicImageRenameFormat"
-      :title="tl('_rename_comic_image')"
-      :metas="renameImageMetas"
-    ></rename-dialog>
   </div>
 </template>
 
@@ -81,8 +64,6 @@ export default {
     return {
       pixivComicRenameFormat: "",
 
-      pixivComicImageRenameFormat: "",
-
       pixivComicPageNumberStartWithOne: false,
 
       pixivComicPageNumberLength: 0,
@@ -90,8 +71,6 @@ export default {
       location: '',
 
       showRenameDialog: false,
-
-      showRenameImageDialog: false,
     };
   },
 
@@ -122,26 +101,12 @@ export default {
         return "Not set";
       }
     },
-
-    pixivComicImageRenameFormatPreview() {
-      if (!!this.browserItems.pixivComicImageRenameFormat) {
-        return this.browserItems.pixivComicImageRenameFormat;
-      } else {
-        return "Not set";
-      }
-    }
   },
 
   watch: {
     pixivComicRenameFormat(val) {
       browser.storage.local.set({
         pixivComicRenameFormat: val
-      });
-    },
-
-    pixivComicImageRenameFormat(val) {
-      browser.storage.local.set({
-        pixivComicImageRenameFormat: val
       });
     },
 
@@ -183,15 +148,12 @@ export default {
     }, {
       holder: '{workTitle}',
       title: this.tl('_work_title'),
-    }];
-
-    this.renameImageMetas = [].concat(this.renameMetas).concat([{
+    }, {
       holder: '{pageNum}',
       title: this.tl('_page_num'),
-    }]);
+    }];
 
     this.pixivComicRenameFormat = this.browserItems.pixivComicRenameFormat;
-    this.pixivComicImageRenameFormat = this.browserItems.pixivComicImageRenameFormat;
     this.pixivComicPageNumberStartWithOne = this.browserItems.pixivComicPageNumberStartWithOne;
     this.pixivComicPageNumberLength = this.browserItems.pixivComicPageNumberLength;
     this.location = this.browserItems.pixivComicRelativeLocation;

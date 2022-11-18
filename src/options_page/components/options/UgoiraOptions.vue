@@ -1,6 +1,6 @@
 <template>
   <div class="option-section">
-    <span class="option-card-title">{{ tl('Ugoira') }}</span>
+    <span class="option-card-title">Pixiv {{ tl('Ugoira') }}</span>
     <v-card style="margin-bottom:30px;">
       <v-list two-line>
         <v-list-tile @click="showRenameUgoiraDialog()">
@@ -26,21 +26,6 @@
           </v-list-tile-content>
         </v-list-tile>
 
-        <v-list-tile>
-          <v-list-tile-content>
-            <v-list-tile-title>{{ tl('quality') }}</v-list-tile-title>
-            <v-list-tile-sub-title>{{ tl('_has_not_effect_if_selected_converter_is_ffmpeg') }}</v-list-tile-sub-title>
-          </v-list-tile-content>
-          <v-list-tile-action>
-            <v-select
-              :items="qualityItems"
-              v-model="ugoiraQuanlity"
-              type="value"
-              @change="onUgoiraQualityChangeHandler"
-              style="width:150px;"
-            ></v-select>
-          </v-list-tile-action>
-        </v-list-tile>
         <v-list-tile>
           <v-list-tile-content>
             <v-list-tile-title>

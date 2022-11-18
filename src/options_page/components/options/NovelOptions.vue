@@ -1,6 +1,6 @@
 <template>
   <div class="option-section">
-    <span class="option-card-title">{{ tl('Novel') }}</span>
+    <span class="option-card-title">Pixiv {{ tl('Novel') }}</span>
 
     <v-card style="margin-bottom:30px;">
       <v-list two-line>

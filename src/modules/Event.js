@@ -34,6 +34,11 @@ class Event {
     }
   }
 
+  /**
+   * Fire a event
+   * @param {string} eventName
+   * @param {Array} args
+   */
   dispatch (eventName, args) {
     let newArgs = (Object.prototype.toString.call(args) === '[object Array]') ? args : [];
 

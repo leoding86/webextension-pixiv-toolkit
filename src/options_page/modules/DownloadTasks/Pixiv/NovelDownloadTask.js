@@ -102,7 +102,7 @@ class NovelDownloadTask extends AbstractDownloadTask {
     this.lastDownloadId = await FileSystem.getDefault().saveFile({
       url,
       filename: nameFormatter.format(
-        app().settings.novelRenameFormat,
+        this.options.renameRule,
         this.context.id + '_' + this.context.title
       ) + '.txt'
     });

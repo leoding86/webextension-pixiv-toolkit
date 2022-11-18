@@ -33,7 +33,7 @@
       "message": "Download ugoira, illustrations, manga and novel on Pixiv, Pixiv Fanbox and Pixiv Comic."
    },
    "extName": {
-      "message": "Pixiv Toolkit"
+      "message": "Pixiv Toolkit Next"
    },
    "generate_btn_error_text": {
       "message": "Error"
@@ -705,7 +705,7 @@
        "message": "Select ugoira convert tool"
    },
    "_startup_message": {
-       "message": "Sine version v5.0.0, the extension could save images seperately without have to pack them into a zip file to save. But it require user authorization to do it. Please click more info to get details. You can change any settings in settings page later."
+       "message": "The Pixiv Toolkit Next version is the next major update version of Pixiv Toolkit. There are some breaking changes compare with current Pixiv Toolkit. Go to the project Github page to learn more."
    },
    "_ffmpeg_custom_convert_command": {
        "message": "FFmpeg custom convert command"
@@ -728,8 +728,8 @@
    "_create_subdirectory": {
        "message": "Create Subdirectory"
    },
-   "_create_subdirectory_when_download_Pack_Files_setting_is_disabled": {
-       "message": "Create subdirectory when download \"Pack Files\" setting is disabled"
+   "_create_subdirectory_for_illustration": {
+       "message": "Create subdirectory for illustration"
    },
    "_dynamic": {
        "message": "Dynamic"

@@ -5,10 +5,7 @@ export default Object.assign({}, {
     enableWhenUnderSeconds: 1,
     extendDuration: 3,
 
-    ugoiraRenameFormat: '',
     ugoiraQuanlity: 10,
-    mangaRenameFormat: '',
-    mangaImageRenameFormat: '',
 
     /**
      * @dprecated
@@ -32,8 +29,6 @@ export default Object.assign({}, {
     /**
      * @version 2.0.3
      */
-    enableExtTakeOverDownloads: false,
-    downloadRelativeLocation: null,
 
     /**
      * @deprecated
@@ -77,7 +72,6 @@ export default Object.assign({}, {
      * @version 3.1
      */
     novelIncludeDescription: false,
-    novelRenameFormat: '',
 
     /**
      * @since 3.2.2
@@ -86,12 +80,6 @@ export default Object.assign({}, {
     statMangaDownloaded: 0,
     statNovelDownloaded: 0,
     statIllustDownloaded: 0,
-
-    /**
-     * @since 3.3.2
-     */
-    illustrationRenameFormat: '',
-    illustrationImageRenameFormat: '',
 
     /**
      * @since 3.4.3
@@ -127,17 +115,6 @@ export default Object.assign({}, {
     importantNoticeDisplayed: false,
 
     /**
-     * @since 3.9.2
-     */
-    ugoiraRelativeLocation: '',
-
-    illustrationRelativeLocation: '',
-
-    mangaRelativeLocation: '',
-
-    novelRelativeLocation: '',
-
-    /**
      * @since 4.0.0
      */
     downloadTasksWhenDownloadingImages: 3,
@@ -152,11 +129,6 @@ export default Object.assign({}, {
      */
     animationJsonFormat: 1,
     language: 'default',
-
-    /**
-     * @since 4.2.2
-     */
-    alwaysPack: false,
 
     /**
      * @since 4.4.0
@@ -188,7 +160,6 @@ export default Object.assign({}, {
     /**
      * @since 5.0.0
      */
-    downloadPackFiles: true,
     ugoiraConvertTool: 'default',
     ugoiraCustomFFmpegCommand: '',
 
@@ -224,13 +195,82 @@ export default Object.assign({}, {
      * @since 5.5.3
      */
     pixivComicRenameFormat: '{id}_{title}',
-    pixivComicImageRenameFormat: '{id}_{title}_p{pageNum}',
-    pixivComicRelativeLocation: '',
     pixivComicPageNumberStartWithOne: false,
     pixivComicPageNumberLength: 0,
 
     /**
      * @since 5.5.4
      */
-    enableDownloadMetadata: false
+    enableDownloadMetadata: false,
+
+    /**
+     * @since 6.0.0
+     */
+    illustRenameRule: '{id}_{title}_p{pageNum}',
+    mangaRenameRule: '{id}_{title}/{pageNum}',
+    ugoiraRenameRule: '{id}_{title}',
+    novelRenameRule: '{id}_{title}',
+    pixivComicEpisodeRenameRule: '{id}_{title}/{numbering_title}_{workTitle}/{pageNum}',
+    fanboxPostRenameRule: '{id}_{title}/{pageNum}',
+
+    /**
+     * @since 1.0.0
+     * @deprecated since version 6.0.0
+     */
+    ugoiraRenameFormat: '',
+    mangaRenameFormat: '',
+    mangaImageRenameFormat: '',
+
+    /**
+     * @since 2.0.3
+     * @deprecated since version 6.0.0
+     */
+    enableExtTakeOverDownloads: false,
+    downloadRelativeLocation: null,
+
+    /**
+     * @since 3.1.0
+     * @deprecated since version 6.0.0
+     */
+    novelRenameFormat: '',
+
+    /**
+     * @since 3.3.2
+     * @deprecated since version 6.0.0
+     */
+    illustrationRenameFormat: '',
+    illustrationImageRenameFormat: '',
+
+    /**
+     * @since 3.9.2
+     * @deprecated since version 6.0.0
+     */
+    ugoiraRelativeLocation: '',
+    illustrationRelativeLocation: '',
+    mangaRelativeLocation: '',
+    novelRelativeLocation: '',
+
+    /**
+     * @since 4.2.2
+     * @deprecated since version 6.0.0
+     */
+    alwaysPack: false,
+
+    /**
+     * @since 5.0.0
+     * @deprecated since version 6.0.0
+     */
+    downloadPackFiles: true,
+
+    /**
+     * @since 5.3.0
+     * @deprecated since version 6.0.0
+     */
+    pixivComicRelativeLocation: '',
+
+    /**
+     * @since 5.5.3
+     * @deprecated since version 6.0.0
+     */
+    pixivComicImageRenameFormat: '{id}_{title}_p{pageNum}',
   });

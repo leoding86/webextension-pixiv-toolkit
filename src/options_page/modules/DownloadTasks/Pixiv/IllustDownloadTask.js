@@ -10,7 +10,7 @@ import MimeType from "@/modules/Util/MimeType";
  * @property {string} id
  * @property {string} url
  * @property {string[]} pages
- * @property {number[]} selectedIndex
+ * @property {number[]} selectedIndexes
  * @property {string} renameRule
  * @property {any} context
  *
@@ -51,9 +51,18 @@ class IllustDownloadTask extends AbstractDownloadTask {
     this.downloader.addListener('item-finish', this.onItemFinish, this);
     this.downloader.addListener('finish', this.onFinish, this);
     this.downloader.addListener('item-error', this.onItemError, this);
-    this.downloader.addListener('paused', this.onPaused, this);
+    this.downloader.addListener('pause', this.onPause, this);
 
-    this.options.pages.forEach(page => this.downloader.appendFile(page));
+    this.options.pages.forEach((page, index) => {
+      if (this.options.selectedIndexes.length > 0) {
+        if (this.options.selectedIndexes.indexOf(index) > -1) {
+          this.downloader.appendFile(page, { index });
+        }
+      } else {
+        this.downloader.appendFile(page, { index });
+      }
+    });
+
     this.downloader.initial();
   }
 
@@ -69,18 +78,17 @@ class IllustDownloadTask extends AbstractDownloadTask {
     this.progress = progress;
   }
 
-  async onItemFinish({ blob, index, mimeType }) {
+  async onItemFinish({ blob, args, mimeType }) {
     let url = URL.createObjectURL(blob);
     let nameFormatter = NameFormattor.getFormatter({
-      context: Object.assign({}, this.context, { pageNum: index })
+      context: Object.assign({}, this.context, { pageNum: args.index })
     });
-    let settings = app().settings;
 
     this.lastDownloadId = await FileSystem.getDefault().saveFile({
       url,
       filename: nameFormatter.format(
-        settings.illustrationRenameFormat + '/' + settings.illustrationImageRenameFormat,
-        this.id + `_${index}`
+        this.options.renameRule,
+        this.id + `_${args.index}`
       ) + `.${MimeType.getExtenstion(mimeType)}`
     });
 
@@ -95,7 +103,7 @@ class IllustDownloadTask extends AbstractDownloadTask {
     this.lastError = error;
   }
 
-  onPaused() {
+  onPause() {
     //
   }
 

@@ -1,21 +1,37 @@
 import Download from '@/modules/Net/Download';
 import Event from '@/modules/Event';
-import Queue from '@/modules/Queue';
-import { RuntimeError } from '@/errors';
 
 /**
  * @class
  */
 class Downloader extends Event {
   /**
-   * @type {Queue}
+   * The files whichs need to be downloaded
+   * @type {{file: string, seq: number|string, args: Object}[]}
    */
-  queue;
+  files;
+
+  /**
+   * The files used for download tracking. It's as same as property files at begining or after reseting
+   * @type {{file: string, seq: number|string, args: Object}[]}
+   */
+  downloadFiles;
+
+  /**
+   * The files can't be downloaded.
+   * @type {{file: string, seq: number|string, args: Object}[]}
+   */
+  failedDownloadFiles;
 
   /**
    * @type {Download[]}
    */
   downloads;
+
+  /**
+   * @type {number}
+   */
+  counter = 0;
 
   /**
    * @constructor
@@ -27,10 +43,9 @@ class Downloader extends Event {
     super();
     this.processors = processors;
     this.requestOptions = requestOptions;
-    this.files = [];
+    this.files = new Map();
     this.downloads = [];
-    this.successIndexes = [];
-    this.failIndexes = [];
+    this.successCount = 0;
     this.progresses = [];
     this.asBlob = true;
   }
@@ -48,22 +63,11 @@ class Downloader extends Event {
   }
 
   /**
+   * @deprecated
    * Initialize downloader, should call it after `appendFile`
    */
   initial() {
-    this.queue = new Queue();
-    this.queue.setProcessors(this.processors);
-    this.queue.onDone = () => {
-      this.dispatch('finish');
-    };
-
-    this.queue.onPaused = () => {
-      this.dispatch('paused');
-    };
-
-    this.files.forEach((file, index) => {
-      this.queue.add({file, index});
-    });
+    //
   }
 
   /**
@@ -77,79 +81,140 @@ class Downloader extends Event {
   }
 
   pause() {
-    this.queue.pause();
+    this.downloads.forEach(download => {
+      download.abort();
+    });
+  }
+
+  reset() {
+    this.progresses = [];
+    this.downloadFiles = this.files;
+    this.failedDownloadFiles = [];
+    this.successCount = 0;
   }
 
   download() {
-    if (this.queue.queuing) {
-      this.queue.cancelPause();
-      return;
+    if (this.failedDownloadFiles.length > 0) {
+      this.downloadFiles = this.downloadFiles.concat(this.failedDownloadFiles);
+      this.failedDownloadFiles = [];
     }
 
-    this.queue.start(({file, index}) => {
-      return new Promise((resolve, reject) => {
-        let download = new Download(file, Object.assign({ method: 'GET' }, this.requestOptions));
+    this.downloadNext();
+  }
 
-        /**
-         * Append download to collection
-         */
-        this.downloads.push(download);
+  downloadNext() {
+    let downloadFile = this.downloadFiles.shift();
 
-        download.asBlob = this.asBlob;
+    if (downloadFile) {
+      if (this.downloads.length < this.processors) {
+        this.downloadFile(downloadFile);
+      }
+    } else {
+      this.dispatch('finish');
+    }
+  }
 
-        download.addListener('onprogress', ({totalLength, loadedLength}) => {
-          this.progresses[index] = loadedLength / totalLength;
+  downloadFile(downloadFile) {
+    let download = new Download(downloadFile.file, Object.assign({ method: 'GET'}, this.requestOptions));
+    download.asBlob = this.asBlob;
 
-          this.dispatch('progress', [{
-            progress: this.progresses.reduce((previousValue, currentValue) => previousValue + currentValue) / this.files.length,
-            successCount: this.successIndexes.length,
-            failCount: this.failIndexes.length
-          }]);
-        });
+    /**
+     * Listen download onprogress event
+     */
+    download.addListener('onprogress', ({totalLength, loadedLength}) => {
+      this.progresses[downloadFile.seq] = loadedLength / totalLength;
 
-        download.addListener('onfinish', (data, mimeType) => {
-          this.removeDownloadFromCollection(download);
-
-          this.successIndexes.push(index);
-
-          this.dispatch('item-finish', [{
-            blob: this.asBlob ? data : null,
-            data: this.asBlob ? null : data,
-            index, download, file, mimeType
-          }]);
-
-          resolve();
-        });
-
-        download.addListener('onerror', error => {
-          this.removeDownloadFromCollection(download);
-
-          this.failIndexes.push(index);
-          this.progresses[index] = 0;
-
-          this.dispatch('item-error', [error]);
-          this.dispatch('progress', [{
-            progress: this.progresses.reduce((previousValue, currentValue) => previousValue + currentValue) / this.files.length,
-            successCount: this.successIndexes.length,
-            failCount: this.failIndexes.length
-          }]);
-
-          reject();
-        });
-
-        download.download();
-      });
+      this.dispatch('progress', [{
+        progress: this.progresses.reduce((previousValue, currentValue) => previousValue + currentValue) / this.files.size(),
+        successCount: this.successCount,
+        failCount: this.failedDownloadFiles.length
+      }]);
     });
 
+    /**
+     * Listen download onfinish event
+     */
+    download.addListener('onfinish', (data, mimeType) => {
+      this.removeDownloadFromCollection(download);
+
+      this.successCount++;
+
+      this.dispatch('item-finish', [{
+        blob: this.asBlob ? data : null,
+        data: this.asBlob ? null : data,
+        args: downloadFile.args,
+        download, file, mimeType
+      }]);
+
+      this.downloadNext();
+    });
+
+    /**
+     * Listen download onabort event
+     */
+    download.addListener('onabort', () => {
+      this.removeDownloadFromCollection(download);
+
+      this.progresses[downloadFile.seq] = 0;
+
+      /**
+       * Put the downloadFile back to the downloadFiles for re-tracking it
+       */
+      this.downloadFiles.unshift(downloadFile);
+
+      if (this.downloads.length === 0) {
+        this.dispatch('pause');
+      }
+    });
+
+    /**
+     * Listen download onerror event
+     */
+    download.addListener('onerror', error => {
+      this.removeDownloadFromCollection(download);
+
+      this.failedDownloadFiles.push(downloadFile);
+      this.progresses[downloadFile.seq] = 0;
+
+      this.dispatch('item-error', [error]);
+      this.dispatch('progress', [{
+        progress: this.progresses.reduce((previousValue, currentValue) => previousValue + currentValue) / this.files.size(),
+        successCount: this.successCount,
+        failCount: this.failedDownloadFiles.length,
+      }]);
+
+      this.downloadNext();
+    });
+
+    /**
+     * Start the download and put the instance to download collection for increasing
+     * download processes
+     */
+    download.download();
+    this.downloads.push(download);
+
+    /**
+     * Fire the download start event
+     */
     this.dispatch('start');
   }
 
   /**
    * Download files
-   * @param {String} file
+   * @param {string} file
+   * @param {any} args This param will pass to event handle when file is downloaded
    */
-  appendFile(file) {
-    this.files.push(file);
+  appendFile(file, args) {
+    let seq = this.counter;
+    this.counter++;
+
+    let downloadData = {
+      file, seq, args
+    };
+
+    this.files.push(downloadData);
+
+    this.downloadFiles.push(downloadData);
   }
 }
 
