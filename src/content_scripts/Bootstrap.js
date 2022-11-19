@@ -1,4 +1,5 @@
 import Application from "./Application";
+import browser from "@/modules/Extension/browser";
 import ErrorTracker from '@/modules/ErrorTracker';
 
 /**
@@ -10,16 +11,16 @@ class Bootstrap {
    * Track the uncaught errors
    */
   trackError() {
-    let errorTracker = new ErrorTracker();
-    errorTracker.addListener('error', error => {
-      console.error(error);
-      browser.runtime.sendMessage({
-        service: 'log:trackError',
-        args: {
-          error
-        }
-      });
-    });
+    // let errorTracker = new ErrorTracker();
+    // errorTracker.addListener('error', error => {
+    //   console.error(error);
+    //   browser.runtime.sendMessage({
+    //     service: 'log:trackError',
+    //     args: {
+    //       error
+    //     }
+    //   });
+    // });
   }
 
   /**

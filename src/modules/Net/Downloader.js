@@ -67,7 +67,7 @@ class Downloader extends Event {
    * Initialize downloader, should call it after `appendFile`
    */
   initial() {
-    //
+    console.warn('This method will be deprecated later');
   }
 
   /**

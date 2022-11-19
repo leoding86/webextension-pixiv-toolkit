@@ -1,16 +1,9 @@
-import IllustDownloadTask from "./IllustDownloadTask";
+import MultipleDownloadTask from "../MultiplePagesDownloadTask";
 
 /**
- * @typedef IllustDownloadTaskOptions
- * @property {string} id
- * @property {string[]} pages
- * @property {number[]} selectedIndexes
- * @property {string} renameRule
- * @property {any} context
- *
  * @class
  */
-class MangaDownloadTask extends IllustDownloadTask {
+class MangaDownloadTask extends MultipleDownloadTask {
   /**
    * @inheritdoc
    */
@@ -18,7 +11,7 @@ class MangaDownloadTask extends IllustDownloadTask {
 
   /**
    *
-   * @param {MangaDownloadTaskOptions} options
+   * @param {import("../MultiplePagesDownloadTask").MultipleDownloadTaskOptions} options
    */
   constructor(options) {
     super(options);

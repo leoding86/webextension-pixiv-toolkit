@@ -1,4 +1,4 @@
-import urlFilters from "@/config/urlFilters";
+import { default as urlFilters } from "@/config/urlFilters";
 import { RuntimeError } from "@/errors";
 
 /**
@@ -28,7 +28,7 @@ class PageFilter {
   getData(url) {
     for (let rule of urlFilters) {
       for (let pattern of rule.patterns) {
-        if (url.test(pattern)) {
+        if (pattern.test(url)) {
           return { url, type: rule.type };
         }
       }

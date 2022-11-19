@@ -27,6 +27,7 @@ class NovelParser {
    */
   constructor(url) {
     this.url = url;
+    this.context = {};
   }
 
   /**

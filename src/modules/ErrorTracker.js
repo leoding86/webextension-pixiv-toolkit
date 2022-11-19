@@ -38,7 +38,15 @@ class ErrorTracker extends Event {
    * @param {Error} error
    */
   emitError(error) {
-    let message = error.message + "\r\n" + error.stack
+    let message = '';
+
+    if (typeof error === 'string') {
+      message = error;
+    } else if (!error) {
+      message = '';
+    } else {
+      message = error.message + "\r\n" + error.stack
+    }
 
     this.dispatch('error', [message]);
   }

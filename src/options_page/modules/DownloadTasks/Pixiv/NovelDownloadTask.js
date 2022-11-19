@@ -81,6 +81,8 @@ class NovelDownloadTask extends AbstractDownloadTask {
       ) + '.epub'
     });
 
+    this.dispatch('complete');
+
     URL.revokeObjectURL(saveUrl);
   }
 
@@ -107,6 +109,8 @@ class NovelDownloadTask extends AbstractDownloadTask {
       ) + '.txt'
     });
 
+    this.dispatch('complete');
+
     URL.revokeObjectURL(url);
   }
 
@@ -124,13 +128,15 @@ class NovelDownloadTask extends AbstractDownloadTask {
 
     this.progress = 1;
     this.state = this.COMPLETE_STATE;
+
+    this.dispatch('start');
   }
 
   /**
    * @override
    */
   pause() {
-    this.state = this.PAUSED_STATE;
+    //
   }
 
   /**

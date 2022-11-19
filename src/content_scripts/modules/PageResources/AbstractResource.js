@@ -61,6 +61,13 @@ class AbstractResource {
   getR() {
     return this.context.r;
   }
+
+  /**
+   * @returns {string[]}
+   */
+  getPages() {
+    return this.context.pages ? this.context.pages : null;
+  }
 }
 
 export default AbstractResource;

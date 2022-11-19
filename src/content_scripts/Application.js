@@ -14,11 +14,21 @@ class Application {
    */
   UIApp;
 
+  /**
+   * @type {any}
+   */
+  settings;
+
   constructor() {
     this.pageFilter = new PageFilter();
     this.detector = new Detector();
-
     this.detector.addListener('urlchange', this.urlchangeHandler);
+    this.detector.observeUrl();
+
+    /**
+     * Call the urlchangeHandler at the application has been initailizatied
+     */
+    this.urlchangeHandler(null, window.location.href);
   }
 
   static app() {
@@ -29,16 +39,12 @@ class Application {
     return Application.instance;
   }
 
-  createUI() {
-    return UIApplication.createApp();
-  }
-
-  urlchangeHandler(oldUrl, newUrl) {
+  async urlchangeHandler(oldUrl, newUrl) {
     try {
       let data = this.pageFilter.getData(newUrl);
 
       if (!this.UIApp) {
-        this.UIApp = this.createUI();
+        this.UIApp = await UIApplication.createApp();
       }
 
       this.UIApp.loadData(data);

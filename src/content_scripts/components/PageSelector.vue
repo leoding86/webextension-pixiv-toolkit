@@ -10,8 +10,7 @@
         <div class="ptk__page-preview"
           :class="{ 'ptk__page-preview--selected': page.selected }"
           :style="{
-            'background': `url(${page.urls.thumb_mini}) center center no-repeat`,
-            'background-size': '95% 95%'
+            'background-image': `url(${page.page})`
           }"
           v-for="(page, idx) in pages"
           :key="idx"
@@ -120,7 +119,7 @@ export default {
 
       this.$set(this.pages, idx, page);
 
-      emitSelect();
+      this.emitSelect();
     },
 
     selectAll() {
@@ -129,7 +128,7 @@ export default {
         this.selectedPageIndexes.push(parseInt(idx));
       }
 
-      emitSelect();
+      this.emitSelect();
     },
 
     unselectAll() {
@@ -138,7 +137,7 @@ export default {
         this.selectedPageIndexes = [];
       }
 
-      emitSelect();
+      this.emitSelect();
     },
 
     selectInvert() {
@@ -157,12 +156,16 @@ export default {
         }
       }
 
-      emitSelect();
+      this.emitSelect();
     },
 
     closeSelectionDialog() {
       this.showSelectionDialog = false;
     },
+
+    downloadSelectedPages() {
+      this.$emit('download');
+    }
   }
 }
 </script>
@@ -171,7 +174,7 @@ export default {
 .ptk__page-selector {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: left;
 
   svg {
     width: 24px;
@@ -187,6 +190,11 @@ export default {
 .ptk__page-preview {
   width: 128px;
   height: 128px;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center center;
+  background-color: lightgray;
+  margin: 0 5px 5px 0;
 
   img {
     display: block;

@@ -71,7 +71,6 @@ class UgoiraDownloadTask extends AbstractDownloadTask {
     this.downloader.addListener('finish', this.onFinish, this);
     this.downloader.addListener('item-error', this.onItemError, this);
     this.downloader.addListener('pause', this.onPause, this);
-    this.downloader.initial();
   }
 
   onStart() {
@@ -81,9 +80,12 @@ class UgoiraDownloadTask extends AbstractDownloadTask {
   /**
    * Handle downloader `onProgress` event
    * @param {{progress: number, successCount: number, failCount: number}} param0
+   * @fires UgoiraDownloadTask#progress
    */
   onProgress({ progress, successCount, failCount}) {
     this.progress = progress;
+
+    this.dispatch('progress', [this.progress]);
   }
 
   makeAnimationJsonContent(type) {
@@ -101,6 +103,11 @@ class UgoiraDownloadTask extends AbstractDownloadTask {
     }
   }
 
+  /**
+   *
+   * @param {*} param0
+   * @fires UgoiraDownloadTask#progress
+   */
   async onItemFinish({ blob, mimeType }) {
     this.data = blob;
 
@@ -124,10 +131,14 @@ class UgoiraDownloadTask extends AbstractDownloadTask {
     });
 
     URL.revokeObjectURL(url);
+
+    this.dispatch('progress', [this.progress]);
   }
 
   /**
    * When resource is downloaded, then generate animation file using ffmpeg
+   * @fires UgoiraDownloadTask#progress
+   * @fires UgoiraDownloadTask#complete
    */
   async onFinish() {
     this.state = this.UNSTOPPABLE_STATE;
@@ -142,6 +153,8 @@ class UgoiraDownloadTask extends AbstractDownloadTask {
     });
     ffmpeg.setProgress(progress => {
       this.processProgress = progress.ratio;
+
+      this.dispatch('progress', [this.processProgress]);
     });
 
     await ffmpeg.load();
@@ -208,17 +221,27 @@ class UgoiraDownloadTask extends AbstractDownloadTask {
     ffmpeg.exit();
 
     this.state = this.COMPLETE_STATE;
+
+    this.dispatch('complete');
   }
 
+  /**
+   *
+   * @param {*} error
+   * @fires UgoiraDownloadTask#error
+   */
   onItemError(error) {
     this.lastError = error;
+
+    this.dispatch('error');
   }
 
   /**
    * Handle downloader abort event
+   * @fires UgoiraDownloadTask#pause
    */
   onPause() {
-    // this.state = this.PAUSED_STATE;
+    this.dispatch('pause');
   }
 
   /**
@@ -232,11 +255,13 @@ class UgoiraDownloadTask extends AbstractDownloadTask {
 
   /**
    * @override
+   * @fires UgoiraDownloadTask#start
    */
   start() {
     this.checkCouldStart();
     this.state = this.DOWNLOADING_STATE;
     this.downloader.download();
+    this.dispatch('start');
   }
 
   /**
@@ -254,7 +279,7 @@ class UgoiraDownloadTask extends AbstractDownloadTask {
    * @override
    */
   stop() {
-    this.downloader.pause();
+    //
   }
 
   /**

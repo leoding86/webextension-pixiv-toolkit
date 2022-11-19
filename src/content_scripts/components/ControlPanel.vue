@@ -5,7 +5,7 @@
         <div v-if="!browserItems.guideShowed"
           class="ptk__guide">
           <div class="ptk__guide-body">
-            <ptk-button style="display: block">Pixiv Toolkit</ptk-button>
+            <ptk-button style="display: block">P*</ptk-button>
             <svg viewBox="0 0 10 15" id="ptk__guide-arrow" width="10" height="15" style="position: relative; top: 3px" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
               <path d="M5 0 L5 15 L10 10 M5 15 L0 10" :stroke="isDark ? '#fff' : '#333'" stroke-width="2" fill="transparent" />
             </svg>
@@ -58,8 +58,9 @@
 </template>
 
 <script>
+import browser from '@/modules/Extension/browser';
 import Button from '@/content_scripts/components/Button';
-import ThemeDetector from '@/content_scripts/ThemeDetector';
+import ThemeDetector from '@/content_scripts/modules/ThemeDetector';
 
 export default {
   components: {
@@ -349,24 +350,27 @@ export default {
   }
 
   .ptk__guide-body {
-    width: 140px;
     display: flex;
     flex-direction: column;
     align-items: center;
     margin: 0 auto;
+
+    .button {
+      margin-right: 0;
+    }
   }
 
   @keyframes guide {
     0% {
-      top: -70px;
+      top: -75px;
     }
 
     50% {
-      top: -65px
+      top: -70px
     }
 
     100% {
-      top: -70px;
+      top: -75px;
     }
   }
 }

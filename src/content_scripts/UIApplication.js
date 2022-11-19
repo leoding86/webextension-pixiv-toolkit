@@ -6,6 +6,9 @@ import SuperMixin from '@/mixins/SuperMixin';
 import Vue from 'vue';
 
 class UIApplication {
+  /**
+   * @type {Vue}
+   */
   app;
 
   /**
@@ -16,90 +19,96 @@ class UIApplication {
     /**
      * Configurate Vue
      */
-    Vue.prototype.$browser = window.browser /* For back compatible */ = browser;
+    Vue.prototype.$browser = browser;
     Vue.mixin(SuperMixin);
+  }
 
-    /**
-     * Load settings
-     */
-    browser.storage.local.get(null, items => {
-      let i18n = I18n.i18n(items.language, browser.i18n.getUILanguage());
-
+  createComponent() {
+    return new Promise(resolve => {
       /**
-       * Create app mount point
+       * Load settings
        */
-      let container = document.createElement('div');
+      browser.storage.local.get(null, items => {
+        let i18n = I18n.i18n(items.language, browser.i18n.getUILanguage());
 
-      container.id = '__ptk-app';
-      container.style.position = 'fixed';
-      container.style.left = '0';
-      container.style.bottom = '0';
-      container.style.width = '100%';
-      container.style.height = '0';
-      container.style.overflow = 'visible';
-      container.style.display = 'none';
+        /**
+         * Create app mount point
+         */
+        let container = document.createElement('div');
 
-      document.body.appendChild(container);
+        container.id = '__ptk-app';
+        container.style.position = 'fixed';
+        container.style.left = '0';
+        container.style.bottom = '0';
+        container.style.width = '100%';
+        container.style.height = '0';
+        container.style.overflow = 'visible';
+        // container.style.display = 'none';
 
-      window.$eventBus = new Vue();
+        document.body.appendChild(container);
 
-      window.$extension = this.app = new Vue({
-        el: '#__ptkn-app',
+        window.$eventBus = new Vue();
 
-        i18n,
+        window.$extension = this.app = new Vue({
+          el: '#__ptk-app',
 
-        data() {
-          return {
-            globalBrowserItems: items,
-            isFirefox_: navigator.userAgent.toLowerCase().indexOf('firefox') > -1
-          }
-        },
+          i18n,
 
-        beforeMount() {
-          let vm = this;
+          data() {
+            return {
+              globalBrowserItems: items,
+              isFirefox_: navigator.userAgent.toLowerCase().indexOf('firefox') > -1
+            }
+          },
 
-          this.$browser.storage.onChanged.addListener(changes => {
-            for (let key in changes) {
-              vm.globalBrowserItems[key] = changes[key].newValue;
+          beforeMount() {
+            let vm = this;
 
-              if (key === 'language') {
-                if (changes[key].newValue === 'default') {
-                  i18n.locale = chrome.i18n.getUILanguage().replace('-', '_');
-                } else {
-                  i18n.locale = changes[key].newValue;
+            this.$browser.storage.onChanged.addListener(changes => {
+              for (let key in changes) {
+                vm.globalBrowserItems[key] = changes[key].newValue;
+
+                if (key === 'language') {
+                  if (changes[key].newValue === 'default') {
+                    i18n.locale = chrome.i18n.getUILanguage().replace('-', '_');
+                  } else {
+                    i18n.locale = changes[key].newValue;
+                  }
                 }
               }
-            }
-          });
-        },
-
-        render: h => h(App),
-
-        methods: {
-          /**
-           * Load data
-           * @param {{url: string, type: string}} data
-           */
-          loadData(data) {
-            window.$eventBus.$emit('pagechange', { url: data.url, type: data.type });
+            });
           },
 
-          /**
-           * Unload
-           */
-          unload() {
-            window.$eventBus.$emit('pagechange', { url: null, type: null });
-          },
+          render: h => h(App),
 
-          /**
-           * Get item
-           * @param {string} offset
-           * @returns
-           */
-          getItem(offset) {
-            return this.globalBrowserItems[offset];
-          },
-        }
+          methods: {
+            /**
+             * Load data
+             * @param {{url: string, type: string}} data
+             */
+            loadData(data) {
+              window.$eventBus.$emit('pagechange', { url: data.url, type: data.type });
+            },
+
+            /**
+             * Unload
+             */
+            unload() {
+              window.$eventBus.$emit('pagechange', { url: null, type: null });
+            },
+
+            /**
+             * Get item
+             * @param {string} offset
+             * @returns
+             */
+            getItem(offset) {
+              return this.globalBrowserItems[offset];
+            },
+          }
+        });
+
+        resolve();
       });
     });
   }
@@ -108,8 +117,10 @@ class UIApplication {
    * Create ui application
    * @returns {UIApplication}
    */
-  static createApp() {
-    return new UIApplication();
+  static async createApp() {
+    let app = new UIApplication();
+    await app.createComponent();
+    return app;
   }
 
   /**

@@ -56,7 +56,7 @@
             "matches": [
                 "*://www.pixiv.net/*",
                 "*://*.fanbox.cc/*",
-                "*://comic.pixiv.net/viewer/*"
+                "*://comic.pixiv.net/*"
             ],
             "css": [
                 "content_scripts/static/css/app.css"

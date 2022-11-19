@@ -65,6 +65,10 @@ class DownloadService extends AbstractService {
     return this.downloadManager.getAvaliableTasksJson();
   }
 
+  flushChangedTasks() {
+    return this.downloadManager.flushChangedTasks();
+  }
+
   async addDownload({ type, url, options = {} }) {
     let downloadAdapter = DownloadAdapter.create(type, url);
     let downloadTask = await downloadAdapter.createDownloadTask(options);

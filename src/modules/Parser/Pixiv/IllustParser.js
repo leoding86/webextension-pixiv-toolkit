@@ -42,6 +42,7 @@ class IllustParser {
    */
   constructor(url) {
     this.url = url;
+    this.context = {};
   }
 
   /**
@@ -102,7 +103,7 @@ class IllustParser {
   async parseContext() {
     this.parseUrl(this.url);
 
-    await this.parseInfo();
+    await this.parseInfo(this.context.id);
 
     if ([IllustParser.ILLUST_TYPE, IllustParser.MANGA_TYPE].indexOf(this.context.illustType) > -1) {
       await this.parsePages(this.context.id);
@@ -120,10 +121,10 @@ class IllustParser {
    * @throws {RuntimeError}
    */
   parseUrl(url) {
-    let regexes = [/illust_id=(\d+)/, /artworks\/(\d+)/];
+    let patterns = [/illust_id=(\d+)/i, /artworks\/(\d+)/i];
 
-    for (let regex of regexes) {
-      let matches = url.match(regex);
+    for (let pattern of patterns) {
+      let matches = url.match(pattern);
 
       if (matches) {
         this.context.id = matches[1];

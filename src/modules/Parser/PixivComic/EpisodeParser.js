@@ -34,6 +34,7 @@ class EpisodeParser {
     */
    constructor(url) {
      this.url = url;
+     this.context = {};
    }
 
    /**
@@ -116,7 +117,7 @@ class EpisodeParser {
       let clientTime = moment().format('YYYY-MM-DDTHH:mm:ssZ');
       let clientHash = md5(clientTime.concat(this.yek));
 
-      this.request = new Request(this.getEpisodeUrl(this.context.id), {
+      this.request = new Request(this.buildContextUrl(this.context.id), {
         method: 'GET',
         credentials: 'include',
         headers: {

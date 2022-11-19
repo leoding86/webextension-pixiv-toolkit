@@ -1,5 +1,3 @@
-import Adapter from '@/content_scripts/modules/Adapter';
-import { RuntimeError } from '@/errors';
 import Event from '@/modules/Event';
 
 class Detector extends Event {
@@ -12,7 +10,7 @@ class Detector extends Event {
    * @constructor
    */
   constructor() {
-    this.adapter = new Adapter();
+    super();
   }
 
   /**
@@ -23,7 +21,7 @@ class Detector extends Event {
       /**
        * If different page has been loaded, app should re-reject the page
        */
-      if (window.location.href !== vm.currentUrl) {
+      if (window.location.href !== this.currentUrl) {
         /**
          * Fire urlchange event
          */
@@ -33,27 +31,11 @@ class Detector extends Event {
     });
 
     observer.observe(document.querySelector('body'), {
-      attributes: true,
       childList: true,
       subtree: true
     });
 
     this.currentUrl = window.location.href;
-  }
-
-  /**
-   *
-   * @param {string} url
-   * @throws {RuntimeError}
-   */
-  async parse(url) {
-    let context = await this.adapter.getContext(url);
-
-    if (!context) {
-      throw new RuntimeError(`Invalid page. url: ${url}`);
-    }
-
-    this.dispatch('parse', [context]);
   }
 }
 

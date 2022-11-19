@@ -7,6 +7,7 @@
     <page-selector v-if="pages && pages.length > 0"
       :items="pages"
       @select="pageSelectorSelectHandler"
+      @download="pageSelectorDownloadHandler"
     ></page-selector>
     <!-- <ptk-button v-if="!isUndetermined && browserItems.showPixivOmina"
       class="ptk__pixiv-omina__btn"
@@ -37,6 +38,21 @@ export default {
       isDark: false,
 
       /**
+       * @type {string}
+       */
+      url: '',
+
+      /**
+       * @type {string}
+       */
+      type: '',
+
+      /**
+       * @type {string[]}
+       */
+      pages: [],
+
+      /**
        * @type {Object} Dynamic context
        */
       context: {
@@ -57,19 +73,12 @@ export default {
      * @returns {boolean}
      */
     showApp() {
-      return this.context.type && this.context.url;
+      return this.type && this.url;
     },
-
-    /**
-     * @returns {string[]}
-     */
-    pages() {
-      return this.context.pages;
-    }
   },
 
   created() {
-    this.illustHistoryPort = IllustHistoryPort.getInstance();
+    // this.illustHistoryPort = IllustHistoryPort.getInstance();
 
     /**
      * @type {Adapter}
@@ -85,9 +94,17 @@ export default {
       this.abortAdapterParse();
 
       if (page.type) {
-        this.context.type = page.type;
         this.resource = await this.adapter.getResource(page.type, page.url);
-        this.context = Object.assign({}, this.context, this.resource.getContext());
+
+        this.type = page.type;
+        this.url = page.url;
+
+        if (this.resource.getPages()) {
+          this.pages = this.resource.getPages();
+        }
+
+        // Record history
+        // this.context = Object.assign({}, this.context, context);
       }
     });
   },
@@ -95,8 +112,9 @@ export default {
   methods: {
     abortAdapterParse() {
       this.adapter.abort();
-      this.context = { url: null, type: null };
-      this.selectedIndexes = [];
+      this.resource = null;
+      this.url = this.type = '';
+      this.pages = this.selectedIndexes = [];
     },
 
     download() {
@@ -105,13 +123,21 @@ export default {
         args: {
           type: this.type,
           url: this.url,
-          selectedIndexes: this.selectedIndexes,
+          options: {
+            selectedIndexes: this.selectedIndexes
+          }
         },
+      }, response => {
+        console.log(response);
       });
     },
 
     pageSelectorSelectHandler(selectedPages, selectedIndexes) {
       this.selectedIndexes = selectedIndexes;
+    },
+
+    pageSelectorDownloadHandler() {
+      this.download();
     },
 
     disableGuide() {

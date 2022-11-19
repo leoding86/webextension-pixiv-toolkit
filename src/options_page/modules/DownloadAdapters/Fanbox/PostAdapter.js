@@ -52,8 +52,9 @@ class PostAdapter {
     this.context.targetUrl = this.url;
 
     return PostDownloadTask.create({
-      id: 'fanbox:post:' + this.context.id,
+      id: 'fanbox_post:' + this.context.id,
       url: this.url,
+      pages: this.context.pages,
       renameRule: app().settings.fanboxPostRenameRule,
       context: this.context
     });

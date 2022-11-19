@@ -5,7 +5,7 @@
         :key="download.id"
         style="margin-bottom:15px;"
         :tag="getDownloadTaskTagName(download)"
-        @delete="downloadTask"
+        @delete="deleteDownloadTask"
         @show_in_folder="showInFolder"
       ></download-task>
     </template>
@@ -78,16 +78,30 @@ export default {
 
     loadDownloads() {
       setTimeout(() => {
-        this.downloads = this.downloadService.getAvaliableDownloads();
-        // console.log(this.downloads);
+        let downloads = this.downloadService.flushChangedTasks();
+        let index = 0;
+
+        while (this.downloads[index] && downloads.length > 0) {
+          for (let i = 0; i < downloads.length; i++) {
+            if (this.downloads[index].id === downloads[i].id) {
+              this.$set(this.downloads, index, downloads[i]);
+              downloads.splice(i, 1);
+              break;
+            }
+          }
+        }
+
         this.loadDownloads();
       }, 1000);
     },
 
-    downloadTask(download) {
-      if (!download.deleted) {
-        download.deleted = true;
-        this.downloadService.deleteDownload(download.id);
+    deleteDownloadTask(download) {
+      this.downloadService.deleteDownload(download.id);
+
+      for (let i = 0; i < this.downloads.length; i++) {
+        if (this.downloads[i].id === download.id) {
+          this.downloads.splice(i, 1);
+        }
       }
     },
 

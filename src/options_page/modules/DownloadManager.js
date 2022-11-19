@@ -89,30 +89,55 @@ class DownloadManager extends Event {
     return dataset;
   }
 
-  flushChangedTasks() {
+  /**
+   * Flush the updated tasks
+   * @param {boolean} json
+   * @returns {any[]}
+   */
+  flushChangedTasks(json = true) {
     let changedTaskIds = this.changedTaskIds;
     this.changedTaskIds = [];
+
     let tasks = Array.from(this.tasks).filter(item => {
       let task = item[1];
       return changedTaskIds.indexOf(task[task.idKey ? task.idKey : task.id]) > -1;
     });
-    return tasks;
+
+    return tasks.map(task => task[1].toJson());
   }
 
+  /**
+   *
+   * @param {AbstractDownloadTask} task
+   */
   listenTaskEvents(task) {
-    task.addListener('start');
+    task.addListener('start', () => {
+      this.tasksUpdate(task.id);
+    });
 
-    task.addListener('progress');
+    task.addListener('progress', () => {
+      this.tasksUpdate(task.id);
+    });
 
-    task.addListener('pause');
+    task.addListener('pause', () => {
+      this.tasksUpdate(task.id);
+    });
 
-    task.addListener('stop');
+    task.addListener('stop', () => {
+      this.tasksUpdate(task.id);
+    });
 
-    task.addListener('error');
+    task.addListener('error', () => {
+      this.tasksUpdate(task.id)
+    });
 
-    task.addListener('complete');
+    task.addListener('complete', () => {
+      this.tasksUpdate(task.id);
+    });
 
-    task.addListener('failure');
+    task.addListener('failure', () => {
+      this.tasksUpdate(task.id);
+    });
   }
 
   /**
@@ -173,6 +198,12 @@ class DownloadManager extends Event {
    * @param {number} id
    */
   async deleteTask(id) {
+    let index = this.changedTaskIds.indexOf(id);
+
+    if (index > -1) {
+      this.changedTaskIds.splice(index, 1);
+    }
+
     let downloadTask = this.getTask(id);
     downloadTask.markDelete();
     downloadTask.stop();

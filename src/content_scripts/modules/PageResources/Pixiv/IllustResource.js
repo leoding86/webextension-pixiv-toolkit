@@ -19,6 +19,8 @@ class IllustResource extends AbstractResource {
   }
 
   /**
+   * @inheritdoc
+   * @override
    * @returns {string}
    */
   getUid() {

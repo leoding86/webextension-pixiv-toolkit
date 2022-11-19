@@ -37,6 +37,7 @@ class PostParser {
    */
   constructor(url) {
     this.url = url;
+    this.context = {};
   }
 
   /**

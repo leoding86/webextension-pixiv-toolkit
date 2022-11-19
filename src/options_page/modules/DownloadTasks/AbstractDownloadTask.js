@@ -85,6 +85,17 @@ class AbstractDownloadTask extends Event {
   }
 
   /**
+   * @inheritdoc
+   * @override
+   * @param {"start"|"progress"|"pause"|"stop"|"error"|"complete"|"failure"} eventName
+   * @param {Function} listener
+   * @param {any} thisArg
+   */
+  addListener(eventName, listener, thisArg) {
+    super.addListener(eventName, listener, thisArg);
+  }
+
+  /**
    * Check if the task can be start
    * @throws {RuntimeError}
    */
