@@ -17,8 +17,6 @@ module.exports = env => {
   return merge(baseConfig, {
     entry: {
       app: './src/content_scripts/main.js',
-      'fanbox-cs': './src/fanbox/content_scripts/app.js',
-      'pixivcomic-cs': './src/pixiv_comic/content_scripts/app.js'
     },
     output: {
       path: utils.resolve(`dist/${platform}/content_scripts`),
