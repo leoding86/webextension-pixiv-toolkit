@@ -3,10 +3,19 @@ import PageFilter from "./modules/PageFilter";
 import UIApplication from "./UIApplication";
 
 class Application {
+  /**
+   * @type {Application}
+   */
   static instance;
 
+  /**
+   * @type {Detector}
+   */
   detector;
 
+  /**
+   * @type {PageFilter}
+   */
   pageFilter;
 
   /**
@@ -22,13 +31,13 @@ class Application {
   constructor() {
     this.pageFilter = new PageFilter();
     this.detector = new Detector();
-    this.detector.addListener('urlchange', this.urlchangeHandler);
+    this.detector.addListener('urlchange', this.urlchangeHandler, this);
     this.detector.observeUrl();
 
     /**
      * Call the urlchangeHandler at the application has been initailizatied
      */
-    this.urlchangeHandler(null, window.location.href);
+    this.urlchangeHandler(window.location.href, null);
   }
 
   static app() {
@@ -39,7 +48,7 @@ class Application {
     return Application.instance;
   }
 
-  async urlchangeHandler(oldUrl, newUrl) {
+  async urlchangeHandler(newUrl, oldUrl) {
     try {
       let data = this.pageFilter.getData(newUrl);
 
@@ -48,10 +57,12 @@ class Application {
       }
 
       this.UIApp.loadData(data);
-    } catch (e) {
+    } catch (error) {
       if (this.UIApp) {
         this.UIApp.unload();
       }
+
+      throw error;
     }
   }
 }

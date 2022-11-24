@@ -1,10 +1,34 @@
 import AbstractService from "./AbstractService";
+import Dexie from "dexie";
 
+/**
+ * @class
+ */
 class LogService extends AbstractService {
+  /**
+   * @type {LogService}
+   */
   static instance;
 
-  errors = [];
+  /**
+   * @type {Dexie}
+   */
+  db;
 
+  /**
+   * @constructor
+   */
+  constructor() {
+    this.db = new Dexie('PixivToolkitDatabase');
+    this.db.version(1).stores({
+      'track_errors': "++id,error",
+    });
+  }
+
+  /**
+   *
+   * @returns {LogService}
+   */
   static getService() {
     if (!LogService.instance) {
       LogService.instance = new LogService();
@@ -13,20 +37,24 @@ class LogService extends AbstractService {
     return LogService.instance;
   }
 
-  recordLog(args) {
-    //
-  }
+  /**
+   *
+   * @param {{ error: string }} param0
+   */
+  async trackError({ error }) {
+    let count = await this.db.track_errors.count();
 
-  trackError({ error }) {
-    if (this.errors.length > 500) {
-      this.errors.shift();
+    if (count > 500) {
+      await this.db.track_errors.sortBy('id')
+                                .limit(count - 500)
+                                .delete();
     }
 
-    this.errors.push(error);
+    this.db.track_errors.add({ error });
   }
 
   getTrackedErrors() {
-    return this.errors;
+
   }
 }
 

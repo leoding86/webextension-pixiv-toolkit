@@ -14,6 +14,7 @@ import MimeType from "@/modules/Util/MimeType";
  * @property {any[]} frames
  * @property {string} renameRule
  * @property {0|1|2} packAnimationJsonType
+ * @property {string} customFFmpegCommand
  * @property {any} context
  *
  * @class
@@ -50,13 +51,16 @@ class UgoiraDownloadTask extends AbstractDownloadTask {
   processProgress = 0;
 
   /**
+   * @type {import("@ffmpeg/ffmpeg").FFmpeg}
+   */
+  ffmpeg;
+
+  /**
    *
    * @param {UgoiraDownloadTaskOptions} options
    */
   constructor(options) {
     super();
-
-    this.UNSTOPPABLE_STATE = 99;
 
     this.id = options.id;
     this.url = options.url;
@@ -73,6 +77,9 @@ class UgoiraDownloadTask extends AbstractDownloadTask {
     this.downloader.addListener('pause', this.onPause, this);
   }
 
+  /**
+   * Handle downloader `onStart` event
+   */
   onStart() {
     //
   }
@@ -112,7 +119,6 @@ class UgoiraDownloadTask extends AbstractDownloadTask {
     this.data = blob;
 
     let nameFormatter = NameFormatter.getFormatter({ context: this.context });
-    let settings = app().settings;
 
     let zip = new JSZip();
     await zip.loadAsync(blob);
@@ -126,7 +132,7 @@ class UgoiraDownloadTask extends AbstractDownloadTask {
     this.lastDownloadId = await FileSystem.getDefault().saveFile({
       url,
       filename: nameFormatter.format(
-        settings.ugoiraRenameFormat
+        this.options.renameRule
       ) + '.' + MimeType.getExtenstion(mimeType)
     });
 
@@ -141,23 +147,23 @@ class UgoiraDownloadTask extends AbstractDownloadTask {
    * @fires UgoiraDownloadTask#complete
    */
   async onFinish() {
-    this.state = this.UNSTOPPABLE_STATE;
+    this.changeState(this.PROCESSING_STATE);
 
     /**
      * FFmpeg loaded as external library
      */
     let { createFFmpeg } = FFmpeg;
-    let ffmpeg = new createFFmpeg({
+    this.ffmpeg = new createFFmpeg({
       log: true,
       corePath: browser.runtime.getURL('lib/ffmpeg/ffmpeg-core.js'),
     });
-    ffmpeg.setProgress(progress => {
+    this.ffmpeg.setProgress(progress => {
       this.processProgress = progress.ratio;
 
       this.dispatch('progress', [this.processProgress]);
     });
 
-    await ffmpeg.load();
+    await this.ffmpeg.load();
 
     let zip = new JSZip();
     await zip.loadAsync(this.data);
@@ -173,7 +179,7 @@ class UgoiraDownloadTask extends AbstractDownloadTask {
       let data = await zip.file(frame.file).async('uint8array');
       let indexStr = i + '';
       let filename = '0'.repeat(6 - indexStr.length) + i + '.jpg';
-      ffmpeg.FS('writeFile', filename, data);
+      this.ffmpeg.FS('writeFile', filename, data);
       loadedFiles.push(filename);
 
       /**
@@ -186,42 +192,50 @@ class UgoiraDownloadTask extends AbstractDownloadTask {
     /**
      * Add frames to ffmpeg file system
      */
-    ffmpeg.FS('writeFile', 'input.txt', framesContent);
+    this.ffmpeg.FS('writeFile', 'input.txt', framesContent);
     loadedFiles.push('input.txt');
 
-    await ffmpeg.run.apply(ffmpeg, ['-f', 'concat', '-i', 'input.txt', '-plays', 0, 'out.gif']);
+    let ffmpegCommand = ['-f', 'concat', '-i', 'input.txt', '-plays', 0, 'out.gif'];
+
+    if (this.options.customFFmpegCommand) {
+      ffmpegCommand = this.options.customFFmpegCommand.split(' ');
+    }
+
+    let outputFilename = ffmpegCommand[ffmpegCommand.length - 1];
+
+    await this.ffmpeg.run.apply(this.ffmpeg, ffmpegCommand);
 
     /**
      * Load data out from ffmpeg filesystem
      */
-    let data = ffmpeg.FS('readFile', 'out.gif');
+    let data = this.ffmpeg.FS('readFile', outputFilename);
 
     /**
      * Save file to disk
      */
-    let animationFileUrl = URL.createObjectURL(new Blob([data], { type: 'image/gif' }));
+    let animationFileUrl = URL.createObjectURL(new Blob([data], { type: MimeType.getFileMimeType(outputFilename) }));
     let nameFormatter = NameFormatter.getFormatter({ context: this.context });
 
     this.lastDownloadId = await FileSystem.getDefault().saveFile({
       url: animationFileUrl,
       filename: nameFormatter.format(
         this.options.renameRule
-      ) + '.gif'
+      ) + '.' + MimeType.getFileExtension(outputFilename)
     });
 
     URL.revokeObjectURL(animationFileUrl);
 
-    loadedFiles.push('out.gif');
+    loadedFiles.push(outputFilename);
 
     /**
      * Clearup assets
      */
-    loadedFiles.forEach(file => ffmpeg.FS('unlink', file));
+    loadedFiles.forEach(file => this.ffmpeg.FS('unlink', file));
 
-    ffmpeg.exit();
+    this.ffmpeg.exit();
+    this.ffmpeg = null;
 
-    this.state = this.COMPLETE_STATE;
-
+    this.changeState(this.COMPLETE_STATE);
     this.dispatch('complete');
   }
 
@@ -256,12 +270,29 @@ class UgoiraDownloadTask extends AbstractDownloadTask {
   /**
    * @override
    * @fires UgoiraDownloadTask#start
+   * @param {boolean} reset
    */
-  start() {
-    this.checkCouldStart();
-    this.state = this.DOWNLOADING_STATE;
-    this.downloader.download();
-    this.dispatch('start');
+  start(reset = false) {
+    if (reset) {
+      this.downloader.reset();
+    }
+
+    if (this.isPending()) {
+      this.changeState(this.DOWNLOADING_STATE);
+      this.dispatch('start');
+      this.downloader.download();
+    }
+  }
+
+  abortProcess() {
+    if (this.downloader) {
+      this.downloader.pause();
+    }
+
+    if (this.ffmpeg) {
+      this.ffmpeg.exit();
+      this.processProgress = this.processedFramesCount = 0;
+    }
   }
 
   /**
@@ -269,9 +300,9 @@ class UgoiraDownloadTask extends AbstractDownloadTask {
    * @override
    */
   pause() {
-    if (this.state !== this.UNSTOPPABLE_STATE) {
-      this.state = this.PAUSED_STATE;
-      this.downloader.pause();
+    if (this.state !== this.PROCESSING_STATE) {
+      this.changeState(this.PAUSED_STATE);
+      this.abortProcess();
     }
   }
 
@@ -279,7 +310,7 @@ class UgoiraDownloadTask extends AbstractDownloadTask {
    * @override
    */
   stop() {
-    //
+    this.abortProcess();
   }
 
   /**

@@ -1,5 +1,5 @@
 import { FanboxPostParser } from "@/modules/Parser";
-import { FanboxPostResource } from "../../PageResources";
+import { FanboxPostResource } from "@/modules/PageResource";
 import AbstractAdapter from "@/content_scripts/modules/PageAdapters/AbstractAdapter";
 
 /**

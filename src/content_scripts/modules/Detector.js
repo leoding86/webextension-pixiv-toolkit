@@ -32,7 +32,8 @@ class Detector extends Event {
 
     observer.observe(document.querySelector('body'), {
       childList: true,
-      subtree: true
+      subtree: true,
+      attributes: true,
     });
 
     this.currentUrl = window.location.href;

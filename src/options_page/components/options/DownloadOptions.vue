@@ -34,11 +34,11 @@
         <v-list-tile>
           <v-list-tile-content>
             <v-list-tile-title>{{ tl('setting_relative_location') }}</v-list-tile-title>
-            <v-list-tile-sub-title>{{ downloadRelativeLocation }}</v-list-tile-sub-title>
+            <v-list-tile-sub-title>{{ downloadRelativeLocationPreview }}</v-list-tile-sub-title>
           </v-list-tile-content>
           <v-list-tile-action>
             <v-btn depressed
-              @click="showDownloadRelativeLocationDialog()"
+              @click="openDownloadRelativeLocationDialog()"
             >{{ tl('Change') }}</v-btn>
           </v-list-tile-action>
         </v-list-tile>
@@ -64,7 +64,20 @@
       </v-list>
     </v-card>
 
-    <router-view />
+    <v-dialog v-model.sync="showDownloadRelativeLocationDialog" max-width="560">
+      <v-card>
+        <v-card-text>
+          <h2>{{ tl('setting_relative_location') }}</h2>
+          <v-text-field
+            v-model="downloadRelativeLocation"
+            :error-messages="downloadRelativeFieldErrorMessages"
+            @blur="onDownloadRelativeLocationFieldBlurHandler"
+            placeholder="pixiv_downloads/"
+            persistent-hint></v-text-field>
+          <p style="font-size: 12px;" v-html="hint"></p>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -81,6 +94,8 @@ export default {
 
   data() {
     return {
+      showDownloadRelativeLocationDialog: false,
+
       hasDownloadsPermission: false,
 
       downloadSaveAs: false,
@@ -90,12 +105,38 @@ export default {
       multipleDownloadsGapTime: 150,
 
       enableDownloadMetadata: false,
+
+      downloadRelativeFieldErrorMessages: [],
+
+      downloadRelativeLocation: '',
     };
   },
 
   computed: {
-    downloadRelativeLocation() {
-      return this.browserItems.downloadRelativeLocation;
+    downloadRelativeLocationPreview() {
+      return this.downloadRelativeLocation === '' ?
+             this.tl('_not_set') :
+             this.downloadRelativeLocation;
+    },
+
+    hint () {
+      let hint = this.tl('relative_location_hint');
+
+      let replaceStr = '[RELATIVE_LOCATION]';
+
+      if (this.downloadRelativeLocation && !this.locationRegex.test(this.downloadRelativeLocation)) {
+        this.downloadRelativeFieldErrorMessages.push('Invalid input, example: "pixiv_downloads/"');
+      } else {
+        this.downloadRelativeFieldErrorMessages = [];
+
+        if (!!this.downloadRelativeLocation) {
+          replaceStr = this.downloadRelativeLocation;
+        }
+      }
+
+      hint = hint.replace('{{downloadRelativeLocation}}', replaceStr);
+
+      return hint;
     }
   },
 
@@ -132,25 +173,32 @@ export default {
   },
 
   created() {
+    /**
+     * Non-reactive property
+     */
+    this.locationRegex = /^([^./]+\/)*$/i;
+
+    this.downloadRelativeLocation = this.oldDownloadRelativeLocation = this.browserItems.downloadRelativeLocation;
     this.enableDownloadMetadata = !!this.browserItems.enableDownloadMetadata;
-  },
-
-  beforeMount() {
     this.downloadSaveAs = !!this.browserItems.downloadSaveAs;
-
     this.downloadTasksWhenDownloadingImages = this.browserItems.downloadTasksWhenDownloadingImages;
-
     this.multipleDownloadsGapTime = parseInt(this.browserItems.multipleDownloadsGapTime) || 150;
   },
 
   methods: {
-    showDownloadRelativeLocationDialog() {
-      this.pushRoute({
-        name: "DownloadRelativeLocationDialog",
-        params: {
-          downloadRelativeLocation: ""
-        }
-      });
+    openDownloadRelativeLocationDialog() {
+      this.showDownloadRelativeLocationDialog = true;
+    },
+
+    onDownloadRelativeLocationFieldBlurHandler() {
+      if (this.locationRegex.test(this.downloadRelativeLocation)) {
+        browser.storage.local.set({
+          downloadRelativeLocation: this.downloadRelativeLocation,
+        });
+        this.oldDownloadRelativeLocation = this.downloadRelativeLocation;
+      } else {
+        this.downloadRelativeLocation = this.oldDownloadRelativeLocation;
+      }
     }
   }
 };

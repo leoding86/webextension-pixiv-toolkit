@@ -1,11 +1,18 @@
 import { RuntimeError } from "@/errors";
 import AbstractService from "./AbstractService";
 import browser from "@/modules/Extension/browser";
-import MimeType from "@/modules/Util/MimeType";
-import DownloadManager from "../modules/DownloadManager";
 import DownloadAdapter from "../modules/DownloadAdapter";
+import DownloadManager from "../modules/DownloadManager";
+import MimeType from "@/modules/Util/MimeType";
+import PageResourceFactory from '@/modules/PageResource/Factory';
 
+/**
+ * @class Download service
+ */
 class DownloadService extends AbstractService {
+  /**
+   * @type {DownloadService}
+   */
   static instance;
 
   /**
@@ -32,7 +39,7 @@ class DownloadService extends AbstractService {
    * @param {any} param0
    * @returns
    */
-  async download({ saveAs = false, filename, data = undefined, url = undefined }) {console.log(filename);
+  async download({ saveAs = false, filename, data = undefined, url = undefined }) {
     let downloadOptions = {
       saveAs: !!saveAs
     };
@@ -69,11 +76,24 @@ class DownloadService extends AbstractService {
     return this.downloadManager.flushChangedTasks();
   }
 
-  async addDownload({ type, url, options = {} }) {
-    let downloadAdapter = DownloadAdapter.create(type, url);
-    let downloadTask = await downloadAdapter.createDownloadTask(options);
+  /**
+   * Receive data and add a download
+   * @param {{ unpackedResource: Object, options: any}} param0
+   * @returns {Object}
+   */
+  async addDownload({ unpackedResource, options = {} }) {
+    /**
+     * Create page resource instance using unpacked resource data
+     */
+    let pageResource = PageResourceFactory.createPageResource(unpackedResource);
+
+    let downloadAdapter = DownloadAdapter.create();
+
+    let downloadTask = await downloadAdapter.createDownloadTask(pageResource, options);
 
     this.downloadManager.addTask(downloadTask);
+
+    return downloadTask.toJson();
   }
 
   async startDownload(id) {

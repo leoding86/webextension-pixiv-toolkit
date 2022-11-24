@@ -2,6 +2,7 @@ import AbstractDownloadTask from './DownloadTasks/AbstractDownloadTask';
 import DownloadTaskExistsError from '@/errors/DownloadTaskExistsError';
 import DownloadTaskNotFoundError from '@/errors/DownloadTaskNotFoundError';
 import Event from '@/modules/Event';
+import { RuntimeError } from '@/errors';
 
 /**
  * @class Manage download tasks
@@ -26,7 +27,12 @@ class DownloadManager extends Event {
   /**
    * @type {number}
    */
-  downloadingTasksAtSametime = 3;
+  maxDownloadingTasks = 3;
+
+  /**
+   * @type {Error}
+   */
+  lastError = null;
 
   /**
    *
@@ -41,14 +47,14 @@ class DownloadManager extends Event {
   }
 
   /**
-   * Set property `downloadingTasksAtSametime`, max is 3 and min is 1
+   * Set property `maxDownloadingTasks`, max is 3 and min is 1
    * @param {number} number
    */
-  setDownloadingTasksAtSametime(number) {
+  setMaxDownloadingTasks(number) {
     number = number < 0 ? 1 : number;
     number = number > 3 ? 3 : number;
 
-    this.downloadingTasksAtSametime = number;
+    this.maxDownloadingTasks = number;
   }
 
   /**
@@ -99,8 +105,8 @@ class DownloadManager extends Event {
     this.changedTaskIds = [];
 
     let tasks = Array.from(this.tasks).filter(item => {
-      let task = item[1];
-      return changedTaskIds.indexOf(task[task.idKey ? task.idKey : task.id]) > -1;
+      let taskId = item[0];
+      return changedTaskIds.indexOf(taskId) > -1;
     });
 
     return tasks.map(task => task[1].toJson());
@@ -111,7 +117,7 @@ class DownloadManager extends Event {
    * @param {AbstractDownloadTask} task
    */
   listenTaskEvents(task) {
-    task.addListener('start', () => {
+    task.addListener('statechange', () => {
       this.tasksUpdate(task.id);
     });
 
@@ -119,24 +125,18 @@ class DownloadManager extends Event {
       this.tasksUpdate(task.id);
     });
 
-    task.addListener('pause', () => {
-      this.tasksUpdate(task.id);
-    });
-
-    task.addListener('stop', () => {
-      this.tasksUpdate(task.id);
-    });
-
     task.addListener('error', () => {
-      this.tasksUpdate(task.id)
+      this.tasksUpdate(task.id);
     });
 
     task.addListener('complete', () => {
       this.tasksUpdate(task.id);
+      this.startTasks();
     });
 
     task.addListener('failure', () => {
       this.tasksUpdate(task.id);
+      this.startTasks();
     });
   }
 
@@ -148,11 +148,46 @@ class DownloadManager extends Event {
   }
 
   /**
+   * @fires DownloadManager#error
+   * @param {Error} error
+   */
+  setLastError(error) {
+    this.lastError = error;
+    this.dispatch(error, [error]);
+  }
+
+  /**
    *
    * @returns {boolean}
    */
   reachDownloadingTasksLimit() {
-    return this.downloadingTasks.length >= this.downloadingTasksAtSametime;
+    return this.downloadingTasks.length >= this.maxDownloadingTasks;
+  }
+
+  /**
+   * Start all paused downloads
+   */
+  startAll() {
+    let tasks = Array.from(this.tasks);
+    let index = 0;
+    let downloadTask;
+
+    while (downloadTask = tasks[index][1]) {
+      try {
+        downloadTask.tryPending();
+
+        /**
+         * If there's still can start download, then start current one.
+         */
+        if (!this.reachDownloadingTasksLimit()) {
+          downloadTask.start();
+        }
+      } catch (error) {
+        this.setLastError(error);
+      }
+
+      index++;
+    }
   }
 
   /**
@@ -160,17 +195,17 @@ class DownloadManager extends Event {
    */
   startTasks() {
     let tasks = Array.from(this.tasks);
+    let index = 0;
 
-    for (let item of tasks) {
-      let task = item[1];
+    while (!this.reachDownloadingTasksLimit()) {
+      let item = tasks[index];
 
-      if (task.isPending()) {
-        if (!this.reachDownloadingTasksLimit()) {
-          task.start();
-        } else {
-          break;
-        }
+      if (!item) {
+        break;
       }
+
+      index++;
+      this.getTask(item[0]).start();
     }
   }
 
@@ -189,8 +224,7 @@ class DownloadManager extends Event {
     this.listenTaskEvents(task);
 
     this.tasks.set(id, task);
-    this.startTasks();
-    // await task.start();
+    this.startTask(id);
   }
 
   /**
@@ -215,7 +249,17 @@ class DownloadManager extends Event {
    * @param {number} id
    */
   async startTask(id) {
-    await this.getTask(id).start();
+    let downloadTask = this.getTask(id);
+
+    try {
+      downloadTask.tryPending();
+
+      if (!this.reachDownloadingTasksLimit()) {
+        downloadTask.start();
+      }
+    } catch (error) {
+      this.setLastError(error);
+    }
   }
 
   /**
@@ -223,7 +267,11 @@ class DownloadManager extends Event {
    * @param {number} id
    */
   async pauseTask(id) {
-    await this.getTask(id).pause();
+    try {
+      this.getTask(id).pause();
+    } catch (error) {
+      this.setLastError(error);
+    }
   }
 
   /**
@@ -231,7 +279,7 @@ class DownloadManager extends Event {
    * @param {number} id
    */
   async stopTask(id) {
-    await this.getTask(id).stop();
+    this.getTask(id).stop();
   }
 }
 

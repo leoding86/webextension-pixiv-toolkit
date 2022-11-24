@@ -23,6 +23,7 @@ import Vuetify from 'vuetify';
 (async () => {
   const DOWNLOADS_TAB = '__DOWNLOADS_TAB__';
   let settings = await browser.storage.local.get(null);
+  let openedTabId = 0;
   const currentDownloadsTab = (await browser.tabs.query({ active: true, lastFocusedWindow: true }))[0];
 
   if (settings[DOWNLOADS_TAB]) {
@@ -33,22 +34,21 @@ import Vuetify from 'vuetify';
     } else {
       try {
         await chrome.tabs.get(previousDownloadsTabId);
+        openedTabId = previousDownloadsTabId;
         console.log('Downloads is already open.');
-        return;
       } catch (error) {
         console.log('Previous downloads page not found, start new one.');
 
         const data = {};
         data[DOWNLOADS_TAB] = currentDownloadsTab.id;
-
         browser.storage.local.set(data);
       }
     }
+  } else {
+    const data = {};
+    data[DOWNLOADS_TAB] = currentDownloadsTab.id;
+    browser.storage.local.set(data);
   }
-
-  window.onbeforeunload = event => {
-    return event.returnValue = 'Close the tab will lose all download process. Close it ?';
-  };
 
   /**
    * Boot the application.
@@ -118,7 +118,8 @@ import Vuetify from 'vuetify';
       data() {
         return {
           appSettings: items,
-          isFirefox_: $_browser === 'firefox'
+          isFirefox_: $_browser === 'firefox',
+          openedTabId,
         }
       },
 

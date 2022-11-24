@@ -2,8 +2,8 @@ import { app } from "@/options_page/DownloadsApplication";
 import {
   PixivNovelDownloadTask as NovelDownloadTask
 } from "@/options_page/modules/DownloadTasks";
-import { PixivNovelParser } from "@/modules/Parser";
 import AbstractDownloadTask from "../../DownloadTasks/AbstractDownloadTask";
+import AbstractResource from "@/modules/PageResource/AbstractResource";
 
 class NovelAdapter {
   /**
@@ -35,13 +35,12 @@ class NovelAdapter {
 
   /**
    * Create non-options setted download task instance
+   * @param {AbstractResource} resource
+   * @param {Object} options
    * @returns {AbstractDownloadTask}
    */
-  async createDownloadTask(options) {
-    let novelParser = PixivNovelParser.create(this.url);
-
-    await novelParser.parseContext();
-    this.context = novelParser.getContext();
+  async createDownloadTask(resource, options) {
+    this.context = resource.getContext();
 
     /**
      * Append current url to context
@@ -52,6 +51,7 @@ class NovelAdapter {
       id: 'pixiv:illust:' + this.context.id,
       url: this.url,
       renameRule: app().settings.novelRenameRule,
+      includeDescription: app().settings.novelIncludeDescription,
       context: this.context,
       bookType: options.bookType,
     });

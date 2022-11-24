@@ -1,11 +1,12 @@
 import { RuntimeError } from '@/errors';
 import { SettingService } from './services';
-import Updater from './modules/Updater';
 import browser from '@/modules/Extension/browser';
 import defaultSettings from '@/config/default';
 import ServiceProvider from './services/ServiceProvider';
-import updateSettings from '@/config/update';
+import Updater from './modules/Updater';
 import updates from './updates';
+import updateSettings from '@/config/update';
+import versionCompare from '@/modules/Util/versionCompare';
 
 class Application {
   /**
@@ -111,42 +112,35 @@ class Application {
    */
   async onInstalled({ id = undefined, previousVersion = undefined, reason }) {console.log(reason);
     if (reason === 'install' || reason === 'update') {
-      if (reason === 'install') {
+      let settings = await this.getService('setting').getSettings();
+      let previousVersion = settings.version;
+      let installVersion = browser.runtime.getManifest().version;
+
+      if (!settings.version) {
+        /**
+         * Fresh install
+         */
         this.getService('setting').updateSettings(defaultSettings);
-      } else if (reason === 'update') {
-        let currentVersion = browser.runtime.getManifest().version;
-        let updater = new Updater(currentVersion, previousVersion, updates());
+
+        browser.action.setBadgeText({ text: 'NEW' });
+        browser.action.setBadgeBackgroundColor({ color: '#FF0000' });
+      } else if (versionCompare(installVersion, previousVersion) > 0) {
+        /**
+         * Update
+         */
+        let updater = new Updater(installVersion, previousVersion, updates());
         await updater.update();
+
+        browser.action.setBadgeText({ text: 'NEW' });
+        browser.action.setBadgeBackgroundColor({ color: '#FF0000' });
       }
-
-      browser.action.setBadgeText({ text: 'NEW' });
-      browser.action.setBadgeBackgroundColor({ color: '#FF0000' });
     }
-
-    /**
-     * Edit here if there are settings need to be update while the update.
-     */
-    // if (reason === 'install' || reason === 'update') {
-    //   let settingService = this.getService('setting');
-    //   let items = await settingService.getSettings();
-    //   let updater = new Updater(items, defaultSettings);
-    //   let version = browser.runtime.getManifest().version;
-
-    //   await updater.mergeSettings({
-    //     version,
-    //     showUpdateChangeLog: false,
-    //     importantNoticeDisplayed: updateSettings.importantNoticeDisplayed || false,
-    //   });
-
-    //   browser.action.setBadgeText({ text: 'NEW' });
-    //   browser.action.setBadgeBackgroundColor({ color: '#FF0000' });
-    // }
   }
 
   /**
    * Fired when a message is sent from either an extension process or a content
    * script
-   * @param {*} param0
+   * @param {{ to: string, action: string, args: any }} message
    */
   async onMessage(message, sender, sendResponse) {
     /**
@@ -154,7 +148,7 @@ class Application {
      * need a response, the method of service need return a valid that isn't
      * undefined
      */
-    if (message.action) {
+    if (message.to === 'ws' && message.action) {
       let [serviceName, methodName] = message.action.split(':');
 
       let service = this.getService(serviceName);

@@ -1,5 +1,5 @@
 import { PixivIllustParser } from "@/modules/Parser";
-import { PixivIllustResource } from "../../PageResources";
+import { PixivIllustResource } from "@/modules/PageResource";
 import AbstractAdapter from "@/content_scripts/modules/PageAdapters/AbstractAdapter";
 
 /**

@@ -1,5 +1,5 @@
 import { PixivNovelParser } from "@/modules/Parser";
-import { PixivNovelResource } from "../../PageResources";
+import { PixivNovelResource } from "@/modules/PageResource";
 import AbstractAdapter from "@/content_scripts/modules/PageAdapters/AbstractAdapter";
 
 /**

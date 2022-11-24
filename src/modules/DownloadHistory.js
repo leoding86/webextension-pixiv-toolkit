@@ -1,66 +1,43 @@
-import { RuntimeError } from "@/errors";
-import Event from "@/modules/Event";
-import browser from "@/modules/Extension/browser";
+import Db from '@/modules/Db/Db';
+import DownloadHistoryRepo from '@/modules/Db/Repository/DownloadHistoryRepo';
 
 /**
- * @class Basic DownloadHistory module
+ * @class
  */
-class DownloadHistory extends Event {
+class DownloadHistory {
   /**
-   * Channel port
-   * @type {any}
+   * @type {Db}
    */
-  port;
-
-  /**
-   * Get `DownloadHistory` instance
-   * @returns {DownloadHistory}
-   */
-  static create() {
-    let instance = new DownloadHistory();
-    instance.port = browser.runtime.connect({ name: 'downloadHistory' });
-    instance.listenMessage();
-    return instance;
-  }
+  db;
 
   /**
-   * Listen message from background
+   * @type {DownloadHistoryRepo}
    */
-  listenMessage() {
-    /**
-     * Because download history will just recieve data from background and
-     * render the list and it will not send any data after that, so the `port`
-     * is no use here.
-     */
-    this.port.onMessage.addListener((message, port) => {
-      if (message.error) {
-        throw new RuntimeError(message.error);
-      }
+  downloadHistoryRepo;
 
-      if (message.service && message.service === 'downloadHistory' && messsage.method) {
-        this.dispatch(message.method, [message, port]);
-      }
-    });
+  /**
+   * @constructor
+   */
+  constructor({ max } = { max: 10000 }) {
+    this.db = Db.getDb();
+    this.downloadHistoryRepo = this.db.downloadHistoryRepo();
+    this.setMax(max);
   }
 
-  postMessage(method, message) {
-    this.port.postMessage({ service: 'downloadService', method, message });
+  setMax(max) {
+    this.downloadHistoryRepo.setMax(max);
   }
 
-  putRecord(record) {
-    this.postMessage('putRecord', { record });
+  async addItem(data) {
+    await this.downloadHistoryRepo.addItem(data);
   }
 
-  listRecords({ query, limit, skip }) {
-    this.postMessage('listRecords', { query, limit, skip });
+  deleteItem(id) {
+    this.downloadHistoryRepo.deleteItem(id);
   }
 
-  deleteRecord({ id }) {
-    this.postMessage('deleteRecord', { id });
-  }
-
-  clearRecords() {
-    this.postMessage('clearRecords');
+  clear() {
+    this.downloadHistoryRepo.clear();
   }
 }
 

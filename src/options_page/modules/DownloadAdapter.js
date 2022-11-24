@@ -1,43 +1,73 @@
 import { RuntimeError } from "@/errors";
-import Download from "@/modules/Net/Download";
 import {
   FanboxPostAdapter,
   PixivComicEpisodeAdapter,
   PixivIllustAdapter,
   PixivNovelAdapter,
  } from "./DownloadAdapters";
+import {
+  FanboxPostResource,
+  PixivComicEpisdoeResource,
+  PixivIllustResource,
+  PixivNovelResource,
+} from '@/modules/PageResource/index';
+import AbstractAdapter from "@/content_scripts/modules/PageAdapters/AbstractAdapter";
+import AbstractDownloadTask from "./DownloadTasks/AbstractDownloadTask";
+import AbstractResource from "@/modules/PageResource/AbstractResource";
 
 class DownloadAdapter {
   /**
-   * The map keys MUST the match the keys in config/urlFilters.
+   * @type {DownloadAdapter}
    */
-  static adapterMap = {
-    'pixiv_illust': PixivIllustAdapter,
-    'pixiv_novel': PixivNovelAdapter,
-    'pixiv_comic_episode': PixivComicEpisodeAdapter,
-    'fanbox_post': FanboxPostAdapter,
-  };
+  static default;
 
-  type;
+  /**
+   * @type {Map.<AbstractResource, AbstractAdapter}
+   */
+  adapterMaps = new Map();
 
-  url;
+  constructor() {
+    this.adapterMaps.set(FanboxPostResource, FanboxPostAdapter);
+    this.adapterMaps.set(PixivComicEpisdoeResource, PixivComicEpisodeAdapter);
+    this.adapterMaps.set(PixivIllustResource, PixivIllustAdapter);
+    this.adapterMaps.set(PixivNovelResource, PixivNovelAdapter);
+  }
 
-  constructor(type, url) {
-    if (!DownloadAdapter.adapterMap[type]) {
-      throw new RuntimeError(`Invalid download adapter ${type}`);
+  /**
+   *
+   * @returns {DownloadAdapter}
+   */
+  static create() {
+    return new DownloadAdapter();
+  }
+
+  /**
+   *
+   * @returns {DownloadAdapter}
+   */
+  static default() {
+    if (!DownloadAdapter.default) {
+      DownloadAdapter.default = DownloadAdapter.create();
     }
 
-    this.type = type;
-    this.url = url;
+    return DownloadAdapter.default;
   }
 
-  static create(type, url) {
-    return new DownloadAdapter(type, url);
-  }
+  /**
+   *
+   * @param {AbstractResource} resource
+   * @param {any} options
+   * @returns {AbstractDownloadTask}
+   */
+  async createDownloadTask(resource, options) {
+    let adapter = this.adapterMaps.get(resource.constructor);
 
-  async createDownloadTask(options) {
-    let adpater = DownloadAdapter.adapterMap[this.type].create(this.url);
-    return await adpater.createDownloadTask(options);
+    if (!adapter) {
+      throw new RuntimeError(`Cannot find download adapter with resource [${resource.constructor.name}].`);
+    }
+
+    let adpater = adapter.create(resource.getUrl());
+    return await adpater.createDownloadTask(resource, options);
   }
 }
 

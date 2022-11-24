@@ -1,98 +1,79 @@
 <template>
   <div class="option-section">
-    <span class="option-card-title">Pixiv {{ tl('Illustration') }}</span>
+    <v-list two-line>
+      <v-list-tile @click="showRenameDialog = true">
+        <v-list-tile-content>
+          <v-list-tile-title>{{ tl('_rename_illustration') }}</v-list-tile-title>
+          <v-list-tile-sub-title>{{ renameRule }}</v-list-tile-sub-title>
+        </v-list-tile-content>
+        <v-list-tile-action>
+          <v-btn icon ripple>
+            <v-icon>keyboard_arrow_right</v-icon>
+          </v-btn>
+        </v-list-tile-action>
+      </v-list-tile>
 
-    <v-card style="margin-bottom:30px;">
-      <v-list two-line>
-        <v-list-tile @click="showRenameDialog()">
-          <v-list-tile-content>
-            <v-list-tile-title>{{ tl('Rename_illustration') }}</v-list-tile-title>
-            <v-list-tile-sub-title>{{ renameFormatPreview }}</v-list-tile-sub-title>
-          </v-list-tile-content>
-          <v-list-tile-action>
-            <v-btn icon ripple>
-              <v-icon>keyboard_arrow_right</v-icon>
-            </v-btn>
-          </v-list-tile-action>
-        </v-list-tile>
+      <v-list-tile>
+        <v-list-tile-content>
+          <v-list-tile-title>{{ tl('_page_number_start_with_1') }}</v-list-tile-title>
+          <v-list-tile-sub-title>{{ tl('_page_number_start_with_1_otherwise_start_with_0') }}</v-list-tile-sub-title>
+        </v-list-tile-content>
+        <v-list-tile-action>
+          <v-select :items="pageNumberStartWithOneOptions"
+            v-model="pageNumberStartWithOne"
+            style="width:150px;"
+          ></v-select>
+        </v-list-tile-action>
+      </v-list-tile>
 
-        <v-list-tile>
-          <v-list-tile-content>
-            <v-list-tile-title>{{ tl('_create_subdirectory') }}</v-list-tile-title>
-            <v-list-tile-sub-title>{{ tl('_create_subdirectory_for_illustration') }}</v-list-tile-sub-title>
-          </v-list-tile-content>
-          <v-list-tile-action>
-            <v-select :items="createSubdirectoryOptions" v-model="createSubdirectory"
-              style="width:220px;"
-            ></v-select>
-          </v-list-tile-action>
-        </v-list-tile>
+      <v-list-tile>
+        <v-list-tile-content>
+          <v-list-tile-title>{{ tl('_the_length_of_page_number') }}</v-list-tile-title>
+          <v-list-tile-sub-title>{{ tl('_zeros_will_be_filled_at_the_beginning_of_page_number') }}</v-list-tile-sub-title>
+        </v-list-tile-content>
+        <v-list-tile-action>
+          <v-select :items="pageNumberLengthOptions"
+            v-model="pageNumberLength"
+            style="width:150px;"
+          ></v-select>
+        </v-list-tile-action>
+      </v-list-tile>
+    </v-list>
 
-        <v-list-tile>
-          <v-list-tile-content>
-            <v-list-tile-title>{{ tl('_page_number_start_with_1') }}</v-list-tile-title>
-            <v-list-tile-sub-title>{{ tl('_page_number_start_with_1_otherwise_start_with_0') }}</v-list-tile-sub-title>
-          </v-list-tile-content>
-          <v-list-tile-action>
-            <v-switch v-model="pageNumberStartWithOne"></v-switch>
-          </v-list-tile-action>
-        </v-list-tile>
-
-        <v-list-tile>
-          <v-list-tile-content>
-            <v-list-tile-title>{{ tl('_the_length_of_page_number') }}</v-list-tile-title>
-            <v-list-tile-sub-title>{{ tl('_zeros_will_be_filled_at_the_beginning_of_page_number') }}</v-list-tile-sub-title>
-          </v-list-tile-content>
-          <v-list-tile-action>
-            <v-select :items="pageNumberLengthOptions"
-              v-model="pageNumberLength"
-              style="width:150px;"
-            ></v-select>
-          </v-list-tile-action>
-        </v-list-tile>
-      </v-list>
-    </v-card>
+    <rename-dialog :show.sync="showRenameDialog"
+      v-model="renameRule"
+      :title="tl('_rename_illustration')"
+      :metas="renameMetas"
+      :default-value="defaultRenameRule"
+    ></rename-dialog>
   </div>
 </template>
 
 <script>
-import ChangeLocationSetting from '@@/components/options/ChangeLocationSetting';
+import RenameDialog from '@@/components/options/RenameDialog';
 
 export default {
   components: {
-    'change-location-setting': ChangeLocationSetting
+    'rename-dialog': RenameDialog,
   },
 
   data() {
     return {
-      renameFormat: "",
+      showRenameDialog: false,
 
-      alwaysPack: false,
+      defaultRenameRule: '{id}_{title}_{pageNum}',
 
-      pageNumberStartWithOne: false,
+      renameRule: "",
+
+      pageNumberStartWithOne: -2,
 
       pageNumberLength: 0,
 
       location: '',
-
-      createSubdirectory: 1,
     };
   },
 
   computed: {
-    createSubdirectoryOptions() {
-      return [{
-        text: this.tl('_disable'),
-        value: 0,
-      }, {
-        text: this.tl('_enable'),
-        value: 1,
-      }, {
-        text: this.tl('_when_multiple_images'),
-        value: 2,
-      }]
-    },
-
     pageNumberLengthOptions() {
       return [{
         text: this.tl('_disable'),
@@ -109,19 +90,36 @@ export default {
       }, {
         text: '4',
         value: 4
+      }, {
+        text: this.tl('_global_setting'),
+        value: -2
       }];
     },
 
-    renameFormatPreview() {
-      if (!!this.browserItems.illustrationRenameFormat) {
-        return this.browserItems.illustrationRenameFormat;
-      } else {
-        return "Not set";
-      }
+    pageNumberStartWithOneOptions() {
+      return [{
+        text: this.tl('_enable'),
+        value: 1,
+      }, {
+        text: this.tl('_disable'),
+        value: 0,
+      }, {
+        text: this.tl('_global_setting'),
+        value: -2
+      }]
     },
   },
 
   watch: {
+    renameRule(val) {
+      if (val === '') {
+        val = this.defaultRenameRule;
+      }
+
+      browser.storage.local.set({
+        illustRenameRule: val,
+      });
+    },
 
     pageNumberStartWithOne(val) {
       browser.storage.local.set({
@@ -140,33 +138,48 @@ export default {
         illustrationRelativeLocation: val
       });
     },
-
-    alwaysPack(val) {
-      browser.storage.local.set({
-        alwaysPack: !!val
-      });
-    },
-
-    createSubdirectory(val) {
-      browser.storage.local.set({
-        illustrationCreateSubdirectory: val
-      });
-    }
   },
 
-  beforeMount() {
+  created() {
+    this.renameRule = this.browserItems.illustRenameRule;
     this.pageNumberStartWithOne = this.browserItems.illustrationPageNumberStartWithOne;
     this.pageNumberLength = this.browserItems.illustrationPageNumberLength;
-
     this.location = this.browserItems.illustrationRelativeLocation;
-    this.alwaysPack = this.browserItems.alwaysPack;
-    this.createSubdirectory = this.browserItems.illustrationCreateSubdirectory;
-  },
 
-  methods: {
-    showRenameDialog(evt) {
-      this.routeTo('RenameIllustration');
-    }
-  }
+    this.renameMetas = [
+      {
+        title: this.tl("_id"),
+        holder: "{id}"
+      },
+      {
+        title: this.tl("_author_id"),
+        holder: "{authorId}"
+      },
+      {
+        title: this.tl("_title"),
+        holder: '{title}'
+      },
+      {
+        title: this.tl("_author"),
+        holder: '{author}'
+      },
+      {
+        title: this.tl("_page_num"),
+        holder: "{pageNum}"
+      },
+      {
+        title: this.tl("_year"),
+        holder: "{year}"
+      },
+      {
+        title: this.tl("_month"),
+        holder: "{month}"
+      },
+      {
+        title: this.tl("_day"),
+        holder: "{day}"
+      }
+    ];
+  },
 };
 </script>

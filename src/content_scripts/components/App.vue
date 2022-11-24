@@ -23,7 +23,9 @@ import Button from '@/content_scripts/components/Button.vue';
 import ControlPanel from '@/content_scripts/components/ControlPanel.vue';
 import PageSelector from '@/content_scripts/components/PageSelector.vue';
 import browser from '@/modules/Extension/browser';
-import AbstractResource from "@/content_scripts/modules/PageResources/AbstractResource";
+import AbstractResource from "@/modules/PageResource/AbstractResource";
+import { RuntimeError } from '@/errors';
+import moment from 'moment';
 
 export default {
   components: {
@@ -38,28 +40,14 @@ export default {
       isDark: false,
 
       /**
-       * @type {string}
-       */
-      url: '',
-
-      /**
-       * @type {string}
-       */
-      type: '',
-
-      /**
        * @type {string[]}
        */
       pages: [],
 
       /**
-       * @type {Object} Dynamic context
+       * @type {AbstractResource}
        */
-      context: {
-        url: '',
-        type: '',
-        pages: [],
-      },
+      resource: null,
 
       /**
        * @type {number[]}
@@ -73,7 +61,7 @@ export default {
      * @returns {boolean}
      */
     showApp() {
-      return this.type && this.url;
+      return !!this.resource;
     },
   },
 
@@ -85,26 +73,32 @@ export default {
      */
     this.adapter = new Adapter();
 
-    /**
-     * @type {AbstractResource}
-     */
-    this.resource = null;
-
-    window.$eventBus.$on('pagechange', async page => {
+    window.$eventBus.$on('pagechange', async page => { console.log(page);
       this.abortAdapterParse();
 
-      if (page.type) {
+      if (page) {
         this.resource = await this.adapter.getResource(page.type, page.url);
 
-        this.type = page.type;
-        this.url = page.url;
+        /**
+         * Save visit history
+         */
+        browser.runtime.sendMessage({
+          action: 'visitHistory:addItem',
+          args: {
+            uid: this.resource.getUid(),
+            title: this.resource.getTitle(),
+            userName: this.resource.getUserName(),
+            cover: this.resource.getCover(),
+            url: this.resource.getUrl(),
+            type: this.resource.getType(),
+            r: this.resource.getR(),
+            visited_at: moment().unix(),
+          }
+        });
 
         if (this.resource.getPages()) {
           this.pages = this.resource.getPages();
         }
-
-        // Record history
-        // this.context = Object.assign({}, this.context, context);
       }
     });
   },
@@ -113,22 +107,57 @@ export default {
     abortAdapterParse() {
       this.adapter.abort();
       this.resource = null;
-      this.url = this.type = '';
       this.pages = this.selectedIndexes = [];
     },
 
-    download() {
-      browser.runtime.sendMessage({
+    async checkDownloadManager() {
+      let timeout = setTimeout(() => {
+        alert(this.tl('_download_manager_isnt_open'));
+        throw new RuntimeError('Download manager isn\'t open');
+      }, 600);
+
+      let response = await browser.runtime.sendMessage({
+        action: 'util:checkDownloadManager'
+      });
+
+      if (!response) {
+        alert(this.tl('_download_manager_isnt_open'));
+        throw new RuntimeError('Download manager isn\'t open');
+      } else {
+        clearTimeout(timeout);
+      }
+    },
+
+    async download() {
+      await this.checkDownloadManager();
+
+      let response = await browser.runtime.sendMessage({
         action: 'download:addDownload',
         args: {
-          type: this.type,
-          url: this.url,
+          unpackedResource: this.resource.unpack(),
           options: {
             selectedIndexes: this.selectedIndexes
           }
         },
-      }, response => {
-        console.log(response);
+      });
+
+      console.log(response);
+
+      /**
+       * Save download history
+       */
+      browser.runtime.sendMessage({
+        action: 'downloadHistory:addItem',
+        args: {
+          uid: this.resource.getUid(),
+          title: this.resource.getTitle(),
+          userName: this.resource.getUserName(),
+          cover: this.resource.getCover(),
+          url: this.resource.getUrl(),
+          type: this.resource.getType(),
+          r: this.resource.getR(),
+          downloaded_at: moment().unix(),
+        }
       });
     },
 

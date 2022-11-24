@@ -1,19 +1,14 @@
-import AbstractPortService from "./AbstractPortService";
-import DownloadHistory from "@/options_page/modules/DownloadHistory";
+import DownloadHistory from "@/modules/DownloadHistory";
+import AbstractService from "./AbstractService";
 
 /**
- * @class
+ * @class Download service
  */
-class DownloadHistoryService extends AbstractPortService {
+ class DownloadHistoryService extends AbstractService {
   /**
    * @type {DownloadHistoryService}
    */
   static instance;
-
-  /**
-   * @type {Array}
-   */
-  static ports;
 
   /**
    * @type {DownloadHistory}
@@ -21,16 +16,17 @@ class DownloadHistoryService extends AbstractPortService {
   downloadHistory;
 
   /**
-   * @consturctor
+   * @constructor
    */
   constructor() {
     super();
-    this.downloadHistory = DownloadHistory.getDefault();
+
+    this.downloadHistory = new DownloadHistory();
   }
 
   /**
-   * Get `DownloadHistoryService` instance
-   * @returns {DownloadHisotryService}
+   *
+   * @returns {DownloadHistoryService}
    */
   static getService() {
     if (!DownloadHistoryService.instance) {
@@ -40,55 +36,14 @@ class DownloadHistoryService extends AbstractPortService {
     return DownloadHistoryService.instance;
   }
 
-  saveRecord({ record }) {
-    this.downloadHistory.putRecord(record);
-  }
-
-  async getRecord({ id, port }) {
-    let doc = await this.downloadHistory.getRecord(id);
-    port.postMessage({
-      service: 'downloadHistory',
-      method: 'getRecord',
-      message: { doc }
-    });
-  }
-
-  async getRecordsFromIds({ ids, responseArgs, port }) {
-    let docs = await this.downloadHistory.getRecordsFromIds(ids);
-    port.postMessage({
-      service: 'downloadHistory',
-      method: 'getRecordsFormIds',
-      message: { docs }
-    })
-  }
-
-  deleteRecord({ id }) {
-    this.downloadHistory.deleteRecord(id);
-  }
-
-  async listRecords({ selector, sort, limit, skip, query, port }) {
-    let options = { selector, sort, limit, skip };
-
-    if (!!query) {
-      options.fun = (doc, emit) => {
-        if (/\d+/.test(query) && doc._id.substr(1) === query) {
-          emit(doc);
-        } else if (doc.title && doc.title.toLowerCase().indexOf(query) > -1) {
-          emit(doc);
-        }
+  addItem(data) {
+    if (this.application.settings.notSaveNSFWWorkInHistory) {
+      if (!data.r) {
+        this.downloadHistory.addItem(data);
       }
+    } else {
+      this.downloadHistory.addItem(data);
     }
-
-    let docs = await this.downloadHistory.listRecords(options);
-    port.postMessage({
-      service: 'downloadHistory',
-      method: 'listRecords',
-      message: { docs },
-    });
-  }
-
-  clearRecords() {
-    this.downloadHistory.clearRecords();
   }
 }
 

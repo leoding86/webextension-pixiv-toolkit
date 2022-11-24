@@ -121,7 +121,8 @@ module.exports = env => {
     externals: {
       common: 'common',
       browser: 'browser',
-      chrome: 'chrome'
+      chrome: 'chrome',
+      dexie: 'Dexie'
     }
   });
 };

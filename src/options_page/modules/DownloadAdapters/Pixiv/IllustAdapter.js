@@ -4,12 +4,16 @@ import {
   PixivMangaDownloadTask as MangaDownloadTask,
   PixivUgoiraDownloadTask as UgoiraDownloadTask
 } from "@/options_page/modules/DownloadTasks";
-import {
-  PixivIllustParser
-} from "@/modules/Parser";
 import AbstractDownloadTask from "../../DownloadTasks/AbstractDownloadTask";
+import AbstractResource from "@/modules/PageResource/AbstractResource";
+import IllustResource from "@/modules/PageResource/Pixiv/IllustResource";
 
 class IllustAdapter {
+  /**
+   * @type {Object}
+   */
+  settings;
+
   /**
    * @type {string} Target page url
    */
@@ -25,6 +29,7 @@ class IllustAdapter {
    * @param {string} url Target page url
    */
   constructor(url) {
+    this.settings = app().settings;
     this.url = url;
   }
 
@@ -37,61 +42,85 @@ class IllustAdapter {
     return new IllustAdapter(url);
   }
 
-  createIllustDownloadTask(options) {
+  /**
+   * @param {AbstractResource} resource
+   * @param {Object} options
+   * @returns {IllustDownloadTask}
+   */
+  createIllustDownloadTask(resource, options) {
     return IllustDownloadTask.create({
-      id: 'pixiv:illust:' + this.context.id,
+      id: resource.getUid(),
       url: this.url,
       pages: this.context.pages,
       selectedIndexes: options.selectedIndexes,
-      renameRule:  app().settings.illustRenameRule,
+      renameRule:  this.settings.illustRenameRule,
+      pageNumberStartWithOne: this.settings.illustPageNumberStartWithOne === -2 ?
+                              this.settings.globalTaskPageNumberStartWithOne :
+                              this.settings.illustPageNumberStartWithOne,
+      pageNumberLength: this.settings.illustPageNumberLength === -2 ?
+                        this.settings.globalTaskPageNumberLength :
+                        this.settings.illustPageNumberLength,
       context: this.context,
     });
   }
 
-  createMangaDownloadTask() {
+  /**
+   * @param {AbstractResource} resource
+   * @returns {MangaDownloadTask}
+   */
+  createMangaDownloadTask(resource) {
     return MangaDownloadTask.create({
-      id: 'pixiv:illust:' + this.context.id,
+      id: resource.getUid(),
       url: this.url,
       pages: this.context.pages,
-      renameRule: app().settings.mangaRenameRule,
+      renameRule: this.settings.mangaRenameRule,
+      pageNumberStartWithOne: this.settings.mangaPageNumberStartWithOne === -2 ?
+                              this.settings.globalTaskPageNumberStartWithOne :
+                              this.settings.mangaPageNumberStartWithOne,
+      pageNumberLength: this.settings.mangaPageNumberLength === -2 ?
+                        this.settings.globalTaskPageNumberLength :
+                        this.settings.mangaPageNumberLength,
       context: this.context,
     });
   }
 
-  createUgoiraDownloadTask() {
+  /**
+   * @param {AbstractResource} resource
+   * @returns {UgoiraDownloadTask}
+   */
+  createUgoiraDownloadTask(resource) {
     return UgoiraDownloadTask.create({
-      id: 'pixiv:illust:' + this.context.id,
+      id: resource.getUid(),
       url: this.url,
       resource: this.context.illustOriginalSrc,
       frames: this.context.illustFrames,
-      packAnimationJsonType: app().settings.animationJsonFormat,
-      renameRule: app().settings.ugoiraRnameRule,
+      packAnimationJsonType: this.settings.animationJsonFormat,
+      renameRule: this.settings.ugoiraRenameRule,
+      customFFmpegCommand: this.settings.ugoiraCustomFFmpegCommand,
       context: this.context,
     });
   }
 
   /**
    * Create non-options setted download task instance
+   * @param {IllustResource} resource
+   * @param {Object} options
    * @returns {AbstractDownloadTask}
    */
-  async createDownloadTask(options) {
-    let illustParser = new PixivIllustParser(this.url);
-
-    await illustParser.parseContext();
-
-    this.context = illustParser.getContext();
+  async createDownloadTask(resource, options) {
+    this.context = resource.getContext();
 
     /**
      * Append current url to context
      */
     this.context.targetUrl = this.url;
 
-    if (illustParser.isIllust()) {
-      return this.createIllustDownloadTask(options);
-    } else if (illustParser.isManga()) {
-      return this.createMangaDownloadTask();
-    } else if (illustParser.isUgoira()) {
-      return this.createUgoiraDownloadTask(options);
+    if (resource.isIllust()) {
+      return this.createIllustDownloadTask(resource, options);
+    } else if (resource.isManga()) {
+      return this.createMangaDownloadTask(resource);
+    } else if (resource.isUgoira()) {
+      return this.createUgoiraDownloadTask(resource, options);
     }
   }
 }

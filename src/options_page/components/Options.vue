@@ -1,35 +1,23 @@
 <template>
   <v-container>
-    <ugoira-options></ugoira-options>
+    <download-task-settings style="margin-bottom:30px;"></download-task-settings>
 
-    <illustration-options></illustration-options>
+    <download-options style="margin-bottom:30px;"></download-options>
 
-    <manga-options></manga-options>
-
-    <novel-options></novel-options>
-
-    <pixiv-comic-options></pixiv-comic-options>
-
-    <download-options ></download-options>
-
-    <history-options></history-options>
+    <history-options style="margin-bottom:30px;"></history-options>
 
     <search-options v-if="false"></search-options>
 
-    <interface-options></interface-options>
+    <interface-options style="margin-bottom:30px;"></interface-options>
 
-    <other-options></other-options>
+    <other-options style="margin-bottom:30px;"></other-options>
   </v-container>
 </template>
 
 <script>
 import '@@/assets/global.scss';
 import CopyStr from '@/modules/Util/CopyStr';
-import UgoiraOptions from '@@/components/options/UgoiraOptions';
-import IllustrationOptions from '@@/components/options/IllustrationOptions';
-import MangaOptions from '@@/components/options/MangaOptions';
-import NovelOptions from '@@/components/options/NovelOptions';
-import PixivComicOptions from '@@/components/options/PixivComicOptions';
+import DownloadTaskSettings from '@@/components/options/DownloadTaskSettings';
 import DownloadOptions from '@@/components/options/DownloadOptions';
 import HistoryOptions from '@@/components/options/HistoryOptions';
 import SearchOptions from '@@/components/options/SearchOptions';
@@ -41,11 +29,7 @@ export default {
   name: 'Options',
 
   components: {
-    'ugoira-options': UgoiraOptions,
-    'illustration-options': IllustrationOptions,
-    'manga-options': MangaOptions,
-    'novel-options': NovelOptions,
-    'pixiv-comic-options': PixivComicOptions,
+    'download-task-settings': DownloadTaskSettings,
     'download-options': DownloadOptions,
     'history-options': HistoryOptions,
     'search-options': SearchOptions,
@@ -58,12 +42,12 @@ export default {
 <style lang="scss">
 #app {
   .option-section {
-    margin-bottom: 30px;
-
     .option-card-title {
       display: block;
-      font-size: 18px;
+      font-size: 20px;
+      font-weight: 700;
       margin-bottom: 10px;
+      color: #262626;
     }
   }
 }

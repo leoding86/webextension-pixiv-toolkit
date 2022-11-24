@@ -2,7 +2,7 @@
   <v-dialog v-model="showDialog" max-width="560">
     <v-card>
       <v-card-text>
-        <h2>{{ tl("Rename_illustration") }}</h2>
+        <h2>{{ title }}</h2>
         <div class="section-block">
           <h3>{{ tl("quick_picks") }}</h3>
           <v-btn
@@ -21,12 +21,9 @@
             class="v-input-first"
             ref="renameInput"
             v-model="renameFormat"
+            @blur="updateRenameFormat"
             placeholder="Not set"
-            :hint="
-              tl(
-                '_example_authorId_id_if_you_use_start_page_num_or_last_page_num_you_should_place_the_page_section_between_the_two_hash_tags_like_id_startPageNum_lastPageNum'
-              )
-            "
+            :hint="hint"
             :persistent-hint="true"
             @focus="updateInputPos"
             @keyup="updateInputPos"
@@ -48,6 +45,12 @@ export default {
 
   props: {
     value: {
+      required: false,
+      type: String,
+      default: '',
+    },
+
+    defaultValue: {
       required: false,
       type: String,
       default: '',
@@ -85,7 +88,18 @@ export default {
     };
   },
 
+  computed: {
+    hint() {
+      return '';
+      return tl('_example_authorId_id_if_you_use_start_page_num_or_last_page_num_you_should_place_the_page_section_between_the_two_hash_tags_like_id_startPageNum_lastPageNum');
+    }
+  },
+
   watch: {
+    value(val) {
+      this.renameFormat = val;
+    },
+
     show(val) {
       this.showDialog = val;
     },
@@ -93,19 +107,9 @@ export default {
     showDialog(val) {
       this.$emit('update:show', val);
     },
-
-    renameFormat: function (val) {
-      if (this.saveTimeout) {
-        clearTimeout(this.saveTimeout);
-      }
-
-      this.saveTimeout = setTimeout(() => {
-        this.$emit("input", val);
-      }, 300);
-    },
   },
 
-  mounted() {
+  created() {
     this.renameFormat = this.value;
   },
 
@@ -114,6 +118,14 @@ export default {
       this.updateFormat(meta.holder);
       this.setInputCursor(this.$refs.renameInput.$refs.input, meta.holder);
     },
+
+    updateRenameFormat() {
+      if (this.renameFormat === '') {
+        this.renameFormat = this.defaultValue;
+      }
+
+      this.$emit('input', this.renameFormat);
+    }
   },
 };
 </script>

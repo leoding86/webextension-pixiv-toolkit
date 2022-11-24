@@ -70,8 +70,14 @@ class NameFormatter {
       seriesTitle: {
         possibleKeys: ['seriesTitle']
       },
-      "seriesOrder": {
+      seriesOrder: {
         possibleKeys: ['seriesOrder']
+      },
+      workTitle: {
+        possibleKeys: ['workTitle'],
+      },
+      numberingTitle: {
+        possibleKeys: ['numberingTitle'],
       }
     };
 

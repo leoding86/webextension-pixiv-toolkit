@@ -4,7 +4,8 @@ import DownloadService from "./DownloadService";
 import LogService from "./LogService";
 import PermissionService from "./PermissionService";
 import SettingService from "./SettingService";
-import WebRequestService from "./WebRequestService";
+import UtilService from "./UtilService";
+import VisitHistoryService from "./VisitHistoryService";
 
 export default {
   BadgeService,
@@ -13,5 +14,6 @@ export default {
   LogService,
   PermissionService,
   SettingService,
-  WebRequestService,
+  UtilService,
+  VisitHistoryService,
 };

@@ -239,6 +239,7 @@ class IllustParser {
 
         // Parse pages information here
         this.context.pages = json.body.map(page => page.urls.original);
+        this.context.totalPages = this.context.pages.length;
 
         resolve();
       });

@@ -7,14 +7,16 @@ import defaultSettings from "@/config/default";
  */
 export default async () => {
   let settings = await app().getService('setting').getSettings();
-  let updateSettings = {};
+  let updateSettings = {
+    version: '6.0.0',
+  };
 
   /**
    * Update `ugoiraRenameRule`
    */
-  if (settings.ugoiraRenameFormat) {
-    updateSettings.ugoiraRenameRule = settings.ugoiraRenameFormat;
-  }
+  updateSettings.ugoiraRenameRule = !settings.ugoiraRenameFormat ?
+                                    defaultSettings.ugoiraRenameRule :
+                                    settings.ugoiraRenameFormat;
 
   /**
    * Update `mangaRenameRule`
@@ -25,7 +27,7 @@ export default async () => {
     settings.mangaImageRenameFormat
   );
 
-  if (updateSettings.mangaRenameRule === '') {
+  if (!updateSettings.mangaRenameRule) {
     updateSettings.mangaRenameRule = defaultSettings.mangaRenameRule;
   }
 
@@ -38,7 +40,7 @@ export default async () => {
     settings.illustrationImageRenameFormat
   );
 
-  if (updateSettings.illustRenameRule === '') {
+  if (!updateSettings.illustRenameRule) {
     updateSettings.illustRenameRule = defaultSettings.illustRenameRule;
   }
 
@@ -50,7 +52,7 @@ export default async () => {
     settings.novelRenameFormat
   );
 
-  if (updateSettings.novelRenameRule === '') {
+  if (!updateSettings.novelRenameRule) {
     updateSettings.novelRenameRule = defaultSettings.novelRenameRule;
   }
 
@@ -62,9 +64,13 @@ export default async () => {
     settings.pixivComicImageRenameFormat
   );
 
-  if (updateSettings.pixivComicEpisodeRenameRule === '') {
+  if (!updateSettings.pixivComicEpisodeRenameRule) {
     updateSettings.pixivComicEpisodeRenameRule = defaultSettings.pixivComicEpisodeRenameRule;
   }
+
+  updateSettings.illustrationPageNumberStartWithOne = settings.illustrationPageNumberStartWithOne ? 1 : 0;
+  updateSettings.mangaPageNumberStartWithOne = settings.MangaPageNumberStartWithOne ? 1 : 0;
+  updateSettings.pixivComicPageNumberStartWithOne = settings.pixivComicPageNumberStartWithOne ? 1 : 0;
 
   app().getService('setting').updateSettings(updateSettings);
 

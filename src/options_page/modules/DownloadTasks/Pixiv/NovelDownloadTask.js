@@ -1,5 +1,4 @@
 import AbstractDownloadTask from "../AbstractDownloadTask";
-import Downloader from "@/modules/Net/Downloader";
 import { app } from "@/options_page/DownloadsApplication";
 import FileSystem from "../../FileSystem";
 import NameFormatter from "@/modules/Util/NameFormatter";
@@ -9,6 +8,7 @@ import NameFormatter from "@/modules/Util/NameFormatter";
  * @property {string} id
  * @property {string} url
  * @property {string} renameRule
+ * @property {boolean} includeDescription
  * @property {'txt'|'epub'} bookType
  * @property {any} context
  *
@@ -81,6 +81,7 @@ class NovelDownloadTask extends AbstractDownloadTask {
       ) + '.epub'
     });
 
+    this.changeState(this.COMPLETE_STATE);
     this.dispatch('complete');
 
     URL.revokeObjectURL(saveUrl);
@@ -92,6 +93,10 @@ class NovelDownloadTask extends AbstractDownloadTask {
     contentParts.push(this.url);
     contentParts.push(this.context.userName);
     contentParts.push(this.title);
+
+    if (this.options.includeDescription) {
+      contentParts.push(this.context.description.replace(/<br\s*\/>/ig, "\r\n").trim());
+    }
 
     this.context.sections.forEach(section => {
       contentParts.push(section.replace(/<br\s*\/>/ig, "\r\n").trim());
@@ -109,6 +114,7 @@ class NovelDownloadTask extends AbstractDownloadTask {
       ) + '.txt'
     });
 
+    this.changeState(this.COMPLETE_STATE);
     this.dispatch('complete');
 
     URL.revokeObjectURL(url);
@@ -118,18 +124,17 @@ class NovelDownloadTask extends AbstractDownloadTask {
    * @override
    */
   async start() {
-    this.state = this.DOWNLOADING_STATE;
+    this.tryStart(async () => {
+      if (this.options.bookType === 'epub') {
+        await this.makeEpubBook();
+      } else {
+        await this.makeTxtBook();
+      }
 
-    if (this.options.bookType === 'epub') {
-      await this.makeEpubBook();
-    } else if (this.options.bookType === 'txt') {
-      await this.makeTxtBook();
-    }
+      this.progress = 1;
 
-    this.progress = 1;
-    this.state = this.COMPLETE_STATE;
-
-    this.dispatch('start');
+      this.dispatch('start');
+    });
   }
 
   /**

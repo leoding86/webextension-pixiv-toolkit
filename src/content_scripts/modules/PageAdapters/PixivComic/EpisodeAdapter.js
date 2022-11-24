@@ -1,5 +1,5 @@
 import { PixivComicEpisodeParser } from "@/modules/Parser";
-import { PixivComicEpisdoeResource } from "../../PageResources";
+import { PixivComicEpisdoeResource } from "@/modules/PageResource";
 import AbstractAdapter from "@/content_scripts/modules/PageAdapters/AbstractAdapter";
 
 /**

@@ -94,7 +94,7 @@ class UIApplication {
              * Unload
              */
             unload() {
-              window.$eventBus.$emit('pagechange', { url: null, type: null });
+              window.$eventBus.$emit('pagechange', null);
             },
 
             /**

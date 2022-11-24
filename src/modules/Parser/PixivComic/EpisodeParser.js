@@ -94,7 +94,7 @@ class EpisodeParser {
     * @returns {object}
     */
     standardContext(context) {
-      return {
+      let sContext = {
         id: context.reading_episode.id,
         title: context.reading_episode.title,
         subTitle: context.reading_episode.sub_title,
@@ -104,6 +104,10 @@ class EpisodeParser {
         workTitle: context.reading_episode.work_title,
         pages: context.reading_episode.pages.map(item => item.url),
       };
+
+      sContext.totalPages = sContext.pages.length;
+
+      return sContext;
     }
 
   /**

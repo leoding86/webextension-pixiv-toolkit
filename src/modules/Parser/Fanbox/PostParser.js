@@ -132,7 +132,7 @@ class PostParser {
    standardContext(context) {
     let dateFormatter = new DateFormatter(context.publishedDatetime);
 
-    return {
+    let sContext = {
       id: context.id,
       title: context.title,
       cover: context,
@@ -144,6 +144,8 @@ class PostParser {
       pages: this.findImages(context),
       __raw: context,
     };
+
+    sContext.totalPages = sContext.pages.length;
   }
 
   /**

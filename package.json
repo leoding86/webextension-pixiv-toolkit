@@ -16,6 +16,7 @@
   "dependencies": {
     "@ffmpeg/core": "^0.11.0",
     "@ffmpeg/ffmpeg": "^0.11.6",
+    "dexie": "^3.2.2",
     "md5": "^2.3.0",
     "moment": "^2.29.1",
     "pouchdb": "^7.2.2",

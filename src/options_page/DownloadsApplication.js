@@ -90,7 +90,7 @@ class Application {
    * script
    * @param {*} param0
    */
-  async onMessage(message, sender, sendResponse) {
+  async onMessage(message, sender, sendResponse) {console.log(message, sender, sendResponse);
     /**
      * Handling incoming message which needs call service method, if the sender
      * need a response, the method of service need return a valid that isn't

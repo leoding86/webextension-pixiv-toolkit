@@ -1,8 +1,8 @@
 {
-   "author": {
+   "_author": {
       "message": "画师"
    },
-   "author_id": {
+   "_author_id": {
       "message": "画师编号"
    },
    "downloadFullscreenZipFile": {
@@ -131,11 +131,8 @@
    "Manga": {
     "message": "漫画"
    },
-   "rename_manga": {
+   "_rename_manga": {
       "message": "重命名漫画"
-   },
-   "rename_manga_image": {
-      "message": "重命名漫画内图片"
    },
    "quick_picks": {
       "message": "快速选取"
@@ -266,8 +263,8 @@
    "Novel": {
        "message": "小说"
    },
-   "rename_novel": {
-       "message": "重命名小说"
+   "_novel_rename_rule": {
+       "message": "小说重命名规则"
    },
    "include_novel_description": {
        "message": "包含小说描述内容"
@@ -362,11 +359,8 @@
    "Illustration": {
        "message": "绘画"
    },
-   "Rename_illustration": {
+   "_rename_illustration": {
        "message": "重命名绘画"
-   },
-   "Rename_illustration_image": {
-       "message": "重命名绘画图片"
    },
    "Download_file_if_everything_is_ready": {
        "message": "准备完成直接下载"
@@ -404,13 +398,13 @@
    "_Enable_this_may_cause_issue_about_loading_images": {
        "message": "启用此项可能会导致加载页面问题"
    },
-   "year": {
+   "_year": {
        "message": "年"
    },
-   "month": {
+   "_month": {
        "message": "月"
    },
-   "day": {
+   "_day": {
        "message": "日"
    },
    "_keep_page_number": {
@@ -821,9 +815,6 @@
    "_rename_comic": {
         "message": "重命名漫画"
     },
-    "_rename_comic_image": {
-        "message": "重命名漫画图片"
-    },
     "_save_comic_in_relative_location": {
         "message": "保存漫画到相对位置"
     },
@@ -862,5 +853,17 @@
     },
     "_show_in_folder": {
         "message": "在文件夹中显示"
+    },
+    "_download_task_settings": {
+        "message": "下载任务设置"
+    },
+    "_global_settings": {
+        "message": "全局"
+    },
+    "_global_setting": {
+        "message": "全局"
+    },
+    "_rename": {
+        "message": "重命名"
     }
 }

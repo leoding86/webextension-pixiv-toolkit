@@ -12,12 +12,11 @@
       <div class="download-task__section">
         <div class="download-task__state">{{ readableState(data.state) }}</div>
         <div class="download-task__actions">
-          <span v-if="data.downloadId" class="download-task__action" @click="$emit('show_in_folder', data)">{{ tl('_show_in_folder') }}</span>
-          <span class="download-task__action download-task__action--delete" @click="$emit('delete', data)">{{ tl('_delete') }}</span>
+          <slot name="actions"></slot>
         </div>
       </div>
     </v-card-title>
-    <div class="download-task__type-tag">Pixiv Ugoira</div>
+    <div class="download-task__type-tag">{{ tag }}</div>
   </v-card>
 </template>
 
@@ -60,7 +59,7 @@ export default {
       }
     },
 
-    tagName: {
+    tag: {
       type: String,
       default: 'Untagged',
     },

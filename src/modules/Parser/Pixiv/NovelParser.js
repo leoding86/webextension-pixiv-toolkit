@@ -123,7 +123,7 @@ class NovelParser {
       sContext.seriesOrder = context.seriesNavData.order;
     }
 
-    this.context = sContext;
+    return sContext;
   }
 
   /**

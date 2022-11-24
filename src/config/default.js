@@ -1,6 +1,6 @@
 //@ts-check
 export default Object.assign({}, {
-    version: '1.0.0',
+    version: '6.0.0',
     enableExtend: false,
     enableWhenUnderSeconds: 1,
     extendDuration: 3,
@@ -100,9 +100,9 @@ export default Object.assign({}, {
     /**
      * @since 3.8.2
      */
-    illustrationPageNumberStartWithOne: false,
+    illustrationPageNumberStartWithOne: -2, // -2: fellow PageNumberStartWithOne setting, 0: disable, 1: enable
 
-    MangaPageNumberStartWithOne: false,
+    mangaPageNumberStartWithOne: -2, // -2: fellow PageNumberStartWithOne setting, 0: disable, 1: enable
 
     /**
      * @since 3.9.0
@@ -148,9 +148,9 @@ export default Object.assign({}, {
     /**
      * @since 4.8.0
      */
-    mangaPageNumberLength: 0,
+    mangaPageNumberLength: -2, // -2: fellow pageNumberLength setting, others as same as pageNumberLength setting
 
-    illustrationPageNumberLength: 0,
+    illustrationPageNumberLength: -2, // -2: fellow pageNumberLength setting, others as same as pageNumberLength setting
 
     /**
      * @since 4.10.0
@@ -165,6 +165,7 @@ export default Object.assign({}, {
 
     /**
      * @since 5.1.0
+     * @deprecated 6.0.0
      * @var {number} 0: disable, 1: enable, 2: only for multiple files
      */
     illustrationCreateSubdirectory: 1,
@@ -193,10 +194,11 @@ export default Object.assign({}, {
 
     /**
      * @since 5.5.3
+     * @deprecated 6.0.0
      */
     pixivComicRenameFormat: '{id}_{title}',
-    pixivComicPageNumberStartWithOne: false,
-    pixivComicPageNumberLength: 0,
+    pixivComicPageNumberStartWithOne: -2, // -2: fellow PageNumberStartWithOne setting, 0: disable, 1: enable
+    pixivComicPageNumberLength: -2, // -2: fellow pageNumberLength setting, others as same as pageNumberLength setting
 
     /**
      * @since 5.5.4
@@ -207,11 +209,17 @@ export default Object.assign({}, {
      * @since 6.0.0
      */
     illustRenameRule: '{id}_{title}_p{pageNum}',
-    mangaRenameRule: '{id}_{title}/{pageNum}',
+    mangaRenameRule: '{id}_{title}/p{pageNum}',
     ugoiraRenameRule: '{id}_{title}',
     novelRenameRule: '{id}_{title}',
-    pixivComicEpisodeRenameRule: '{id}_{title}/{numbering_title}_{workTitle}/{pageNum}',
+    pixivComicEpisodeRenameRule: '{id}_{title}/{numberingTitle}_{workTitle}/p{pageNum}',
+    pixivComicEpisodePageNumberStartWithOne: -2,
+    pixivComicEpisodePageNumberLength: -2,
     fanboxPostRenameRule: '{id}_{title}/{pageNum}',
+    fanboxPostPageNumberStartWithOne: -2,
+    fanboxPostPageNumberLength: -2,
+    globalTaskPageNumberStartWithOne: 0, // 0: disable, 1: enable
+    globalTaskPageNumberLength: -1, // -1: dynamic, 0: disable, 2-4
 
     /**
      * @since 1.0.0
@@ -223,10 +231,9 @@ export default Object.assign({}, {
 
     /**
      * @since 2.0.3
-     * @deprecated since version 6.0.0
      */
     enableExtTakeOverDownloads: false,
-    downloadRelativeLocation: null,
+    downloadRelativeLocation: '',
 
     /**
      * @since 3.1.0

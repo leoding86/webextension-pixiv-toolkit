@@ -19,7 +19,7 @@ class EpisodeDownloadTask extends MultipleDownloadTask {
 
   /**
    * Create a pixiv illustration download task
-   * @param {any} options
+   * @param {import("../MultiplePagesDownloadTask").MultipleDownloadTaskOptions} options
    * @returns
    */
   static create(options) {

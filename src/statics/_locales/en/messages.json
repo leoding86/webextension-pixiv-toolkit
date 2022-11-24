@@ -1,8 +1,8 @@
 {
-   "author": {
+   "_author": {
       "message": "Author"
    },
-   "author_id": {
+   "_author_id": {
       "message": "Author ID"
    },
    "downloadFullscreenZipFile": {
@@ -131,11 +131,8 @@
    "Manga": {
     "message": "Manga"
    },
-   "rename_manga": {
+   "_rename_manga": {
       "message": "Rename manga"
-   },
-   "rename_manga_image": {
-      "message": "Rename manga image file"
    },
    "quick_picks": {
       "message": "Quick picks"
@@ -266,8 +263,8 @@
    "Novel": {
        "message": "Novel"
    },
-   "rename_novel": {
-       "message": "Rename novel"
+   "_novel_rename_rule": {
+       "message": "Novel rename rule"
    },
    "include_novel_description": {
        "message": "Include novel description"
@@ -362,11 +359,8 @@
    "Illustration": {
        "message": "Illustration"
    },
-   "Rename_illustration": {
+   "_rename_illustration": {
        "message": "Rename illustration"
-   },
-   "Rename_illustration_image": {
-       "message": "Rename illustration image"
    },
    "Download_file_if_everything_is_ready": {
        "message": "Download file directly if everything is ready"
@@ -404,13 +398,13 @@
    "_Enable_this_may_cause_issue_about_loading_images": {
        "message": "Enable this may cause issue about loading images"
    },
-   "year": {
+   "_year": {
        "message": "year"
    },
-   "month": {
+   "_month": {
        "message": "month"
    },
-   "day": {
+   "_day": {
        "message": "day"
    },
    "_keep_page_number": {
@@ -818,9 +812,6 @@
    "_rename_comic": {
         "message": "Rename comic"
     },
-    "_rename_comic_image": {
-        "message": "Rename comic image"
-    },
     "_save_comic_in_relative_location": {
         "message": "Save comic in relative location"
     },
@@ -859,5 +850,17 @@
     },
     "_show_in_folder": {
         "message": "Show in folder"
+    },
+    "_download_task_settings": {
+        "message": "Download Task Settings"
+    },
+    "_global_settings": {
+        "message": "Global"
+    },
+    "_global_setting": {
+        "message": "Global Setting"
+    },
+    "_rename": {
+        "message": "Rename"
     }
 }

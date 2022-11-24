@@ -60,6 +60,7 @@ class AbstractDownloadTask extends Event {
     this.PAUSED_STATE = 3;
     this.COMPLETE_STATE = 4;
     this.FAILURE_STATE = -1;
+    this.PROCESSING_STATE = 99;
 
     this.state = this.PENDING_STATE;
   }
@@ -87,7 +88,7 @@ class AbstractDownloadTask extends Event {
   /**
    * @inheritdoc
    * @override
-   * @param {"start"|"progress"|"pause"|"stop"|"error"|"complete"|"failure"} eventName
+   * @param {"start"|"progress"|"pause"|"stop"|"error"|"complete"|"failure"|"statechange"} eventName
    * @param {Function} listener
    * @param {any} thisArg
    */
@@ -96,13 +97,28 @@ class AbstractDownloadTask extends Event {
   }
 
   /**
-   * Check if the task can be start
+   * Change task's state
+   * @param {number} state
+   * @fires this#statechange
+   */
+  changeState(state) {
+    this.state = state;
+    this.dispatch('statechange');
+  }
+
+  /**
    * @throws {RuntimeError}
    */
-   checkCouldStart() {
-    if ([this.PENDING_STATE, this.FAILURE_STATE, this.COMPLETE_STATE].indexOf(this.state) < 0) {
-      throw new RuntimeError(`Task can't start because its state isn't ready. state: ${this.state}`);
+  tryPending() {
+    if (this.isPending()) {
+      return;
     }
+
+    if (this.isPaused() || this.isFailure() || this.isComplete()) {
+      this.changeState(this.PENDING_STATE);
+    }
+
+    throw new RuntimeError(`Task can't be pending`);
   }
 
   /**
@@ -112,7 +128,11 @@ class AbstractDownloadTask extends Event {
     this.isDelete = true;
   }
 
-  start() {
+  /**
+   * Before you start a download, call tryPending first to make sure the download
+   * can start.
+   */
+  async start() {
     throw new NotImplementedError();
   }
 
@@ -120,6 +140,9 @@ class AbstractDownloadTask extends Event {
     throw new NotImplementedError();
   }
 
+  /**
+   * Must call stop method before delete the task
+   */
   async stop() {
     throw new NotImplementedError();
   }

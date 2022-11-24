@@ -4,6 +4,7 @@ import {
 } from "@/options_page/modules/DownloadTasks";
 import { PixivComicEpisodeParser } from "@/modules/Parser";
 import AbstractDownloadTask from "../../DownloadTasks/AbstractDownloadTask";
+import AbstractResource from "@/modules/PageResource/AbstractResource";
 
 class EpisodeAdapter {
   /**
@@ -40,17 +41,24 @@ class EpisodeAdapter {
 
   /**
    * Create non-options setted download task instance
+   * @param {AbstractResource} resource
+   * @param {Object} options
    * @returns {AbstractDownloadTask}
    */
-  async createDownloadTask(options) {
-    let episodeParser = new PixivComicEpisodeParser(this.url);
-    await episodeParser.parserContext();
-    this.context = episodeParser.getContext();
+  async createDownloadTask(resource, options) {
+    this.context = resource.getContext();
     this.context.targetUrl = this.url;
 
     return EpisodeDownloadTask.create({
       id: 'pixiv_comic:episode:' + this.context.id,
       url: this.url,
+      pages: this.context.pages,
+      pageNumberStartWithOne: app().settings.pixivComicEpisodePageNumberStartWithOne === -2 ?
+                              app().settings.globalTaskPageNumberStartWithOne :
+                              app().settings.pixivComicEpisodePageNumberStartWithOne,
+      pageNumberLength: app().settings.pixivComicEpisodePageNumberLength === -2 ?
+                        app().settings.globalTaskPageNumberStartWithOne :
+                        app().settings.pixivComicEpisodePageNumberLength,
       renameRule: app().settings.pixivComicEpisodeRenameRule,
       context: this.context
     });

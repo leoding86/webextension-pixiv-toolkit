@@ -29,6 +29,16 @@
             </v-list-tile-content>
           </v-list-tile>
         </v-list>
+
+        <v-divider light></v-divider>
+
+        <v-list dense>
+          <v-list-tile ripple @click="openSettings">
+            <v-list-tile-content>
+              <span>{{ tl('_settings') }} <v-icon small>open_in_new</v-icon></span>
+            </v-list-tile-content>
+          </v-list-tile>
+        </v-list>
       </v-navigation-drawer>
       <v-toolbar class="v-primary" app fixed clipped-left height="56">
         <v-btn flat dark icon
@@ -37,7 +47,7 @@
             dark>menu</v-icon>
         </v-btn>
         <span class="title v-primary header-title">
-          Pixiv<strong>Toolkit</strong>
+          <!-- Pixiv<strong>Toolkit</strong> -->
           <span style="font-size:12px">Next</span>
         </span>
 
@@ -49,7 +59,14 @@
           :open-sponsors-in-new="true"></supports>
       </v-toolbar>
       <v-content style="padding-left:0;">
-        <download-manager class="container conatiner-small" style="max-width:800px;"></download-manager>
+        <download-manager v-if="openedTabId === 0"
+          class="container conatiner-small" style="max-width:800px;"
+        ></download-manager>
+        <div v-else class="container container small" style="max-width:800px;">
+          <v-alert :value="true" type="warning">
+            Download manager is already opened
+          </v-alert>
+        </div>
       </v-content>
     </v-app>
   </div>
@@ -78,6 +95,10 @@ export default {
   computed: {
     version () {
       return 'v' + browser.runtime.getManifest().version;
+    },
+
+    openedTabId() {
+      return this.$root.openedTabId;
     }
   },
 
@@ -116,6 +137,10 @@ export default {
           this.drawer = true
         }
       }
+    },
+
+    openSettings() {
+      window.open(browser.runtime.getURL('options_page/index.html'), '_blank');
     }
   }
 }

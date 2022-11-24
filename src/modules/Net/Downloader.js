@@ -9,24 +9,24 @@ class Downloader extends Event {
    * The files whichs need to be downloaded
    * @type {{file: string, seq: number|string, args: Object}[]}
    */
-  files;
+  files = [];
 
   /**
    * The files used for download tracking. It's as same as property files at begining or after reseting
    * @type {{file: string, seq: number|string, args: Object}[]}
    */
-  downloadFiles;
+  downloadFiles = [];
 
   /**
    * The files can't be downloaded.
    * @type {{file: string, seq: number|string, args: Object}[]}
    */
-  failedDownloadFiles;
+  failedDownloadFiles = [];
 
   /**
    * @type {Download[]}
    */
-  downloads;
+  downloads = [];
 
   /**
    * @type {number}
@@ -43,8 +43,6 @@ class Downloader extends Event {
     super();
     this.processors = processors;
     this.requestOptions = requestOptions;
-    this.files = new Map();
-    this.downloads = [];
     this.successCount = 0;
     this.progresses = [];
     this.asBlob = true;
@@ -125,7 +123,7 @@ class Downloader extends Event {
       this.progresses[downloadFile.seq] = loadedLength / totalLength;
 
       this.dispatch('progress', [{
-        progress: this.progresses.reduce((previousValue, currentValue) => previousValue + currentValue) / this.files.size(),
+        progress: this.progresses.reduce((previousValue, currentValue) => previousValue + currentValue) / this.files.length,
         successCount: this.successCount,
         failCount: this.failedDownloadFiles.length
       }]);
@@ -143,7 +141,8 @@ class Downloader extends Event {
         blob: this.asBlob ? data : null,
         data: this.asBlob ? null : data,
         args: downloadFile.args,
-        download, file, mimeType
+        download,
+        mimeType
       }]);
 
       this.downloadNext();
@@ -176,9 +175,11 @@ class Downloader extends Event {
       this.failedDownloadFiles.push(downloadFile);
       this.progresses[downloadFile.seq] = 0;
 
+      console.error(error);
+
       this.dispatch('item-error', [error]);
       this.dispatch('progress', [{
-        progress: this.progresses.reduce((previousValue, currentValue) => previousValue + currentValue) / this.files.size(),
+        progress: this.progresses.reduce((previousValue, currentValue) => previousValue + currentValue) / this.files.length,
         successCount: this.successCount,
         failCount: this.failedDownloadFiles.length,
       }]);
@@ -190,8 +191,8 @@ class Downloader extends Event {
      * Start the download and put the instance to download collection for increasing
      * download processes
      */
-    download.download();
     this.downloads.push(download);
+    download.download();
 
     /**
      * Fire the download start event

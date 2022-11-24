@@ -1,18 +1,29 @@
 <template>
-  <v-app>
-    <template v-for="download in downloads">
-      <download-task :data="download"
-        :key="download.id"
+  <div class="download-manager">
+    <div class="dataset-empty-notice" v-if="downloads.length === 0">{{ tl('_there_isnt_any_download') }}</div>
+    <recycle-scroller class="scroller" :items="downloads" :item-size="132"
+      page-mode key-field="id" v-slot="{ item }"
+    >
+      <download-task :data="item"
+        :key="item.id"
         style="margin-bottom:15px;"
-        :tag="getDownloadTaskTagName(download)"
+        :tag="getDownloadTaskTag(item)"
         @delete="deleteDownloadTask"
         @show_in_folder="showInFolder"
-      ></download-task>
-    </template>
-  </v-app>
+      >
+        <template slot="actions">
+          <span v-if="item.downloadId" class="download-task__action" @click="showInFolder(item)">{{ tl('_show_in_folder') }}</span>
+          <span class="download-task__action download-task__action--delete" @click="deleteDownloadTask(item)">{{ tl('_delete') }}</span>
+        </template>
+      </download-task>
+    </recycle-scroller>
+  </div>
 </template>
 
 <script>
+import 'vue-virtual-scroller/dist/vue-virtual-scroller.css';
+
+import { RecycleScroller } from 'vue-virtual-scroller';
 import { RuntimeError } from '@/errors';
 import { app } from '../DownloadsApplication';
 import DownloadTask from './DownloadTask.vue';
@@ -20,6 +31,7 @@ import DownloadTask from './DownloadTask.vue';
 export default {
   components: {
     DownloadTask,
+    'recycle-scroller': RecycleScroller,
 },
 
   data() {
@@ -30,35 +42,35 @@ export default {
   },
 
   created() {
+    window.onbeforeunload = event => {
+      return event.returnValue = 'Close the tab will lose all download process. Close it ?';
+    };
+
     this.ready = false;
     this.app = app();
     this.downloadService = this.app.getService('download');
   },
 
   mounted() {
-    this.mockDownloads.push({
-      id: 123,
-      title: 'title',
-      url: 'http://www.baidu.com/',
-      type: 'PIXIV_UGOIRA',
-      progress: 0.1,
-      generateProgress: 0.1,
-      state: 1,
-    }, {
-      id: 132,
-      title: 'title2',
-      url: 'http://www.baidu.com/123',
-      type: 'PIXIV_ILLUST',
-      progress: 0.1,
-      generateProgress: 0.1,
-      state: 1,
-    });
+    // let max = 200;
+
+    // while (max-- > 0) {
+    //   this.mockDownloads.push({
+    //     id: max + 1,
+    //     title: 'title',
+    //     url: 'http://www.baidu.com/',
+    //     type: 'PIXIV_UGOIRA',
+    //     progress: 0.1,
+    //     generateProgress: 0.1,
+    //     state: 1,
+    //   });
+    // }
 
     this.loadDownloads();
   },
 
   methods: {
-    getDownloadTaskTagName(download) {
+    getDownloadTaskTag(download) {
       if (download.type === 'PIXIV_UGOIRA') {
         return 'Pixiv Ugoira';
       } else if (download.type === 'PIXIV_ILLUST') {
@@ -89,10 +101,15 @@ export default {
               break;
             }
           }
+          index++;
+        }
+
+        if (downloads.length > 0) {
+          this.downloads = this.downloads.concat(downloads);
         }
 
         this.loadDownloads();
-      }, 1000);
+      }, 600);
     },
 
     deleteDownloadTask(download) {
@@ -114,7 +131,7 @@ export default {
 
 <style lang="scss">
 .download-task {
-
+  box-shadow: none;
 }
 
 .download-task__title {
