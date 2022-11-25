@@ -66,8 +66,6 @@ export default {
   },
 
   created() {
-    // this.illustHistoryPort = IllustHistoryPort.getInstance();
-
     /**
      * @type {Adapter}
      */
@@ -83,7 +81,7 @@ export default {
          * Save visit history
          */
         browser.runtime.sendMessage({
-          action: 'visitHistory:addItem',
+          action: 'history:itemVisit',
           args: {
             uid: this.resource.getUid(),
             title: this.resource.getTitle(),
@@ -147,7 +145,7 @@ export default {
        * Save download history
        */
       browser.runtime.sendMessage({
-        action: 'downloadHistory:addItem',
+        action: 'history:itemDownload',
         args: {
           uid: this.resource.getUid(),
           title: this.resource.getTitle(),

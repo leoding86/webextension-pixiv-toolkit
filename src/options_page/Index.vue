@@ -24,19 +24,9 @@
           <v-list-tile
             v-if="browserItems.enableSaveVisitHistory === true"
             ripple
-            @click="goToVisitHistory()">
+            @click="goToHistory()">
             <v-list-tile-content>
-              <span>{{ tl('illust_history') }}</span>
-            </v-list-tile-content>
-          </v-list-tile>
-
-          <v-list-tile
-            v-if="this.browserItems.enableSaveDownloadHistory === 1"
-            ripple
-            @click="routeTo('Downloads')"
-          >
-            <v-list-tile-content>
-              <span>{{ tl('_downloads') }}</span>
+              <span>{{ tl('_history') }}</span>
             </v-list-tile-content>
           </v-list-tile>
 
@@ -189,8 +179,8 @@ export default {
       }
     },
 
-    goToVisitHistory() {
-      this.routeTo('VisitHistory');
+    goToHistory() {
+      this.routeTo('History');
     },
 
     openDownloadManager() {
