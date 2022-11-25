@@ -15,11 +15,7 @@ export default new Router({
     }, {
       path: '/history',
       name: 'History',
-      component: () => import('@@/components/VisitHistory')
-    }, {
-      path: '/downloads',
-      name: 'Downloads',
-      component: () => import('@@/components/DownloadHistory')
+      component: () => import('@@/components/History')
     }, {
       path: '/third_party',
       name: 'ThirdParty',
