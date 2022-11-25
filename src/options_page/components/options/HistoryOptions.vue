@@ -196,8 +196,6 @@
 </template>
 
 <script>
-import VisitHistoryPort from '@/modules/Ports/IllustHistoryPort/RendererPort';
-import IllustHistory from "@/repositories/IllustHistory";
 
 export default {
   data() {
@@ -218,9 +216,7 @@ export default {
   },
 
   created() {
-    this.illustHistory = new IllustHistory();
-    this.visitHistoryPort = VisitHistoryPort.getInstance();
-    this.visitHistoryPort.port.onMessage.addListener(this.handleVisitHistoryPortResponse);
+    //
   },
 
   beforeMount() {
@@ -296,12 +292,6 @@ export default {
   },
 
   methods: {
-    handleVisitHistoryPortResponse(message, port) {
-      if (this.visitHistoryPort.isChannel(message.channel, 'save-batch-histories')) {
-        this.importVisitHistoryData();
-      }
-    },
-
     clearHistory() {
       this.visitHistoryPort.clearHistory();
       this.confirmDialog = false;
@@ -312,21 +302,7 @@ export default {
         return
       }
 
-      this.exporting = true
-
-      this.illustHistory.getIllusts({
-        limit: null
-      }).then(docs => {
-        let blob = new Blob([JSON.stringify(docs)], {type: 'application/json'})
-
-        let a = document.createElement('a')
-        a.href = URL.createObjectURL(blob)
-        a.download = 'illust_histories-' + Date.now() + '.json'
-        document.body.appendChild(a);
-        a.click()
-        a.remove();
-        this.exporting = false
-      })
+      this.exporting = true;
     },
 
     importVisitHistoryData() {
