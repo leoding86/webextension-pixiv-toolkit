@@ -353,7 +353,7 @@
    "Download_panel_will_show_up_automatically_when_page_loaded": {
        "message": "当目标页面被加载完成时，自动显示下载面板"
    },
-   "illust_history": {
+   "_history": {
        "message": "历史记录"
    },
    "Illustration": {
@@ -865,5 +865,8 @@
     },
     "_rename": {
         "message": "重命名"
+    },
+    "_downloaded": {
+        "message": "已下载"
     }
 }

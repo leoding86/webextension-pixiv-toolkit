@@ -353,7 +353,7 @@
    "Download_panel_will_show_up_automatically_when_page_loaded": {
        "message": "Download panel will show up automatically when page loaded"
    },
-   "illust_history": {
+   "_history": {
        "message": "History"
    },
    "Illustration": {
@@ -862,5 +862,8 @@
     },
     "_rename": {
         "message": "Rename"
+    },
+    "_downloaded": {
+        "message": "Downloaded"
     }
 }
