@@ -1,7 +1,6 @@
 import Dexie from 'dexie';
-import DownloadHistoryRepo from './Repository/DownloadHistoryRepo';
+import HistoryRepo from './Repository/HistoryRepo';
 import TrackedErrorRepo from './Repository/TrackedErrorRepo';
-import VisitHistoryRepo from './Repository/VisitHistoryRepo';
 
 class Db {
   /**
@@ -17,9 +16,8 @@ class Db {
   constructor() {
     this.database = new Dexie('PixivToolkitDatabase');
     this.database.version(1).stores({
+      histories: '++id,&uid,title,userName,cover,url,type,r,downloaded_at,visited_at',
       tracked_errors: '++id,error,created_at',
-      visit_histories: '++id,&uid,title,userName,cover,url,type,r,downloaded_at',
-      download_histories: '++id,&uid,title,userName,cover,url,type,r,visited_at',
     });
   }
 
@@ -35,16 +33,12 @@ class Db {
     return Db.instance;
   }
 
+  historyRepo() {
+    return HistoryRepo.getDefault(this.database.histories);
+  }
+
   trackedErrorRepo() {
     return TrackedErrorRepo.getDefault(this.database.tracked_errors);
-  }
-
-  visitHistoryRepo() {
-    return VisitHistoryRepo.getDefault(this.database.visit_histories);
-  }
-
-  downloadHistoryRepo() {
-    return DownloadHistoryRepo.getDefault(this.database.download_histories);
   }
 }
 

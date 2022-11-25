@@ -11,6 +11,11 @@ class AbstractRepo {
    */
   table;
 
+  constructor(table, { max }) {
+    this.table = table;
+    this.max = max;
+  }
+
   /**
    *
    * @param {number} max
@@ -20,7 +25,7 @@ class AbstractRepo {
   }
 
   /**
-   * @param {ItemType} data
+   * @param {Object} data
    */
   async addItem(data) {
     let count = await this.table.count();
@@ -29,13 +34,14 @@ class AbstractRepo {
       await this.table.limit(count - this.max).delete();
     }
 
-    let item = await this.table.get({ uid: data.uid });
+    this.table.add(data);
+  }
 
-    if (item) {
-      this.table.update(item.id, data);
-    } else {
-      this.table.add(data);
-    }
+  /**
+   * @param {Object} equals
+   */
+  async getItem(equals) {
+    return await this.table.get(equals);
   }
 
   /**
@@ -50,7 +56,27 @@ class AbstractRepo {
    * @returns
    */
   async getItems({ page, count } = { page: 1, count: 20}) {
-    return await this.table.reverse().offset((page - 1) * count);
+    let collection = this.table.reverse();
+    let offset = (page - 1) * count;
+
+    if (offset > 0) {
+      return await collection.offset(offset).toArray();
+    } else {
+      return await collection.toArray();
+    }
+  }
+
+  async searchItems({ query, page, count} = { page: 1, count: 20 }) {
+    let collection = this.table.reverse().filter(item => {
+      return item.title.indexOf(query) > -1 || (item.userName && item.userName.indexOf(query) > -1);
+    });
+    let offset = (page - 1) * count;
+
+    if (offset > 0) {
+      return await collection.offset(offset).toArray();
+    } else {
+      return await collection.toArray();
+    }
   }
 
   clear() {
