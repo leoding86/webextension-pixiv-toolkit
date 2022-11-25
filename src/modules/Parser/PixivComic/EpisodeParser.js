@@ -98,7 +98,7 @@ class EpisodeParser {
         id: context.reading_episode.id,
         title: context.reading_episode.title,
         subTitle: context.reading_episode.sub_title,
-        cover: '',
+        cover: context.reading_episode.thumbnail_image_url,
         numberingTitle: context.reading_episode.numbering_title,
         workId: context.reading_episode.work_id,
         workTitle: context.reading_episode.work_title,
