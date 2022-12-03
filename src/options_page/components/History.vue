@@ -60,9 +60,9 @@
               <span v-if="item.downloaded_at"
                 class="history-item__info-tag history-item__info-tag--success"
               >{{ tl('_downloaded') }}</span>
-              <a class="maintitle" :href="item.url" target="_blank">{{ item.title }}</a>
+              {{ item.title }}
             </div>
-            <div class="history-item__info-entity history-item__info-entity--sub"><a :href="item.url">{{ item.url }}</a> <v-icon small>open_in_new</v-icon></div>
+            <div class="history-item__info-entity history-item__info-entity--sub"><a :href="item.url" target="_blank">{{ item.url }}</a> <v-icon small>open_in_new</v-icon></div>
             <div class="history-item__info-entity history-item__info-entity--sub">{{ castDate(item.visited_at) }}</div>
           </div>
           <div class="history-item__actions">
@@ -115,7 +115,9 @@ import 'vue-virtual-scroller/dist/vue-virtual-scroller.css';
 import { RecycleScroller } from 'vue-virtual-scroller';
 import CacheableImage from '@@/components/CacheableImage';
 import Db from '@/modules/Db/Db';
+import itemTypeMaps from '@/config/itemTypeMaps';
 import moment from 'moment';
+import browser from '@/modules/Extension/browser';
 
 export default {
   components: {
@@ -137,12 +139,11 @@ export default {
       searchQuery: '',
       searchTimeout: null,
       enableSaveVisitHistory: true,
+      itemTypeMaps,
     };
   },
 
   created() {
-    this.windowScrollEventBinded = false;
-
     /**
      * Init some data
      */
@@ -160,6 +161,8 @@ export default {
     this.historyRepo = Db.getDb().historyRepo();
 
     this.loadHistoryItems();
+
+    window.addEventListener('scroll', this.handleScroll);
   },
 
   beforeDestroy() {
@@ -248,7 +251,13 @@ export default {
     },
 
     castWorkType(item) {
-      return item.type;
+      let type = itemTypeMaps[item.type];
+
+      if (type) {
+        return itemTypeMaps[item.type];
+      } else {
+        return 'uncatelogued';
+      }
     },
 
     handleScroll() {
@@ -282,6 +291,14 @@ export default {
 
       this.historyItems.splice(this.historyItems.indexOf(this.itemDeleteReady), 1);
       this.total--;
+
+      browser.runtime.sendMessage({
+        to: 'ws',
+        action: 'history:deleteItem',
+        args: {
+          uid: this.itemDeleteReady.uid
+        }
+      });
     },
 
     /**
@@ -298,7 +315,7 @@ export default {
 
       if (items.length > 0) {
         this.historyItems = this.historyItems.concat(items);
-        this.pages++;
+        this.page++;
       } else {
         this.allLoaded = true;
       }
@@ -462,29 +479,10 @@ export default {
       display: inline-block;
       margin-right: 5px;
       padding: 1px 8px;
-      background: #ccc;
+      background: #3367d6;
+      color: #fff;
       font-weight: 300;
       border-radius: 20px;
-
-      &--type0 {
-        color: #fff;
-        background:brown;
-      }
-
-      &--type1 {
-        color: #fff;
-        background:cadetblue;
-      }
-
-      &--type2 {
-        color: #fff;
-        background:coral;
-      }
-
-      &--type-novel {
-        color: #fff;
-        background: gray;
-      }
 
       &--success {
         color: #fff;

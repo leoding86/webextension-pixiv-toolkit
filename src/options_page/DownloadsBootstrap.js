@@ -1,3 +1,4 @@
+import browser from "@/modules/Extension/browser";
 import Application from "./DownloadsApplication";
 
 class DownloadsBootstrap {
@@ -18,8 +19,8 @@ class DownloadsBootstrap {
   static bindEvents(bindableInstance) {
     DownloadsBootstrap.bindableRuntimeEvents.forEach(event => {
       if (typeof bindableInstance[event] === 'function') {
-        chrome.runtime[event].addListener(function() {
-          console.error(arguments);
+        browser.runtime[event].addListener(function() {
+          console.log(arguments);
           bindableInstance[event].apply(bindableInstance, arguments);
 
           /**

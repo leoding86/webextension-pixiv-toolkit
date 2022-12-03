@@ -5,6 +5,7 @@ import Downloader from "@/modules/Net/Downloader";
 import FileSystem from "../../FileSystem";
 import NameFormatter from "@/modules/Util/NameFormatter";
 import MimeType from "@/modules/Util/MimeType";
+import pathjoin from "@/modules/Util/pathjoin";
 
 /**
  * @typedef UgoiraDownloadTaskOptions
@@ -131,9 +132,9 @@ class UgoiraDownloadTask extends AbstractDownloadTask {
 
     this.lastDownloadId = await FileSystem.getDefault().saveFile({
       url,
-      filename: nameFormatter.format(
+      filename: pathjoin(app().settings.downloadRelativeLocation, nameFormatter.format(
         this.options.renameRule
-      ) + '.' + MimeType.getExtenstion(mimeType)
+      )) + '.' + MimeType.getExtenstion(mimeType)
     });
 
     URL.revokeObjectURL(url);
@@ -218,9 +219,9 @@ class UgoiraDownloadTask extends AbstractDownloadTask {
 
     this.lastDownloadId = await FileSystem.getDefault().saveFile({
       url: animationFileUrl,
-      filename: nameFormatter.format(
+      filename: pathjoin(app().settings.downloadRelativeLocation, nameFormatter.format(
         this.options.renameRule
-      ) + '.' + MimeType.getFileExtension(outputFilename)
+      )) + '.' + MimeType.getFileExtension(outputFilename)
     });
 
     URL.revokeObjectURL(animationFileUrl);

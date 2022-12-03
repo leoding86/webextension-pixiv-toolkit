@@ -47,7 +47,8 @@ export default {
   },
 
   watch: {
-    src(val) {console.log(val)
+    src(val) {
+      // console.log(val)
       this.imageSrc = val;
 
       // this.cacheService.getCache(val).then(src => {

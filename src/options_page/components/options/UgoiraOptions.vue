@@ -90,23 +90,6 @@ export default {
   },
 
   computed: {
-    qualityItems() {
-      return [
-        {
-          text: this.tl("ugoira_normal"),
-          value: 10
-        },
-        {
-          text: this.tl("ugoira_good"),
-          value: 5
-        },
-        {
-          text: this.tl("ugoira_best"),
-          value: 1
-        }
-      ];
-    },
-
     animationJsonFormatOptions() {
       return [
         {
@@ -150,31 +133,31 @@ export default {
 
     this.renameMetas = [
       {
-        title: this.tl("id"),
+        title: this.tl("_id"),
         holder: "{id}"
       },
       {
-        title: this.tl("title"),
+        title: this.tl("_title"),
         holder: "{title}"
       },
       {
-        title: this.tl("author"),
+        title: this.tl("_author"),
         holder: "{author}"
       },
       {
-        title: this.tl("author_id"),
+        title: this.tl("_author_id"),
         holder: "{authorId}"
       },
       {
-        title: this.tl("year"),
+        title: this.tl("_year"),
         holder: "{year}"
       },
       {
-        title: this.tl("month"),
+        title: this.tl("_month"),
         holder: "{month}"
       },
       {
-        title: this.tl("day"),
+        title: this.tl("_day"),
         holder: "{day}"
       }
     ]

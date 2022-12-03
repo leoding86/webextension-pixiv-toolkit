@@ -21,11 +21,17 @@ class PostAdapter {
   postId;
 
   /**
+   * @type {Object}
+   */
+  settings;
+
+  /**
    * @constructor
    * @param {string} url Target page url
    */
   constructor(url) {
     this.url = url;
+    this.settings = app().settings;
   }
 
   /**

@@ -190,11 +190,13 @@ export default {
 .ptk__page-preview {
   width: 128px;
   height: 128px;
+  border-radius: 10px;
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center center;
   background-color: lightgray;
   margin: 0 5px 5px 0;
+  cursor: pointer;
 
   img {
     display: block;
@@ -213,6 +215,7 @@ export default {
   align-items: center;
   width: 100%;
   height: 100%;
+  border-radius: 10px;
   background: rgba(0, 0, 0, 0.33);
 }
 </style>

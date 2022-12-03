@@ -110,7 +110,7 @@ class Application {
    * @param {string} [previousVersion]
    * @param {string} reason [install, update, chrome_update, shared_module_updated]
    */
-  async onInstalled({ id = undefined, previousVersion = undefined, reason }) {console.log(reason);
+  async onInstalled({ id = undefined, previousVersion = undefined, reason }) {console.log(arguments);
     if (reason === 'install' || reason === 'update') {
       let settings = await this.getService('setting').getSettings();
       let previousVersion = settings.version;
@@ -139,7 +139,8 @@ class Application {
 
   /**
    * Fired when a message is sent from either an extension process or a content
-   * script
+   * script. Note that the handler only handle the message which has `to` property
+   * and the property value is `ws`
    * @param {{ to: string, action: string, args: any }} message
    */
   async onMessage(message, sender, sendResponse) {

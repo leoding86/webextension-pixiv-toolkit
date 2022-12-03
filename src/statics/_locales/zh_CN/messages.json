@@ -278,14 +278,11 @@
    "clear_history_data_cannot_be_reversed": {
        "message": "此操作不可恢复"
    },
-   "Clear": {
+   "_clear": {
        "message": "清空"
    },
    "History":{
        "message": "历史记录"
-   },
-   "Cancel": {
-       "message": "取消"
    },
    "comment": {
        "message": "评论"
@@ -605,9 +602,6 @@
    "_max_history_items": {
        "message": "最多历史记录"
    },
-   "_max_download_records": {
-       "message": "最多下载记录"
-   },
    "_reload_to_apply_change": {
        "message": "重新加载以应用更改（所有下载中的任务将会中断）"
    },
@@ -665,7 +659,7 @@
    "_select_and_dl": {
        "message": "选择并下载"
    },
-   "_select_images_you_want_to_download": {
+   "_select_pages_you_want_to_download": {
        "message": "选择要下载的图片"
    },
    "_pending": {
@@ -849,7 +843,7 @@
         "message": "全部"
     },
     "_download_manager": {
-        "message": "下载管理"
+        "message": "下载管理器"
     },
     "_show_in_folder": {
         "message": "在文件夹中显示"
@@ -868,5 +862,26 @@
     },
     "_downloaded": {
         "message": "已下载"
+    },
+    "_the_resource_is_already_in_download_manager": {
+        "message": "此资源的下载已存在于下载管理器中"
+    },
+    "_download_manager_isnt_open": {
+        "message": "下载管理器似乎没有开启，你可以在设置页面或弹出页面中打开下载管理器。"
+    },
+    "_switch_to_it_and_close": {
+        "message": "切换并关闭"
+    },
+    "_download_manager_is_already_opened": {
+        "message": "下载管理器已经开启。"
+    },
+    "_there_isnt_any_download": {
+        "message": "当前没有任何下载"
+    },
+    "_cancel": {
+        "message": "取消"
+    },
+    "_max_process_download_tasks": {
+        "message": "最大执行下载数"
     }
 }

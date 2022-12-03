@@ -20,6 +20,11 @@ class Application {
   settings;
 
   /**
+   * @type {Object} Tab instance
+   */
+  tab;
+
+  /**
    * @constructor
    */
   constructor() {
@@ -96,7 +101,7 @@ class Application {
      * need a response, the method of service need return a valid that isn't
      * undefined
      */
-    if (message.action) {
+    if (message.to !== 'ws' && message.action) {
       let [serviceName, methodName] = message.action.split(':');
 
       let service = this.getService(serviceName);

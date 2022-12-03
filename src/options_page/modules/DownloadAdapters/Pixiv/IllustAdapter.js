@@ -54,12 +54,12 @@ class IllustAdapter {
       pages: this.context.pages,
       selectedIndexes: options.selectedIndexes,
       renameRule:  this.settings.illustRenameRule,
-      pageNumberStartWithOne: this.settings.illustPageNumberStartWithOne === -2 ?
+      pageNumberStartWithOne: this.settings.illustrationPageNumberStartWithOne === -2 ?
                               this.settings.globalTaskPageNumberStartWithOne :
-                              this.settings.illustPageNumberStartWithOne,
-      pageNumberLength: this.settings.illustPageNumberLength === -2 ?
+                              this.settings.illustrationPageNumberStartWithOne,
+      pageNumberLength: this.settings.illustrationPageNumberLength === -2 ?
                         this.settings.globalTaskPageNumberLength :
-                        this.settings.illustPageNumberLength,
+                        this.settings.illustrationPageNumberLength,
       context: this.context,
     });
   }

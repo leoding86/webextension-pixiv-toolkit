@@ -1,5 +1,6 @@
 import AbstractService from "./AbstractService";
 import browser from "@/modules/Extension/browser"
+import DownloadManager from "../modules/DownloadManager";
 
 class SettingService extends AbstractService {
   static instance;
@@ -10,6 +11,10 @@ class SettingService extends AbstractService {
     browser.storage.onChanged.addListener((changes, areaName) => {
       for (let key in changes) {
         this.application.settings[key] = changes[key].newValue;
+
+        if (key === 'maxProcessDownloadTasks') {
+          DownloadManager.getDefault().setMaxDownloadingTasks(changes[key].newValue);
+        }
       }
     });
   }

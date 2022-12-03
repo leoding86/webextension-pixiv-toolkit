@@ -6,13 +6,16 @@
     </div>
     <div class="entries">
       <div class="entry">
+        <a href="#" @click="openHistory" class="button">{{ tl('_history') }}</a>
+      </div>
+      <div class="entry">
+        <a href="#" @click="openDownloadManager" class="button">{{ tl('_download_manager') }}</a>
+      </div>
+      <div class="entry">
         <a href="#" @click="openReportIssue" class="button">{{ tl('_report_issue') }}</a>
       </div>
       <div class="entry">
         <a href="#" @click="openOptionsPage" class="button">{{ tl('_settings') }}</a>
-      </div>
-      <div class="entry">
-        <a href="#" @click="openVisitHistory" class="button">{{ tl('illust_history') }}</a>
       </div>
       <div class="entry" v-if="browserItems.showReloadInPopup">
         <a href="#" @click="reloadExtension" class="button">{{ tl('Reload') }}</a>
@@ -47,6 +50,7 @@
 
 <script>
 import SuperMixin from "@/mixins/SuperMixin";
+import browser from "@/modules/Extension/browser";
 
 export default {
   mixins: [
@@ -60,7 +64,9 @@ export default {
         'bookmarkCount', 'likeCount', 'responseCount', 'viewCount'
       ],
 
-      properties: null
+      properties: null,
+
+      downloadManagerOpenning: false,
     }
   },
 
@@ -122,10 +128,40 @@ export default {
       });
     },
 
-    openVisitHistory() {
+    openHistory() {
       browser.tabs.create({
-        url: browser.runtime.getURL('options_page/index.html#/visit-history')
+        url: browser.runtime.getURL('options_page/index.html#/history')
       });
+    },
+
+    async openDownloadManager() {
+      if (this.downloadManagerOpenning) {
+        return;
+      }
+
+      this.downloadManagerOpenning = true;
+
+      let response;
+
+      let timeout = setTimeout(() => {
+        window.open(browser.runtime.getURL('options_page/downloads.html'), '_blank');
+        this.downloadManagerOpenning = false;
+      }, 600);
+
+      response = await browser.runtime.sendMessage({
+        action: 'download:checkIfDownloadManagerOpened'
+      });
+
+      clearTimeout(timeout);
+
+      if (response.result) {
+        await browser.windows.update(response.data.windowId, { focused: true });
+        browser.tabs.update(response.data.tabId, { active: true });
+      } else {
+        window.open(browser.runtime.getURL('options_page/downloads.html'), '_blank');
+      }
+
+      this.downloadManagerOpenning = false;
     },
 
     reloadExtension() {
@@ -196,9 +232,11 @@ body {
     padding: 0 10px;
     display: flex;
     background: #fff;
+    flex-wrap: wrap;
+    justify-content: space-between;
 
     .entry {
-      flex: 1;
+      width: 155px;
       position: relative;
     }
 

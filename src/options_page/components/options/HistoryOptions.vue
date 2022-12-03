@@ -94,21 +94,6 @@
 
         <v-list-tile>
           <v-list-tile-content>
-            <v-list-tile-title>{{ tl('_max_download_records') }}</v-list-tile-title>
-            <v-list-tile-sub-title>{{ tl('_reload_to_apply_change') }}</v-list-tile-sub-title>
-          </v-list-tile-content>
-          <v-list-tile-action>
-            <v-text-field
-              v-model="maxDownloadRecords"
-              reverse
-              type="number"
-              style="width:100px;"
-            ></v-text-field>
-          </v-list-tile-action>
-        </v-list-tile>
-
-        <v-list-tile>
-          <v-list-tile-content>
             <v-list-tile-title>{{ tl('Export_visit_history') }}</v-list-tile-title>
           </v-list-tile-content>
           <v-list-tile-action>
@@ -152,7 +137,7 @@
             <v-btn
               depressed
               @click="confirmDialog = true"
-            >{{ tl('Clear') }}</v-btn>
+            >{{ tl('_clear') }}</v-btn>
           </v-list-tile-action>
         </v-list-tile>
       </v-list>
@@ -166,8 +151,8 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn @click="clearHistory" color="error">{{ tl('Clear') }}</v-btn>
-          <v-btn @click="confirmDialog = false">{{ tl('Cancel') }}</v-btn>
+          <v-btn @click="clearHistory" color="error">{{ tl('_clear') }}</v-btn>
+          <v-btn @click="confirmDialog = false">{{ tl('_cancel') }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -210,7 +195,6 @@ export default {
       importItems: [],
       importCount: 0,
       maxHistoryItems: 10000,
-      maxDownloadRecords: 10000,
       workCoverSize: 1
     };
   },
@@ -225,7 +209,6 @@ export default {
     this.displayWorkTypeLabel = this.browserItems.displayWorkTypeLabel;
     this.notSaveNSFWWorkInHistory = this.browserItems.notSaveNSFWWorkInHistory;
     this.maxHistoryItems = this.browserItems.maxHistoryItems;
-    this.maxDownloadRecords = this.browserItems.maxDownloadRecords;
     this.workCoverSize = this.browserItems.workCoverSize;
   },
 
@@ -271,16 +254,6 @@ export default {
         });
       } else {
         this.maxHistoryItems = 10000;
-      }
-    },
-
-    maxDownloadRecords(val) {
-      if (/^\d+$/.test(val) && val > 0) {
-        browser.storage.local.set({
-          maxDownloadRecords: val
-        });
-      } else {
-        this.maxDownloadRecords = 10000;
       }
     },
 

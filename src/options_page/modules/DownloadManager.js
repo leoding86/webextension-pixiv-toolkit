@@ -51,10 +51,16 @@ class DownloadManager extends Event {
    * @param {number} number
    */
   setMaxDownloadingTasks(number) {
+    let increaseProcessed = this.maxDownloadingTasks < number;
+
     number = number < 0 ? 1 : number;
     number = number > 3 ? 3 : number;
 
     this.maxDownloadingTasks = number;
+
+    if (increaseProcessed) {
+      this.startTasks();
+    }
   }
 
   /**

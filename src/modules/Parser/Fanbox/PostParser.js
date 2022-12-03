@@ -84,6 +84,7 @@ class PostParser {
       if (matches) {
         this.context.creatorId = matches[1];
         this.context.postId = matches[2];
+        return;
       }
     }
 
@@ -135,17 +136,20 @@ class PostParser {
     let sContext = {
       id: context.id,
       title: context.title,
-      cover: context,
+      cover: context.coverImageUrl,
       userId: context.user.userId,
       userName: context.user.name,
       year: dateFormatter.getYear(),
       month: dateFormatter.getMonth(),
       day: dateFormatter.getDay(),
       pages: this.findImages(context),
+      r: context.hasAdultContent,
       __raw: context,
     };
 
     sContext.totalPages = sContext.pages.length;
+
+    return sContext;
   }
 
   /**

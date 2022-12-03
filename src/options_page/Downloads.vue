@@ -59,12 +59,14 @@
           :open-sponsors-in-new="true"></supports>
       </v-toolbar>
       <v-content style="padding-left:0;">
-        <download-manager v-if="openedTabId === 0"
+        <download-manager v-if="openedTabId <= 0"
           class="container conatiner-small" style="max-width:800px;"
         ></download-manager>
         <div v-else class="container container small" style="max-width:800px;">
           <v-alert :value="true" type="warning">
-            Download manager is already opened
+            {{ tl('_download_manager_is_already_opened') }}
+            <a style="text-decoration: underline;color:#fff;" @click="switchToActive">{{ tl('_switch_to_it_and_close') }}</a>
+            <v-icon style="font-size:16px;color:#fff">open_in_new</v-icon>
           </v-alert>
         </div>
       </v-content>
@@ -99,6 +101,10 @@ export default {
 
     openedTabId() {
       return this.$root.openedTabId;
+    },
+
+    openedWindowId() {
+      return this.$root.openedWindowId;
     }
   },
 
@@ -107,8 +113,6 @@ export default {
   },
 
   beforeMount() {
-    let vm = this
-
     window.addEventListener('resize', this.resizeHandle)
 
     this.resizeHandle();
@@ -141,6 +145,18 @@ export default {
 
     openSettings() {
       window.open(browser.runtime.getURL('options_page/index.html'), '_blank');
+    },
+
+    async switchToActive() {console.log(this.openedTabId)
+      await browser.windows.update(this.openedWindowId, {
+        focused: true,
+      });
+
+      await browser.tabs.update(this.openedTabId, {
+        active: true,
+      });
+
+      window.close();
     }
   }
 }

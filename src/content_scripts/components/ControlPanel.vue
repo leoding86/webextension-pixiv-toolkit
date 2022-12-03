@@ -17,22 +17,21 @@
           <div id="ptk__new-handler"
             @click="handlerClickHandle"
           >
-            <svg viewBox="0 0 222 40" id="ptk__new-handler-bg" width="222" height="40" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
-              <path d="M0 40 C 25 40, 43 27, 65 15 C 82 4, 93 0, 111 0 C 131 0, 142 4, 161 15 C 180 27, 198 40, 222 40 Z" stroke-width="0" :fill="hasError ? '#ff3b3b' : handlerBackground" />
-            </svg>
-            <svg v-if="!hasError" viewBox="0 0 40 15" id="ptk__new-handler-arrow" width="40" height="25" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
-              <path d="M 0 15 L 20 0 L 40 15" :stroke="handlerForeground" stroke-width="6" fill="transparent"/>
-              <circle cx="0" cy="15" r="3" stroke-width="0" :fill="handlerForeground"/>
-              <circle cx="40" cy="15" r="3" stroke-width="0" :fill="handlerForeground"/>
-            </svg>
-            <svg v-if="hasError" viewBox="0 0 40 40" id="ptk__new-handler-cross" width="40" height="40" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
-              <path d="M0 0 L40 40" :stroke="handlerForeground" stroke-width="10" fill="transparent"/>
-              <path d="M0 40 L40 0" :stroke="handlerForeground" stroke-width="10" fill="transparent"/>
-              <circle cx="0" cy="0" r="5" stroke-width="0" :fill="handlerForeground"/>
-              <circle cx="40" cy="40" r="5" stroke-width="0" :fill="handlerForeground"/>
-              <circle cx="40" cy="0" r="5" stroke-width="0" :fill="handlerForeground"/>
-              <circle cx="0" cy="40" r="5" stroke-width="0" :fill="handlerForeground"/>
-            </svg>
+            <div id="ptk__new-handler-bg">
+              <svg v-if="!hasError" viewBox="0 0 40 15" id="ptk__new-handler-arrow" width="40" height="25" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+                <path d="M 0 15 L 20 0 L 40 15" :stroke="handlerForeground" stroke-width="6" fill="transparent"/>
+                <circle cx="0" cy="15" r="3" stroke-width="0" :fill="handlerForeground"/>
+                <circle cx="40" cy="15" r="3" stroke-width="0" :fill="handlerForeground"/>
+              </svg>
+              <svg v-if="hasError" viewBox="0 0 40 40" id="ptk__new-handler-cross" width="40" height="40" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+                <path d="M0 0 L40 40" :stroke="handlerForeground" stroke-width="10" fill="transparent"/>
+                <path d="M0 40 L40 0" :stroke="handlerForeground" stroke-width="10" fill="transparent"/>
+                <circle cx="0" cy="0" r="5" stroke-width="0" :fill="handlerForeground"/>
+                <circle cx="40" cy="40" r="5" stroke-width="0" :fill="handlerForeground"/>
+                <circle cx="40" cy="0" r="5" stroke-width="0" :fill="handlerForeground"/>
+                <circle cx="0" cy="40" r="5" stroke-width="0" :fill="handlerForeground"/>
+              </svg>
+            </div>
           </div>
         </div>
         <div id="ptk__action__wrapper">
@@ -310,27 +309,29 @@ export default {
   #ptk__new-handler {
     position: relative;
     margin: 0 auto;
-    width: 100px;
+    width: 100%;
     height: 18px;
     cursor: pointer;
   }
 
   #ptk__new-handler-bg {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+    width: 40px;
+    height: 30px;
+    margin: 0 auto;
+    position: relative;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    background-color: #0096fa;
   }
 
   #ptk__new-handler-arrow,
   #ptk__new-handler-cross {
-      width: 13px;
-      height: 8px;
-      position: absolute;
-      top: 5px;
-      left: 44px;
-      transition: all 500ms;
+    width: 13px;
+    height: 8px;
+    position: absolute;
+    top: 5px;
+    left: 14px;
+    transition: all 500ms;
   }
 
   .ptk-pixiv-omina-content {

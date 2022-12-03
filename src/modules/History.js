@@ -32,8 +32,12 @@ class History {
     await this.historyRepo.saveItem(data);
   }
 
-  deleteItem(id) {
-    this.historyRepo.deleteItem(id);
+  async deleteItem(uid) {
+    let item = await this.historyRepo.getItem({ uid });
+
+    if (item) {
+      this.historyRepo.deleteItem(item.id);
+    }
   }
 
   clear() {

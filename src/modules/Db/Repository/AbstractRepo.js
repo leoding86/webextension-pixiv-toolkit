@@ -55,27 +55,27 @@ class AbstractRepo {
    * @param {{ page: number?, count: number?}} param0
    * @returns
    */
-  async getItems({ page, count } = { page: 1, count: 20}) {
+  async getItems({ page, count = 20 }) {
     let collection = this.table.reverse();
     let offset = (page - 1) * count;
 
     if (offset > 0) {
-      return await collection.offset(offset).toArray();
+      return await collection.offset(offset).limit(count).toArray();
     } else {
-      return await collection.toArray();
+      return await collection.limit(count).toArray();
     }
   }
 
-  async searchItems({ query, page, count} = { page: 1, count: 20 }) {
+  async searchItems({ query, page, count = 20}) {
     let collection = this.table.reverse().filter(item => {
       return item.title.indexOf(query) > -1 || (item.userName && item.userName.indexOf(query) > -1);
     });
     let offset = (page - 1) * count;
 
     if (offset > 0) {
-      return await collection.offset(offset).toArray();
+      return await collection.offset(offset).limit(count).toArray();
     } else {
-      return await collection.toArray();
+      return await collection.limit(count).toArray();
     }
   }
 

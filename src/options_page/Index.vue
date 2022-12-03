@@ -144,6 +144,7 @@ export default {
 
   created() {
     this.showStartupDialog = !this.browserItems.importantNoticeDisplayed;
+    this.downloadManagerOpenning = false;
   },
 
   beforeMount() {
@@ -183,8 +184,33 @@ export default {
       this.routeTo('History');
     },
 
-    openDownloadManager() {
-      window.open(browser.runtime.getURL('options_page/downloads.html'), '_blank');
+    async openDownloadManager() {
+      if (this.downloadManagerOpenning) {
+        return;
+      }
+
+      this.downloadManagerOpenning = true;
+
+      let response;
+
+      let timeout = setTimeout(() => {
+        window.open(browser.runtime.getURL('options_page/downloads.html'), '_blank');
+        this.downloadManagerOpenning = false;
+      }, 600);
+
+      response = await browser.runtime.sendMessage({
+        action: 'download:checkIfDownloadManagerOpened'
+      });
+
+      clearTimeout(timeout);
+
+      if (response.result) {
+        browser.tabs.update(response.data.tabId, { active: true });
+      } else {
+        window.open(browser.runtime.getURL('options_page/downloads.html'), '_blank');
+      }
+
+      this.downloadManagerOpenning = false;
     }
   }
 }

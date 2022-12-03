@@ -2,6 +2,7 @@ import AbstractDownloadTask from "../AbstractDownloadTask";
 import { app } from "@/options_page/DownloadsApplication";
 import FileSystem from "../../FileSystem";
 import NameFormatter from "@/modules/Util/NameFormatter";
+import pathjoin from "@/modules/Util/pathjoin";
 
 /**
  * @typedef NovelDownloadTaskOptions
@@ -75,10 +76,10 @@ class NovelDownloadTask extends AbstractDownloadTask {
 
     this.lastDownloadId = await FileSystem.getDefault().saveFile({
       url,
-      filename: nameFormatter.format(
+      filename: pathjoin(app().settings.downloadRelativeLocationnameFormatter.format(
         app().settings.novelRenameFormat,
         this.context.id + '_' + this.context.title
-      ) + '.epub'
+      )) + '.epub'
     });
 
     this.changeState(this.COMPLETE_STATE);
@@ -108,10 +109,10 @@ class NovelDownloadTask extends AbstractDownloadTask {
 
     this.lastDownloadId = await FileSystem.getDefault().saveFile({
       url,
-      filename: nameFormatter.format(
+      filename: pathjoin(app().settings.downloadRelativeLocation, nameFormatter.format(
         this.options.renameRule,
         this.context.id + '_' + this.context.title
-      ) + '.txt'
+      )) + '.txt'
     });
 
     this.changeState(this.COMPLETE_STATE);

@@ -7,9 +7,9 @@ import defaultSettings from "@/config/default";
  */
 export default async () => {
   let settings = await app().getService('setting').getSettings();
-  let updateSettings = {
+  let updateSettings = Object.assign(defaultSettings, settings, {
     version: '6.0.0',
-  };
+  });
 
   /**
    * Update `ugoiraRenameRule`

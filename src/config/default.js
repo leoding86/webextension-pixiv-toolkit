@@ -134,6 +134,10 @@ export default Object.assign({}, {
      * @since 4.4.0
      */
     maxHistoryItems: 10000,
+
+    /**
+     * @deprecated since version 6.0.0
+     */
     maxDownloadRecords: 10000,
 
     /**
@@ -219,7 +223,8 @@ export default Object.assign({}, {
     fanboxPostPageNumberStartWithOne: -2,
     fanboxPostPageNumberLength: -2,
     globalTaskPageNumberStartWithOne: 0, // 0: disable, 1: enable
-    globalTaskPageNumberLength: -1, // -1: dynamic, 0: disable, 2-4
+    globalTaskPageNumberLength: -1, // -1: dynamic, 0: disable, 2-4,
+    maxProcessDownloadTasks: 3,
 
     /**
      * @since 1.0.0

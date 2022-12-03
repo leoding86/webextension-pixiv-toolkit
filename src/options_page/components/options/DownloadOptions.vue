@@ -6,18 +6,32 @@
       <v-list two-line>
         <v-list-tile>
           <v-list-tile-content>
-            <v-list-tile-title>{{ tl('_create_a_specified_number_of_download_tasks') }}</v-list-tile-title>
-            <v-list-tile-sub-title>{{ tl('_create_a_specified_number_of_download_tasks_when_downloading_illustration_or_manga') }}</v-list-tile-sub-title>
+            <v-list-tile-title>{{ tl('_max_process_download_tasks') }}</v-list-tile-title>
           </v-list-tile-content>
           <v-list-tile-action>
             <v-select
-              :items="[2, 3, 4, 5]"
-              v-model="downloadTasksWhenDownloadingImages"
+              :items="[1, 2, 3, 4, 5]"
+              v-model="maxProcessDownloadTasks"
               type="value"
               style="width:100px;"
             ></v-select>
           </v-list-tile-action>
         </v-list-tile>
+
+        <!-- <v-list-tile>
+          <v-list-tile-content>
+            <v-list-tile-title>{{ tl('_create_a_specified_number_of_download_tasks') }}</v-list-tile-title>
+            <v-list-tile-sub-title>{{ tl('_create_a_specified_number_of_download_tasks_when_downloading_illustration_or_manga') }}</v-list-tile-sub-title>
+          </v-list-tile-content>
+          <v-list-tile-action>
+            <v-select
+              :items="[1, 2, 3, 4, 5]"
+              v-model="downloadTasksWhenDownloadingImages"
+              type="value"
+              style="width:100px;"
+            ></v-select>
+          </v-list-tile-action>
+        </v-list-tile> -->
 
         <v-list-tile>
           <v-list-tile-content>
@@ -102,6 +116,8 @@ export default {
 
       downloadTasksWhenDownloadingImages: 3,
 
+      maxProcessDownloadTasks: 3,
+
       multipleDownloadsGapTime: 150,
 
       enableDownloadMetadata: false,
@@ -147,15 +163,15 @@ export default {
       });
     },
 
-    downloadTasksWhenDownloadingImages(val, oldVal) {
+    maxProcessDownloadTasks(val, oldVal) {
       val = parseInt(val);
 
-      if (val < 2 || val > 5) {
-        this.downloadTasksWhenDownloadingImages = (oldVal < 2 || oldVal > 5) ? 3 : oldVal;
+      if (val < 1 || val > 5) {
+        this.maxProcessDownloadTasks = (oldVal < 1 || oldVal > 5) ? 3 : oldVal;
       }
 
       browser.storage.local.set({
-        downloadTasksWhenDownloadingImages: val
+        maxProcessDownloadTasks: val
       });
     },
 
@@ -182,6 +198,7 @@ export default {
     this.enableDownloadMetadata = !!this.browserItems.enableDownloadMetadata;
     this.downloadSaveAs = !!this.browserItems.downloadSaveAs;
     this.downloadTasksWhenDownloadingImages = this.browserItems.downloadTasksWhenDownloadingImages;
+    this.maxProcessDownloadTasks = this.browserItems.maxProcessDownloadTasks;
     this.multipleDownloadsGapTime = parseInt(this.browserItems.multipleDownloadsGapTime) || 150;
   },
 

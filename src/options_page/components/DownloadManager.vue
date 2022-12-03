@@ -13,10 +13,27 @@
       >
         <template slot="actions">
           <span v-if="item.downloadId" class="download-task__action" @click="showInFolder(item)">{{ tl('_show_in_folder') }}</span>
-          <span class="download-task__action download-task__action--delete" @click="deleteDownloadTask(item)">{{ tl('_delete') }}</span>
+          <span class="download-task__action download-task__action--delete" @click="prepareDeleteDownloadTask(item)">{{ tl('_delete') }}</span>
         </template>
       </download-task>
     </recycle-scroller>
+
+    <v-dialog v-model.sync="confirmDialog"
+      width="500"
+    >
+      <v-card>
+        <v-card-title>{{ tl('_notice') }}</v-card-title>
+        <v-card-text>
+          <p style="font-size:14px;">{{ tl('_this_operation_cannot_be_reversed_are_you_sure') }}</p>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn depressed @click="deleteDownloadTask(preparedDeleteItem)"
+            color="error">{{ tl('_delete') }}</v-btn>
+          <v-btn depressed @click="confirmDialog = false">{{ tl('_cancel') }}</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -37,7 +54,9 @@ export default {
   data() {
     return {
       downloads: [],
-      mockDownloads: []
+      mockDownloads: [],
+      preparedDeleteItem: null,
+      confirmDialog: false,
     }
   },
 
@@ -112,6 +131,11 @@ export default {
       }, 600);
     },
 
+    prepareDeleteDownloadTask(download) {
+      this.preparedDeleteItem = download;
+      this.confirmDialog = true;
+    },
+
     deleteDownloadTask(download) {
       this.downloadService.deleteDownload(download.id);
 
@@ -120,6 +144,8 @@ export default {
           this.downloads.splice(i, 1);
         }
       }
+
+      this.confirmDialog = false;
     },
 
     showInFolder(download) {
@@ -169,7 +195,7 @@ export default {
   padding: 0 10px;
   color: white;
   background: #3367d6;
-  border-radius: 3px !important;
+  border-radius: 20px !important;
 }
 
 .download-task__section {

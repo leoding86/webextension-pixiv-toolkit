@@ -21,49 +21,53 @@ import Vuetify from 'vuetify';
  * the process.
  */
 (async () => {
-  const DOWNLOADS_TAB = '__DOWNLOADS_TAB__';
-  let settings = await browser.storage.local.get(null);
+  window.__CURRENT_ACTIVE_DM__ = false;
+
   let openedTabId = 0;
-  const currentDownloadsTab = (await browser.tabs.query({ active: true, lastFocusedWindow: true }))[0];
+  let openedWindowId = 0;
 
-  if (settings[DOWNLOADS_TAB]) {
-    const previousDownloadsTabId = settings[DOWNLOADS_TAB];
+  /**
+   * The codes below MUST be in async function or it will halt up the process
+   * if there isn't any download manager opened.
+   */
+  (async () => {
+    let response = await browser.runtime.sendMessage({
+      action: 'download:checkIfDownloadManagerOpened',
+    });
 
-    if (previousDownloadsTabId === currentDownloadsTab.id) {
-      console.log('Current tab is the downloads');
-    } else {
-      try {
-        await chrome.tabs.get(previousDownloadsTabId);
-        openedTabId = previousDownloadsTabId;
-        console.log('Downloads is already open.');
-      } catch (error) {
-        console.log('Previous downloads page not found, start new one.');
-
-        const data = {};
-        data[DOWNLOADS_TAB] = currentDownloadsTab.id;
-        browser.storage.local.set(data);
-      }
+    if (response.result) {
+      openedTabId = response.data.tabId;
+      openedWindowId = response.data.windowId;
     }
-  } else {
-    const data = {};
-    data[DOWNLOADS_TAB] = currentDownloadsTab.id;
-    browser.storage.local.set(data);
-  }
+  })();
 
-  /**
-   * Boot the application.
-   */
-  Bootstrap.__main__();
+  setTimeout(() => {
+    /**
+     * If there is response returned that means the download manger is
+     * already opened, otherwise update the download manager tabId and open
+     * the download manager.
+     */
+    if (openedTabId <= 0) {
+      window.__CURRENT_ACTIVE_DM__ = true;
+    }
 
-  window.application = Application.app();
+    bootApplication();
+  }, 600);
 
-  /**
-   * Boot the UI
-   */
-  Vue.config.productionTip = false;
-  Vue.mixin(SuperMixin);
+  async function bootApplication() {
+    /**
+     * Boot the application.
+     */
+    Bootstrap.__main__();
 
-  try {
+    window.application = Application.app();
+
+    /**
+     * Boot the UI
+     */
+    Vue.config.productionTip = false;
+    Vue.mixin(SuperMixin);
+
     moment.locale('zh_CN', {
       months: [
         '1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'
@@ -120,6 +124,7 @@ import Vuetify from 'vuetify';
           appSettings: items,
           isFirefox_: $_browser === 'firefox',
           openedTabId,
+          openedWindowId,
         }
       },
 
@@ -145,7 +150,5 @@ import Vuetify from 'vuetify';
         });
       }
     });
-  } catch (e) {
-    console.error(e);
   }
 })();

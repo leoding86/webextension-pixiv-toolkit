@@ -4,6 +4,7 @@ import Downloader from "@/modules/Net/Downloader";
 import FileSystem from "../FileSystem";
 import NameFormattor from "@/modules/Util/NameFormatter";
 import MimeType from "@/modules/Util/MimeType";
+import pathjoin from "@/modules/Util/pathjoin";
 
 /**
  * @typedef MultipleDownloadTaskOptions
@@ -76,15 +77,15 @@ class MultipleDownloadTask extends AbstractDownloadTask {
       pageNum = parseInt(pageNum);
     }
 
-    if (this.pageNumberStartWithOne) {
+    if (this.options.pageNumberStartWithOne) {
       pageNum++;
     }
 
     let pageNumberLength;
 
-    if (this.pageNumberLength > 1) {
-      pageNumberLength = this.pageNumberLength;
-    } else if (this.pageNumberLength == -1) {
+    if (this.options.pageNumberLength > 1) {
+      pageNumberLength = this.options.pageNumberLength;
+    } else if (this.options.pageNumberLength == -1) {
       pageNumberLength = `${this.context.totalPages}`.length;
     }
 
@@ -130,10 +131,10 @@ class MultipleDownloadTask extends AbstractDownloadTask {
 
     this.lastDownloadId = await FileSystem.getDefault().saveFile({
       url,
-      filename: nameFormatter.format(
+      filename: pathjoin(app().settings.downloadRelativeLocation ,nameFormatter.format(
         this.options.renameRule,
         this.id + `_${pageNum}`
-      ) + `.${MimeType.getExtenstion(mimeType)}`
+      )) + `.${MimeType.getExtenstion(mimeType)}`
     });
 
     URL.revokeObjectURL(url);
