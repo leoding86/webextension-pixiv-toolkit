@@ -17,6 +17,10 @@ class ServiceProvider {
 
       service.setApplication(application);
 
+      if (typeof service['initialize'] === 'function') {
+        service.initialize();
+      }
+
       return service;
     } else {
       throw new RuntimeError(`Service ${serviceName} not found`);

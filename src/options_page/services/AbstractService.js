@@ -1,4 +1,6 @@
-class AbstractService {
+import Event from "@/modules/Event";
+
+class AbstractService extends Event {
   application;
 
   setApplication(application) {

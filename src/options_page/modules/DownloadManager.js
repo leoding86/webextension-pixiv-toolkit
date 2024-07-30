@@ -211,7 +211,10 @@ class DownloadManager extends Event {
       }
 
       index++;
-      this.getTask(item[0]).start();
+
+      const task = this.getTask(item[0]);
+
+      task.isPending() && task.start();
     }
   }
 

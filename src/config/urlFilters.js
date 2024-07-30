@@ -2,13 +2,13 @@ export default [
   {
     type: 'pixiv_illust',
     patterns: [
-      /^https:\/\/www\.pixiv\.net\/artworks\/(\d+)/i
+      /^https:\/\/www\.pixiv\.net\/([a-z\d]+\/)?artworks\/(\d+)/i
     ],
   },
   {
     type: 'pixiv_novel',
     patterns: [
-      /^https:\/\/www\.pixiv\.net\/novel\/show\.php\?id=(\d+)/i
+      /^https:\/\/www\.pixiv\.net\/([a-z\d]+\/)?novel\/show\.php\?id=(\d+)/i
     ],
   },
   {

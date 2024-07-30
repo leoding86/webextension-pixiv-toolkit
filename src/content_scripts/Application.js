@@ -1,6 +1,8 @@
+import Adapter from '@/content_scripts/modules/Adapter';
 import Detector from "./modules/Detector";
 import PageFilter from "./modules/PageFilter";
 import UIApplication from "./UIApplication";
+import browser from "@/modules/Extension/browser";
 
 class Application {
   /**
@@ -24,6 +26,11 @@ class Application {
   UIApp;
 
   /**
+   * @type {Object} Current page's resource
+   */
+  resource;
+
+  /**
    * @type {any}
    */
   settings;
@@ -45,12 +52,19 @@ class Application {
       Application.instance = new Application();
     }
 
+    // browser.runtime.onMessage.addListener(message => {
+    //   debugger;
+    // });
+
     return Application.instance;
   }
 
   async urlchangeHandler(newUrl, oldUrl) {
     try {
       let data = this.pageFilter.getData(newUrl);
+
+      const adapter = new Adapter();
+      this.resource = await adapter.getResource(data.type, data.url);
 
       if (!this.UIApp) {
         this.UIApp = await UIApplication.createApp();
@@ -61,6 +75,8 @@ class Application {
       if (this.UIApp) {
         this.UIApp.unload();
       }
+
+      this.resource = null;
 
       throw error;
     }

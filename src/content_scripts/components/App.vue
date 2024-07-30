@@ -89,11 +89,11 @@ export default {
      */
     this.adapter = new Adapter();
 
-    window.$eventBus.$on('pagechange', async page => {
+    window.$eventBus.$on('pagechange', page => {
       this.abortAdapterParse();
 
       if (page) {
-        this.resource = await this.adapter.getResource(page.type, page.url);
+        this.resource = window.$app.resource;
 
         /**
          * Save visit history

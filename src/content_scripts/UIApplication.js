@@ -130,6 +130,10 @@ class UIApplication {
   loadData(data) {
     this.app.loadData(data);
   }
+
+  unload() {
+    this.app.$destroy();
+  }
 }
 
 export default UIApplication;

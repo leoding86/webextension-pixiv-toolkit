@@ -324,7 +324,7 @@ body {
   }
 
   .card {
-    max-height: 255px;
+    max-height: 225px;
     overflow-y: auto;
   }
 

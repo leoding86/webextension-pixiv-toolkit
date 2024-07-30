@@ -30,6 +30,14 @@ class Bootstrap {
     this.trackError();
 
     window.$app = Application.app();
+
+    browser.runtime.onConnect.addListener((port) => {
+      port.onMessage.addListener(message => {
+        if (message.type === 'fetch-info' && window.$app.resource) {
+          port.postMessage({ info: window.$app.resource.unpack() });
+        }
+      });
+    });
   }
 }
 

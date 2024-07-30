@@ -21,19 +21,17 @@ class DownloadService extends AbstractService {
    */
   downloadManager;
 
-  constructor() {
-    super();
-
-    this.downloadManager = DownloadManager.getDefault();
-    this.downloadManager.setMaxDownloadingTasks(this.application.settings.maxProcessDownloadTasks);
-  }
-
   static getService() {
     if (!DownloadService.instance) {
       DownloadService.instance = new DownloadService();
     }
 
     return DownloadService.instance;
+  }
+
+  initialize() {
+    this.downloadManager = DownloadManager.getDefault();
+    this.downloadManager.setMaxDownloadingTasks(this.application.settings.maxProcessDownloadTasks);
   }
 
   /**
@@ -96,6 +94,10 @@ class DownloadService extends AbstractService {
     try {
       await this.downloadManager.addTask(downloadTask);
 
+      this.dispatch(DownloadService.TASK_ADDED_EVENT, [downloadTask]);
+
+      this.updateDownloadedStat({ type: downloadTask.type });
+
       return {
         result: true
       };
@@ -127,16 +129,16 @@ class DownloadService extends AbstractService {
     let key = '';
 
     switch (type) {
-      case 'ugoira':
+      case "PIXIV_UGOIRA":
         key = 'statUgoiraDownloaded';
         break;
-      case 'illust':
+      case 'PIXIV_ILLUST':
         key = 'statIllustDownloaded';
         break;
-      case 'manga':
+      case 'PIXIV_MANGA':
         key = 'statMangaDownloaded';
         break;
-      case 'novel':
+      case 'PIXIV_NOVEL':
         key = 'statNovelDownloaded';
         break;
       default:
@@ -176,5 +178,7 @@ console.log(tab);
     }
   }
 }
+
+DownloadService.TASK_ADDED_EVENT = 'task-added';
 
 export default DownloadService;

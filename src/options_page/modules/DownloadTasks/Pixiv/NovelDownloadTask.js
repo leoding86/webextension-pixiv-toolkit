@@ -125,17 +125,16 @@ class NovelDownloadTask extends AbstractDownloadTask {
    * @override
    */
   async start() {
-    this.tryStart(async () => {
-      if (this.options.bookType === 'epub') {
-        await this.makeEpubBook();
-      } else {
-        await this.makeTxtBook();
-      }
+    debugger;
+    if (this.options.bookType === 'epub') {
+      await this.makeEpubBook();
+    } else {
+      await this.makeTxtBook();
+    }
 
-      this.progress = 1;
+    this.progress = 1;
 
-      this.dispatch('start');
-    });
+    this.dispatch('start');
   }
 
   /**

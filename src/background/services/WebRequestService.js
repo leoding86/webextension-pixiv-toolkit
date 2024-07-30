@@ -1,6 +1,9 @@
 import AbstractService from "./AbstractService";
 import browser from "@/modules/Extension/browser";
 
+/**
+ * @deprecated
+ */
 class WebRequestService extends AbstractService {
   constructor() {
     super();
