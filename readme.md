@@ -10,7 +10,7 @@ There is a layer with a arrow will appear at the center bottom of the page if th
 
 ----------
 
-## **Break changes:**
+## **6.0.0 Break changes:**
 
 ### **1. Move download process to standalone option page from content script.**
 In current Pixiv Toolkit, the download is processed in content script which is the target page, user must be waiting the download complete before visit other pages, it could be frustrating if user want downloads multiple resources at same time because it need keep multiple tabs opened at same time.
@@ -104,7 +104,7 @@ Pixiv Toolkit Next 是 Pixiv Toolkit 下一个重要更新的预览版本，为�
 
 ----------
 
-## **重大更改：**
+## **6.0.0 重大更改：**
 
 ### **1. 将下载任务从内容页移动到独立页面**
 在原版本的 Pixiv Toolkit 中，下载是在内容页，也就是目标页面，进行的，用户必须等待下载完成才能访问别的页面，如果用户需要同时下载多个页面资源，将可能会是一件令人沮丧的事情，因为需要保持多个页面标签在浏览器中打开。
