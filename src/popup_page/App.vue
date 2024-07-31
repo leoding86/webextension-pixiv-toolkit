@@ -75,7 +75,9 @@ export default {
       let count = parseInt(this.browserItems.statIllustDownloaded) +
         parseInt(this.browserItems.statUgoiraDownloaded) +
         parseInt(this.browserItems.statMangaDownloaded) +
-        parseInt(this.browserItems.statNovelDownloaded);
+        parseInt(this.browserItems.statNovelDownloaded) +
+        parseInt(this.browserItems.statComicEpisodeDownloaded || 0) +
+        parseInt(this.browserItems.statUnkownDownloaded || 0);
 
       return `<strong>${count}</strong> ` + this.tl('work' + (count > 1 ? 's' : ''));
     }

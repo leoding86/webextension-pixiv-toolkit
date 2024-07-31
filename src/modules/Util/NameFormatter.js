@@ -97,7 +97,7 @@ class NameFormatter {
   filterIllegalChars(name) {
     this.illegalChars.forEach(char => {
       while (name.indexOf(char) > -1) {
-        name.replace(char, '_');
+        name = name.replace(char, '_');
       }
     });
 

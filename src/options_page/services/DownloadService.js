@@ -141,12 +141,15 @@ class DownloadService extends AbstractService {
       case 'PIXIV_NOVEL':
         key = 'statNovelDownloaded';
         break;
+      case 'PIXIV_COMIC_EPISODE':
+        key = 'statComicEpisodeDownloaded';
+        break;
       default:
-        throw new RuntimeError('Unkown stat downloaded type "' + type + '"');
+        key = 'statUnkownDownloaded';
     }
 
     let data = {};
-    data[key] = typeof this.application.settings[key] === 'number' ? ++this.application.settings[key] : 0;
+    data[key] = typeof this.application.settings[key] === 'number' ? ++this.application.settings[key] : 1;
 
     this.application.getService('setting').updateSettings(data);
   }

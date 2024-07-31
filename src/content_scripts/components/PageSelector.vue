@@ -68,6 +68,15 @@ export default {
     }
   },
 
+  watch: {
+    items: {
+      deep: true,
+      handler(val) {
+        console.log(val);
+      }
+    }
+  },
+
   created() {
     this.pages = this.items.map(item => {
       return {
@@ -78,7 +87,7 @@ export default {
   },
 
   mounted() {
-    //
+
   },
 
   beforeDestroy() {
@@ -165,6 +174,10 @@ export default {
 
     downloadSelectedPages() {
       this.$emit('download');
+    },
+
+    updatePage(index, url) {
+      this.$set(this.pages, index, Object({ page: url }, this.pages[index]));
     }
   }
 }

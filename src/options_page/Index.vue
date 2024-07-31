@@ -48,7 +48,7 @@
               <v-list-tile-title>{{ tl('settings') }}</v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
-          <v-list-tile ripple @click="routeTo('History')">
+          <v-list-tile ripple @click="routeTo('ChangeLogs')">
             <v-list-tile-content>
               <v-list-tile-title>{{ tl('Change_History') }}</v-list-tile-title>
             </v-list-tile-content>

@@ -6,7 +6,9 @@
     <ptk-button @click="download"
       :type="downloadButtonType"
     >{{ tl('_download') }}</ptk-button>
-    <page-selector v-if="pages && pages.length > 1"
+    <page-selector
+      ref="pageSelector"
+      v-if="pages && pages.length > 1"
       :items="pages"
       @select="pageSelectorSelectHandler"
       @download="pageSelectorDownloadHandler"
@@ -66,7 +68,7 @@ export default {
       /**
        * @type {boolean}
        */
-      downloadedAt: 0,
+      downloadedAt: 0
     };
   },
 
@@ -114,7 +116,32 @@ export default {
         });
 
         if (this.resource.getPages()) {
-          this.pages = this.resource.getPages();
+          if (this.resource.getPageResolver()) {
+            this.resource.getPages().forEach(page => {
+              this.pages.push('');
+            });
+
+            const pageResolver = this.resource.getPageResolver();
+            const resolvePages = async (index = 0, pages) => {
+              const page = pages[index];
+
+              if (!page) {
+                return;
+              }
+
+              const url = await pageResolver(page);
+
+              if (this.$refs.pageSelector) {
+                this.$refs.pageSelector.updatePage(index, url);
+              }
+
+              resolvePages(index + 1, pages);
+            };
+
+            resolvePages(0, this.resource.getPages());
+          } else {
+            this.pages = this.resource.getPages();
+          }
         }
 
         this.checkIfDownloaded();

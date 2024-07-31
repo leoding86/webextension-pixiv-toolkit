@@ -112,6 +112,10 @@ class AbstractResource {
   getPages() {
     return this.context.pages ? this.context.pages : null;
   }
+
+  getPageResolver() {
+    return this.context.pageResolver;
+  }
 }
 
 export default AbstractResource;

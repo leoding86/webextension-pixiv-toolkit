@@ -60,7 +60,8 @@ export default {
     resetVersionNumber() {
       browser.storage.local.set({
         version: '0.0.1',
-        guideShowed: false
+        guideShowed: false,
+        showUpdateChangeLog: false
       }, () => {
         browser.storage.local.get(null, items => {
           console.log(items);

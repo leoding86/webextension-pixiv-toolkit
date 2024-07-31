@@ -34,15 +34,28 @@ class Downloader extends Event {
   counter = 0;
 
   /**
+   * @type {boolean}
+   */
+  paused = false;
+
+  /**
    * @constructor
    * @param {Object} arguments
    * @param {Number} [arguments.processors=1]
    * @param {Object} [requestOptions={}]
+   * @param {CallableFunction} [beforeItemDownload]
    */
-  constructor({ processors = 1, requestOptions = {} }) {
+  constructor({
+    processors = 1,
+    requestOptions = {},
+    beforeItemDownload = undefined,
+    afterItemDownload = undefined
+  }) {
     super();
     this.processors = processors;
     this.requestOptions = requestOptions;
+    this.beforeItemDownload = beforeItemDownload;
+    this.afterItemDownload = afterItemDownload;
     this.successCount = 0;
     this.progresses = [];
     this.asBlob = true;
@@ -79,6 +92,8 @@ class Downloader extends Event {
   }
 
   pause() {
+    this.paused = true;
+
     this.downloads.forEach(download => {
       download.abort();
     });
@@ -92,6 +107,8 @@ class Downloader extends Event {
   }
 
   download() {
+    this.paused = false;
+
     if (this.failedDownloadFiles.length > 0) {
       this.downloadFiles = this.downloadFiles.concat(this.failedDownloadFiles);
       this.failedDownloadFiles = [];
@@ -101,6 +118,10 @@ class Downloader extends Event {
   }
 
   downloadNext() {
+    if (this.paused) {
+      return;
+    }
+
     let downloadFile = this.downloadFiles.shift();
 
     if (downloadFile) {
@@ -113,7 +134,16 @@ class Downloader extends Event {
   }
 
   downloadFile(downloadFile) {
-    let download = new Download(downloadFile.file, Object.assign({ method: 'GET'}, this.requestOptions));
+    let requestOptions = Object.assign({ method: 'GET' }, this.requestOptions);
+
+    if (this.beforeItemDownload && typeof this.beforeItemDownload === 'function') {
+      this.beforeItemDownload.call(this, {
+        requestOptions,
+        downloadFile
+      });
+    }
+
+    let download = new Download(downloadFile.file, requestOptions);
     download.asBlob = this.asBlob;
 
     /**
@@ -135,16 +165,35 @@ class Downloader extends Event {
     download.addListener('onfinish', (data, mimeType) => {
       this.removeDownloadFromCollection(download);
 
-      this.successCount++;
-
-      this.dispatch('item-finish', [{
+      const itemFinishData = {
         blob: this.asBlob ? data : null,
         data: this.asBlob ? null : data,
         args: downloadFile.args,
         download,
         mimeType
-      }]);
+      };
 
+      if (this.afterItemDownload && typeof this.afterItemDownload === 'function') {
+        const afterItemDownloadResult = this.afterItemDownload.call(this, {
+          itemFinishData,
+          downloadFile
+        });
+
+        if (afterItemDownloadResult instanceof Promise) {
+          afterItemDownloadResult.then(() => {
+            this.successCount++;
+            this.dispatch('item-finish', [itemFinishData]);
+            this.downloadNext();
+          }).catch((error) => {
+            this.dispatch('item-error', [error]);
+          });
+
+          return;
+        }
+      }
+
+      this.successCount++;
+      this.dispatch('item-finish', [itemFinishData]);
       this.downloadNext();
     });
 

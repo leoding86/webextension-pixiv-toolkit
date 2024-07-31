@@ -125,7 +125,6 @@ class NovelDownloadTask extends AbstractDownloadTask {
    * @override
    */
   async start() {
-    debugger;
     if (this.options.bookType === 'epub') {
       await this.makeEpubBook();
     } else {

@@ -3,6 +3,9 @@ import DateFormatter from "@/modules/Util/DateFormatter";
 import md5 from "md5";
 import moment from "moment";
 import Request from "@/modules/Net/Request";
+import { decrypteImage } from "./ImageDecrypte";
+import Download from "@/modules/Net/Download";
+import { encrypteHashKey } from "./config";
 
 /**
  * @class
@@ -11,7 +14,7 @@ class EpisodeParser {
   /**
    * @type {string} yek
    */
-   yek = 'm' + 'A' + 't' + 'W' + '1' + 'X' + '8' + 'S' + 'z' + 'G' + 'S' + '8' + '8' + '0' + 'f' + 's' + 'j' + 'E' + 'X' + 'l' + 'M' + '7' + '3' + 'Q' + 'p' + 'S' + '1' + 'i' + '4' + 'k' + 'U' + 'M' + 'B' + 'h' + 'y' + 'h' + 'd' + 'a' + 'Y' + 'y' + 'S' + 'k' + '8' + 'n' + 'W' + 'z' + '5' + '3' + '3' + 'n' + 'r' + 'E' + 'u' + 'n' + 'a' + 'S' + 'p' + 'l' + 'g' + '6' + '3' + 'f' + 'z' + 'T';
+   yek = encrypteHashKey;
 
    /**
     * @type {string} Target page url
@@ -85,13 +88,13 @@ class EpisodeParser {
     * @returns {string}
     */
    buildContextUrl(id) {
-    return `https://comic.pixiv.net/api/app/episodes/${id}/read_v2`;
+    return `https://comic.pixiv.net/api/app/episodes/${id}/read_v4`;
    }
 
    /**
     * Make context standard
     * @param {object} context
-    * @returns {object}
+    * @returns {{ pages: { url: string, height: number, width: number, gridsize: number, key: string } }}
     */
     standardContext(context) {
       let sContext = {
@@ -102,7 +105,7 @@ class EpisodeParser {
         numberingTitle: context.reading_episode.numbering_title,
         workId: context.reading_episode.work_id,
         workTitle: context.reading_episode.work_title,
-        pages: context.reading_episode.pages.map(item => item.url),
+        pages: context.reading_episode.pages,
       };
 
       sContext.totalPages = sContext.pages.length;
@@ -117,9 +120,13 @@ class EpisodeParser {
    parserContext() {
     this.parseUrl(this.url);
 
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       let clientTime = moment().format('YYYY-MM-DDTHH:mm:ssZ');
-      let clientHash = md5(clientTime.concat(this.yek));
+      const cryptedArrayBuffer = await crypto.subtle.digest(
+        'SHA-256',
+        new TextEncoder().encode(clientTime.concat(this.yek))
+      );
+      let clientHash = Array.from(new Uint8Array(cryptedArrayBuffer)).map(i => i.toString(16).padStart(2, '0')).join('');
 
       this.request = new Request(this.buildContextUrl(this.context.id), {
         method: 'GET',
@@ -138,6 +145,30 @@ class EpisodeParser {
 
         if (json && json.data) {
           this.context = this.standardContext(json.data);
+
+          /**
+           * Beware the images from pixiv comic have been encrypted, for displaying
+           * the previews in download selector we append a image resolver to the
+           * context, then target page can call the resolver to get the url of the
+           * images
+           */
+          this.context.pageResolver = (page) => {
+            return new Promise((resolve, reject) => {
+              const download = new Download(page.url, {
+                method: 'GET',
+                headers: {
+                  'X-Cobalt-Thumber-Parameter-Gridshuffle-Key': page.key
+                }
+              });
+
+              download.addListener('onfinish', async data => {
+                const url = await decrypteImage(page, data);
+                resolve(url);
+              });
+
+              download.download();
+            });
+          };
 
           /**
            * Append current url to context
