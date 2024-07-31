@@ -1,17 +1,8 @@
-import DownloadRelativeLocationDialog from '@@/components/options/DownloadRelativeLocationDialog';
-import History from '@@/components/History';
 import Options from '@@/components/Options'
-import RenameIllustrationDialog from '@@/components/options/RenameIllustrationDialog';
-import RenameIllustrationImageDialog from '@@/components/options/RenameIllustrationImageDialog';
-import RenameMangaDialog from '@@/components/options/RenameMangaDialog';
-import RenameMangaImageDialog from '@@/components/options/RenameMangaImageDialog';
-import RenameNovelDialog from '@@/components/options/RenameNovelDialog';
-import RenameUgoiraDialog from '@@/components/options/RenameUgoiraDialog';
 import Router from 'vue-router'
 import Sponsors from '@@/components/Sponsors';
 import ThirdParty from '@@/components/ThirdParty';
-import UgoriaExtendDialog from '@@/components/options/UgoiraExtendDialog'
-import Vue from 'vue'
+import Vue from 'vue';
 
 Vue.use(Router)
 
@@ -21,51 +12,12 @@ export default new Router({
       path: '/',
       name: 'Options',
       component: Options,
-      children: [
-          {
-              path: 'ugoira-extend',
-              name: 'UgoiraExtend',
-              component: UgoriaExtendDialog,
-          }, {
-              path: 'rename-ugoira',
-              name: 'RenameUgoira',
-              component: RenameUgoiraDialog
-          }, {
-              path: 'rename-manga',
-              name: 'RenameManga',
-              component: RenameMangaDialog
-          }, {
-              path: 'rename-manga-image',
-              name: 'RenameMangaImage',
-              component: RenameMangaImageDialog
-          }, {
-              path: 'rename-illustration',
-              name: 'RenameIllustration',
-              component: RenameIllustrationDialog
-          }, {
-              path: 'rename-illustration-image',
-              name: 'RenameIllustrationImage',
-              component: RenameIllustrationImageDialog
-          }, {
-            path: 'download-relative-dialog',
-            name: 'DownloadRelativeLocationDialog',
-            component: DownloadRelativeLocationDialog
-          }, {
-            path: 'rename-novel',
-            name: "RenameNovel",
-            component: RenameNovelDialog
-          }
-      ]
     }, {
-      path: '/visit-history',
-      name: 'VisitHistory',
-      component: () => import('@@/components/VisitHistory')
+      path: '/history',
+      name: 'History',
+      component: () => import('@@/components/History')
     }, {
-      path: '/downloads',
-      name: 'Downloads',
-      component: () => import('@@/components/Downloads')
-    }, {
-      path: '/third-party',
+      path: '/third_party',
       name: 'ThirdParty',
       component: ThirdParty
     }, {
@@ -73,15 +25,15 @@ export default new Router({
       name: 'Sponsors',
       component: Sponsors
     }, {
-      path: '/history',
-      name: 'History',
-      component: History
+      path: '/change_logs',
+      name: 'ChangeLogs',
+      component: () => import('@@/components/ChangeLogs')
     }, {
       path: '/test',
       name: 'Test',
       component: () => import('@@/components/Test')
     }, {
-      path: '/diagnosis-messages',
+      path: '/diagnosis_messages',
       name: 'DiagnosisMessages',
       component: () => import('@@/components/DiagnosisMessages')
     }

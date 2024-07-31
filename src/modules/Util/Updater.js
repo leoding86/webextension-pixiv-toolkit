@@ -1,10 +1,9 @@
-import Browser from '@/modules/Browser/Browser';
+import browser from '../Extension/browser';
 import versionCompare from '@/modules/Util/versionCompare';
 
 class Updater {
   constructor(currentSettings, defaultSettings) {
     this.currentSettings = currentSettings;
-    this.browser = Browser.getBrowser();
     this.defaultSettings = defaultSettings;
   }
 
@@ -26,8 +25,8 @@ class Updater {
     let removeSettingKeys = currentSettingKeys.filter(key => defaultSettingKeys.indexOf(key) === -1);
 
     return new Promise(resolve => {
-      this.browser.storage.local.set(this.currentSettings, () => {
-        this.browser.storage.local.remove(removeSettingKeys, () => {
+      browser.storage.local.set(this.currentSettings, () => {
+        browser.storage.local.remove(removeSettingKeys, () => {
           resolve();
         });
       });

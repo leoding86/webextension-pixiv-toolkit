@@ -14,7 +14,7 @@ class Download extends Request {
 
   /**
    * @override
-   * @param {('onfinish')} eventName
+   * @param {('ondata'|'onprogress'|'onabort'|'onerror'|'onload'|'onfinish')} eventName
    */
   addListener(eventName, listener, thisArg) {
     super.addListener(eventName, listener, thisArg);
@@ -27,7 +27,8 @@ class Download extends Request {
     let self = this;
 
     this.addListener('onload', data => {
-      self.dispatch('onfinish', [self.asBlob ? new Blob([data.buffer], { type: self.getResponseHeader('Content-Type') }) : data.buffer]);
+      let mimeType = self.getResponseHeader('Content-Type');
+      self.dispatch('onfinish', [self.asBlob ? new Blob([data.buffer], { type: mimeType }) : data.buffer, mimeType]);
     });
 
     this.send(data)

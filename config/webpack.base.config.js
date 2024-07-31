@@ -1,5 +1,6 @@
 const utils = require('./utils');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const webpack = require('webpack');
 
 module.exports = env => {
   let config = Object.assign({}, {
@@ -29,6 +30,11 @@ module.exports = env => {
         }
       ]
     },
+    plugins: [
+      new webpack.DefinePlugin({
+        PRESET_BROWSER: JSON.stringify(process.env.PLATFORM_ENV)
+      })
+    ],
     externals: {
       vue: 'Vue',
       'vue-i18n': 'VueI18n',

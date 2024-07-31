@@ -1,8 +1,8 @@
 {
-   "author": {
+   "_author": {
       "message": "画师"
    },
-   "author_id": {
+   "_author_id": {
       "message": "画师编号"
    },
    "downloadFullscreenZipFile": {
@@ -33,7 +33,7 @@
       "message": "下载Pixiv，Fanbox、Comic上的动图、图片、漫画和小说等"
    },
    "extName": {
-      "message": "Pixiv工具箱"
+      "message": "Pixiv 工具箱 Next"
    },
    "generate_gif_btn_complete_text": {
       "message": "保存GIF"
@@ -131,11 +131,8 @@
    "Manga": {
     "message": "漫画"
    },
-   "rename_manga": {
+   "_rename_manga": {
       "message": "重命名漫画"
-   },
-   "rename_manga_image": {
-      "message": "重命名漫画内图片"
    },
    "quick_picks": {
       "message": "快速选取"
@@ -266,8 +263,8 @@
    "Novel": {
        "message": "小说"
    },
-   "rename_novel": {
-       "message": "重命名小说"
+   "_novel_rename_rule": {
+       "message": "小说重命名规则"
    },
    "include_novel_description": {
        "message": "包含小说描述内容"
@@ -281,14 +278,11 @@
    "clear_history_data_cannot_be_reversed": {
        "message": "此操作不可恢复"
    },
-   "Clear": {
+   "_clear": {
        "message": "清空"
    },
    "History":{
        "message": "历史记录"
-   },
-   "Cancel": {
-       "message": "取消"
    },
    "comment": {
        "message": "评论"
@@ -356,17 +350,14 @@
    "Download_panel_will_show_up_automatically_when_page_loaded": {
        "message": "当目标页面被加载完成时，自动显示下载面板"
    },
-   "illust_history": {
+   "_history": {
        "message": "历史记录"
    },
    "Illustration": {
        "message": "绘画"
    },
-   "Rename_illustration": {
+   "_rename_illustration": {
        "message": "重命名绘画"
-   },
-   "Rename_illustration_image": {
-       "message": "重命名绘画图片"
    },
    "Download_file_if_everything_is_ready": {
        "message": "准备完成直接下载"
@@ -404,13 +395,13 @@
    "_Enable_this_may_cause_issue_about_loading_images": {
        "message": "启用此项可能会导致加载页面问题"
    },
-   "year": {
+   "_year": {
        "message": "年"
    },
-   "month": {
+   "_month": {
        "message": "月"
    },
-   "day": {
+   "_day": {
        "message": "日"
    },
    "_keep_page_number": {
@@ -611,9 +602,6 @@
    "_max_history_items": {
        "message": "最多历史记录"
    },
-   "_max_download_records": {
-       "message": "最多下载记录"
-   },
    "_reload_to_apply_change": {
        "message": "重新加载以应用更改（所有下载中的任务将会中断）"
    },
@@ -671,7 +659,7 @@
    "_select_and_dl": {
        "message": "选择并下载"
    },
-   "_select_images_you_want_to_download": {
+   "_select_pages_you_want_to_download": {
        "message": "选择要下载的图片"
    },
    "_pending": {
@@ -705,7 +693,7 @@
        "message": "选择动图转化工具"
    },
    "_startup_message": {
-       "message": "自从版本v5.0.0开始，插件可以独立保存每个图片，而不需要一定将他们打包才能保存。但是这个需要用户授权这样做。请点击更多信息以获取详情。你可以稍后在设置中修改以下设置。"
+       "message": "Pixiv Toolkit Next版本 是 Pixiv 工具箱的下一个重要更新的版本。相对于目前的 Pixiv Toolkit 有一些重大的功能更新。可以去项目的 Github 页面了解更多。"
    },
    "_ffmpeg_custom_convert_command": {
        "message": "FFmpeg自定义转换命令"
@@ -728,8 +716,8 @@
    "_create_subdirectory": {
        "message": "创建子目录"
    },
-   "_create_subdirectory_when_download_Pack_Files_setting_is_disabled": {
-       "message": "当下载\"打包文件\"禁用时为下载的作品创建子目录"
+   "_create_subdirectory_for_illustration": {
+       "message": "为下载的作品创建子目录"
    },
    "_dynamic": {
        "message": "动态"
@@ -778,5 +766,122 @@
    },
    "_view": {
        "message": "查看"
-   }
+   },
+   "_interface": {
+       "message": "界面"
+   },
+   "_center": {
+       "message": "中"
+   },
+   "_left": {
+       "message": "左"
+   },
+   "_right": {
+       "message": "右"
+   },
+   "_download_panel_position": {
+       "message": "下载面板位置"
+   },
+   "_download_panel_style": {
+       "message": "下载面板样式"
+   },
+   "_series_id": {
+       "message": "系列ID"
+   },
+   "_series_title": {
+       "message": "系列标题"
+   },
+   "_series_order": {
+       "message": "系列序号"
+   },
+   "novel_rename_hint": {
+       "message": "例子: {authorId}_{author}_{id}_{title}. 你可以将小说不是系列作品时想要移除的部分放在两个#标签之间。例如：{author}#-{seriesTitle}-{seriesOrder}#-{title}-{id}"
+   },
+   "_show_reload_in_popup": {
+       "message": "在插件弹出框中显示重载插件"
+   },
+   "_show": {
+        "message": "显示"
+   },
+   "_pixiv_comic": {
+       "message": "Pixiv漫画"
+   },
+   "_rename_comic": {
+        "message": "重命名漫画"
+    },
+    "_save_comic_in_relative_location": {
+        "message": "保存漫画到相对位置"
+    },
+    "_id": {
+        "message": "编号"
+    },
+    "_title": {
+        "message": "标题"
+    },
+    "_sub_title": {
+        "message": "子标题"
+    },
+    "_numbering_title": {
+        "message": "章节标题"
+    },
+    "_work_id": {
+        "message": "作品编号"
+    },
+    "_work_title": {
+        "message": "作品标题"
+    },
+    "_page_num": {
+        "message": "页码"
+    },
+    "_download_metadata": {
+        "message": "下载元数据"
+    },
+    "_download_metadata_when_downloading_works_only_support_works_from_pixiv_main_site": {
+        "message": "下载作品时同时下载元数据，仅支持Pixiv主站点（不支持小说类型）"
+    },
+    "_all": {
+        "message": "全部"
+    },
+    "_download_manager": {
+        "message": "下载管理器"
+    },
+    "_show_in_folder": {
+        "message": "在文件夹中显示"
+    },
+    "_download_task_settings": {
+        "message": "下载任务设置"
+    },
+    "_global_settings": {
+        "message": "全局"
+    },
+    "_global_setting": {
+        "message": "全局"
+    },
+    "_rename": {
+        "message": "重命名"
+    },
+    "_downloaded": {
+        "message": "已下载"
+    },
+    "_the_resource_is_already_in_download_manager": {
+        "message": "此资源的下载已存在于下载管理器中"
+    },
+    "_download_manager_isnt_open": {
+        "message": "下载管理器似乎没有开启，你可以在设置页面或弹出页面中打开下载管理器。"
+    },
+    "_switch_to_it_and_close": {
+        "message": "切换并关闭"
+    },
+    "_download_manager_is_already_opened": {
+        "message": "下载管理器已经开启。"
+    },
+    "_there_isnt_any_download": {
+        "message": "当前没有任何下载"
+    },
+    "_cancel": {
+        "message": "取消"
+    },
+    "_max_process_download_tasks": {
+        "message": "最大执行下载数"
+    }
 }

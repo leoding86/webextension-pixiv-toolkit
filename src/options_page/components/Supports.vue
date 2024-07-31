@@ -36,27 +36,18 @@
     <v-btn v-if="showInlineSponsorsLink"
       small
       depressed
-      round class="support-btn" @click="routeTo('Sponsors')"
+      round class="support-btn" @click="openSponsorsInNew ? openInNewTab(sponsorsURL) : routeTo('Sponsors')"
       style="background:#fff;">
       😍<span class="button-text" v-show="largeWindow">{{ tl('Sponsors') }}</span>
-      <v-icon>keyboard_arrow_right</v-icon>
+      <v-icon v-if="openSponsorsInNew">open_in_new</v-icon>
+      <v-icon v-else>keyboard_arrow_right</v-icon>
     </v-btn>
-
-    <!-- <v-btn
-     small
-     class="support-btn"
-     @click="openInNewTab('https://chrome.google.com/webstore/detail/manga-toolkit/nlmklhfeikfefikpbpckillcbpfjmjbf')"
-    >
-      <img src="../assets/manga-toolkit.png">
-      {{ tl('Try_Manga_Toolkit') }}
-      <v-icon right>open_in_new</v-icon>
-    </v-btn> -->
   </div>
 </template>
 
 <script>
+import browser from "@/modules/Extension/browser";
 import common from "@@/modules/common";
-import cr from "@@/modules/cr";
 import chromeEsIcon from '../assets/chrome-es.png';
 import firefoxAmoIcon from '../assets/firefox-amo.png';
 
@@ -75,6 +66,11 @@ export default {
     showPatreon: {
       type: Boolean,
       default: true
+    },
+
+    openSponsorsInNew: {
+      type: Boolean,
+      default: false
     }
   },
 
@@ -99,6 +95,10 @@ export default {
           url: 'https://addons.mozilla.org/en-US/firefox/addon/pixiv-toolkit/'
         }
       }
+    },
+
+    sponsorsURL() {
+      return browser.runtime.getURL('options_page/index.html#/sponsors');
     }
   },
 

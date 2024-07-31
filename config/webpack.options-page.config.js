@@ -17,7 +17,8 @@ module.exports = env => {
 
   return merge(baseConfig, {
     entry: {
-      app: './src/options_page/main.js'
+      index: './src/options_page/index.js',
+      downloads: './src/options_page/downloads.js'
     },
     output: {
       path: utils.resolve(`dist/${platform}/options_page`),
@@ -91,7 +92,6 @@ module.exports = env => {
       new HtmlWebpackPlugin({
         filename: utils.resolve(`dist/${platform}/options_page/index.html`),
         template: utils.resolve('src/options_page/index.html'),
-        inject: true,
         minify: {
           removeComments: true,
           collapseWhitespace: true,
@@ -100,6 +100,19 @@ module.exports = env => {
           // https://github.com/kangax/html-minifier#options-quick-reference
         },
         // necessary to consistently work with multiple chunks via CommonsChunkPlugin
+        chunks: ['index'],
+        chunksSortMode: 'auto'
+      }),
+
+      new HtmlWebpackPlugin({
+        filename: utils.resolve(`dist/${platform}/options_page/downloads.html`),
+        template: utils.resolve(`src/options_page/downloads.html`),
+        minify: {
+          removeComments: true,
+          collapseWhitespace: true,
+          removeAttributeQuotes: true
+        },
+        chunks: ['downloads'],
         chunksSortMode: 'auto'
       }),
 
@@ -108,7 +121,8 @@ module.exports = env => {
     externals: {
       common: 'common',
       browser: 'browser',
-      chrome: 'chrome'
+      chrome: 'chrome',
+      dexie: 'Dexie'
     }
   });
 };

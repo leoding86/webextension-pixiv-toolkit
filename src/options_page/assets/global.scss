@@ -1,6 +1,10 @@
 $beta-notice: #da0000;
 $side-width: 300px;
 
+.theme--light.application {
+  background: #f9f9f9;
+}
+
 .beta-notice {
   color: $beta-notice;
 }
@@ -31,7 +35,7 @@ $side-width: 300px;
   max-width: 700px;
 }
 
-a.maintitle {
+%a-maintitle, a.maintitle {
   text-decoration: none;
   color: #333;
 
@@ -41,7 +45,7 @@ a.maintitle {
 }
 
 a.subtitle {
-  @extend a.maintitle;
+  @extend %a-maintitle;
   color: #999;
 }
 
@@ -66,6 +70,30 @@ a.subtitle {
 
 .change-log__list li {
   font-size: 12px;
+}
+
+.dataset-empty-notice {
+  font-size: 12px;
+  font-weight: 700;;
+  text-align: center;
+  color: #a1a1a1;
+}
+
+.v-expansion-panel, .v-card {
+  border: 1px solid rgba(0, 0, 0, .12) !important;
+  border-radius: 10px;
+  box-shadow: none;
+  overflow: hidden;
+}
+
+.v-input--switch__thumb {
+  box-shadow: none;
+  color: #f0f0f0 !important;
+}
+
+.menuable__content__active {
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, .15);
 }
 
 @media (max-width: 1300px) {

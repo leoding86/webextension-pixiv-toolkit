@@ -9,8 +9,6 @@
 </template>
 
 <script>
-import AssetCacheService from '@@/modules/AssetCacheService';
-
 export default {
   props: {
     placeholder: {
@@ -34,13 +32,6 @@ export default {
       type: String,
       default: 'image'
     },
-
-    cacheService: {
-      type: Object,
-      default: () => {
-        return AssetCacheService.getInstance()
-      }
-    }
   },
 
   data() {
@@ -57,18 +48,21 @@ export default {
 
   watch: {
     src(val) {
-      this.imageSrc = this.defaultImage;
+      // console.log(val)
+      this.imageSrc = val;
 
-      this.cacheService.getCache(val).then(src => {
-        this.imageSrc = src;
-      });
+      // this.cacheService.getCache(val).then(src => {
+      //   this.imageSrc = src;
+      // });
     }
   },
 
-  mounted() {
-    this.cacheService.getCache(this.src).then(src => {
-      this.imageSrc = src;
-    });
+  created() {
+    this.imageSrc = this.src;
+
+    // this.cacheService.getCache(this.src).then(src => {
+    //   this.imageSrc = src;
+    // });
   }
 }
 </script>

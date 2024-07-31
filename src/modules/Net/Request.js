@@ -29,6 +29,15 @@ class Request extends Event {
     Request.globalOptions = globalOptions;
   }
 
+  /**
+   * @inheritdoc
+   * @override
+   * @param {('ondata'|'onprogress'|'onabort'|'onerror'|'onload')} eventName
+   */
+  addListener(eventName, listener, thisArg) {
+    super.addListener(eventName, listener, thisArg);
+  }
+
   abort() {
     this.fetchAbortController && this.fetchAbortController.abort();
 
@@ -36,19 +45,18 @@ class Request extends Event {
   }
 
   readData(reader) {
-    if (this.fetchFallbackAbortSignal) {
-      this.dispatch('onerror', [new Error('Request aborted')]);
-      return;
-    }
-
-    let textDecoder = new TextDecoder();
-
     setTimeout(() => {
       reader.read().then(({ done, value }) => {
         if (done) {
           this.dispatch('onload', [this.responseType === 'arrayBuffer' ? new Uint8Array(this.responseData) : this.responseData]);
         } else {
+          if (this.fetchFallbackAbortSignal) {
+            this.dispatch('onabort', [new Error('Request aborted')]);
+            return;
+          }
+
           if (this.responseType === 'plain') {
+            let textDecoder = new TextDecoder();
             this.responseData += textDecoder.decode(value);
           } else if (this.responseType === 'arrayBuffer') {
             value.forEach(char => {

@@ -35,7 +35,6 @@
 import Request from '@/modules/Net/Request';
 import CacheableImage from './CacheableImage';
 import AppSuggest from './AppSuggest';
-import IllustHistory from '@/repositories/IllustHistory';
 
 export default {
   components: {
@@ -54,14 +53,15 @@ export default {
   },
 
   created() {
-    this.illustHistory = new IllustHistory();
+    //
   },
 
   methods: {
     resetVersionNumber() {
       browser.storage.local.set({
         version: '0.0.1',
-        guideShowed: false
+        guideShowed: false,
+        showUpdateChangeLog: false
       }, () => {
         browser.storage.local.get(null, items => {
           console.log(items);
@@ -100,14 +100,14 @@ export default {
             data = JSON.parse(xhr.responseText)
 
             if (data.error === false && data.body) {
-              vm.illustHistory.putIllust({
-                id: data.body.illustId,
-                title: data.body.illustTitle,
-                images: data.body.urls,
-                type: data.body.illustType,
-                viewed_at: Math.floor(Date.now()),
-                r: data.body.xRestrict === 0 ? false : true
-              })
+              // vm.illustHistory.putIllust({
+              //   id: data.body.illustId,
+              //   title: data.body.illustTitle,
+              //   images: data.body.urls,
+              //   type: data.body.illustType,
+              //   viewed_at: Math.floor(Date.now()),
+              //   r: data.body.xRestrict === 0 ? false : true
+              // })
             }
           } catch (e) {
             //do nothing

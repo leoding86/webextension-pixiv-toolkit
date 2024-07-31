@@ -37,8 +37,8 @@ Badge.prototype = {
     },
 
     render: function() {
-        browser.browserAction.setBadgeText({text: this.text, tabId: this.tabId});
-        browser.browserAction.setBadgeBackgroundColor({color: this.bgColor, tabId: this.tabId});
+        browser.action.setBadgeText({text: this.text, tabId: this.tabId});
+        browser.action.setBadgeBackgroundColor({color: this.bgColor, tabId: this.tabId});
     }
 }
 

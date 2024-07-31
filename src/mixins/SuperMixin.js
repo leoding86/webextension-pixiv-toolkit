@@ -1,11 +1,15 @@
 export default {
   computed: {
     browserItems() {
-      return this.$root.globalBrowserItems || this.$root.browserItems;
+      return this.$root.globalBrowserItems || this.$root.appSettings;
     },
 
     isFirefox() {
       return this.$root.isFirefox_;
+    },
+
+    $_browser() {
+      return window.$_browser;
     }
   },
 

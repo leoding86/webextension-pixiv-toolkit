@@ -1,3 +1,4 @@
+import { app } from '@/background/Application';
 import HistoryBackupRepo from '@/repositories/HistoryBackup';
 import IllustHistoryPort from './IllustHistoryPort';
 import IllustHistoryRepo from '@/repositories/IllustHistory';
@@ -8,7 +9,7 @@ export default class BackgroundPort extends IllustHistoryPort {
   constructor() {
     super();
 
-    this.illustHistoryRepo = new IllustHistoryRepo({ max: window.$extension.items.maxHistoryItems });
+    this.illustHistoryRepo = new IllustHistoryRepo({ max: app().settings.maxHistoryItems });
     this.historyBackupRepo = HistoryBackupRepo.getDefault();
   }
 

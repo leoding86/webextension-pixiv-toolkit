@@ -1,3 +1,28 @@
+v6.0.0
+Adapted manifest v3, you maybe encounter some problems, feel free to open an issue if you feel something wrong;
+Change the way for managing downloads, download tasks are managed by Download Manager, please open Download Manager before downloading anything;
+Fix issue about downloading Pixiv Comic Episode;
+For more detail for this version, please read https://github.com/leoding86/webextension-pixiv-toolkit/tree/next.
+
+v5.5.3
+Fix issue about download panel can't collapse when "Activate download panel automatically" setting is disabled;
+Fix issue about Fanbox can't be opened when using Firefox;
+Fix issue about extension can't take over downloads when using Firefox.
+
+v5.5.2
+Fix issue about non-free Fanbox work can't be downloaded;
+Fix issue about downloaded filename is 'undefined' on Fanbox when the illustration rename setting is empty.
+
+v5.5.1
+Add download work on Pixiv Comic feature;
+Add highlight on download button when download is complete;
+Minor fixes.
+
+v5.5.0
+Add settings for changing the position and the style of download panel;
+Add new novel rename tags, include series id, series order and series title;
+Fix issue of overwriting the http headers multiple times.
+
 v5.4.1
 Fix issue about rename filename incorrectly when downloading invert selected images.
 

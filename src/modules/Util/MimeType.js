@@ -55,7 +55,16 @@ class MimeType {
    * @returns {string}
    */
   static getFileMimeType(file) {
-    return MimeType.getMimeType(file.substr(file.lastIndexOf('.') + 1));
+    return MimeType.getMimeType(MimeType.getFileExtension(file));
+  }
+
+  /**
+   *
+   * @param {string} file
+   * @returns {string}
+   */
+  static getFileExtension(file) {
+    return file.substr(file.lastIndexOf('.') + 1);
   }
 }
 

@@ -25,6 +25,20 @@ class Event {
     });
   }
 
+  addConstListener(eventName, listener, thisArg) {
+    if (this.events[eventName].length < 1) {
+      this.events[eventName].push({
+        caller: listener,
+        thisArg: !thisArg ? this.target : thisArg
+      });
+    }
+  }
+
+  /**
+   * Fire a event
+   * @param {string} eventName
+   * @param {Array} args
+   */
   dispatch (eventName, args) {
     let newArgs = (Object.prototype.toString.call(args) === '[object Array]') ? args : [];
 

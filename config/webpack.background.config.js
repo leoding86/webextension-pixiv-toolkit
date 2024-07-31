@@ -15,10 +15,11 @@ module.exports = env => {
 
   return merge(baseConfig, {
     entry: {
-      background: './src/background/main.js'
+      // background: './src/background/main.js'
+      background: './src/background/Bootstrap.js'
     },
     output: {
-      path: utils.resolve(`dist/${platform}/backgrounds`),
+      path: utils.resolve(`dist/${platform}/background`),
       filename: '[name].js'
     },
     plugins: [
@@ -51,6 +52,9 @@ module.exports = env => {
             from: utils.resolve('node_modules/pouchdb/dist/pouchdb.find.min.js'),
             to: utils.resolve(`dist/${platform}/lib/pouchdb.find.min.js`)
           }, {
+            from: utils.resolve('node_modules/@ffmpeg/core/dist'),
+            to: utils.resolve(`dist/${platform}/lib/ffmpeg`)
+          }, {
             from: utils.resolve('src/statics/manifest.json'),
             to: utils.resolve(`dist/${platform}/manifest.json`),
             transform(content, path) {
@@ -70,6 +74,10 @@ module.exports = env => {
                 json.options_ui.open_in_tab = true;
 
                 json.optional_permissions.forEach(permission => {
+                  if (permission === 'downloads.shelf') {
+                    return;
+                  }
+
                   json.permissions.push(permission);
                 });
 

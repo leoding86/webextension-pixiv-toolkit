@@ -1,6 +1,6 @@
 {
   "name": "pixiv-toolkits",
-  "version": "5.4.1",
+  "version": "6.0.0",
   "description": "A web extension for adding features on Pixiv",
   "author": "leoding86 <leoding86@msn.com>",
   "private": false,
@@ -14,6 +14,10 @@
     "build:firefox": "cross-env NODE_ENV=production PLATFORM_ENV=firefox webpack --config webpack.config.js --env.platform=firefox"
   },
   "dependencies": {
+    "@ffmpeg/core": "^0.11.0",
+    "@ffmpeg/ffmpeg": "^0.11.6",
+    "dexie": "^3.2.2",
+    "md5": "^2.3.0",
     "moment": "^2.29.1",
     "pouchdb": "^7.2.2",
     "pouchdb-find": "^7.2.2",
@@ -39,6 +43,7 @@
     "@babel/preset-env": "^7.11.0",
     "@vue/babel-helper-vue-jsx-merge-props": "^1.0.0",
     "@vue/babel-plugin-transform-vue-jsx": "^1.1.2",
+    "@vue/runtime-dom": "^3.2.41",
     "autoprefixer": "^7.1.2",
     "babel-jest": "^27.2.1",
     "babel-loader": "^8.1.0",
@@ -54,7 +59,6 @@
     "json-loader": "^0.5.7",
     "mini-css-extract-plugin": "^0.10.0",
     "node-notifier": "8.0.1",
-    "node-sass": "^4.14.1",
     "optimize-css-assets-webpack-plugin": "^5.0.3",
     "portfinder": "^1.0.28",
     "postcss-import": "^11.0.0",
@@ -62,6 +66,7 @@
     "postcss-url": "^7.2.1",
     "rollup": "^1.32.1",
     "rollup-plugin-commonjs": "^9.3.4",
+    "sass": "^1.49.7",
     "sass-loader": "^10.0.1",
     "semver": "^5.7.1",
     "shelljs": "^0.7.6",
@@ -76,12 +81,12 @@
     "worker-loader": "^3.0.2"
   },
   "engines": {
-    "node": ">= 12.0.0",
-    "npm": ">= 3.0.0"
+    "node": "~16.18.0",
+    "npm": "~8.19.2",
+    "yarn": "~1.22.4"
   },
   "browserslist": [
     "> 1%",
-    "last 2 versions",
-    "not ie <= 8"
+    "last 2 versions"
   ]
 }

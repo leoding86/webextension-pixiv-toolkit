@@ -1,3 +1,4 @@
+import '@/core/global';
 import App from './App';
 import Browser from '@/modules/Browser/Browser';
 import I18n from '@/modules/I18n';
@@ -19,7 +20,7 @@ browser.storage.local.get(null, items => {
 
     data() {
       return {
-        browserItems: items
+        appSettings: items
       }
     },
 
@@ -28,7 +29,7 @@ browser.storage.local.get(null, items => {
 
       browser.storage.onChanged.addListener((items) => {
         for (let key in items) {
-          vm.browserItems[key] = items[key].newValue;
+          vm.appSettings[key] = items[key].newValue;
         }
       });
     }

@@ -1,8 +1,8 @@
 {
-   "author": {
+   "_author": {
       "message": "Author"
    },
-   "author_id": {
+   "_author_id": {
       "message": "Author ID"
    },
    "downloadFullscreenZipFile": {
@@ -33,7 +33,7 @@
       "message": "Download ugoira, illustrations, manga and novel on Pixiv, Pixiv Fanbox and Pixiv Comic."
    },
    "extName": {
-      "message": "Pixiv Toolkit"
+      "message": "Pixiv Toolkit Next"
    },
    "generate_btn_error_text": {
       "message": "Error"
@@ -131,11 +131,8 @@
    "Manga": {
     "message": "Manga"
    },
-   "rename_manga": {
+   "_rename_manga": {
       "message": "Rename manga"
-   },
-   "rename_manga_image": {
-      "message": "Rename manga image file"
    },
    "quick_picks": {
       "message": "Quick picks"
@@ -266,8 +263,8 @@
    "Novel": {
        "message": "Novel"
    },
-   "rename_novel": {
-       "message": "Rename novel"
+   "_novel_rename_rule": {
+       "message": "Novel rename rule"
    },
    "include_novel_description": {
        "message": "Include novel description"
@@ -281,14 +278,11 @@
    "clear_history_data_cannot_be_reversed": {
        "message": "This operation cannot be reversed"
    },
-   "Clear": {
+   "_clear": {
        "message": "Clear"
    },
    "History":{
        "message": "History"
-   },
-   "Cancel": {
-       "message": "Cancel"
    },
    "comment": {
        "message": "Comment"
@@ -356,17 +350,14 @@
    "Download_panel_will_show_up_automatically_when_page_loaded": {
        "message": "Download panel will show up automatically when page loaded"
    },
-   "illust_history": {
+   "_history": {
        "message": "History"
    },
    "Illustration": {
        "message": "Illustration"
    },
-   "Rename_illustration": {
+   "_rename_illustration": {
        "message": "Rename illustration"
-   },
-   "Rename_illustration_image": {
-       "message": "Rename illustration image"
    },
    "Download_file_if_everything_is_ready": {
        "message": "Download file directly if everything is ready"
@@ -404,13 +395,13 @@
    "_Enable_this_may_cause_issue_about_loading_images": {
        "message": "Enable this may cause issue about loading images"
    },
-   "year": {
+   "_year": {
        "message": "year"
    },
-   "month": {
+   "_month": {
        "message": "month"
    },
-   "day": {
+   "_day": {
        "message": "day"
    },
    "_keep_page_number": {
@@ -611,9 +602,6 @@
    "_max_history_items": {
        "message": "Max history items"
    },
-   "_max_download_records": {
-       "message": "Max download records"
-   },
    "_reload_to_apply_change": {
        "message": "Reload to apply change (Add downloads in progress will be aborted)"
    },
@@ -671,8 +659,8 @@
    "_select_and_dl": {
        "message": "Select & DL"
    },
-   "_select_images_you_want_to_download": {
-       "message": "Select image(s) you wan to download"
+   "_select_pages_you_want_to_download": {
+       "message": "Select page(s) you wan to download"
    },
    "_pending": {
        "message": "Pending"
@@ -705,7 +693,7 @@
        "message": "Select ugoira convert tool"
    },
    "_startup_message": {
-       "message": "Sine version v5.0.0, the extension could save images seperately without have to pack them into a zip file to save. But it require user authorization to do it. Please click more info to get details. You can change any settings in settings page later."
+       "message": "The Pixiv Toolkit Next version is the next major update version of Pixiv Toolkit. There are some breaking changes compare with current Pixiv Toolkit. Go to the project Github page to learn more."
    },
    "_ffmpeg_custom_convert_command": {
        "message": "FFmpeg custom convert command"
@@ -728,8 +716,8 @@
    "_create_subdirectory": {
        "message": "Create Subdirectory"
    },
-   "_create_subdirectory_when_download_Pack_Files_setting_is_disabled": {
-       "message": "Create subdirectory when download \"Pack Files\" setting is disabled"
+   "_create_subdirectory_for_illustration": {
+       "message": "Create subdirectory for illustration"
    },
    "_dynamic": {
        "message": "Dynamic"
@@ -775,5 +763,122 @@
    },
    "_view": {
        "message": "View"
-   }
+   },
+   "_interface": {
+       "message": "Interface"
+   },
+   "_center": {
+       "message": "Center"
+   },
+   "_left": {
+       "message": "Left"
+   },
+   "_right": {
+       "message": "Right"
+   },
+   "_download_panel_position": {
+       "message": "Download panel position"
+   },
+   "_download_panel_style": {
+       "message": "Download panel style"
+   },
+   "_series_id": {
+       "message": "Series ID"
+   },
+   "_series_title": {
+       "message": "Series Title"
+   },
+   "_series_order": {
+       "message": "Series Order"
+   },
+   "novel_rename_hint": {
+       "message": "Example: {authorId}_{author}_{id}_{title}. You can place the deleted part between the two # tags when the novel isn't in any series like this {author}#-{seriesTitle}-{seriesOrder}#-{title}-{id}"
+   },
+   "_show_reload_in_popup": {
+       "message": "Show reload in extension popup page"
+   },
+   "_show": {
+        "message": "Show"
+   },
+   "_pixiv_comic": {
+       "message": "Pixiv Comic"
+   },
+   "_rename_comic": {
+        "message": "Rename comic"
+    },
+    "_save_comic_in_relative_location": {
+        "message": "Save comic in relative location"
+    },
+    "_id": {
+        "message": "ID"
+    },
+    "_title": {
+        "message": "Title"
+    },
+    "_sub_title": {
+        "message": "Sub title"
+    },
+    "_numbering_title": {
+        "message": "Numbering title"
+    },
+    "_work_id": {
+        "message": "Work ID"
+    },
+    "_work_title": {
+        "message": "Work title"
+    },
+    "_page_num": {
+        "message": "Page number"
+    },
+    "_download_metadata": {
+        "message": "Download metadata"
+    },
+    "_download_metadata_when_downloading_works_only_support_works_from_pixiv_main_site": {
+        "message": "Download metadata when downloading works. Only support works (novel not included) from Pixiv main site"
+    },
+    "_all": {
+        "message": "All"
+    },
+    "_download_manager": {
+        "message": "Download Manager"
+    },
+    "_show_in_folder": {
+        "message": "Show in folder"
+    },
+    "_download_task_settings": {
+        "message": "Download Task Settings"
+    },
+    "_global_settings": {
+        "message": "Global"
+    },
+    "_global_setting": {
+        "message": "Global Setting"
+    },
+    "_rename": {
+        "message": "Rename"
+    },
+    "_downloaded": {
+        "message": "Downloaded"
+    },
+    "_the_resource_is_already_in_download_manager": {
+        "message": "The download of the resource is already in download manager"
+    },
+    "_download_manager_isnt_open": {
+        "message": "It seems like download manager don't open, you can open one in options page or in popup page."
+    },
+    "_switch_to_it_and_close": {
+        "message": "Switch to it and close"
+    },
+    "_download_manager_is_already_opened": {
+        "message": "Download manager is already opened."
+    },
+    "_there_isnt_any_download": {
+        "message": "There isn't any download"
+    },
+    "_cancel": {
+        "message": "Cancel"
+    },
+    "_max_process_download_tasks": {
+        "message": "Max process download tasks"
+    }
 }

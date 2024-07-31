@@ -1,3 +1,4 @@
+import { app } from '@/background/Application';
 import DownloadRecordPort from './DownloadRecordPort';
 import DownloadRecordRepo from '@/repositories/DownloadRecord';
 
@@ -7,7 +8,7 @@ export default class BackgroundPort extends DownloadRecordPort {
   constructor() {
     super();
 
-    this.downloadRecordRepo = new DownloadRecordRepo({ max: window.$extension.items.maxDownloadRecords });
+    this.downloadRecordRepo = new DownloadRecordRepo({ max: app().settings.maxDownloadRecords });
   }
 
   /**=
