@@ -28,6 +28,8 @@ I'm planning to create a small library which don't need `eval` and `Function` fu
 ### **4. Refactor history feature and mirgate download history to it.**
 New history feature except records Pixiv visit history, it also can records Pixiv Comic and Fanbox visit history. If the resource has been downloaded, there'll be a downloaded tag present in the record. The old download hsitory feature is removed.
 
+It should be aware that since manifest v3 extension no longer has running background page, there is no way to persist the browsing history in background. If you need to record the browsing history, you need to keep the Download Manager open then the browsing history can be saved.
+
 ### **5. Don't pack the images to zip file anymore.**
 In this version of Pixiv Toolkit, it won't pack the downloaded images into a zip file anymore, it will save the images one by one. So for the best user experience, there are some advises below to follow.
 
@@ -121,6 +123,8 @@ FFmpeg.wasm 是一个非常强大的库，它拥有比其他库，如`gif.js`和
 
 ### **4. 重构历史记录功能，并合并下载记录**
 新的历史记录功能除了能记录P站的浏览记录，还能记录Pixiv Comic和Fanbox的浏览记录。如果相关资源被下载，那么会在记录条目上显示`已下载`标签。旧的下载记录功能被移除。
+
+需要注意的是，由于manifest v3不再存在背景页所以没有办法在背景持久化存储导致不能在背景页中保存浏览历史。如果需要记录浏览历史，你需要保持打开下载管理器，这样浏览记录就可以被保存。
 
 ### **5. 不再将下载的图片打包成压缩包**
 在这个版本中，插件不再将下载的图片打包成压缩包，图片将会被一张张保存。为了最好的用户体验，后面有一些可遵循的建议。
