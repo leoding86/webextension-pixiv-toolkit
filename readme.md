@@ -42,7 +42,7 @@ In this version of Pixiv Toolkit, it won't pack the downloaded images into a zip
 * The browser will popup a dialog which let user decide whether allow or deny to download multiple files automatically. Please click **Allow**, or the download will be aborted, and If you want download multiple files using the extension later, you must go to browser settings to do some setting work to make it work again.
 * Disable `Ask where to save each file before downloading` setting, otherwise there will be a choose save file dialog popup before every each file saving.
 * You can disable download shelf in the extension option settings for preventing the download shelf appear when download start.
-* You can make the extension download manager page and a web application using browser apps setting.
+* You can make the extension download manager page to a web application using browser apps setting.
 
 ----------
 
