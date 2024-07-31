@@ -1,6 +1,6 @@
 <a href="#zh_cn">中文</a> | <a href="#en_us" id="en_us"><strong>English</strong></a>
 
-<h2 align="center">Pixiv Toolkit Next</h2>
+<h2 align="center">Pixiv Toolkit Next (v6.0.0)</h2>
 
 Pixiv Toolkit Next is the next major update of Pixiv Toolkit for preview. There are some breaking changes compare with current Pixiv Toolkit. If you are using old version and ready to use this version, please read the content below for more details.
 
@@ -94,7 +94,7 @@ Please feel free to submit a issue if you have trouble with using it.
 -----
 <a href="#zh_cn" id="zh_cn"><strong>中文</strong></a> | <a href="#en_us">English</a>
 
-<h2 align="center">Pixiv Toolkit Next</h2>
+<h2 align="center">Pixiv Toolkit Next (v6.0.0)</h2>
 
 Pixiv Toolkit Next 是 Pixiv Toolkit 下一个重要更新的预览版本，为了适配浏览器插件`manifest v3`版本，其中包含了一些重大更改。如果你使用过原始版本请先阅读重大更新的内容以了解详细信息。
 
