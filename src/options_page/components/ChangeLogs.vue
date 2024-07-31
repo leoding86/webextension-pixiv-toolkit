@@ -1,11 +1,16 @@
+<!--
+ * @Author: Leo Ding <leoding86@msn.com>
+ * @Date: 2024-08-01 01:14:07
+ * @LastEditors: Leo Ding <leoding86@msn.com>
+ * @LastEditTime: 2024-08-01 01:20:21
+ * @FilePath: \webextension-pixiv-toolkit\src\options_page\components\ChangeLogs.vue
+-->
 <template>
   <v-container>
     <span class="card-title">{{ tl('Change_History') }}</span>
 
     <v-card>
       <v-card-text>
-        <img src="https://raw.githubusercontent.com/leoding86/webextension-pixiv-toolkit/master/src/statics/remote/img/example.gif"
-          style="width:100%;border-radius: 5px;box-shadow:0 1px 3px rgba(0,0,0,0.5);margin-bottom:15px;">
         <change-log></change-log>
       </v-card-text>
     </v-card>
