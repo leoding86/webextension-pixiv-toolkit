@@ -132,7 +132,9 @@ class UIApplication {
   }
 
   unload() {
+    const $el = this.app.$el;
     this.app.$destroy();
+    $el.parentElement.removeChild($el);
   }
 }
 
