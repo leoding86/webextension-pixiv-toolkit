@@ -33,25 +33,15 @@ export default {
   data () {
     return {
       thirdPartList: [{
-        name: 'gif.js',
-        version: '0.1.6',
-        desc: 'JavaScript GIF encoding library',
-        url: 'https://github.com/jnordberg/gif.js'
-      }, {
-        name: 'whammy',
-        version: '',
-        desc: 'A real time javascript webm encoder based on a canvas hack',
-        url: 'https://github.com/antimatter15/whammy'
+        name: 'ffmpeg.wasm',
+        version: '0.11.6',
+        desc: 'ffmpeg.wasm is a pure Webassembly / Javascript port of FFmpeg. It enables video & audio record, convert and stream right inside browsers.',
+        url: 'https://github.com/ffmpegwasm/ffmpeg.wasm'
       }, {
         name: 'jszip',
         version: '3.1.5',
         desc: 'Create, read and edit .zip files with Javascript',
         url: 'https://github.com/Stuk/jszip'
-      }, {
-        name: 'js-epub-maker',
-        version: '1.2.0',
-        desc: 'Easily create downloadable epub files with javascript',
-        url: 'https://github.com/bbottema/js-epub-maker'
       }, {
         name: 'vuejs',
         version: '2.6.10',
