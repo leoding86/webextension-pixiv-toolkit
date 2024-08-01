@@ -1,8 +1,10 @@
 v6.0.0
 Adapted manifest v3, you maybe encounter some problems, feel free to open an issue if you feel something wrong;
 Change the way for managing downloads, download tasks are managed by Download Manager, please open Download Manager before downloading anything;
+Refactor the visit history feature, and because of manifest v3 the visit histories in old version will be lost after this update;
+Refactor the logic of generating ugoria animation, deprecated gif.js and whammy and replace them by ffmpeg;
 Fix issue about downloading Pixiv Comic Episode;
-For more detail for this version, please read https://github.com/leoding86/webextension-pixiv-toolkit/blob/master/readme.md
+For more detail for this version, please visit the project page https://github.com/leoding86/webextension-pixiv-toolkit/blob/master/readme.md
 
 v5.5.3
 Fix issue about download panel can't collapse when "Activate download panel automatically" setting is disabled;

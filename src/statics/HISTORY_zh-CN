@@ -1,8 +1,10 @@
 v6.0.0
 适配manifest v3，可能存在部分设置不生效或错误的情况，如发现问题欢迎提交issue；
 改变整体下载逻辑，现在下载任务由下载管理器统一管理，下载前请确保打开了下载管理器；
+重构了浏览历史记录，因为manifest v3的原因，旧版本的浏览历史失效；
+重构了动图生成逻辑，移除gif.js以及whammy，全部使用ffmpeg替代；
 修复Pixiv Comic下载，现在可以正常下载了；
-了解更多详情，请查看：https://github.com/leoding86/webextension-pixiv-toolkit/blob/master/readme.md
+了解更多详情，请查看项目页面: https://github.com/leoding86/webextension-pixiv-toolkit/blob/master/readme.md
 
 v5.5.3
 修复下载面板不能正确收起的问题；
