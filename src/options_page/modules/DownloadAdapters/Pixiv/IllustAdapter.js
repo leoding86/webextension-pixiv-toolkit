@@ -66,13 +66,15 @@ class IllustAdapter {
 
   /**
    * @param {AbstractResource} resource
+   * @param {Object} options
    * @returns {MangaDownloadTask}
    */
-  createMangaDownloadTask(resource) {
+  createMangaDownloadTask(resource, options) {
     return MangaDownloadTask.create({
       id: resource.getUid(),
       url: this.url,
       pages: this.context.pages,
+      selectedIndexes: options.selectedIndexes,
       renameRule: this.settings.mangaRenameRule,
       pageNumberStartWithOne: this.settings.mangaPageNumberStartWithOne === -2 ?
                               this.settings.globalTaskPageNumberStartWithOne :
@@ -118,7 +120,7 @@ class IllustAdapter {
     if (resource.isIllust()) {
       return this.createIllustDownloadTask(resource, options);
     } else if (resource.isManga()) {
-      return this.createMangaDownloadTask(resource);
+      return this.createMangaDownloadTask(resource, options);
     } else if (resource.isUgoira()) {
       return this.createUgoiraDownloadTask(resource, options);
     }
