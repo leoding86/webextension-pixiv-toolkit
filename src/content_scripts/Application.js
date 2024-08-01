@@ -71,9 +71,14 @@ class Application {
       }
 
       this.UIApp.loadData(data);
+
+      browser.runtime.sendMessage({ to: 'ws', action: 'badge:activeIcon' });
     } catch (error) {
+      browser.runtime.sendMessage({ to: 'ws', action: 'badge:deactiveAction' })
+
       if (this.UIApp) {
         this.UIApp.unload();
+        this.UIApp = null;
       }
 
       this.resource = null;
