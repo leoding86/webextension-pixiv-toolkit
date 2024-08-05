@@ -212,11 +212,11 @@ export default Object.assign({}, {
     /**
      * @since 6.0.0
      */
-    illustRenameRule: '{id}_{title}_p{pageNum}',
-    mangaRenameRule: '{id}_{title}/p{pageNum}',
+    illustRenameRule: '{id}_{title}',
+    mangaRenameRule: '{id}_{title}}',
     ugoiraRenameRule: '{id}_{title}',
     novelRenameRule: '{id}_{title}',
-    pixivComicEpisodeRenameRule: '{id}_{title}/{numberingTitle}_{workTitle}/p{pageNum}',
+    pixivComicEpisodeRenameRule: '{id}_{title}/{numberingTitle}_{workTitle}',
     pixivComicEpisodePageNumberStartWithOne: -2,
     pixivComicEpisodePageNumberLength: -2,
     fanboxPostRenameRule: '{id}_{title}/{pageNum}',
@@ -225,6 +225,15 @@ export default Object.assign({}, {
     globalTaskPageNumberStartWithOne: 0, // 0: disable, 1: enable
     globalTaskPageNumberLength: -1, // -1: dynamic, 0: disable, 2-4,
     maxProcessDownloadTasks: 3,
+
+    /**
+     * @since 6.1.0
+     */
+    globalZipMultipleImages: 1,
+    illustRenameImageRule: 'p{pageNum}',
+    mangaRenameImageRule: 'p{pageNum}',
+    pixivComicEpisodeRenameImageRule: 'p{pageNum}',
+    fanboxPostRenameImageRule: 'p{pageNum}',
 
     /**
      * @since 1.0.0
