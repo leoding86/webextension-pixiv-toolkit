@@ -883,5 +883,23 @@
     },
     "_max_process_download_tasks": {
         "message": "最大执行下载数"
+    },
+    "_rename_illustration_image": {
+        "message": "重命名绘画图片"
+    },
+    "_rename_manga_image": {
+        "message": "重命名漫画图片"
+    },
+    "_rename_fanbox_post_image": {
+        "message": "重命名FANBOX文章图片"
+    },
+    "_rename_pixiv_comic_episode_image": {
+        "message": "重命名Pixiv Comic页码图片"
+    },
+    "_zip_multiple_images": {
+        "message": "多张图片打包成ZIP文件"
+    },
+    "_create_a_zip_file_while_downloading_multiple_images": {
+        "message": "当下载的项目包含多张图片时打包成ZIP"
     }
 }

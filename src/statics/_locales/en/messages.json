@@ -880,5 +880,23 @@
     },
     "_max_process_download_tasks": {
         "message": "Max process download tasks"
+    },
+    "_rename_illustration_image": {
+        "message": "Rename illustration image"
+    },
+    "_rename_manga_image": {
+        "message": "Rename manga image"
+    },
+    "_rename_fanbox_post_image": {
+        "message": "Rename image in Fanbox Post"
+    },
+    "_rename_pixiv_comic_episode_image": {
+        "message": "Rename image page in Pixiv Comic"
+    },
+    "_zip_multiple_images": {
+        "message": "Zip multiple images"
+    },
+    "_create_a_zip_file_while_downloading_multiple_images": {
+        "message": "Create a zip file while downloading item which includes multiple images"
     }
 }
