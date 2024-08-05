@@ -13,6 +13,18 @@
         </v-list-tile-action>
       </v-list-tile>
 
+      <v-list-tile @click="showRenameImageDialog = true">
+        <v-list-tile-content>
+          <v-list-tile-title>{{ tl('_rename_pixiv_comic_episode_image') }}</v-list-tile-title>
+          <v-list-tile-sub-title>{{ renameImageRule }}</v-list-tile-sub-title>
+        </v-list-tile-content>
+        <v-list-tile-action>
+          <v-btn icon ripple>
+            <v-icon>keyboard_arrow_right</v-icon>
+          </v-btn>
+        </v-list-tile-action>
+      </v-list-tile>
+
       <v-list-tile>
         <v-list-tile-content>
           <v-list-tile-title>{{ tl('_page_number_start_with_1') }}</v-list-tile-title>
@@ -46,6 +58,13 @@
       :metas="renameMetas"
       :default-value="defaultRenameRule"
     ></rename-dialog>
+
+    <rename-dialog :show.sync="showRenameImageDialog"
+      v-model="renameImageRule"
+      :title="tl('_rename_pixiv_comic_image')"
+      :metas="renameImageMetas"
+      :default-value="defaultRenameImageRule"
+    ></rename-dialog>
   </div>
 </template>
 
@@ -62,7 +81,11 @@ export default {
     return {
       renameRule: '',
 
-      defaultRenameRule: '{id}_{title}/{numbering_title}_{workTitle}/p{pageNum}',
+      defaultRenameRule: '{id}_{title}/{numbering_title}_{workTitle}',
+
+      renameImageRule: '',
+
+      defaultRenameImageRule: 'p{pageNum}',
 
       pageNumberStartWithOne: -2,
 
@@ -152,12 +175,15 @@ export default {
     }, {
       holder: '{workTitle}',
       title: this.tl('_work_title'),
-    }, {
-      holder: '{pageNum}',
-      title: this.tl('_page_num'),
     }];
 
+    this.renameImageMetas = this.renameMetas.concat({
+      holder: '{pageNum}',
+      title: this.tl('_page_num'),
+    });
+
     this.renameRule = this.browserItems.pixivComicEpisodeRenameRule;
+    this.renameImageRule = this.browserItems.pixivComicEpisodeRenameImageRule;
     this.pageNumberStartWithOne = this.browserItems.pixivComicEpisodePageNumberStartWithOne;
     this.pageNumberLength = this.browserItems.pixivComicEpisodePageNumberLength;
   }

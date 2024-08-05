@@ -20,6 +20,11 @@ class EpisodeDownloadTask extends AbstractDownloadTask {
   options;
 
   /**
+   * @type {JSZip}
+   */
+  zip;
+
+  /**
    * @type {Downloader}
    */
   downloader;
@@ -37,6 +42,8 @@ class EpisodeDownloadTask extends AbstractDownloadTask {
     this.state = this.PENDING_STATE;
     this.title = options.context.title;
     this.context = options.context;
+    this.zip = new JSZip();
+    this.zipMultipleImages = app().settings.globalZipMultipleImages;
     this.downloader = new Downloader({
       processors: app().settings.downloadTasksWhenDownloadingImages,
       beforeItemDownload: ({ requestOptions, downloadFile }) => {
@@ -126,21 +133,29 @@ class EpisodeDownloadTask extends AbstractDownloadTask {
    * @fires MultipleDownloadTask#progress
    */
   async onItemFinish({ blob, args, mimeType }) {
-    let url = URL.createObjectURL(blob);
     let pageNum = this.buildPageNum(args.index);
     let nameFormatter = NameFormattor.getFormatter({
       context: Object.assign({}, this.context, { pageNum })
     });
 
-    this.lastDownloadId = await FileSystem.getDefault().saveFile({
-      url,
-      filename: pathjoin(app().settings.downloadRelativeLocation ,nameFormatter.format(
-        this.options.renameRule,
-        this.id + `_${pageNum}`
-      )) + `.${MimeType.getExtenstion(mimeType)}`
-    });
+    if (this.zipMultipleImages === 1) {
+      const now = new Date();
+      now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+      const file = nameFormatter.format(this.options.renameImageRule, `p${pageNum}`) + `.${MimeType.getExtenstion(mimeType)}`;
+      this.zip.file(file, blob, { date: now });
+    } else {
+      let url = URL.createObjectURL(blob);
 
-    URL.revokeObjectURL(url);
+      this.lastDownloadId = await FileSystem.getDefault().saveFile({
+        url,
+        filename: pathjoin(app().settings.downloadRelativeLocation ,nameFormatter.format(
+          this.options.renameRule,
+          this.id + `_${pageNum}`
+        )) + `.${MimeType.getExtenstion(mimeType)}`
+      });
+
+      URL.revokeObjectURL(url);
+    }
 
     this.dispatch('progress', [this.progress]);
   }
@@ -149,6 +164,17 @@ class EpisodeDownloadTask extends AbstractDownloadTask {
    * @fires MultipleDownloadTask#complete
    */
   onFinish() {
+    if (this.zipMultipleImages === 1) {
+      const nameFormatter = NameFormattor.getFormatter({ context: Object.assign({}, this.context) });
+
+      this.zip.generateAsync({ type: 'blob' }).then(blob => {
+        FileSystem.getDefault().saveFile({
+          url: URL.createObjectURL(blob),
+          filename: pathjoin(app().settings.downloadRelativeLocation, nameFormatter.format(this.options.renameRule, this.id)) + '.zip'
+        });
+      });
+    }
+
     this.changeState(this.COMPLETE_STATE);
     this.dispatch('complete');
   }

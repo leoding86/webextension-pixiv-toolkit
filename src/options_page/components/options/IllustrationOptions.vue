@@ -13,6 +13,18 @@
         </v-list-tile-action>
       </v-list-tile>
 
+      <v-list-tile @click="showRenameImageDialog = true">
+        <v-list-tile-content>
+          <v-list-tile-title>{{ tl('_rename_illustration_image') }}</v-list-tile-title>
+          <v-list-tile-sub-title>{{ renameImageRule }}</v-list-tile-sub-title>
+        </v-list-tile-content>
+        <v-list-tile-action>
+          <v-btn icon ripple>
+            <v-icon>keyboard_arrow_right</v-icon>
+          </v-btn>
+        </v-list-tile-action>
+      </v-list-tile>
+
       <v-list-tile>
         <v-list-tile-content>
           <v-list-tile-title>{{ tl('_page_number_start_with_1') }}</v-list-tile-title>
@@ -46,10 +58,18 @@
       :metas="renameMetas"
       :default-value="defaultRenameRule"
     ></rename-dialog>
+
+    <rename-dialog :show.sync="showRenameImageDialog"
+      v-model="renameImageRule"
+      :title="tl('_rename_illustration_image')"
+      :metas="renameImageMetas"
+      :default-value="defaultRenameImageRule"
+    ></rename-dialog>
   </div>
 </template>
 
 <script>
+import browser from '@/modules/Extension/browser';
 import RenameDialog from '@@/components/options/RenameDialog';
 
 export default {
@@ -61,9 +81,15 @@ export default {
     return {
       showRenameDialog: false,
 
-      defaultRenameRule: '{id}_{title}_{pageNum}',
+      defaultRenameRule: '{id}_{title}',
 
       renameRule: "",
+
+      showRenameImageDialog: false,
+
+      defaultRenameImageRule: 'p{pageNum}',
+
+      renameImageRule: "",
 
       pageNumberStartWithOne: -2,
 
@@ -121,6 +147,16 @@ export default {
       });
     },
 
+    renameImageRule(val) {
+      if (val === '') {
+        val = this.defaultRenameImageRule;
+      }
+
+      browser.storage.local.set({
+        illustRenameImageRule: val,
+      })
+    },
+
     pageNumberStartWithOne(val) {
       browser.storage.local.set({
         illustrationPageNumberStartWithOne: val
@@ -142,6 +178,7 @@ export default {
 
   created() {
     this.renameRule = this.browserItems.illustRenameRule;
+    this.renameImageRule = this.browserItems.illustRenameImageRule;
     this.pageNumberStartWithOne = this.browserItems.illustrationPageNumberStartWithOne;
     this.pageNumberLength = this.browserItems.illustrationPageNumberLength;
     this.location = this.browserItems.illustrationRelativeLocation;
@@ -164,10 +201,6 @@ export default {
         holder: '{author}'
       },
       {
-        title: this.tl("_page_num"),
-        holder: "{pageNum}"
-      },
-      {
         title: this.tl("_year"),
         holder: "{year}"
       },
@@ -180,6 +213,11 @@ export default {
         holder: "{day}"
       }
     ];
+
+    this.renameImageMetas = this.renameMetas.concat({
+      title: this.tl("_page_num"),
+      holder: "{pageNum}"
+    });
   },
 };
 </script>

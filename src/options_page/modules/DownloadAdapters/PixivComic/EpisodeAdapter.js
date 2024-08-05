@@ -60,6 +60,7 @@ class EpisodeAdapter {
                         app().settings.globalTaskPageNumberStartWithOne :
                         app().settings.pixivComicEpisodePageNumberLength,
       renameRule: app().settings.pixivComicEpisodeRenameRule,
+      renameImageRule: app().settings.pixivComicEpisodeRenameImageRule,
       context: this.context
     });
   }

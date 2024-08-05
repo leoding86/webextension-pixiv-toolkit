@@ -13,6 +13,18 @@
           </v-list-tile-action>
         </v-list-tile>
 
+        <v-list-tile @click="showRenameImageDialog = true">
+          <v-list-tile-content>
+            <v-list-tile-title>{{ tl('_rename_fanbox_post_image') }}</v-list-tile-title>
+            <v-list-tile-sub-title>{{ renameImageRule }}</v-list-tile-sub-title>
+          </v-list-tile-content>
+          <v-list-tile-action>
+            <v-btn icon ripple>
+              <v-icon>keyboard_arrow_right</v-icon>
+            </v-btn>
+          </v-list-tile-action>
+        </v-list-tile>
+
         <v-list-tile>
           <v-list-tile-content>
             <v-list-tile-title>{{ tl('_page_number_start_with_1') }}</v-list-tile-title>
@@ -46,6 +58,13 @@
         :metas="renameMetas"
         :default-value="defaultRenameRule"
       ></rename-dialog>
+
+      <rename-dialog :show.sync="showRenameImageDialog"
+        v-model="renameImageRule"
+        :title="tl('_rename_fanbox_post_image')"
+        :metas="renameImageMetas"
+        :default-value="defaultRenameImageRule"
+      ></rename-dialog>
     </div>
   </template>
 
@@ -62,13 +81,19 @@
       return {
         renameRule: '',
 
-        defaultRenameRule: '{id}_{title}/{pageNum}',
+        defaultRenameRule: '{id}_{title}',
+
+        renameImageRule: '',
+
+        defaultRenameImageRule: 'p{pageNum}',
 
         pageNumberStartWithOne: -2,
 
         pageNumberLength: -2,
 
         showRenameDialog: false,
+
+        showRenameImageDialog: false
       };
     },
 
@@ -95,10 +120,14 @@
         }, {
           holder: '{day}',
           title: this.tl('_day'),
-        }, {
+        }];
+      },
+
+      renameImageMetas() {
+        return this.renameMetas.concat({
           holder: '{pageNum}',
           title: this.tl('_page_num')
-        }];
+        });
       },
 
       pageNumberLengthOptions() {
@@ -148,6 +177,12 @@
         });
       },
 
+      renameImageRule(val) {
+        browser.storage.local.set({
+          pixivComicRenameImageRule: val === '' ? this.defaultRenameImageRule : val
+        })
+      },
+
       pageNumberStartWithOne(val) {
         browser.storage.local.set({
           pixivComicPageNumberStartWithOne: val
@@ -162,8 +197,8 @@
     },
 
     created() {
-
       this.renameRule = this.browserItems.fanboxPostRenameRule;
+      this.renameImageRule = this.browserItems.fanboxPostRenameImageRule;
       this.pageNumberStartWithOne = this.browserItems.fanboxPostPageNumberStartWithOne;
       this.pageNumberLength = this.browserItems.fanboxPostPageNumberLength;
     }

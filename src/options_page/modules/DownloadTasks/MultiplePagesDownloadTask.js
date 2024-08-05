@@ -12,7 +12,8 @@ import pathjoin from "@/modules/Util/pathjoin";
  * @property {string} url
  * @property {string[]} pages
  * @property {number[]} selectedIndexes
- * @property {string} renameRule
+ * @property {string} [renameRule]
+ * @property {string} [renameImageRule]
  * @property {number} pageNumberStartWithOne
  * @property {number} pageNumberLength
  * @property {any} context
@@ -29,6 +30,11 @@ class MultipleDownloadTask extends AbstractDownloadTask {
    * @type {MultipleDownloadTaskOptions}
    */
   options;
+
+  /**
+   * @type {JSZip}
+   */
+  zip;
 
   /**
    * @type {Downloader}
@@ -48,6 +54,8 @@ class MultipleDownloadTask extends AbstractDownloadTask {
     this.state = this.PENDING_STATE;
     this.title = options.context.title;
     this.context = options.context;
+    this.zip = new JSZip();
+    this.zipMultipleImages = app().settings.globalZipMultipleImages;
     this.downloader = new Downloader({ processors: app().settings.downloadTasksWhenDownloadingImages });
     this.downloader.addListener('start', this.onStart, this);
     this.downloader.addListener('progress', this.onProgress, this);
@@ -129,13 +137,20 @@ class MultipleDownloadTask extends AbstractDownloadTask {
       context: Object.assign({}, this.context, { pageNum })
     });
 
-    this.lastDownloadId = await FileSystem.getDefault().saveFile({
-      url,
-      filename: pathjoin(app().settings.downloadRelativeLocation ,nameFormatter.format(
-        this.options.renameRule,
-        this.id + `_${pageNum}`
-      )) + `.${MimeType.getExtenstion(mimeType)}`
-    });
+    if (this.zipMultipleImages === 1) {
+      const now = new Date();
+      now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+      const file = nameFormatter.format(this.options.renameImageRule, `p${pageNum}`) + `.${MimeType.getExtenstion(mimeType)}`;
+      this.zip.file(file, blob, { date: now });
+    } else {
+      this.lastDownloadId = await FileSystem.getDefault().saveFile({
+        url,
+        filename: pathjoin(app().settings.downloadRelativeLocation,
+          nameFormatter.format(this.options.renameRule, this.id),
+          nameFormatter.format(this.options.renameImageRule, `p${pageNum}`
+        )) + `.${MimeType.getExtenstion(mimeType)}`
+      });
+    }
 
     URL.revokeObjectURL(url);
 
@@ -146,6 +161,17 @@ class MultipleDownloadTask extends AbstractDownloadTask {
    * @fires MultipleDownloadTask#complete
    */
   onFinish() {
+    if (this.zipMultipleImages === 1) {
+      const nameFormatter = NameFormattor.getFormatter({ context: Object.assign({}, this.context) });
+
+      this.zip.generateAsync({ type: 'blob' }).then(blob => {
+        FileSystem.getDefault().saveFile({
+          url: URL.createObjectURL(blob),
+          filename: pathjoin(app().settings.downloadRelativeLocation, nameFormatter.format(this.options.renameRule, this.id)) + '.zip'
+        });
+      });
+    }
+
     this.changeState(this.COMPLETE_STATE);
     this.dispatch('complete');
   }

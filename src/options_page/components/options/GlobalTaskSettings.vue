@@ -26,6 +26,19 @@
           ></v-select>
         </v-list-tile-action>
       </v-list-tile>
+
+      <v-list-tile>
+        <v-list-tile-content>
+          <v-list-tile-title>{{ tl('_zip_multiple_images') }}</v-list-tile-title>
+          <v-list-tile-sub-title>{{ tl('_create_a_zip_file_while_downloading_multiple_images') }}</v-list-tile-sub-title>
+        </v-list-tile-content>
+        <v-list-tile-action>
+          <v-select :items="zipMultipleImagesOptions"
+            v-model="zipMultipleImages"
+            style="width:150px;"
+          ></v-select>
+        </v-list-tile-action>
+      </v-list-tile>
     </v-list>
   </div>
 </template>
@@ -39,6 +52,8 @@ export default {
       pageNumberStartWithOne: 0,
 
       pageNumberLength: 0,
+
+      zipMultipleImages: 1
     };
   },
 
@@ -71,6 +86,16 @@ export default {
         value: 0,
       }]
     },
+
+    zipMultipleImagesOptions() {
+      return [{
+        text: this.tl('_enable'),
+        value: 1,
+      }, {
+        text: this.tl('_disable'),
+        value: 0
+      }]
+    }
   },
 
   watch: {
@@ -85,11 +110,18 @@ export default {
         globalTaskPageNumberLength: val
       });
     },
+
+    zipMultipleImages(val) {
+      browser.storage.local.set({
+        globalZipMultipleImages: val
+      })
+    }
   },
 
   created() {
     this.pageNumberStartWithOne = this.browserItems.globalTaskPageNumberStartWithOne;
     this.pageNumberLength = this.browserItems.globalTaskPageNumberLength;
+    this.zipMultipleImages = this.browserItems.globalZipMultipleImages;
   },
 };
 </script>

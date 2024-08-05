@@ -54,6 +54,7 @@ class IllustAdapter {
       pages: this.context.pages,
       selectedIndexes: options.selectedIndexes,
       renameRule:  this.settings.illustRenameRule,
+      renameImageRule: this.settings.illustRenameImageRule,
       pageNumberStartWithOne: this.settings.illustrationPageNumberStartWithOne === -2 ?
                               this.settings.globalTaskPageNumberStartWithOne :
                               this.settings.illustrationPageNumberStartWithOne,
@@ -76,6 +77,7 @@ class IllustAdapter {
       pages: this.context.pages,
       selectedIndexes: options.selectedIndexes,
       renameRule: this.settings.mangaRenameRule,
+      renameImageRule: this.settings.mangaRenameImageRule,
       pageNumberStartWithOne: this.settings.mangaPageNumberStartWithOne === -2 ?
                               this.settings.globalTaskPageNumberStartWithOne :
                               this.settings.mangaPageNumberStartWithOne,
