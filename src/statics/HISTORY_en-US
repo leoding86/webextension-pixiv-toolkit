@@ -1,3 +1,6 @@
+v6.1.0
+Added a option for controlling the feature about packing multiple images in download item to a zip file.
+
 v6.0.0
 Notice: This version include some break changes so you maybe encounter some problems, feel free to open an issue if you feel something wrong;
 Adapted manifest v3;
