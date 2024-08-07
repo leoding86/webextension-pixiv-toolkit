@@ -9,12 +9,12 @@
             <v-list-tile-title>{{ tl('_max_process_download_tasks') }}</v-list-tile-title>
           </v-list-tile-content>
           <v-list-tile-action>
-            <v-select
-              :items="[1, 2, 3, 4, 5]"
+            <v-text-field
+              reverse
               v-model="maxProcessDownloadTasks"
-              type="value"
+              type="number"
               style="width:100px;"
-            ></v-select>
+            ></v-text-field>
           </v-list-tile-action>
         </v-list-tile>
 
@@ -166,8 +166,15 @@ export default {
     maxProcessDownloadTasks(val, oldVal) {
       val = parseInt(val);
 
-      if (val < 1 || val > 5) {
-        this.maxProcessDownloadTasks = (oldVal < 1 || oldVal > 5) ? 3 : oldVal;
+      if (val < 1) {
+        this.maxProcessDownloadTasks = val = 1;
+      }
+
+      if (val > 10) {
+        if (!window.confirm(this.tl('_running_too_many_download_tasks_at_same_time_may_be_cause_high_CPU_usage_are_you_sure'))) {
+          this.maxProcessDownloadTasks = 10;
+          return;
+        }
       }
 
       browser.storage.local.set({
