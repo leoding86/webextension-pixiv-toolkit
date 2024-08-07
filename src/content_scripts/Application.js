@@ -35,6 +35,11 @@ class Application {
    */
   settings;
 
+  /**
+   * @type {any} browser port
+   */
+  downloadTaskProgressObserverPort;
+
   constructor() {
     this.pageFilter = new PageFilter();
     this.detector = new Detector();
@@ -52,19 +57,39 @@ class Application {
       Application.instance = new Application();
     }
 
-    // browser.runtime.onMessage.addListener(message => {
-    //   debugger;
-    // });
-
     return Application.instance;
+  }
+
+  getDownloadTaskProgressObserverPort() {
+    if (!this.downloadTaskProgressObserverPort) {
+      this.downloadTaskProgressObserverPort = browser.runtime.connect({ name: 'download-task-progress-observer' });
+      this.downloadTaskProgressObserverPort.onMessage.addListener((message) => {
+        console.log(message);
+      });
+      this.downloadTaskProgressObserverPort.onDisconnect.addListener((port) => {
+        this.downloadTaskProgressObserverPort = null;
+      });
+    }
+
+    return this.downloadTaskProgressObserverPort;
   }
 
   async urlchangeHandler(newUrl, oldUrl) {
     try {
+      const donwloadTaskProgressObserverPort = this.getDownloadTaskProgressObserverPort();
+
       let data = this.pageFilter.getData(newUrl);
 
       const adapter = new Adapter();
       this.resource = await adapter.getResource(data.type, data.url);
+
+      /**
+       * Send item resource to observe the task progress from option page
+       */
+      donwloadTaskProgressObserverPort.postMessage({
+        action: 'observe-download-progress',
+        resource: this.resource
+      });
 
       if (!this.UIApp) {
         this.UIApp = await UIApplication.createApp();
@@ -83,7 +108,7 @@ class Application {
 
       this.resource = null;
 
-      throw error;
+      console.error(error);
     }
   }
 }
