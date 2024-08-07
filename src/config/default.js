@@ -236,6 +236,14 @@ export default Object.assign({}, {
     fanboxPostRenameImageRule: 'p{pageNum}',
 
     /**
+     * @since 6.2.0
+     */
+    ugoiraFFmpegGIFCliArgs: '-f concat -i input.txt -plays 0 out.gif',
+    ugoiraFFmpegAPNGCliArgs: '-f concat -i input.txt -plays 0 output.apng',
+    ugoiraFFmpegWEBMCliArgs: '-f concat -i input.txt output.webm',
+    ugoiraFFmpegMP4CliArgs: '-f concat -i input.txt -vsync vfr -pix_fmt yuv420p output.mp4',
+
+    /**
      * @since 1.0.0
      * @deprecated since version 6.0.0
      */
