@@ -164,8 +164,8 @@ class MultipleDownloadTask extends AbstractDownloadTask {
     if (this.zipMultipleImages === 1) {
       const nameFormatter = NameFormattor.getFormatter({ context: Object.assign({}, this.context) });
 
-      this.zip.generateAsync({ type: 'blob' }).then(blob => {
-        FileSystem.getDefault().saveFile({
+      this.zip.generateAsync({ type: 'blob' }).then(async blob => {
+        this.lastDownloadId = await FileSystem.getDefault().saveFile({
           url: URL.createObjectURL(blob),
           filename: pathjoin(app().settings.downloadRelativeLocation, nameFormatter.format(this.options.renameRule, this.id)) + '.zip'
         });
