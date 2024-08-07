@@ -879,7 +879,7 @@
         "message": "Cancel"
     },
     "_max_process_download_tasks": {
-        "message": "Max process download tasks"
+        "message": "Max process download tasks at same time"
     },
     "_rename_illustration_image": {
         "message": "Rename illustration image"
@@ -917,7 +917,10 @@
     "_download_added": {
         "message": "Download added"
     },
-    "_please_wait": {
-        "message": "Please wait"
+    "_opening_download_manager": {
+        "message": "Opening Download Manager, please wait..."
+    },
+    "_running_too_many_download_tasks_at_same_time_may_be_cause_high_CPU_usage": {
+        "message": "Running too many download tasks at same time will cause high CPU usage"
     }
 }

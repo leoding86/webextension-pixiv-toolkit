@@ -882,7 +882,7 @@
         "message": "取消"
     },
     "_max_process_download_tasks": {
-        "message": "最大执行下载数"
+        "message": "最大同时执行下载数"
     },
     "_rename_illustration_image": {
         "message": "重命名绘画图片"
@@ -920,7 +920,10 @@
     "_download_added": {
         "message": "下载已添加"
     },
-    "_please_wait": {
-        "message": "请稍等"
+    "_opening_download_manager": {
+        "message": "下载管理器打开中，请稍后..."
+    },
+    "_running_too_many_download_tasks_at_same_time_may_be_cause_high_CPU_usage": {
+        "message": "同时进行太多下载会导致CPU高负载"
     }
 }
