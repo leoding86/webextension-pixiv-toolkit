@@ -7,6 +7,7 @@
         <v-list-tile>
           <v-list-tile-content>
             <v-list-tile-title>{{ tl('_max_process_download_tasks') }}</v-list-tile-title>
+            <v-list-tile-sub-title style="color:brown">{{ tl('_running_too_many_download_tasks_at_same_time_may_be_cause_high_CPU_usage') }}</v-list-tile-sub-title>
           </v-list-tile-content>
           <v-list-tile-action>
             <v-text-field
@@ -168,13 +169,6 @@ export default {
 
       if (val < 1) {
         this.maxProcessDownloadTasks = val = 1;
-      }
-
-      if (val > 10) {
-        if (!window.confirm(this.tl('_running_too_many_download_tasks_at_same_time_may_be_cause_high_CPU_usage_are_you_sure'))) {
-          this.maxProcessDownloadTasks = 10;
-          return;
-        }
       }
 
       browser.storage.local.set({
