@@ -867,7 +867,7 @@
         "message": "此资源的下载已存在于下载管理器中"
     },
     "_download_manager_isnt_open": {
-        "message": "下载管理器似乎没有开启，你可以在设置页面或弹出页面中打开下载管理器。"
+        "message": "下载管理器似乎没有开启，你可以在设置页面或弹出页面中打开下载管理器。现在打开？"
     },
     "_switch_to_it_and_close": {
         "message": "切换并关闭"
@@ -901,5 +901,26 @@
     },
     "_create_a_zip_file_while_downloading_multiple_images": {
         "message": "当下载的项目包含多张图片时打包成ZIP"
+    },
+    "_download_gif": {
+        "message": "下载GIF"
+    },
+    "_download_apng": {
+        "message": "下载APNG"
+    },
+    "_download_webm": {
+        "message": "下载WEBM"
+    },
+    "_download_mp4": {
+        "message": "下载MP4"
+    },
+    "_download_custom": {
+        "message": "自定义下载"
+    },
+    "_download_added": {
+        "message": "下载已添加"
+    },
+    "_please_wait": {
+        "message": "请稍等"
     }
 }
