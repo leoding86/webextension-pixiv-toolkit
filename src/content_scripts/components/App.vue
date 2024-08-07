@@ -211,22 +211,19 @@ export default {
      */
     async checkDownloadManager(fnAfterOpen) {
       let timeout = setTimeout(() => {
-        if (window.confirm(this.tl('_download_manager_isnt_open'))) {
-          this.displayNotice('_please_wait');
+        this.displayNotice('_opening_download_manager');
 
-          browser.runtime.sendMessage({
-            to: 'ws',
-            action: 'tab:openTab',
-            args: {
-              url: browser.runtime.getURL('/options_page/downloads.html#/')
-            }
-          }, () => {
-            if (fnAfterOpen) {
-              setTimeout(() => fnAfterOpen(), 1500);
-            }
-          });
-        }
-        throw new RuntimeError('Download manager isn\'t open');
+        browser.runtime.sendMessage({
+          to: 'ws',
+          action: 'tab:openTab',
+          args: {
+            url: browser.runtime.getURL('/options_page/downloads.html#/')
+          }
+        }, () => {
+          if (fnAfterOpen) {
+            setTimeout(() => fnAfterOpen(), 1500);
+          }
+        });
       }, 600);
 
       let response = await browser.runtime.sendMessage({
