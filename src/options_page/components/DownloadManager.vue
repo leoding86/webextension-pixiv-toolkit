@@ -91,7 +91,7 @@ export default {
   methods: {
     getDownloadTaskTag(download) {
       if (download.type === 'PIXIV_UGOIRA') {
-        return 'Pixiv Ugoira';
+        return 'Pixiv Ugoira ' + (download.convertType || 'Custom');
       } else if (download.type === 'PIXIV_ILLUST') {
         return 'Pixiv Illust';
       } else if (download.type === 'PIXIV_MANGA') {
