@@ -90,18 +90,39 @@ class IllustAdapter {
 
   /**
    * @param {AbstractResource} resource
+   * @param {Object} options
    * @returns {UgoiraDownloadTask}
    */
-  createUgoiraDownloadTask(resource) {
+  createUgoiraDownloadTask(resource, options) {
+    let ffmpegCommandArgs = '';
+    let id = resource.getUid()
+    let convertType = 'CUSTOM';
+
+    if (options && typeof options.ugoiraConvertType === 'string') {
+      convertType = options.ugoiraConvertType.toUpperCase();
+      const key = `ugoiraFFmpeg${convertType}CliArgs`;
+
+      if (this.settings[key]) {
+        ffmpegCommandArgs = this.settings[key];
+        id += '-' + convertType
+      }
+    }
+
+    if (!ffmpegCommandArgs) {
+      ffmpegCommandArgs = this.settings.ugoiraCustomFFmpegCommand;
+      id += '-custom';
+    }
+
     return UgoiraDownloadTask.create({
-      id: resource.getUid(),
+      id,
       url: this.url,
       resource: this.context.illustOriginalSrc,
       frames: this.context.illustFrames,
       packAnimationJsonType: this.settings.animationJsonFormat,
       renameRule: this.settings.ugoiraRenameRule,
-      customFFmpegCommand: this.settings.ugoiraCustomFFmpegCommand,
+      ffmpegCommandArgs,
       context: this.context,
+      convertType
     });
   }
 

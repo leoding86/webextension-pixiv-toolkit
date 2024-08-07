@@ -15,8 +15,9 @@ import pathjoin from "@/modules/Util/pathjoin";
  * @property {any[]} frames
  * @property {string} renameRule
  * @property {0|1|2} packAnimationJsonType
- * @property {string} customFFmpegCommand
+ * @property {string} ffmpegCommandArgs
  * @property {any} context
+ * @property {string} convertType
  *
  * @class
  */
@@ -68,6 +69,7 @@ class UgoiraDownloadTask extends AbstractDownloadTask {
     this.title = options.context.title;
     this.context = options.context;
     this.options = options;
+
     this.downloader = new Downloader({ processors: app().settings.downloadTasksWhenDownloadingImages });
     this.downloader.appendFile(options.resource);
     this.downloader.addListener('start', this.onStart, this);
@@ -196,12 +198,7 @@ class UgoiraDownloadTask extends AbstractDownloadTask {
     this.ffmpeg.FS('writeFile', 'input.txt', framesContent);
     loadedFiles.push('input.txt');
 
-    let ffmpegCommand = ['-f', 'concat', '-i', 'input.txt', '-plays', 0, 'out.gif'];
-
-    if (this.options.customFFmpegCommand) {
-      ffmpegCommand = this.options.customFFmpegCommand.split(' ');
-    }
-
+    let ffmpegCommand = this.options.ffmpegCommandArgs ? this.options.ffmpegCommandArgs.split(' ') : ['-f', 'concat', '-i', 'input.txt', '-plays', 0, 'out.gif'];
     let outputFilename = ffmpegCommand[ffmpegCommand.length - 1];
 
     await this.ffmpeg.run.apply(this.ffmpeg, ffmpegCommand);
@@ -320,7 +317,8 @@ class UgoiraDownloadTask extends AbstractDownloadTask {
    */
   toJson() {
     return Object.assign({}, super.toJson(), {
-      processProgress: this.processProgress
+      processProgress: this.processProgress,
+      convertType: this.options.convertType
     });
   }
 }
