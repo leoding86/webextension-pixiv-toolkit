@@ -97,7 +97,7 @@ class Application {
    * @param {object} port
    */
   onConnect(port) {
-    if (port.name) {
+    if (port.name && port.name.indexOf(':') < 0) {
       let portService = this.getService(port.name);
       portService.appendPort(port);
     }
