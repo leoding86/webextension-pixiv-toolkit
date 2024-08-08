@@ -116,6 +116,10 @@ class AbstractResource {
   getPageResolver() {
     return this.context.pageResolver;
   }
+
+  getDownloadTaskId() {
+    return this.getUid();
+  }
 }
 
 export default AbstractResource;

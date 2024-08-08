@@ -117,6 +117,19 @@ class IllustResource extends AbstractResource {
   packName() {
     return IllustResource.__PACK_NAME__;
   }
+
+  /**
+   *
+   * @param {'apng'|'gif'|'mp4'|'webm'} [convertType]
+   * @returns
+   */
+  getDownloadTaskId(convertType) {
+    if (this.isUgoira()) {
+      return this.getUid() + ':' + (convertType || 'custom').toLowerCase();
+    } else {
+      return this.getUid();
+    }
+  }
 }
 
 export default IllustResource;
