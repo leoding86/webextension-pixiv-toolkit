@@ -168,7 +168,7 @@ class EpisodeDownloadTask extends AbstractDownloadTask {
       const nameFormatter = NameFormattor.getFormatter({ context: Object.assign({}, this.context) });
 
       this.zip.generateAsync({ type: 'blob' }).then(blob => {
-        FileSystem.getDefault().saveFile({
+        this.lastDownloadId = FileSystem.getDefault().saveFile({
           url: URL.createObjectURL(blob),
           filename: pathjoin(app().settings.downloadRelativeLocation, nameFormatter.format(this.options.renameRule, this.context.id)) + '.zip'
         });
