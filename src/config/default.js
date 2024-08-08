@@ -1,3 +1,9 @@
+/*
+ * @Author: Leo Ding <leoding86@msn.com>
+ * @Date: 2024-08-08 08:43:42
+ * @LastEditors: Leo Ding <leoding86@msn.com>
+ * @LastEditTime: 2024-08-08 14:34:33
+ */
 //@ts-check
 export default Object.assign({}, {
     version: '6.0.0',
@@ -240,8 +246,8 @@ export default Object.assign({}, {
      */
     ugoiraFFmpegGIFCliArgs: '-f concat -i input.txt -plays 0 out.gif',
     ugoiraFFmpegAPNGCliArgs: '-f concat -i input.txt -plays 0 output.apng',
-    ugoiraFFmpegWEBMCliArgs: '-f concat -i input.txt output.webm',
-    ugoiraFFmpegMP4CliArgs: '-f concat -i input.txt -vsync vfr -pix_fmt yuv420p output.mp4',
+    ugoiraFFmpegWEBMCliArgs: '-f concat -i input.txt -safe 0 output.webm',
+    ugoiraFFmpegMP4CliArgs: '-f concat -i input.txt -safe 0 -c copy output.webm',
 
     /**
      * @since 1.0.0
