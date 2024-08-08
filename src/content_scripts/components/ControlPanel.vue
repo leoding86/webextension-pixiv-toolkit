@@ -216,6 +216,7 @@ export default {
     position: relative;
     top: -50px;
     background: #fff;
+    border: 2px solid #fff;
     border-radius: 30px;
     box-shadow: 0 0 8px rgba(0,0,0,0.3);
     overflow: hidden;
@@ -232,7 +233,7 @@ export default {
 
   #ptk__action__wrapper {
     display: flex;
-    padding: 5px;
+    padding: 3px;
   }
 
   .ptk__action__wrapper__body {
