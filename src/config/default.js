@@ -2,7 +2,7 @@
  * @Author: Leo Ding <leoding86@msn.com>
  * @Date: 2024-08-08 08:43:42
  * @LastEditors: Leo Ding <leoding86@msn.com>
- * @LastEditTime: 2024-08-08 14:34:33
+ * @LastEditTime: 2024-08-08 15:36:08
  */
 //@ts-check
 export default Object.assign({}, {
@@ -242,12 +242,13 @@ export default Object.assign({}, {
     fanboxPostRenameImageRule: 'p{pageNum}',
 
     /**
+     * internal
      * @since 6.2.0
      */
     ugoiraFFmpegGIFCliArgs: '-f concat -i input.txt -plays 0 out.gif',
     ugoiraFFmpegAPNGCliArgs: '-f concat -i input.txt -plays 0 output.apng',
     ugoiraFFmpegWEBMCliArgs: '-f concat -i input.txt -safe 0 output.webm',
-    ugoiraFFmpegMP4CliArgs: '-f concat -i input.txt -safe 0 -c copy output.webm',
+    ugoiraFFmpegMP4CliArgs: '-f concat -i input.txt -safe 0 -c copy output.mp4',
 
     /**
      * @since 1.0.0
