@@ -2,7 +2,7 @@
  * @Author: Leo Ding <leoding86@msn.com>
  * @Date: 2024-08-08 08:43:42
  * @LastEditors: Leo Ding <leoding86@msn.com>
- * @LastEditTime: 2024-08-08 13:03:30
+ * @LastEditTime: 2024-08-08 15:57:24
 -->
 <template>
   <control-panel v-if="showApp" :lastError="lastError"
@@ -12,7 +12,7 @@
   >
     <template v-if="!isUgoira">
       <ptk-button @click="download"
-      >{{ tl('_download') }}{{ generalTaskProgress * 100 + '%' }}</ptk-button>
+      >{{ tl('_download') }}{{ generalTaskProgressText }}</ptk-button>
     </template>
     <template v-else>
       <ptk-button @click="download({ ugoiraConvertType: 'apng' })"
@@ -157,7 +157,7 @@ export default {
       if (this.generalTaskProgress === 1) {
         return ' ✔';
       } else if (this.generalTaskProgress > 0) {
-        return ' ' + this.generalTaskProgress * 100 + '%';
+        return ' ' + (this.generalTaskProgress * 100).toFixed(2) + '%';
       } else {
         return '';
       }
@@ -193,6 +193,8 @@ export default {
     });
 
     window.$eventBus.$on('pagechange', page => {
+      this.initialProgress();
+
       this.abortAdapterParse();
 
       if (page) {
@@ -256,6 +258,17 @@ export default {
   },
 
   methods: {
+    initialProgress() {
+      this.generalTaskProgress = 0;
+      this.ugoiraTaskProgresses = {
+        'gif': { d: 0, p: 0 },
+        'apng': { d: 0, p: 0 },
+        'webm': { d: 0, p: 0 },
+        'mp4': { d: 0, p: 0 },
+        'custom': { d: 0, p: 0 }
+      };
+    },
+
     ugoiraProgress(type) {
       const progress = this.ugoiraTaskProgresses[type];
 
