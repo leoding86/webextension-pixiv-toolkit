@@ -41,6 +41,16 @@ class Application {
   downloadTaskProgressObserverPort;
 
   constructor() {
+    browser.storage.local.get(null, items => {
+      this.settings = items;
+    });
+
+    browser.storage.onChanged.addListener(changes => {
+      for (let key in changes) {
+        this.settings[key] = changes[key].newValue;
+      }
+    });
+
     this.pageFilter = new PageFilter();
     this.detector = new Detector();
     this.detector.addListener('urlchange', this.urlchangeHandler, this);
