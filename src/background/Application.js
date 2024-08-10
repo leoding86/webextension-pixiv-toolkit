@@ -189,7 +189,7 @@ class Application {
    * extension is operating in 'split' incognito mode.
    */
   onStartup() {
-    console.error('startup');
+    //
   }
 
   /**
