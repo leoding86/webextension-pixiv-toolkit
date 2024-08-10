@@ -24,6 +24,8 @@
       <ptk-button @click="download"
         :type="downloadButtonType"
       >{{ tl('_download_custom') }}</ptk-button>
+
+      <ptk-button @click="test">TEST</ptk-button>
     </template>
     <page-selector
       ref="pageSelector"
@@ -50,8 +52,8 @@ import ControlPanel from '@/content_scripts/components/ControlPanel.vue';
 import PageSelector from '@/content_scripts/components/PageSelector.vue';
 import browser from '@/modules/Extension/browser';
 import AbstractResource from "@/modules/PageResource/AbstractResource";
-import { RuntimeError } from '@/errors';
 import moment from 'moment';
+import ContentPageDownloadManager from '../modules/ContentPageDownloadManager';
 
 export default {
   components: {
@@ -128,6 +130,17 @@ export default {
      * @type {ReturnType<typeof setTimeout>}
      */
     this.noticeCloseTimeout;
+
+    /**
+     * @type {ContentPageDownloadManager}
+     */
+    this.downloadManager = ContentPageDownloadManager.getDefault();
+    this.downloadManager.addListener('error', error => {
+      debugger;
+    });
+    this.downloadManager.addListener('update', status => {
+      debugger;
+    });
 
     window.$eventBus.$on('pagechange', page => {
       this.abortAdapterParse();
@@ -249,17 +262,23 @@ export default {
       }
     },
 
-    async download({ ugoiraConvertType } = {}) {
-      await this.checkDownloadManager(async () => {
-        const args = {
-          unpackedResource: this.resource.unpack()
-        };
+    getDownloadArgs({ ugoiraConvertType }) {
+      const args = {
+        unpackedResource: this.resource.unpack()
+      };
 
-        if (this.isUgoira) {
-          args.options = { ugoiraConvertType };
-        } else {
-          args.options = { selectedIndexes: this.selectedIndexes };
-        }
+      if (this.isUgoira) {
+        args.options = { ugoiraConvertType };
+      } else {
+        args.options = { selectedIndexes: this.selectedIndexes };
+      }
+
+      return args;
+    },
+
+    async downloadWithDownloadManager({ ugoiraConvertType }) {
+      await this.checkDownloadManager(async () => {
+        const args = this.getDownloadArgs({ ugoiraConvertType });
 
         let response = await browser.runtime.sendMessage({
           action: 'download:addDownload',
@@ -281,6 +300,7 @@ export default {
          * Save download history
          */
         browser.runtime.sendMessage({
+          to: 'ws',
           action: 'history:itemDownload',
           args: {
             uid: this.resource.getUid(),
@@ -294,6 +314,22 @@ export default {
           }
         });
       });
+    },
+
+    async downloadWithInContentScript({ ugoiraConvertType }) {
+      try {
+        this.downloadManager.addTask(this.resource, { ugoiraConvertType });
+      } catch (error) {
+        debugger;
+      }
+    },
+
+    download({ ugoiraConvertType } = {}) {
+      if (this.$root.globalBrowserItems.useStandaloneDownloadManager) {
+        this.downloadWithDownloadManager({ ugoiraConvertType });
+      } else {
+        this.downloadWithInContentScript({ ugoiraConvertType });
+      }
     },
 
     pageSelectorSelectHandler(selectedPages, selectedIndexes) {
@@ -312,6 +348,14 @@ export default {
 
     passToPixivOmina() {
       window.location.assign(`pixiv-omina://create-download?url=${encodeURIComponent(window.location.href)}`);
+    },
+
+    test() {
+      const { createFFmpeg } = FFmpeg;
+      this.ffmpeg = new createFFmpeg({
+        log: true,
+        corePath: browser.runtime.getURL('lib/ffmpeg/ffmpeg-core.js'),
+      });
     }
   }
 }
@@ -341,4 +385,4 @@ export default {
   box-shadow: 0 0 5px rgba(0, 0, 0, .3);
   padding: 10px 15px;
 }
-</style>
+</style>../modules/ContentPageDownloadManager
