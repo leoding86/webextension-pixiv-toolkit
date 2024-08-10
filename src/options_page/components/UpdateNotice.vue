@@ -11,6 +11,7 @@
       <v-card-text>
         <div style="font-size:20px;font-weight:700;margin-bottom:10px;text-align:center;">✨{{ tl('_sponsors') }}✨</div>
         <sponsors-card></sponsors-card>
+        <new-settings></new-settings>
         <change-log></change-log>
       </v-card-text>
 
@@ -26,12 +27,14 @@
 
 <script>
 import SponsorsCard from '@/options_page/components/SponsorsCard.vue';
+import NewSettings from './NewSettings.vue';
 import ChangeLog from '@/options_page/components/ChangeLog'
 
 export default {
   components: {
     'change-log': ChangeLog,
     'sponsors-card': SponsorsCard,
+    'new-settings': NewSettings
   },
 
   data() {

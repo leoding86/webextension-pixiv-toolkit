@@ -54,7 +54,7 @@ export default {
 <style lang="scss" scoped>
   .button {
     display:inline-block;
-    margin-right: 5px;
+    margin: 0 2.5px;
     padding: 6px 22px;
     border-radius: 50px;
     font-size: 12px;

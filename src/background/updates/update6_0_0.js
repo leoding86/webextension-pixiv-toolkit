@@ -7,8 +7,8 @@ import defaultSettings from "@/config/default";
  */
 export default async () => {
   let settings = await app().getService('setting').getSettings();
-  let updateSettings = Object.assign(defaultSettings, settings, {
-    version: '6.0.0',
+  let updateSettings = Object.assign({}, defaultSettings, settings, {
+    version: '6.3.0',
   });
 
   /**

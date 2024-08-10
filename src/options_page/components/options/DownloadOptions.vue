@@ -4,14 +4,14 @@
 
     <v-card style="margin-bottom:30px;">
       <v-list two-line>
-        <v-list-tile>
+        <!-- <v-list-tile>
           <v-list-tile-content>
             <v-list-tile-title>{{ tl('_use_standalone_download_manager') }}</v-list-tile-title>
           </v-list-tile-content>
           <v-list-tile-action>
             <v-switch v-model="useStandaloneDownloadManager"></v-switch>
           </v-list-tile-action>
-        </v-list-tile>
+        </v-list-tile> -->
 
         <v-list-tile v-if="useStandaloneDownloadManager">
           <v-list-tile-content>

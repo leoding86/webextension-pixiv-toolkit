@@ -286,11 +286,12 @@ export default {
 
       if (progress) {
         if (progress.p === 1) {
+          this.downloadButtonType = 'success';
           return ' ✔';
         } else if (progress.p > 0) {
-          return ` (P:${progress.p * 100}%)`;
+          return ` (P:${(progress.p * 100).toFixed(2)}%)`;
         } else if (progress.d > 0) {
-          return ` (D:${progress.d * 100}%)`;
+          return ` (D:${(progress.d * 100).toFixed(2)}%)`;
         }
       }
 
@@ -357,7 +358,8 @@ export default {
 
     async checkIfDownloaded() {
       let downloadedAt = await browser.runtime.sendMessage({
-        action: 'download:checkIfDownloaded',
+        to: 'ws',
+        action: 'history:checkIfDownloaded',
         args: {
           uid: this.resource.getUid()
         }
@@ -369,23 +371,32 @@ export default {
     },
 
     getDownloadArgs({ ugoiraConvertType }) {
-      const args = {
-        unpackedResource: this.resource.unpack()
+      return {
+        unpackedResource: this.resource.unpack(),
+        options: {
+          ugoiraConvertType,
+          selectedIndexes: this.selectedIndexes
+        }
       };
     },
 
-    async downloadWithDownloadManager({ ugoiraConvertType }) {
+    async downloadWithDownloadManager({ ugoiraConvertType, redownload = false }) {
       await this.checkDownloadManager(async () => {
         const args = this.getDownloadArgs({ ugoiraConvertType });
+        args.options.redownload = redownload;
 
         let response = await browser.runtime.sendMessage({
           action: 'download:addDownload',
           args
         });
 
-        if (!response.result) {
+        if (!response.result && redownload === false) {
           if (response.errorName === 'DownloadTaskExistsError') {
-            alert(this.tl(`_the_resource_is_already_in_download_manager`));
+            if (window.confirm(this.tl(`_the_resource_is_already_in_download_manager`))) {
+              this.downloadWithDownloadManager({ ugoiraConvertType, redownload: true })
+            }
+
+            return;
           } else {
             alert(this.tl('_unkown_error') + ': ' + response.errorName);
           }
@@ -423,7 +434,7 @@ export default {
     },
 
     download({ ugoiraConvertType } = {}) {
-      if (this.$root.globalBrowserItems.useStandaloneDownloadManager) {
+      if (true || this.$root.globalBrowserItems.useStandaloneDownloadManager) {
         this.downloadWithDownloadManager({ ugoiraConvertType });
       } else {
         this.downloadWithInContentScript({ ugoiraConvertType });

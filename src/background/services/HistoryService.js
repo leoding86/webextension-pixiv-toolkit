@@ -1,4 +1,5 @@
 import History from "@/modules/History";
+import Db from "@/modules/Db/Db";
 import AbstractService from "./AbstractService";
 
 /**
@@ -61,6 +62,17 @@ import AbstractService from "./AbstractService";
   deleteItem(data) {
     if (data.uid) {
       this.history.deleteItem(data.uid);
+    }
+  }
+
+  async checkIfDownloaded({ uid }) {
+    let historyRepo = Db.getDb().historyRepo();
+    let item = await historyRepo.getItem({ uid });
+
+    if (item && item.downloaded_at) {
+      return item.downloaded_at;
+    } else {
+      return 0;
     }
   }
 }

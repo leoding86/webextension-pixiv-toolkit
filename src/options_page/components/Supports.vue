@@ -23,7 +23,7 @@
       <v-icon right>open_in_new</v-icon>
     </v-btn>
 
-    <v-btn
+    <!-- <v-btn
       small
       round
       depressed
@@ -31,7 +31,7 @@
       <img src="../assets/patreon.png">
       <span class="button-text" v-show="largeWindow">{{ tl('_support_me') }}</span>
       <v-icon right>open_in_new</v-icon>
-    </v-btn>
+    </v-btn> -->
 
     <v-btn v-if="showInlineSponsorsLink"
       small

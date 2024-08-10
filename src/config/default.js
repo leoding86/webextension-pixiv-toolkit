@@ -253,7 +253,9 @@ export default Object.assign({}, {
     /**
      * @since 6.3.0
      */
-    useStandaloneDownloadManager: false,
+    useStandaloneDownloadManager: true,
+    dontCreateWorkFolder: 0,
+    combinWRRuleAndIRRuleWhenDontCreateWorkFolder: 0,
 
     /**
      * @since 1.0.0

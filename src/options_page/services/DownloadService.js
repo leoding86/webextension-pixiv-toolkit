@@ -6,6 +6,7 @@ import DownloadManager from "../modules/DownloadManager";
 import MimeType from "@/modules/Util/MimeType";
 import PageResourceFactory from '@/modules/PageResource/Factory';
 import Db from "@/modules/Db/Db";
+import DownloadTaskExistsError from "@/errors/DownloadTaskExistsError";
 
 /**
  * @class Download service
@@ -81,7 +82,7 @@ class DownloadService extends AbstractService {
    * @param {{ unpackedResource: Object, options: any}} param0
    * @returns {Object}
    */
-  async addDownload({ unpackedResource, options = {} }) {
+  async addDownload({ unpackedResource, options = {} }) {console.log(options);
     /**
      * Create page resource instance using unpacked resource data
      */
@@ -92,6 +93,16 @@ class DownloadService extends AbstractService {
     let downloadTask = await downloadAdapter.createDownloadTask(pageResource, options);
 
     try {
+      if (options.redownload) {
+        const oldDownloadTask = this.downloadManager.getTask(downloadTask.id);
+
+        if (oldDownloadTask.isComplete() || oldDownloadTask.isFailure()) {
+          this.downloadManager.deleteTask(downloadTask.id);
+        } else {
+          throw new DownloadTaskExistsError();
+        }
+      }
+
       await this.downloadManager.addTask(downloadTask);
 
       this.dispatch(DownloadService.TASK_ADDED_EVENT, [downloadTask]);

@@ -143,12 +143,27 @@ class MultipleDownloadTask extends AbstractDownloadTask {
       const file = nameFormatter.format(this.options.renameImageRule, `p${pageNum}`) + `.${MimeType.getExtenstion(mimeType)}`;
       this.zip.file(file, blob, { date: now });
     } else {
+      let filename = GlobalSettings().downloadRelativeLocation;
+
+      if (this.type !== 'PIXIV_MANGA' &&
+        (
+          (GlobalSettings().dontCreateWorkFolder === 1 && this.options.pages.length === 1) ||
+          GlobalSettings().dontCreateWorkFolder === 2
+        )
+      ) {
+        filename = pathjoin(filename,
+          nameFormatter.format((GlobalSettings().combinWRRuleAndIRRuleWhenDontCreateWorkFolder === 0 ? '' : (this.options.renameRule + '_')) + this.options.renameImageRule, `${this.context.id}-p${pageNum}`)
+        ) + `.${MimeType.getExtenstion(mimeType)}`;
+      } else {
+        filename = pathjoin(filename,
+          nameFormatter.format(this.options.renameRule, this.context.id),
+          nameFormatter.format(this.options.renameImageRule, `p${pageNum}`)
+        ) + `.${MimeType.getExtenstion(mimeType)}`;
+      }
+
       this.lastDownloadId = await FileSystem.getDefault().saveFile({
         url,
-        filename: pathjoin(GlobalSettings().downloadRelativeLocation,
-          nameFormatter.format(this.options.renameRule, this.context.id),
-          nameFormatter.format(this.options.renameImageRule, `p${pageNum}`
-        )) + `.${MimeType.getExtenstion(mimeType)}`
+        filename
       });
     }
 
