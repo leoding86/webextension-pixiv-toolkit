@@ -206,7 +206,7 @@ class DownloadManager extends Event {
    */
   setLastError(error) {
     this.lastError = error;
-    this.dispatch(error, [error]);
+    this.dispatch('error', [error]);
   }
 
   /**
