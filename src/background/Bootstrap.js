@@ -47,11 +47,6 @@ const application = Application.createApp();
 Bootstrap.initializeApplication(application);
 
 self.oninstall = () => {
-  importScripts(
-    browser.runtime.getURL('lib/pouchdb.min.js'),
-    browser.runtime.getURL('lib/pouchdb.find.min.js')
-  );
-
   Bootstrap.boot(application);
 
   self.application = application;
