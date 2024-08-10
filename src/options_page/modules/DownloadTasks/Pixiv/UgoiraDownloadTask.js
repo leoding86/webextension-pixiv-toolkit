@@ -1,4 +1,4 @@
-import { app } from "@/options_page/DownloadsApplication";
+import GlobalSettings from "@/modules/GlobalSettings";
 import AbstractDownloadTask from "../AbstractDownloadTask";
 import browser from "@/modules/Extension/browser";
 import Downloader from "@/modules/Net/Downloader";
@@ -70,7 +70,7 @@ class UgoiraDownloadTask extends AbstractDownloadTask {
     this.context = options.context;
     this.options = options;
 
-    this.downloader = new Downloader({ processors: app().settings.downloadTasksWhenDownloadingImages });
+    this.downloader = new Downloader({ processors: GlobalSettings().downloadTasksWhenDownloadingImages });
     this.downloader.appendFile(options.resource);
     this.downloader.addListener('start', this.onStart, this);
     this.downloader.addListener('progress', this.onProgress, this);
@@ -134,7 +134,7 @@ class UgoiraDownloadTask extends AbstractDownloadTask {
 
     this.lastDownloadId = await FileSystem.getDefault().saveFile({
       url,
-      filename: pathjoin(app().settings.downloadRelativeLocation, nameFormatter.format(
+      filename: pathjoin(GlobalSettings().downloadRelativeLocation, nameFormatter.format(
         this.options.renameRule
       )) + '.' + MimeType.getExtenstion(mimeType)
     });
@@ -216,7 +216,7 @@ class UgoiraDownloadTask extends AbstractDownloadTask {
 
     this.lastDownloadId = await FileSystem.getDefault().saveFile({
       url: animationFileUrl,
-      filename: pathjoin(app().settings.downloadRelativeLocation, nameFormatter.format(
+      filename: pathjoin(GlobalSettings().downloadRelativeLocation, nameFormatter.format(
         this.options.renameRule
       )) + '.' + MimeType.getFileExtension(outputFilename)
     });

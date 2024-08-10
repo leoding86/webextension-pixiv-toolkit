@@ -1,4 +1,5 @@
 import { app } from "@/options_page/DownloadsApplication";
+import GlobalSettings from "@/modules/GlobalSettings";
 import { FanboxPostDownloadTask as PostDownloadTask } from "@/options_page/modules/DownloadTasks";
 import { FanboxPostParser } from "@/modules/Parser";
 import AbstractDownloadTask from "../../DownloadTasks/AbstractDownloadTask";
@@ -31,7 +32,7 @@ class PostAdapter {
    */
   constructor(url) {
     this.url = url;
-    this.settings = app().settings;
+    this.settings = GlobalSettings(app().settings);
   }
 
   /**
@@ -61,8 +62,8 @@ class PostAdapter {
       id: resource.getUid(),
       url: this.url,
       pages: this.context.pages,
-      renameRule: app().settings.fanboxPostRenameRule,
-      renameImageRule: app().settings.fanboxPostRenameImageRule,
+      renameRule: this.settings.fanboxPostRenameRule,
+      renameImageRule: this.settings.fanboxPostRenameImageRule,
       pageNumberStartWithOne: this.settings.fanboxPostPageNumberStartWithOne === -2 ?
                               this.settings.globalTaskPageNumberStartWithOne :
                               this.settings.fanboxPostPageNumberStartWithOne,

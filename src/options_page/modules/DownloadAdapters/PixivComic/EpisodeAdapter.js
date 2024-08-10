@@ -1,4 +1,4 @@
-import { app } from "@/options_page/DownloadsApplication";
+import GlobalSettings from "@/modules/GlobalSettings";
 import {
   PixivComicEpisodeDownloadTask as EpisodeDownloadTask
 } from "@/options_page/modules/DownloadTasks";
@@ -28,6 +28,7 @@ class EpisodeAdapter {
    */
   constructor(url) {
     this.url = url;
+    this.settings = GlobalSettings();
   }
 
   /**
@@ -53,14 +54,14 @@ class EpisodeAdapter {
       id: 'pixiv_comic:episode:' + this.context.id,
       url: this.url,
       pages: this.context.pages,
-      pageNumberStartWithOne: app().settings.pixivComicEpisodePageNumberStartWithOne === -2 ?
-                              app().settings.globalTaskPageNumberStartWithOne :
-                              app().settings.pixivComicEpisodePageNumberStartWithOne,
-      pageNumberLength: app().settings.pixivComicEpisodePageNumberLength === -2 ?
-                        app().settings.globalTaskPageNumberStartWithOne :
-                        app().settings.pixivComicEpisodePageNumberLength,
-      renameRule: app().settings.pixivComicEpisodeRenameRule,
-      renameImageRule: app().settings.pixivComicEpisodeRenameImageRule,
+      pageNumberStartWithOne: this.settings.pixivComicEpisodePageNumberStartWithOne === -2 ?
+                              this.settings.globalTaskPageNumberStartWithOne :
+                              this.settings.pixivComicEpisodePageNumberStartWithOne,
+      pageNumberLength: this.settings.pixivComicEpisodePageNumberLength === -2 ?
+                        this.settings.globalTaskPageNumberStartWithOne :
+                        this.settings.pixivComicEpisodePageNumberLength,
+      renameRule: this.settings.pixivComicEpisodeRenameRule,
+      renameImageRule: this.settings.pixivComicEpisodeRenameImageRule,
       context: this.context
     });
   }

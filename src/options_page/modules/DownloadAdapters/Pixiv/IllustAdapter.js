@@ -1,4 +1,4 @@
-import { app } from "@/options_page/DownloadsApplication";
+import GlobalSettings from "@/modules/GlobalSettings";
 import {
   PixivIllustDownloadTask as IllustDownloadTask,
   PixivMangaDownloadTask as MangaDownloadTask,
@@ -29,7 +29,7 @@ class IllustAdapter {
    * @param {string} url Target page url
    */
   constructor(url) {
-    this.settings = app().settings;
+    this.settings = GlobalSettings();
     this.url = url;
   }
 

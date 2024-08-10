@@ -1,4 +1,4 @@
-import { app } from "@/options_page/DownloadsApplication";
+import GlobalSettings from "@/modules/GlobalSettings";
 import AbstractDownloadTask from "./AbstractDownloadTask";
 import Downloader from "@/modules/Net/Downloader";
 import FileSystem from "../FileSystem";
@@ -55,8 +55,8 @@ class MultipleDownloadTask extends AbstractDownloadTask {
     this.title = options.context.title;
     this.context = options.context;
     this.zip = new JSZip();
-    this.zipMultipleImages = app().settings.globalZipMultipleImages;
-    this.downloader = new Downloader({ processors: app().settings.downloadTasksWhenDownloadingImages });
+    this.zipMultipleImages = GlobalSettings().globalZipMultipleImages;
+    this.downloader = new Downloader({ processors: GlobalSettings().downloadTasksWhenDownloadingImages });
     this.downloader.addListener('start', this.onStart, this);
     this.downloader.addListener('progress', this.onProgress, this);
     this.downloader.addListener('item-finish', this.onItemFinish, this);
@@ -145,7 +145,7 @@ class MultipleDownloadTask extends AbstractDownloadTask {
     } else {
       this.lastDownloadId = await FileSystem.getDefault().saveFile({
         url,
-        filename: pathjoin(app().settings.downloadRelativeLocation,
+        filename: pathjoin(GlobalSettings().downloadRelativeLocation,
           nameFormatter.format(this.options.renameRule, this.id),
           nameFormatter.format(this.options.renameImageRule, `p${pageNum}`
         )) + `.${MimeType.getExtenstion(mimeType)}`
@@ -167,7 +167,7 @@ class MultipleDownloadTask extends AbstractDownloadTask {
       this.zip.generateAsync({ type: 'blob' }).then(async blob => {
         this.lastDownloadId = await FileSystem.getDefault().saveFile({
           url: URL.createObjectURL(blob),
-          filename: pathjoin(app().settings.downloadRelativeLocation, nameFormatter.format(this.options.renameRule, this.id)) + '.zip'
+          filename: pathjoin(GlobalSettings().downloadRelativeLocation, nameFormatter.format(this.options.renameRule, this.id)) + '.zip'
         });
       });
     }

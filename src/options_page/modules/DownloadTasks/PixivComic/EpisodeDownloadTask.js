@@ -1,5 +1,4 @@
-
-import { app } from "@/options_page/DownloadsApplication";
+import GlobalSettings from "@/modules/GlobalSettings";
 import AbstractDownloadTask from "@/options_page/modules/DownloadTasks/AbstractDownloadTask";
 import Downloader from "@/modules/Net/Downloader";
 import FileSystem from "@/options_page/modules/FileSystem";
@@ -43,9 +42,9 @@ class EpisodeDownloadTask extends AbstractDownloadTask {
     this.title = options.context.title;
     this.context = options.context;
     this.zip = new JSZip();
-    this.zipMultipleImages = app().settings.globalZipMultipleImages;
+    this.zipMultipleImages = GlobalSettings().globalZipMultipleImages;
     this.downloader = new Downloader({
-      processors: app().settings.downloadTasksWhenDownloadingImages,
+      processors: GlobalSettings().downloadTasksWhenDownloadingImages,
       beforeItemDownload: ({ requestOptions, downloadFile }) => {
         requestOptions.headers = {
           'x-cobalt-thumber-parameter-gridshuffle-key': this.options.pages[downloadFile.args.index].key
@@ -148,7 +147,7 @@ class EpisodeDownloadTask extends AbstractDownloadTask {
 
       this.lastDownloadId = await FileSystem.getDefault().saveFile({
         url,
-        filename: pathjoin(app().settings.downloadRelativeLocation ,nameFormatter.format(
+        filename: pathjoin(GlobalSettings().downloadRelativeLocation ,nameFormatter.format(
           this.options.renameRule,
           this.id + `_${pageNum}`
         )) + `.${MimeType.getExtenstion(mimeType)}`
@@ -170,7 +169,7 @@ class EpisodeDownloadTask extends AbstractDownloadTask {
       this.zip.generateAsync({ type: 'blob' }).then(blob => {
         FileSystem.getDefault().saveFile({
           url: URL.createObjectURL(blob),
-          filename: pathjoin(app().settings.downloadRelativeLocation, nameFormatter.format(this.options.renameRule, this.id)) + '.zip'
+          filename: pathjoin(GlobalSettings().downloadRelativeLocation, nameFormatter.format(this.options.renameRule, this.id)) + '.zip'
         });
       });
     }

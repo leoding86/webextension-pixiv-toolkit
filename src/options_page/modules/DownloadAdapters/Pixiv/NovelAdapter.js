@@ -1,4 +1,4 @@
-import { app } from "@/options_page/DownloadsApplication";
+import GlobalSettings from "@/modules/GlobalSettings";
 import {
   PixivNovelDownloadTask as NovelDownloadTask
 } from "@/options_page/modules/DownloadTasks";
@@ -50,8 +50,8 @@ class NovelAdapter {
     return NovelDownloadTask.create({
       id: 'pixiv:illust:' + this.context.id,
       url: this.url,
-      renameRule: app().settings.novelRenameRule,
-      includeDescription: app().settings.novelIncludeDescription,
+      renameRule: GlobalSettings().novelRenameRule,
+      includeDescription: GlobalSettings().novelIncludeDescription,
       context: this.context,
       bookType: options.bookType,
     });
