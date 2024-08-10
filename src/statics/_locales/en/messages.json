@@ -922,5 +922,8 @@
     },
     "_running_too_many_download_tasks_at_same_time_may_be_cause_high_CPU_usage": {
         "message": "Running too many download tasks at same time will cause high CPU usage"
+    },
+    "_use_standalone_download_manage": {
+        "message": "Use standalone download manager"
     }
 }
