@@ -60,7 +60,7 @@ import Vuetify from 'vuetify';
      */
     Bootstrap.__main__();
 
-    window.application = Application.app();
+    window.application = window.$app = Application.app();
 
     /**
      * Boot the UI
