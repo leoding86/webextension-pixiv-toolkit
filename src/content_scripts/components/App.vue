@@ -1,31 +1,34 @@
+<!--
+ * @Author: Leo Ding <leoding86@msn.com>
+ * @Date: 2024-08-08 08:43:42
+ * @LastEditors: Leo Ding <leoding86@msn.com>
+ * @LastEditTime: 2024-08-08 15:57:24
+-->
 <template>
   <control-panel v-if="showApp" :lastError="lastError"
     :panelStyle="browserItems.downloadPanelStyle"
     :panelPosition="browserItems.downloadPanelPosition"
+    :class="downloadButtonType"
   >
     <template v-if="!isUgoira">
       <ptk-button @click="download"
-        :type="downloadButtonType"
-      >{{ tl('_download') }}</ptk-button>
+      >{{ tl('_download') }}{{ generalTaskProgressText }}</ptk-button>
     </template>
     <template v-else>
       <ptk-button @click="download({ ugoiraConvertType: 'apng' })"
-        :type="downloadButtonType"
-      >{{ tl('_download_apng') }}</ptk-button>
-      <ptk-button @click="download({ ugoiraConvertType: 'gif' })"
-        :type="downloadButtonType"
-      >{{ tl('_download_gif') }}</ptk-button>
-      <ptk-button @click="download({ ugoiraConvertType: 'webm' })"
-        :type="downloadButtonType"
-      >{{ tl('_download_webm') }}</ptk-button>
-      <ptk-button @click="download({ ugoiraConvertType: 'mp4' })"
-        :type="downloadButtonType"
-      >{{ tl('_download_mp4') }}</ptk-button>
-      <ptk-button @click="download"
-        :type="downloadButtonType"
-      >{{ tl('_download_custom') }}</ptk-button>
+      >{{ tl('_download_apng') }}{{ apngProgress }}</ptk-button>
 
-      <ptk-button @click="test">TEST</ptk-button>
+      <ptk-button @click="download({ ugoiraConvertType: 'gif' })"
+      >{{ tl('_download_gif') }}{{ gifProgress }}</ptk-button>
+
+      <ptk-button @click="download({ ugoiraConvertType: 'webm' })"
+      >{{ tl('_download_webm') }}{{ webmProgress }}</ptk-button>
+
+      <ptk-button @click="download({ ugoiraConvertType: 'mp4' })"
+      >{{ tl('_download_mp4') }}{{ mp4Progress }}</ptk-button>
+
+      <ptk-button @click="download"
+      >{{ tl('_download_custom') }}{{ customProgress }}</ptk-button>
     </template>
     <page-selector
       ref="pageSelector"
@@ -52,6 +55,8 @@ import ControlPanel from '@/content_scripts/components/ControlPanel.vue';
 import PageSelector from '@/content_scripts/components/PageSelector.vue';
 import browser from '@/modules/Extension/browser';
 import AbstractResource from "@/modules/PageResource/AbstractResource";
+import DownloadTaskObserver from '../modules/DownloadTaskObserver';
+import { RuntimeError } from '@/errors';
 import moment from 'moment';
 import ContentPageDownloadManager from '../modules/ContentPageDownloadManager';
 
@@ -96,7 +101,17 @@ export default {
 
       showNotice: false,
 
-      noticeMessage: ''
+      noticeMessage: '',
+
+      ugoiraTaskProgresses: {
+        'gif': { d: 0, p: 0 },
+        'apng': { d: 0, p: 0 },
+        'webm': { d: 0, p: 0 },
+        'mp4': { d: 0, p: 0 },
+        'custom': { d: 0, p: 0 }
+      },
+
+      generalTaskProgress: 0
     };
   },
 
@@ -117,6 +132,36 @@ export default {
         this.resource.context &&
         this.resource.context.type === 'Illust' &&
         this.resource.context.illustType === 2
+    },
+
+    apngProgress() {
+      return this.ugoiraProgress('apng');
+    },
+
+    gifProgress() {
+      return this.ugoiraProgress('gif');
+    },
+
+    webmProgress() {
+      return this.ugoiraProgress('webm');
+    },
+
+    mp4Progress() {
+      return this.ugoiraProgress('mp4');
+    },
+
+    customProgress() {
+      return this.ugoiraProgress('custom');
+    },
+
+    generalTaskProgressText() {
+      if (this.generalTaskProgress === 1) {
+        return ' ✔';
+      } else if (this.generalTaskProgress > 0) {
+        return ' ' + (this.generalTaskProgress * 100).toFixed(2) + '%';
+      } else {
+        return '';
+      }
     }
   },
 
@@ -142,11 +187,31 @@ export default {
       debugger;
     });
 
+    this.downloadTaskObserver = DownloadTaskObserver.getObserver();
+    this.downloadTaskObserver.addListener('status', message => {
+      const downloadTasksStatus = message.downloadTasksStatus;
+
+      if (downloadTasksStatus && downloadTasksStatus.length > 0) {
+        downloadTasksStatus.forEach(task => {
+          if (task.type === 'PIXIV_UGOIRA') {
+            this.ugoiraTaskProgresses[task.convertType] = Object.assign(
+              {}, this.ugoiraTaskProgresses[task.convertType], { d: task.progress, p: task.processProgress }
+            );
+          } else {
+            this.generalTaskProgress = task.progress;
+          }
+        });
+      }
+    });
+
     window.$eventBus.$on('pagechange', page => {
+      this.initialProgress();
+
       this.abortAdapterParse();
 
       if (page) {
         this.resource = window.$app.resource;
+        this.observeDownloadTask();
 
         /**
          * Save visit history
@@ -200,7 +265,48 @@ export default {
     });
   },
 
+  beforeDestroy() {
+    this.downloadTaskObserver.stopObserve();
+  },
+
   methods: {
+    initialProgress() {
+      this.generalTaskProgress = 0;
+      this.ugoiraTaskProgresses = {
+        'gif': { d: 0, p: 0 },
+        'apng': { d: 0, p: 0 },
+        'webm': { d: 0, p: 0 },
+        'mp4': { d: 0, p: 0 },
+        'custom': { d: 0, p: 0 }
+      };
+    },
+
+    ugoiraProgress(type) {
+      const progress = this.ugoiraTaskProgresses[type];
+
+      if (progress) {
+        if (progress.p === 1) {
+          return ' ✔';
+        } else if (progress.p > 0) {
+          return ` (P:${progress.p * 100}%)`;
+        } else if (progress.d > 0) {
+          return ` (D:${progress.d * 100}%)`;
+        }
+      }
+
+      return '';
+    },
+
+    observeDownloadTask() {
+      if (this.isUgoira) {
+        this.downloadTaskObserver.observeDownloadTasks(
+          ['gif', 'apng', 'mp4', 'webm', 'custom'].map(type => this.resource.getDownloadTaskId(type))
+        );
+      } else {
+        this.downloadTaskObserver.observeDownloadTasks([this.resource.getDownloadTaskId()]);
+      }
+    },
+
     displayNotice(message) {
       if (this.noticeCloseTimeout) {
         clearTimeout(this.noticeCloseTimeout);
@@ -234,7 +340,7 @@ export default {
           }
         }, () => {
           if (fnAfterOpen) {
-            setTimeout(() => fnAfterOpen(), 1500);
+            setTimeout(() => fnAfterOpen(), 2000);
           }
         });
       }, 600);
@@ -266,14 +372,6 @@ export default {
       const args = {
         unpackedResource: this.resource.unpack()
       };
-
-      if (this.isUgoira) {
-        args.options = { ugoiraConvertType };
-      } else {
-        args.options = { selectedIndexes: this.selectedIndexes };
-      }
-
-      return args;
     },
 
     async downloadWithDownloadManager({ ugoiraConvertType }) {
@@ -385,4 +483,10 @@ export default {
   box-shadow: 0 0 5px rgba(0, 0, 0, .3);
   padding: 10px 15px;
 }
-</style>../modules/ContentPageDownloadManager
+
+.ptk__container.success {
+  .ptk__container__body-container {
+    border-color: #00dc68;
+  }
+}
+</style>

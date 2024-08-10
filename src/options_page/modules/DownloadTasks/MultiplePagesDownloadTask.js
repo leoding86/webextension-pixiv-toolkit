@@ -146,7 +146,7 @@ class MultipleDownloadTask extends AbstractDownloadTask {
       this.lastDownloadId = await FileSystem.getDefault().saveFile({
         url,
         filename: pathjoin(GlobalSettings().downloadRelativeLocation,
-          nameFormatter.format(this.options.renameRule, this.id),
+          nameFormatter.format(this.options.renameRule, this.context.id),
           nameFormatter.format(this.options.renameImageRule, `p${pageNum}`
         )) + `.${MimeType.getExtenstion(mimeType)}`
       });
@@ -167,7 +167,7 @@ class MultipleDownloadTask extends AbstractDownloadTask {
       this.zip.generateAsync({ type: 'blob' }).then(async blob => {
         this.lastDownloadId = await FileSystem.getDefault().saveFile({
           url: URL.createObjectURL(blob),
-          filename: pathjoin(GlobalSettings().downloadRelativeLocation, nameFormatter.format(this.options.renameRule, this.id)) + '.zip'
+          filename: pathjoin(GlobalSettings().downloadRelativeLocation, nameFormatter.format(this.options.renameRule, this.context.id)) + '.zip'
         });
       });
     }

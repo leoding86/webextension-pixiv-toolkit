@@ -35,11 +35,6 @@ class Application {
    */
   settings;
 
-  /**
-   * @type {any} browser port
-   */
-  downloadTaskProgressObserverPort;
-
   constructor() {
     browser.storage.local.get(null, items => {
       this.settings = items;
@@ -70,36 +65,12 @@ class Application {
     return Application.instance;
   }
 
-  getDownloadTaskProgressObserverPort() {
-    if (!this.downloadTaskProgressObserverPort) {
-      this.downloadTaskProgressObserverPort = browser.runtime.connect({ name: 'download-task-progress-observer' });
-      this.downloadTaskProgressObserverPort.onMessage.addListener((message) => {
-        console.log(message);
-      });
-      this.downloadTaskProgressObserverPort.onDisconnect.addListener((port) => {
-        this.downloadTaskProgressObserverPort = null;
-      });
-    }
-
-    return this.downloadTaskProgressObserverPort;
-  }
-
   async urlchangeHandler(newUrl, oldUrl) {
     try {
-      const donwloadTaskProgressObserverPort = this.getDownloadTaskProgressObserverPort();
-
       let data = this.pageFilter.getData(newUrl);
 
       const adapter = new Adapter();
       this.resource = await adapter.getResource(data.type, data.url);
-
-      /**
-       * Send item resource to observe the task progress from option page
-       */
-      donwloadTaskProgressObserverPort.postMessage({
-        action: 'observe-download-progress',
-        resource: this.resource
-      });
 
       if (!this.UIApp) {
         this.UIApp = await UIApplication.createApp();

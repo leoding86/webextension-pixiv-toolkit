@@ -2,8 +2,6 @@ import AbstractDownloadTask from './DownloadTasks/AbstractDownloadTask';
 import DownloadTaskExistsError from '@/errors/DownloadTaskExistsError';
 import DownloadTaskNotFoundError from '@/errors/DownloadTaskNotFoundError';
 import Event from '@/modules/Event';
-import { RuntimeError } from '@/errors';
-import browser from '@/modules/Extension/browser';
 
 /**
  * @class Manage download tasks
@@ -35,8 +33,6 @@ class DownloadManager extends Event {
    */
   lastError = null;
 
-  ports = new Map();
-
   /**
    *
    * @returns {DownloadManager}
@@ -46,49 +42,7 @@ class DownloadManager extends Event {
       DownloadManager.defaultInstance = new DownloadManager();
     }
 
-    DownloadManager.defaultInstance.listenConnection();
-
     return DownloadManager.defaultInstance;
-  }
-
-  /**
-   *
-   * @param {any} port
-   * @returns {{port: any, resource: any}}
-   */
-  createContentScriptDownloadTaskPort(port) {
-    return {
-      port,
-      resource: null
-    };
-  }
-
-  listenConnection() {
-    browser.runtime.onConnect.addListener(port => {
-      if (port.name === 'download-task-progress-observer' && !this.ports.has(port)) {
-        this.ports.set(port, this.createContentScriptDownloadTaskPort(port));
-
-        /**
-         * Listener download resource data from content script which want to kown the task progress
-         */
-        port.onMessage.addListener((message, port) => {
-          if (message.action === 'observe-download-progress') {
-            if (this.ports.has(port)) {
-              const downloadTaskPort = this.ports.get(port);
-              downloadTaskPort.resource = message.resource;
-            }
-          }
-        });
-
-        port.onDisconnect.addListener(port => {
-          this.ports.has(port) && this.ports.delete(port);
-        });
-
-        this.addListener('update', (taskIds) => {
-          console.log(taskIds);
-        })
-      }
-    });
   }
 
   /**

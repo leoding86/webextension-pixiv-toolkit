@@ -2,6 +2,7 @@ import { RuntimeError } from '@/errors';
 import { SettingService } from './services';
 import defaultSettings from '@/config/default';
 import ServiceProvider from './services/ServiceProvider';
+import DownloadTaskNotifier from './modules/DownloadTaskNotifier';
 
 class Application {
   /**
@@ -34,6 +35,8 @@ class Application {
 
     this.serviceContainer = new Map();
     this.settings = defaultSettings;
+
+    DownloadTaskNotifier.getDefault().initialize();
   }
 
   /**
@@ -95,7 +98,7 @@ class Application {
    * script
    * @param {*} param0
    */
-  async onMessage(message, sender, sendResponse) {console.log(message, sender, sendResponse);
+  async onMessage(message, sender, sendResponse) {
     /**
      * Handling incoming message which needs call service method, if the sender
      * need a response, the method of service need return a valid that isn't

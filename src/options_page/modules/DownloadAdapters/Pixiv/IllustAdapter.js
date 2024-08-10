@@ -94,27 +94,27 @@ class IllustAdapter {
    * @returns {UgoiraDownloadTask}
    */
   createUgoiraDownloadTask(resource, options) {
-    let ffmpegCommandArgs = '';
-    let id = resource.getUid()
+    const fixedFFmpegCliArgs = {
+      ugoiraFFmpegGIFCliArgs: '-f concat -i input.txt -plays 0 out.gif',
+      ugoiraFFmpegAPNGCliArgs: '-f concat -i input.txt -plays 0 output.apng',
+      ugoiraFFmpegWEBMCliArgs: '-f concat -i input.txt -safe 0 output.webm',
+      ugoiraFFmpegMP4CliArgs: '-f concat -i input.txt -safe 0 -c copy output.mp4'
+    };
+
+    let ffmpegCommandArgs = this.settings.ugoiraCustomFFmpegCommand;
     let convertType = 'CUSTOM';
 
     if (options && typeof options.ugoiraConvertType === 'string') {
-      convertType = options.ugoiraConvertType.toUpperCase();
-      const key = `ugoiraFFmpeg${convertType}CliArgs`;
+      const key = `ugoiraFFmpeg${options.ugoiraConvertType.toUpperCase()}CliArgs`;
 
-      if (this.settings[key]) {
-        ffmpegCommandArgs = this.settings[key];
-        id += '-' + convertType
+      if (fixedFFmpegCliArgs[key]) {
+        ffmpegCommandArgs = fixedFFmpegCliArgs[key];
+        convertType = options.ugoiraConvertType;
       }
     }
 
-    if (!ffmpegCommandArgs) {
-      ffmpegCommandArgs = this.settings.ugoiraCustomFFmpegCommand;
-      id += '-custom';
-    }
-
     return UgoiraDownloadTask.create({
-      id,
+      id: resource.getDownloadTaskId(convertType),
       url: this.url,
       resource: this.context.illustOriginalSrc,
       frames: this.context.illustFrames,

@@ -149,7 +149,7 @@ class EpisodeDownloadTask extends AbstractDownloadTask {
         url,
         filename: pathjoin(GlobalSettings().downloadRelativeLocation ,nameFormatter.format(
           this.options.renameRule,
-          this.id + `_${pageNum}`
+          this.context.id + `_${pageNum}`
         )) + `.${MimeType.getExtenstion(mimeType)}`
       });
 
@@ -167,9 +167,9 @@ class EpisodeDownloadTask extends AbstractDownloadTask {
       const nameFormatter = NameFormattor.getFormatter({ context: Object.assign({}, this.context) });
 
       this.zip.generateAsync({ type: 'blob' }).then(blob => {
-        FileSystem.getDefault().saveFile({
+        this.lastDownloadId = FileSystem.getDefault().saveFile({
           url: URL.createObjectURL(blob),
-          filename: pathjoin(GlobalSettings().downloadRelativeLocation, nameFormatter.format(this.options.renameRule, this.id)) + '.zip'
+          filename: pathjoin(GlobalSettings().downloadRelativeLocation, nameFormatter.format(this.options.renameRule, this.context.id)) + '.zip'
         });
       });
     }
