@@ -244,6 +244,11 @@ export default Object.assign({}, {
     ugoiraFFmpegMP4CliArgs: '-f concat -i input.txt -vsync vfr -pix_fmt yuv420p output.mp4',
 
     /**
+     * @since 6.3.0
+     */
+    useStandaloneDownloadManager: false,
+
+    /**
      * @since 1.0.0
      * @deprecated since version 6.0.0
      */
