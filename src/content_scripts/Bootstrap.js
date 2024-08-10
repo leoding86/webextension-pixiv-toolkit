@@ -30,6 +30,7 @@ class Bootstrap {
     this.trackError();
 
     window.$app = Application.app();
+    window.$settings = window.$app.settings;
 
     browser.runtime.onConnect.addListener((port) => {
       port.onMessage.addListener(message => {
