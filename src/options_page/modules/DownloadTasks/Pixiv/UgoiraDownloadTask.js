@@ -8,8 +8,38 @@ import MimeType from "@/modules/Util/MimeType";
 import pathjoin from "@/modules/Util/pathjoin";
 import AbstractGenerator from "@/content_scripts/modules/Legacy/UgoiraGenerator/AbstractGenerator";
 
+class ZipRepo {
+  /**
+   * @type {ZipRepo}
+   */
+  static instance;
+
+  container = new Map();
+
+  static getDefault() {
+    if (!ZipRepo.instance) {
+      ZipRepo.instance = new ZipRepo();
+    }
+
+    return ZipRepo.instance;
+  }
+
+  storeZip(uid, data) {
+    this.container.set(uid, data);
+  }
+
+  getZip(uid) {
+    const zip = this.container.get(uid);
+
+    if (zip) {
+      return zip;
+    }
+  }
+}
+
 /**
  * @typedef UgoiraDownloadTaskOptions
+ * @property {string} uid
  * @property {string} id
  * @property {string} url
  * @property {string} resource
@@ -72,6 +102,7 @@ class UgoiraDownloadTask extends AbstractDownloadTask {
   constructor(options) {
     super();
 
+    this.uid = options.uid;
     this.id = options.id;
     this.url = options.url;
     this.title = options.context.title;
@@ -127,6 +158,8 @@ class UgoiraDownloadTask extends AbstractDownloadTask {
    * @fires UgoiraDownloadTask#progress
    */
   async onItemFinish({ blob, mimeType }) {
+    ZipRepo.getDefault().storeZip(this.uid, blob);
+
     this.data = blob;
 
     let nameFormatter = NameFormatter.getFormatter({ context: this.context });
@@ -325,9 +358,24 @@ class UgoiraDownloadTask extends AbstractDownloadTask {
     }
 
     if (this.isPending()) {
-      this.changeState(this.DOWNLOADING_STATE);
-      this.dispatch('start');
-      this.downloader.download();
+      this.zipRepo = ZipRepo.getDefault();
+
+      /**
+       * Here we get the zip file from cache repo, if get one then skip the download
+       * process and start download onFinish event handler manully.
+       */
+      const zip = this.zipRepo.getZip(this.uid);
+
+      if (zip) {
+        this.data = zip;
+        this.progress = 1;
+        this.dispatch('progress', [this.progress]);
+        this.onFinish();
+      } else {
+        this.changeState(this.DOWNLOADING_STATE);
+        this.dispatch('start');
+        this.downloader.download();
+      }
     }
   }
 
@@ -339,6 +387,10 @@ class UgoiraDownloadTask extends AbstractDownloadTask {
     if (this.ffmpeg) {
       this.ffmpeg.exit();
       this.processProgress = this.processedFramesCount = 0;
+    }
+
+    if (this.generator) {
+      this.generator.stop();
     }
   }
 

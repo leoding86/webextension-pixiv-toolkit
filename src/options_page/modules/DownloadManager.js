@@ -81,7 +81,7 @@ class DownloadManager extends Event {
       this.changedTaskIds.push(id);
     }
 
-    this.dispatch('update', this.changedTaskIds);
+    this.dispatch('update', [this.changedTaskIds]);
   }
 
   getAllTasks() {

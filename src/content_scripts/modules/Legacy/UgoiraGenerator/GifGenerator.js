@@ -2,7 +2,7 @@
  * @Author: Leo Ding <leoding86@msn.com>
  * @Date: 2024-08-11 14:34:44
  * @LastEditors: Leo Ding <leoding86@msn.com>
- * @LastEditTime: 2024-08-11 15:59:34
+ * @LastEditTime: 2024-08-11 23:59:05
  * @FilePath: \webextension-pixiv-toolkit\src\content_scripts\modules\Legacy\UgoiraGenerator\GifGenerator.js
  */
 import AbstractGenerator from "./AbstractGenerator";
@@ -62,7 +62,7 @@ class GifGenerator extends AbstractGenerator {
 
   async generate(downloadTask) {
     this.frames = downloadTask.options.frames;
-    this.zip = downloadTask.zip;
+    this.zip = new JSZip();
     await this.zip.loadAsync(downloadTask.data);
 
     let self = this

@@ -1,3 +1,10 @@
+/*
+ * @Author: Leo Ding <leoding86@msn.com>
+ * @Date: 2024-08-11 14:34:30
+ * @LastEditors: Leo Ding <leoding86@msn.com>
+ * @LastEditTime: 2024-08-11 22:40:36
+ * @FilePath: \webextension-pixiv-toolkit\src\content_scripts\modules\Legacy\UgoiraGenerator\AbstractGenerator.js
+ */
 import NotImplementedError from "@/errors/NotImplementedError";
 import AbstractDownloadTask from "@/options_page/modules/DownloadTasks/AbstractDownloadTask";
 import Event from "@/modules/Event";
@@ -23,8 +30,11 @@ class AbstractGenerator extends Event {
     throw new NotImplementedError();
   }
 
+  /**
+   * A generator can't be stopped in runtime, this method is just a placeholder
+   */
   stop() {
-    throw new NotImplementedError();
+    //
   }
 }
 
