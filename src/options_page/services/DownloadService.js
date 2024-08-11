@@ -35,6 +35,10 @@ class DownloadService extends AbstractService {
     this.downloadManager.setMaxDownloadingTasks(this.application.settings.maxProcessDownloadTasks);
   }
 
+  checkReady() {
+    return this.downloadManager ? true :  false;
+  }
+
   /**
    * @deprecated
    * @param {any} param0
@@ -171,7 +175,7 @@ class DownloadService extends AbstractService {
 
   async checkIfDownloadManagerOpened() {
     let tab = await browser.tabs.getCurrent();
-console.log(tab);
+
     return {
       result: window.__CURRENT_ACTIVE_DM__,
       data: {
