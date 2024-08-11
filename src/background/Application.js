@@ -164,9 +164,7 @@ class Application {
 
       let result = await service[methodName].call(service, params);
 
-      if (result !== undefined) {
-        sendResponse(result);
-      }
+      sendResponse(result);
     }
   }
 
