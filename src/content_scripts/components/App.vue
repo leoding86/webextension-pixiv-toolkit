@@ -2,7 +2,7 @@
  * @Author: Leo Ding <leoding86@msn.com>
  * @Date: 2024-08-08 08:43:42
  * @LastEditors: Leo Ding <leoding86@msn.com>
- * @LastEditTime: 2024-08-08 15:57:24
+ * @LastEditTime: 2024-08-11 17:20:18
 -->
 <template>
   <control-panel v-if="showApp" :lastError="lastError"
@@ -38,7 +38,7 @@
       @download="pageSelectorDownloadHandler"
     ></page-selector>
     <div class="ptk__download-added-notice" v-show="showNotice">
-      {{ tl(this.noticeMessage) }}
+      {{ this.noticeMessage }}
     </div>
     <!-- <ptk-button v-if="!isUndetermined && browserItems.showPixivOmina"
       class="ptk__pixiv-omina__btn"
@@ -58,7 +58,6 @@ import AbstractResource from "@/modules/PageResource/AbstractResource";
 import DownloadTaskObserver from '../modules/DownloadTaskObserver';
 import { RuntimeError } from '@/errors';
 import moment from 'moment';
-import ContentPageDownloadManager from '../modules/ContentPageDownloadManager';
 
 export default {
   components: {
@@ -175,17 +174,6 @@ export default {
      * @type {ReturnType<typeof setTimeout>}
      */
     this.noticeCloseTimeout;
-
-    /**
-     * @type {ContentPageDownloadManager}
-     */
-    this.downloadManager = ContentPageDownloadManager.getDefault();
-    this.downloadManager.addListener('error', error => {
-      debugger;
-    });
-    this.downloadManager.addListener('update', status => {
-      debugger;
-    });
 
     this.downloadTaskObserver = DownloadTaskObserver.getObserver();
     this.downloadTaskObserver.addListener('status', message => {
@@ -329,30 +317,27 @@ export default {
     /**
      * @param {Function} [fnAfterOpen]
      */
-    async checkDownloadManager(fnAfterOpen) {
-      let timeout = setTimeout(() => {
-        this.displayNotice('_opening_download_manager');
+    async ensureDownloadManagerOpen(fnAfterOpen) {
+      const checkResponse = await browser.runtime.sendMessage({
+        to: 'ws',
+        action: 'download:getDownloadManagerTab'
+      });
 
-        browser.runtime.sendMessage({
-          to: 'ws',
-          action: 'tab:openTab',
-          args: {
-            url: browser.runtime.getURL('/options_page/downloads.html#/')
-          }
-        }, () => {
-          if (fnAfterOpen) {
-            setTimeout(() => fnAfterOpen(), 2000);
-          }
-        });
-      }, 600);
+      if (!checkResponse) {
+        this.displayNotice(this.tl('_opening_download_manager'))
+      }
 
-      let response = await browser.runtime.sendMessage({
-        action: 'download:checkIfDownloadManagerOpened'
+      const response = await browser.runtime.sendMessage({
+        to: 'ws',
+        action: 'download:ensureDownloadManagerOpen'
       });
 
       if (response) {
-        fnAfterOpen();
-        clearTimeout(timeout);
+        if (fnAfterOpen) {
+          fnAfterOpen();
+        }
+      } else {
+        this.displayNotice(this.tl('_cant_open_download_manager_please_open_manully'))
       }
     },
 
@@ -381,7 +366,7 @@ export default {
     },
 
     async downloadWithDownloadManager({ ugoiraConvertType, redownload = false }) {
-      await this.checkDownloadManager(async () => {
+      await this.ensureDownloadManagerOpen(async () => {
         const args = this.getDownloadArgs({ ugoiraConvertType });
         args.options.redownload = redownload;
 
@@ -402,7 +387,7 @@ export default {
           }
           return;
         } else {
-          this.displayNotice('_download_added');
+          this.displayNotice(this.tl('_download_added'));
         }
 
         /**
@@ -425,20 +410,8 @@ export default {
       });
     },
 
-    async downloadWithInContentScript({ ugoiraConvertType }) {
-      try {
-        this.downloadManager.addTask(this.resource, { ugoiraConvertType });
-      } catch (error) {
-        debugger;
-      }
-    },
-
     download({ ugoiraConvertType } = {}) {
-      if (true || this.$root.globalBrowserItems.useStandaloneDownloadManager) {
-        this.downloadWithDownloadManager({ ugoiraConvertType });
-      } else {
-        this.downloadWithInContentScript({ ugoiraConvertType });
-      }
+      this.downloadWithDownloadManager({ ugoiraConvertType });
     },
 
     pageSelectorSelectHandler(selectedPages, selectedIndexes) {
