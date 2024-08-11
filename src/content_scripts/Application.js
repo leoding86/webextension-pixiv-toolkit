@@ -38,23 +38,36 @@ class Application {
   constructor() {
     browser.storage.local.get(null, items => {
       this.settings = items;
+      this.pageFilter = new PageFilter();
+      this.detector = new Detector();
+      this.detector.addListener('urlchange', this.urlchangeHandler, this);
+      this.detector.observeUrl();
+
+      /**
+       * Call the urlchangeHandler at the application has been initailizatied
+       */
+      this.urlchangeHandler(window.location.href, null);
     });
 
     browser.storage.onChanged.addListener(changes => {
+      const oldDownloadMode = this.settings.downloadMode;
+
       for (let key in changes) {
         this.settings[key] = changes[key].newValue;
       }
+
+      if (this.settings.downloadMode !== oldDownloadMode) {
+        if (this.UIApp) {
+          this.UIApp.unload();
+          this.UIApp = null;
+        }
+
+        /**
+         * Trigger UIApplication loading
+         */
+        this.urlchangeHandler(window.location.href);
+      }
     });
-
-    this.pageFilter = new PageFilter();
-    this.detector = new Detector();
-    this.detector.addListener('urlchange', this.urlchangeHandler, this);
-    this.detector.observeUrl();
-
-    /**
-     * Call the urlchangeHandler at the application has been initailizatied
-     */
-    this.urlchangeHandler(window.location.href, null);
   }
 
   static app() {
