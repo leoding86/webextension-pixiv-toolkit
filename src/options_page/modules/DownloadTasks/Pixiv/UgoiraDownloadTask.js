@@ -6,6 +6,7 @@ import FileSystem from "../../FileSystem";
 import NameFormatter from "@/modules/Util/NameFormatter";
 import MimeType from "@/modules/Util/MimeType";
 import pathjoin from "@/modules/Util/pathjoin";
+import AbstractGenerator from "@/content_scripts/modules/Legacy/UgoiraGenerator/AbstractGenerator";
 
 /**
  * @typedef UgoiraDownloadTaskOptions
@@ -56,6 +57,13 @@ class UgoiraDownloadTask extends AbstractDownloadTask {
    * @type {import("@ffmpeg/ffmpeg").FFmpeg}
    */
   ffmpeg;
+
+  /**
+   * @type {AbstractGenerator}
+   */
+  generator;
+
+  zip;
 
   /**
    *
@@ -123,21 +131,24 @@ class UgoiraDownloadTask extends AbstractDownloadTask {
 
     let nameFormatter = NameFormatter.getFormatter({ context: this.context });
 
-    let zip = new JSZip();
-    await zip.loadAsync(blob);
+    this.zip = new JSZip();
+    await this.zip.loadAsync(blob);
 
     if (this.options.packAnimationJsonType > 0) {
-      zip.file('animation.json', this.makeAnimationJsonContent(this.options.packAnimationJsonType));
+      this.zip.file('animation.json', this.makeAnimationJsonContent(this.options.packAnimationJsonType));
     }
 
-    let url = URL.createObjectURL(await zip.generateAsync({ type: 'blob' }));
+    let url = URL.createObjectURL(await this.zip.generateAsync({ type: 'blob' }));
 
-    this.lastDownloadId = await FileSystem.getDefault().saveFile({
-      url,
-      filename: pathjoin(GlobalSettings().downloadRelativeLocation, nameFormatter.format(
-        this.options.renameRule
-      )) + '.' + MimeType.getExtenstion(mimeType)
-    });
+    this.lastDownloadId = await browser.runtime.sendMessage({
+      to: 'ws', action: 'download:saveFile',
+      args: {
+        url,
+        filename: pathjoin(GlobalSettings().downloadRelativeLocation, nameFormatter.format(
+          this.options.renameRule
+        )) + '.' + MimeType.getExtenstion(mimeType)
+      }
+    })
 
     URL.revokeObjectURL(url);
 
@@ -151,6 +162,47 @@ class UgoiraDownloadTask extends AbstractDownloadTask {
    */
   async onFinish() {
     this.changeState(this.PROCESSING_STATE);
+
+    if (this.generator) {
+      this.generator.addListener('progress', (progress) => {
+        this.processProgress = progress;
+        this.dispatch('progress', [progress]);
+      });
+
+      this.generator.addListener('complete', async (blob, mimeType) => {
+        /**
+         * Save file to disk
+         */
+        let animationFileUrl = URL.createObjectURL(blob);
+        let nameFormatter = NameFormatter.getFormatter({ context: this.context });
+
+        const downloadId = await browser.runtime.sendMessage({
+          to: 'ws',
+          action: 'download:saveFile',
+          args: {
+            url: animationFileUrl,
+            filename: pathjoin(GlobalSettings().downloadRelativeLocation, nameFormatter.format(
+              this.options.renameRule
+            )) + '.' + MimeType.getExtenstion(mimeType)
+          }
+        });
+
+        console.log(downloadId);
+
+        URL.revokeObjectURL(animationFileUrl);
+
+        this.dispatch('complete');
+      });
+
+      this.generator.addListener('error', (error) => {
+        this.changeState(this.FAILURE_STATE);
+        this.dispatch('error', [error]);
+      });
+
+      this.generator.generate(this);
+
+      return;
+    }
 
     /**
      * FFmpeg loaded as external library
@@ -168,9 +220,6 @@ class UgoiraDownloadTask extends AbstractDownloadTask {
 
     await this.ffmpeg.load();
 
-    let zip = new JSZip();
-    await zip.loadAsync(this.data);
-
     let framesContent = '';
     let loadedFiles = [];
 
@@ -179,7 +228,7 @@ class UgoiraDownloadTask extends AbstractDownloadTask {
      */
     for (let i = 0; i < this.options.frames.length; i++) {
       let frame = this.options.frames[i];
-      let data = await zip.file(frame.file).async('uint8array');
+      let data = await this.zip.file(frame.file).async('uint8array');
       let indexStr = i + '';
       let filename = '0'.repeat(6 - indexStr.length) + i + '.jpg';
       this.ffmpeg.FS('writeFile', filename, data);
