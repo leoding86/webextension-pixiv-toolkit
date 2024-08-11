@@ -940,5 +940,14 @@
     },
     "_new_settings": {
         "message": "New Settings"
+    },
+    "_legacy": {
+        "message": "Legacy"
+    },
+    "_download_mode": {
+        "message": "Download mode"
+    },
+    "_download_mode_desc": {
+        "message": "In legacy mode, it doesn't support ffmpeg and generate MP4"
     }
 }
