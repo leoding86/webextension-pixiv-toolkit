@@ -2,6 +2,9 @@ import AbstractService from "./AbstractService";
 import browser from "@/modules/Extension/browser"
 
 class SettingService extends AbstractService {
+  /**
+   * @type {SettingService}
+   */
   static instance;
 
   constructor() {
