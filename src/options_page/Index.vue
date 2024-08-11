@@ -75,7 +75,7 @@
         </v-btn>
         <span class="title v-primary header-title">
           Pixiv<strong>Toolkit</strong>
-          <span style="font-size:12px">Next (v6.0.0)</span>
+          <span style="font-size:12px">Next {{ version }}</span>
         </span>
 
         <v-spacer></v-spacer>
