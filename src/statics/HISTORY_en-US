@@ -1,3 +1,7 @@
+v6.3.0
+Legacy download mode is back, you can switch download mode you like;
+Fix issues.
+
 v6.2.0
 Simplify the process of adding task. Now the download manager will be opened automatically and task will be added;
 Add default types for generating Pixiv animated images, including GIF/APNG/MP4/WEBM;
