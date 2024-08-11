@@ -6,6 +6,8 @@
 
             <v-card>
                 <v-card-text>
+                    <download-mode></download-mode>
+
                     <v-list-tile>
                         <v-list-tile-content>
                         <v-list-tile-title>{{ tl('_dont_create_work_folder') }}</v-list-tile-title>
@@ -36,8 +38,14 @@
 </template>
 
 <script>
+import DownloadMode from './options/option-items/DownloadMode.vue';
+
 export default {
   name: 'global-task-setting',
+
+  components: {
+    'download-mode': DownloadMode
+  },
 
   data() {
     return {
