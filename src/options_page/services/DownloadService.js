@@ -86,7 +86,7 @@ class DownloadService extends AbstractService {
    * @param {{ unpackedResource: Object, options: any}} param0
    * @returns {Object}
    */
-  async addDownload({ unpackedResource, options = {} }) {console.log(options);
+  async addDownload({ unpackedResource, options = {} }) {
     /**
      * Create page resource instance using unpacked resource data
      */
