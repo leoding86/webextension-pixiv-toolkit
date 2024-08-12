@@ -35,6 +35,7 @@
 import Request from '@/modules/Net/Request';
 import CacheableImage from './CacheableImage';
 import AppSuggest from './AppSuggest';
+import browser from '@/modules/Extension/browser';
 
 export default {
   components: {
@@ -58,14 +59,18 @@ export default {
 
   methods: {
     resetVersionNumber() {
-      browser.storage.local.set({
-        version: '0.0.1',
-        guideShowed: false,
-        showUpdateChangeLog: false
-      }, () => {
-        browser.storage.local.get(null, items => {
-          console.log(items);
-          alert(items.version);
+      browser.storage.local.get(null, items => {
+        console.log(items);
+        const keys = Object.keys(items);
+
+        browser.storage.local.remove(keys, () => {
+          browser.storage.local.set({
+            version: '0.0.1',
+            guideShowed: false,
+            showUpdateChangeLog: false
+          }, () => {
+            alert('reset done');
+          });
         });
       });
     },
