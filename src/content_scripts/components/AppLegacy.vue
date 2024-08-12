@@ -39,8 +39,8 @@
       @click="passToPixivOmina"
     >Pixiv Omina</ptk-button> -->
     <ptk-button style="font-size:10px;padding:1px 20px;">
-      <p>Legacy</p>
-      <p>Mode</p>
+      <p style="margin:0;padding:0;">Legacy</p>
+      <p style="margin:0;padding:0;">Mode</p>
     </ptk-button>
   </control-panel>
 </template>
