@@ -24,7 +24,7 @@ class AbstractPortService extends AbstractService {
      * `onMessage` method if there is one.
      */
     port.onMessage.addListener((message, port) => {
-      if (!messsage) {
+      if (!message) {
         message = {};
       }
 
@@ -32,8 +32,8 @@ class AbstractPortService extends AbstractService {
         throw new Runtime('The message type must be object');
       }
 
-      if (typeof this[onMessage] === 'function') {
-        this[onMessage].call(this, Object.assign(message, { port }));
+      if (this.onMessage && typeof this.onMessage === 'function') {
+        this.onMessage.call(this, Object.assign(message, { port }));
       }
     });
 
@@ -41,6 +41,10 @@ class AbstractPortService extends AbstractService {
      * Delete the port from port collection when it disconnect.
      */
     port.onDisconnect.addListener(port => {
+      if (typeof this.onDisconnect === 'function') {
+        this.onDisconnect.call(this, port);
+      }
+
       this.ports.delete(port);
     });
   }
