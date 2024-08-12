@@ -1,4 +1,5 @@
 import BadgeService from "./BadgeService";
+import DownloadFileService from './DownloadFileService';
 import DownloadService from "./DownloadService";
 import HistoryService from "./HistoryService";
 import LogService from "./LogService";
@@ -7,6 +8,7 @@ import TabService from "./TabService";
 
 export default {
   BadgeService,
+  DownloadFileService,
   DownloadService,
   HistoryService,
   LogService,
