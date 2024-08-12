@@ -74,7 +74,7 @@ class NovelDownloadTask extends AbstractDownloadTask {
     let blob = await epubMaker.downloadEpub();
     let url = URL.createObjectURL(blob);
 
-    this.lastDownloadId = await FileSystem.getDefault().saveFile({
+    this.lastDownloadId = await FileSystem.getDefault().saveFileInBackground({
       url,
       filename: pathjoin(GlobalSettings().downloadRelativeLocationnameFormatter.format(
         GlobalSettings().novelRenameFormat,
@@ -107,7 +107,7 @@ class NovelDownloadTask extends AbstractDownloadTask {
     let url = URL.createObjectURL(new Blob([content], { type: 'text/plain' }));
     let nameFormatter = NameFormatter.getFormatter({ context: this.context });
 
-    this.lastDownloadId = await FileSystem.getDefault().saveFile({
+    this.lastDownloadId = await FileSystem.getDefault().saveFileInBackground({
       url,
       filename: pathjoin(GlobalSettings().downloadRelativeLocation, nameFormatter.format(
         this.options.renameRule,

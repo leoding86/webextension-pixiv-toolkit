@@ -145,7 +145,7 @@ class EpisodeDownloadTask extends AbstractDownloadTask {
     } else {
       let url = URL.createObjectURL(blob);
 
-      this.lastDownloadId = await FileSystem.getDefault().saveFile({
+      this.lastDownloadId = await FileSystem.getDefault().saveFileInBackground({
         url,
         filename: pathjoin(GlobalSettings().downloadRelativeLocation ,nameFormatter.format(
           this.options.renameRule,
@@ -166,16 +166,19 @@ class EpisodeDownloadTask extends AbstractDownloadTask {
     if (this.zipMultipleImages === 1) {
       const nameFormatter = NameFormattor.getFormatter({ context: Object.assign({}, this.context) });
 
-      this.zip.generateAsync({ type: 'blob' }).then(blob => {
-        this.lastDownloadId = FileSystem.getDefault().saveFile({
+      this.zip.generateAsync({ type: 'blob' }).then(async blob => {
+        this.lastDownloadId = await FileSystem.getDefault().saveFileInBackground({
           url: URL.createObjectURL(blob),
           filename: pathjoin(GlobalSettings().downloadRelativeLocation, nameFormatter.format(this.options.renameRule, this.context.id)) + '.zip'
         });
-      });
-    }
 
-    this.changeState(this.COMPLETE_STATE);
-    this.dispatch('complete');
+        this.changeState(this.COMPLETE_STATE);
+        this.dispatch('complete');
+      });
+    } else {
+      this.changeState(this.COMPLETE_STATE);
+      this.dispatch('complete');
+    }
   }
 
   /**
