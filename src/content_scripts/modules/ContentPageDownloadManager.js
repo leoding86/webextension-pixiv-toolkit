@@ -2,7 +2,7 @@
  * @Author: Leo Ding <leoding86@msn.com>
  * @Date: 2024-08-11 10:45:18
  * @LastEditors: Leo Ding <leoding86@msn.com>
- * @LastEditTime: 2024-08-12 00:12:35
+ * @LastEditTime: 2024-08-12 19:44:33
  * @FilePath: \webextension-pixiv-toolkit\src\content_scripts\modules\ContentPageDownloadManager.js
  */
 import DownloadManager from "@/options_page/modules/DownloadManager";
@@ -62,7 +62,7 @@ class ContentPageDownloadManager extends Event {
    */
   async addTask(resource, options, downloadOptions = { redownload: false }) {
     const downloadTask = await this.downloadAdapter.createDownloadTask(resource, options);
-debugger;
+
     if (downloadOptions.redownload === true) {
       this.downloadManager.deleteTask(downloadTask.id);
     }
