@@ -36,6 +36,21 @@ class FileSystem {
       });
     });
   }
+
+  /**
+   * Save file in background
+   * @param {SaveFileOptions} options
+   */
+  async saveFileInBackground(options) {
+    return await browser.runtime.sendMessage({
+      to: 'ws',
+      action: 'download:saveFile',
+      args: {
+        url: options.url,
+        filename: options.filename
+      }
+    });
+  }
 }
 
 export default FileSystem;
