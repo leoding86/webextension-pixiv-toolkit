@@ -2,7 +2,7 @@
  * @Author: Leo Ding <leoding86@msn.com>
  * @Date: 2024-08-08 08:43:42
  * @LastEditors: Leo Ding <leoding86@msn.com>
- * @LastEditTime: 2024-08-11 17:20:18
+ * @LastEditTime: 2024-08-11 23:56:54
 -->
 <template>
   <control-panel v-if="showApp" :lastError="lastError"
@@ -15,20 +15,14 @@
       >{{ tl('_download') }}{{ generalTaskProgressText }}</ptk-button>
     </template>
     <template v-else>
-      <ptk-button @click="download({ ugoiraConvertType: 'apng' })"
-      >{{ tl('_download_apng') }}{{ apngProgress }}</ptk-button>
-
       <ptk-button @click="download({ ugoiraConvertType: 'gif' })"
       >{{ tl('_download_gif') }}{{ gifProgress }}</ptk-button>
 
+      <ptk-button @click="download({ ugoiraConvertType: 'apng' })"
+      >{{ tl('_download_apng') }}{{ apngProgress }}</ptk-button>
+
       <ptk-button @click="download({ ugoiraConvertType: 'webm' })"
       >{{ tl('_download_webm') }}{{ webmProgress }}</ptk-button>
-
-      <ptk-button @click="download({ ugoiraConvertType: 'mp4' })"
-      >{{ tl('_download_mp4') }}{{ mp4Progress }}</ptk-button>
-
-      <ptk-button @click="download"
-      >{{ tl('_download_custom') }}{{ customProgress }}</ptk-button>
     </template>
     <page-selector
       ref="pageSelector"
@@ -44,6 +38,10 @@
       class="ptk__pixiv-omina__btn"
       @click="passToPixivOmina"
     >Pixiv Omina</ptk-button> -->
+    <ptk-button style="font-size:10px;padding:1px 20px;">
+      <p>Legacy</p>
+      <p>Mode</p>
+    </ptk-button>
   </control-panel>
 </template>
 
@@ -55,9 +53,9 @@ import ControlPanel from '@/content_scripts/components/ControlPanel.vue';
 import PageSelector from '@/content_scripts/components/PageSelector.vue';
 import browser from '@/modules/Extension/browser';
 import AbstractResource from "@/modules/PageResource/AbstractResource";
-import DownloadTaskObserver from '../modules/DownloadTaskObserver';
-import { RuntimeError } from '@/errors';
 import moment from 'moment';
+import ContentPageDownloadManager from '../modules/ContentPageDownloadManager';
+import DownloadTaskExistsError from '@/errors/DownloadTaskExistsError';
 
 export default {
   components: {
@@ -175,21 +173,31 @@ export default {
      */
     this.noticeCloseTimeout;
 
-    this.downloadTaskObserver = DownloadTaskObserver.getObserver();
-    this.downloadTaskObserver.addListener('status', message => {
-      const downloadTasksStatus = message.downloadTasksStatus;
+    /**
+     * @type {boolean} Indicate the status of opening download manager
+     */
+    this.openingDownloadManager = false;
 
-      if (downloadTasksStatus && downloadTasksStatus.length > 0) {
-        downloadTasksStatus.forEach(task => {
-          if (task.type === 'PIXIV_UGOIRA') {
-            this.ugoiraTaskProgresses[task.convertType] = Object.assign(
-              {}, this.ugoiraTaskProgresses[task.convertType], { d: task.progress, p: task.processProgress }
-            );
-          } else {
-            this.generalTaskProgress = task.progress;
+    /**
+     * @type {ContentPageDownloadManager}
+     */
+    this.downloadManager = ContentPageDownloadManager.create();
+    this.downloadManager.addListener('error', error => {
+      console.error(error);
+    });
+    this.downloadManager.addListener('update', downloadTasks => {
+      downloadTasks.forEach(downloadTask => {
+        if (downloadTask.type === 'PIXIV_UGOIRA') {
+          const convertType = downloadTask.options.convertType.toLowerCase();
+          if (this.ugoiraTaskProgresses[convertType]) {
+            this.ugoiraTaskProgresses[convertType] = Object.assign(this.ugoiraTaskProgresses[convertType], {
+              d: downloadTask.progress, p: downloadTask.processProgress
+            });
           }
-        });
-      }
+        } else {
+          this.generalTaskProgress = downloadTask.progress;
+        }
+      });
     });
 
     window.$eventBus.$on('pagechange', page => {
@@ -199,7 +207,6 @@ export default {
 
       if (page) {
         this.resource = window.$app.resource;
-        this.observeDownloadTask();
 
         /**
          * Save visit history
@@ -254,7 +261,7 @@ export default {
   },
 
   beforeDestroy() {
-    this.downloadTaskObserver.stopObserve();
+    this.downloadManager.exit();
   },
 
   methods: {
@@ -273,6 +280,7 @@ export default {
       const progress = this.ugoiraTaskProgresses[type];
 
       if (progress) {
+        console.log(progress);
         if (progress.p === 1) {
           this.downloadButtonType = 'success';
           return ' ✔';
@@ -284,16 +292,6 @@ export default {
       }
 
       return '';
-    },
-
-    observeDownloadTask() {
-      if (this.isUgoira) {
-        this.downloadTaskObserver.observeDownloadTasks(
-          ['gif', 'apng', 'mp4', 'webm', 'custom'].map(type => this.resource.getDownloadTaskId(type))
-        );
-      } else {
-        this.downloadTaskObserver.observeDownloadTasks([this.resource.getDownloadTaskId()]);
-      }
     },
 
     displayNotice(message) {
@@ -365,53 +363,18 @@ export default {
       };
     },
 
-    async downloadWithDownloadManager({ ugoiraConvertType, redownload = false }) {
-      await this.ensureDownloadManagerOpen(async () => {
-        const args = this.getDownloadArgs({ ugoiraConvertType });
-        args.options.redownload = redownload;
-
-        let response = await browser.runtime.sendMessage({
-          action: 'download:addDownload',
-          args
-        });
-
-        if (!response.result && redownload === false) {
-          if (response.errorName === 'DownloadTaskExistsError') {
-            if (window.confirm(this.tl(`_the_resource_is_already_in_download_manager`))) {
-              this.downloadWithDownloadManager({ ugoiraConvertType, redownload: true })
-            }
-
-            return;
-          } else {
-            alert(this.tl('_unkown_error') + ': ' + response.errorName);
+    async download({ ugoiraConvertType } = {}) {
+      try {
+        await this.downloadManager.addTask(this.resource, { ugoiraConvertType });
+      } catch (error) {
+        if (error instanceof DownloadTaskExistsError) {
+          if (window.confirm(this.tl('_the_resource_is_already_in_download_manager'))) {
+            this.downloadManager.addTask(this.resource, { ugoiraConvertType }, { redownload: true })
           }
-          return;
         } else {
-          this.displayNotice(this.tl('_download_added'));
+          throw error;
         }
-
-        /**
-         * Save download history
-         */
-        browser.runtime.sendMessage({
-          to: 'ws',
-          action: 'history:itemDownload',
-          args: {
-            uid: this.resource.getUid(),
-            title: this.resource.getTitle(),
-            userName: this.resource.getUserName(),
-            cover: this.resource.getCover(),
-            url: this.resource.getUrl(),
-            type: this.resource.getType(),
-            r: this.resource.getR(),
-            downloaded_at: moment().unix(),
-          }
-        });
-      });
-    },
-
-    download({ ugoiraConvertType } = {}) {
-      this.downloadWithDownloadManager({ ugoiraConvertType });
+      }
     },
 
     pageSelectorSelectHandler(selectedPages, selectedIndexes) {

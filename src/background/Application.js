@@ -7,6 +7,7 @@ import Updater from './modules/Updater';
 import updates from './updates';
 import updateSettings from '@/config/update';
 import versionCompare from '@/modules/Util/versionCompare';
+import AbstractPortService from './services/AbstractPortService';
 
 class Application {
   /**
@@ -99,7 +100,12 @@ class Application {
   onConnect(port) {
     if (port.name && port.name.indexOf(':') < 0) {
       let portService = this.getService(port.name);
-      portService.appendPort(port);
+
+      if (portService instanceof AbstractPortService) {
+        portService.appendPort(port);
+      } else {
+        port.disconnect();
+      }
     }
   }
 
@@ -164,9 +170,7 @@ class Application {
 
       let result = await service[methodName].call(service, params);
 
-      if (result !== undefined) {
-        sendResponse(result);
-      }
+      sendResponse(result);
     }
   }
 

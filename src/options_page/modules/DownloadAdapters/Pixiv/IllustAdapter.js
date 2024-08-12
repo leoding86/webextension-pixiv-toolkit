@@ -113,7 +113,8 @@ class IllustAdapter {
       }
     }
 
-    return UgoiraDownloadTask.create({
+    const downloadTask = UgoiraDownloadTask.create({
+      uid: resource.getUid(),
       id: resource.getDownloadTaskId(convertType),
       url: this.url,
       resource: this.context.illustOriginalSrc,
@@ -124,6 +125,8 @@ class IllustAdapter {
       context: this.context,
       convertType
     });
+
+    return downloadTask;
   }
 
   /**

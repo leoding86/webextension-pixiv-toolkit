@@ -1,5 +1,7 @@
 import Event from '@/modules/Event';
 
+const global = globalThis || window;
+
 class Request extends Event {
   /**
    * @constructor
@@ -17,7 +19,7 @@ class Request extends Event {
     this.responseData = null;
     this.responseType = 'arrayBuffer';
 
-    if (window.AbortController) {
+    if (global.AbortController) {
       this.fetchAbortController = new AbortController();
       this.fetchInit.signal = this.fetchAbortController.signal;
     }

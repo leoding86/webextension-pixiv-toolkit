@@ -1,5 +1,6 @@
 import Download from '@/modules/Net/Download';
 import Event from '@/modules/Event';
+import browser from '../Extension/browser';
 
 /**
  * @class
@@ -26,7 +27,7 @@ class Downloader extends Event {
   /**
    * @type {Download[]}
    */
-  downloads = [];
+  downloadFilePorts = [];
 
   /**
    * @type {number}
@@ -70,7 +71,7 @@ class Downloader extends Event {
   }
 
   removeDownloadFromCollection(download) {
-    this.downloads = this.downloads.splice(this.downloads.indexOf(download), 1);
+    this.downloadFilePorts = this.downloadFilePorts.splice(this.downloadFilePorts.indexOf(download), 1);
   }
 
   /**
@@ -94,8 +95,8 @@ class Downloader extends Event {
   pause() {
     this.paused = true;
 
-    this.downloads.forEach(download => {
-      download.abort();
+    this.downloadFilePorts.forEach(downloadFilePort => {
+      downloadFilePort.postMessage({ action: 'abort' });
     });
   }
 
@@ -125,7 +126,7 @@ class Downloader extends Event {
     let downloadFile = this.downloadFiles.shift();
 
     if (downloadFile) {
-      if (this.downloads.length < this.processors) {
+      if (this.downloadFilePorts.length < this.processors) {
         this.downloadFile(downloadFile);
       }
     } else {
@@ -143,105 +144,195 @@ class Downloader extends Event {
       });
     }
 
-    let download = new Download(downloadFile.file, requestOptions);
-    download.asBlob = this.asBlob;
+    const downloadFilePort = browser.runtime.connect({
+      name: 'DownloadFile',
+    });
+
+    downloadFilePort.onMessage.addListener(message => {
+      if (message.event === 'progress') {
+        const { totalLength, loadedLength } = message.data.progress;
+        this.progresses[downloadFile.seq] = loadedLength / totalLength;
+
+        this.dispatch('progress', [{
+          progress: this.progresses.reduce((previousValue, currentValue) => previousValue + currentValue) / this.files.length,
+          successCount: this.successCount,
+          failCount: this.failedDownloadFiles.length
+        }]);
+      } else if (message.event === 'error') {
+        this.removeDownloadFromCollection(downloadFilePort);
+        const { errorMessage = error } = message.data;
+
+        this.failedDownloadFiles.push(downloadFile);
+        this.progresses[downloadFile.seq] = 0;
+
+        console.error(error);
+
+        this.dispatch('item-error', [new Error(errorMessage)]);
+        this.dispatch('progress', [{
+          progress: this.progresses.reduce((previousValue, currentValue) => previousValue + currentValue) / this.files.length,
+          successCount: this.successCount,
+          failCount: this.failedDownloadFiles.length,
+        }]);
+
+        this.downloadNext();
+      } else if (message.event === 'complete') {
+        const { data, mimeType } = message.data;
+
+        fetch(data).then(response => {
+          response.blob().then(data => {
+            this.removeDownloadFromCollection(downloadFilePort);
+
+            const itemFinishData = {
+              blob: this.asBlob ? data : null,
+              data: this.asBlob ? null : data,
+              args: downloadFile.args,
+              downloadFilePort,
+              mimeType
+            };
+
+            if (this.afterItemDownload && typeof this.afterItemDownload === 'function') {
+              const afterItemDownloadResult = this.afterItemDownload.call(this, {
+                itemFinishData,
+                downloadFile
+              });
+
+              if (afterItemDownloadResult instanceof Promise) {
+                afterItemDownloadResult.then(() => {
+                  this.successCount++;
+                  this.dispatch('item-finish', [itemFinishData]);
+                  this.downloadNext();
+                }).catch((error) => {
+                  this.dispatch('item-error', [error]);
+                });
+
+                return;
+              }
+            }
+
+            this.successCount++;
+            this.dispatch('item-finish', [itemFinishData]);
+            this.downloadNext();
+          });
+        });
+      } else if (message.event === 'abort') {
+        this.removeDownloadFromCollection(downloadFilePort);
+        this.progresses[downloadFile.seq] = 0;
+
+        /**
+         * Put the downloadFile back to the downloadFiles for re-tracking it
+         */
+        this.downloadFiles.unshift(downloadFile);
+
+        if (this.downloadFilePorts.length === 0) {
+          this.dispatch('pause');
+        }
+      }
+    });
+
+    // let download = new Download(downloadFile.file, requestOptions);
+    // download.asBlob = this.asBlob;
 
     /**
      * Listen download onprogress event
      */
-    download.addListener('onprogress', ({totalLength, loadedLength}) => {
-      this.progresses[downloadFile.seq] = loadedLength / totalLength;
+    // download.addListener('onprogress', ({totalLength, loadedLength}) => {
+    //   this.progresses[downloadFile.seq] = loadedLength / totalLength;
 
-      this.dispatch('progress', [{
-        progress: this.progresses.reduce((previousValue, currentValue) => previousValue + currentValue) / this.files.length,
-        successCount: this.successCount,
-        failCount: this.failedDownloadFiles.length
-      }]);
-    });
+    //   this.dispatch('progress', [{
+    //     progress: this.progresses.reduce((previousValue, currentValue) => previousValue + currentValue) / this.files.length,
+    //     successCount: this.successCount,
+    //     failCount: this.failedDownloadFiles.length
+    //   }]);
+    // });
 
     /**
      * Listen download onfinish event
      */
-    download.addListener('onfinish', (data, mimeType) => {
-      this.removeDownloadFromCollection(download);
+    // download.addListener('onfinish', (data, mimeType) => {
+    //   this.removeDownloadFromCollection(download);
 
-      const itemFinishData = {
-        blob: this.asBlob ? data : null,
-        data: this.asBlob ? null : data,
-        args: downloadFile.args,
-        download,
-        mimeType
-      };
+    //   const itemFinishData = {
+    //     blob: this.asBlob ? data : null,
+    //     data: this.asBlob ? null : data,
+    //     args: downloadFile.args,
+    //     download,
+    //     mimeType
+    //   };
 
-      if (this.afterItemDownload && typeof this.afterItemDownload === 'function') {
-        const afterItemDownloadResult = this.afterItemDownload.call(this, {
-          itemFinishData,
-          downloadFile
-        });
+    //   if (this.afterItemDownload && typeof this.afterItemDownload === 'function') {
+    //     const afterItemDownloadResult = this.afterItemDownload.call(this, {
+    //       itemFinishData,
+    //       downloadFile
+    //     });
 
-        if (afterItemDownloadResult instanceof Promise) {
-          afterItemDownloadResult.then(() => {
-            this.successCount++;
-            this.dispatch('item-finish', [itemFinishData]);
-            this.downloadNext();
-          }).catch((error) => {
-            this.dispatch('item-error', [error]);
-          });
+    //     if (afterItemDownloadResult instanceof Promise) {
+    //       afterItemDownloadResult.then(() => {
+    //         this.successCount++;
+    //         this.dispatch('item-finish', [itemFinishData]);
+    //         this.downloadNext();
+    //       }).catch((error) => {
+    //         this.dispatch('item-error', [error]);
+    //       });
 
-          return;
-        }
-      }
+    //       return;
+    //     }
+    //   }
 
-      this.successCount++;
-      this.dispatch('item-finish', [itemFinishData]);
-      this.downloadNext();
-    });
+    //   this.successCount++;
+    //   this.dispatch('item-finish', [itemFinishData]);
+    //   this.downloadNext();
+    // });
 
     /**
      * Listen download onabort event
      */
-    download.addListener('onabort', () => {
-      this.removeDownloadFromCollection(download);
+    // download.addListener('onabort', () => {
+    //   this.removeDownloadFromCollection(download);
 
-      this.progresses[downloadFile.seq] = 0;
+    //   this.progresses[downloadFile.seq] = 0;
 
-      /**
-       * Put the downloadFile back to the downloadFiles for re-tracking it
-       */
-      this.downloadFiles.unshift(downloadFile);
+    //   /**
+    //    * Put the downloadFile back to the downloadFiles for re-tracking it
+    //    */
+    //   this.downloadFiles.unshift(downloadFile);
 
-      if (this.downloads.length === 0) {
-        this.dispatch('pause');
-      }
-    });
+    //   if (this.downloads.length === 0) {
+    //     this.dispatch('pause');
+    //   }
+    // });
 
     /**
      * Listen download onerror event
      */
-    download.addListener('onerror', error => {
-      this.removeDownloadFromCollection(download);
+    // download.addListener('onerror', error => {
+    //   this.removeDownloadFromCollection(download);
 
-      this.failedDownloadFiles.push(downloadFile);
-      this.progresses[downloadFile.seq] = 0;
+    //   this.failedDownloadFiles.push(downloadFile);
+    //   this.progresses[downloadFile.seq] = 0;
 
-      console.error(error);
+    //   console.error(error);
 
-      this.dispatch('item-error', [error]);
-      this.dispatch('progress', [{
-        progress: this.progresses.reduce((previousValue, currentValue) => previousValue + currentValue) / this.files.length,
-        successCount: this.successCount,
-        failCount: this.failedDownloadFiles.length,
-      }]);
+    //   this.dispatch('item-error', [error]);
+    //   this.dispatch('progress', [{
+    //     progress: this.progresses.reduce((previousValue, currentValue) => previousValue + currentValue) / this.files.length,
+    //     successCount: this.successCount,
+    //     failCount: this.failedDownloadFiles.length,
+    //   }]);
 
-      this.downloadNext();
-    });
+    //   this.downloadNext();
+    // });
 
     /**
      * Start the download and put the instance to download collection for increasing
      * download processes
      */
-    this.downloads.push(download);
-    download.download();
+    this.downloadFilePorts.push(downloadFilePort);
+    // download.download();
+    downloadFilePort.postMessage({
+      action: 'download',
+      url: downloadFile.file,
+      options: requestOptions
+    });
 
     /**
      * Fire the download start event

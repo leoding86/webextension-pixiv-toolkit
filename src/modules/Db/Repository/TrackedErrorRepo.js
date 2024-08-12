@@ -1,3 +1,10 @@
+/*
+ * @Author: Leo Ding <leoding86@msn.com>
+ * @Date: 2024-08-01 01:14:07
+ * @LastEditors: Leo Ding <leoding86@msn.com>
+ * @LastEditTime: 2024-08-11 13:58:22
+ * @FilePath: \webextension-pixiv-toolkit\src\modules\Db\Repository\TrackedErrorRepo.js
+ */
 import AbstractRepo from "./AbstractRepo";
 import Dexie from 'dexie';
 
@@ -12,9 +19,7 @@ class TrackedErrorRepo extends AbstractRepo {
    * @param {Dexie.Table} table
    */
   constructor(table, { max } = { max: 500 }) {
-    super();
-    this.table = table;
-    this.max = max;
+    super(table, { max });
   }
 
   /**

@@ -6,9 +6,40 @@ import FileSystem from "../../FileSystem";
 import NameFormatter from "@/modules/Util/NameFormatter";
 import MimeType from "@/modules/Util/MimeType";
 import pathjoin from "@/modules/Util/pathjoin";
+import AbstractGenerator from "@/content_scripts/modules/Legacy/UgoiraGenerator/AbstractGenerator";
+
+class ZipRepo {
+  /**
+   * @type {ZipRepo}
+   */
+  static instance;
+
+  container = new Map();
+
+  static getDefault() {
+    if (!ZipRepo.instance) {
+      ZipRepo.instance = new ZipRepo();
+    }
+
+    return ZipRepo.instance;
+  }
+
+  storeZip(uid, data) {
+    this.container.set(uid, data);
+  }
+
+  getZip(uid) {
+    const zip = this.container.get(uid);
+
+    if (zip) {
+      return zip;
+    }
+  }
+}
 
 /**
  * @typedef UgoiraDownloadTaskOptions
+ * @property {string} uid
  * @property {string} id
  * @property {string} url
  * @property {string} resource
@@ -58,12 +89,20 @@ class UgoiraDownloadTask extends AbstractDownloadTask {
   ffmpeg;
 
   /**
+   * @type {AbstractGenerator}
+   */
+  generator;
+
+  zip;
+
+  /**
    *
    * @param {UgoiraDownloadTaskOptions} options
    */
   constructor(options) {
     super();
 
+    this.uid = options.uid;
     this.id = options.id;
     this.url = options.url;
     this.title = options.context.title;
@@ -119,25 +158,30 @@ class UgoiraDownloadTask extends AbstractDownloadTask {
    * @fires UgoiraDownloadTask#progress
    */
   async onItemFinish({ blob, mimeType }) {
+    ZipRepo.getDefault().storeZip(this.uid, blob);
+
     this.data = blob;
 
     let nameFormatter = NameFormatter.getFormatter({ context: this.context });
 
-    let zip = new JSZip();
-    await zip.loadAsync(blob);
+    this.zip = new JSZip();
+    await this.zip.loadAsync(blob);
 
     if (this.options.packAnimationJsonType > 0) {
-      zip.file('animation.json', this.makeAnimationJsonContent(this.options.packAnimationJsonType));
+      this.zip.file('animation.json', this.makeAnimationJsonContent(this.options.packAnimationJsonType));
     }
 
-    let url = URL.createObjectURL(await zip.generateAsync({ type: 'blob' }));
+    let url = URL.createObjectURL(await this.zip.generateAsync({ type: 'blob' }));
 
-    this.lastDownloadId = await FileSystem.getDefault().saveFile({
-      url,
-      filename: pathjoin(GlobalSettings().downloadRelativeLocation, nameFormatter.format(
-        this.options.renameRule
-      )) + '.' + MimeType.getExtenstion(mimeType)
-    });
+    this.lastDownloadId = await browser.runtime.sendMessage({
+      to: 'ws', action: 'download:saveFile',
+      args: {
+        url,
+        filename: pathjoin(GlobalSettings().downloadRelativeLocation, nameFormatter.format(
+          this.options.renameRule
+        )) + '.' + MimeType.getExtenstion(mimeType)
+      }
+    })
 
     URL.revokeObjectURL(url);
 
@@ -151,6 +195,47 @@ class UgoiraDownloadTask extends AbstractDownloadTask {
    */
   async onFinish() {
     this.changeState(this.PROCESSING_STATE);
+
+    if (this.generator) {
+      this.generator.addListener('progress', (progress) => {
+        this.processProgress = progress;
+        this.dispatch('progress', [progress]);
+      });
+
+      this.generator.addListener('complete', async (blob, mimeType) => {
+        /**
+         * Save file to disk
+         */
+        let animationFileUrl = URL.createObjectURL(blob);
+        let nameFormatter = NameFormatter.getFormatter({ context: this.context });
+
+        const downloadId = await browser.runtime.sendMessage({
+          to: 'ws',
+          action: 'download:saveFile',
+          args: {
+            url: animationFileUrl,
+            filename: pathjoin(GlobalSettings().downloadRelativeLocation, nameFormatter.format(
+              this.options.renameRule
+            )) + '.' + MimeType.getExtenstion(mimeType)
+          }
+        });
+
+        console.log(downloadId);
+
+        URL.revokeObjectURL(animationFileUrl);
+
+        this.dispatch('complete');
+      });
+
+      this.generator.addListener('error', (error) => {
+        this.changeState(this.FAILURE_STATE);
+        this.dispatch('error', [error]);
+      });
+
+      this.generator.generate(this);
+
+      return;
+    }
 
     /**
      * FFmpeg loaded as external library
@@ -168,9 +253,6 @@ class UgoiraDownloadTask extends AbstractDownloadTask {
 
     await this.ffmpeg.load();
 
-    let zip = new JSZip();
-    await zip.loadAsync(this.data);
-
     let framesContent = '';
     let loadedFiles = [];
 
@@ -179,7 +261,7 @@ class UgoiraDownloadTask extends AbstractDownloadTask {
      */
     for (let i = 0; i < this.options.frames.length; i++) {
       let frame = this.options.frames[i];
-      let data = await zip.file(frame.file).async('uint8array');
+      let data = await this.zip.file(frame.file).async('uint8array');
       let indexStr = i + '';
       let filename = '0'.repeat(6 - indexStr.length) + i + '.jpg';
       this.ffmpeg.FS('writeFile', filename, data);
@@ -276,9 +358,24 @@ class UgoiraDownloadTask extends AbstractDownloadTask {
     }
 
     if (this.isPending()) {
-      this.changeState(this.DOWNLOADING_STATE);
-      this.dispatch('start');
-      this.downloader.download();
+      this.zipRepo = ZipRepo.getDefault();
+
+      /**
+       * Here we get the zip file from cache repo, if get one then skip the download
+       * process and start download onFinish event handler manully.
+       */
+      const zip = this.zipRepo.getZip(this.uid);
+
+      if (zip) {
+        this.data = zip;
+        this.progress = 1;
+        this.dispatch('progress', [this.progress]);
+        this.onFinish();
+      } else {
+        this.changeState(this.DOWNLOADING_STATE);
+        this.dispatch('start');
+        this.downloader.download();
+      }
     }
   }
 
@@ -290,6 +387,10 @@ class UgoiraDownloadTask extends AbstractDownloadTask {
     if (this.ffmpeg) {
       this.ffmpeg.exit();
       this.processProgress = this.processedFramesCount = 0;
+    }
+
+    if (this.generator) {
+      this.generator.stop();
     }
   }
 

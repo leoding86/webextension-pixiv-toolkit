@@ -5,6 +5,7 @@ import FileSystem from "../FileSystem";
 import NameFormattor from "@/modules/Util/NameFormatter";
 import MimeType from "@/modules/Util/MimeType";
 import pathjoin from "@/modules/Util/pathjoin";
+import browser from "@/modules/Extension/browser";
 
 /**
  * @typedef MultipleDownloadTaskOptions
@@ -56,7 +57,9 @@ class MultipleDownloadTask extends AbstractDownloadTask {
     this.context = options.context;
     this.zip = new JSZip();
     this.zipMultipleImages = GlobalSettings().globalZipMultipleImages;
-    this.downloader = new Downloader({ processors: GlobalSettings().downloadTasksWhenDownloadingImages });
+    this.downloader = new Downloader({
+      processors: GlobalSettings().downloadTasksWhenDownloadingImages
+    });
     this.downloader.addListener('start', this.onStart, this);
     this.downloader.addListener('progress', this.onProgress, this);
     this.downloader.addListener('item-finish', this.onItemFinish, this);
@@ -161,9 +164,12 @@ class MultipleDownloadTask extends AbstractDownloadTask {
         ) + `.${MimeType.getExtenstion(mimeType)}`;
       }
 
-      this.lastDownloadId = await FileSystem.getDefault().saveFile({
-        url,
-        filename
+      this.lastDownloadId = await browser.runtime.sendMessage({
+        to: 'ws',
+        action: 'download:saveFile',
+        args: {
+          url, filename
+        }
       });
     }
 
@@ -180,15 +186,22 @@ class MultipleDownloadTask extends AbstractDownloadTask {
       const nameFormatter = NameFormattor.getFormatter({ context: Object.assign({}, this.context) });
 
       this.zip.generateAsync({ type: 'blob' }).then(async blob => {
-        this.lastDownloadId = await FileSystem.getDefault().saveFile({
-          url: URL.createObjectURL(blob),
-          filename: pathjoin(GlobalSettings().downloadRelativeLocation, nameFormatter.format(this.options.renameRule, this.context.id)) + '.zip'
+        this.lastDownloadId = await browser.runtime.sendMessage({
+          to: 'ws',
+          action: 'download:saveFile',
+          args: {
+            url: URL.createObjectURL(blob),
+            filename: pathjoin(GlobalSettings().downloadRelativeLocation, nameFormatter.format(this.options.renameRule, this.context.id)) + '.zip'
+          }
         });
-      });
-    }
 
-    this.changeState(this.COMPLETE_STATE);
-    this.dispatch('complete');
+        this.changeState(this.COMPLETE_STATE);
+        this.dispatch('complete');
+      });
+    } else {
+      this.changeState(this.COMPLETE_STATE);
+      this.dispatch('complete');
+    }
   }
 
   /**

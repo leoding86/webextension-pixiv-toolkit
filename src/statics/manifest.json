@@ -67,6 +67,10 @@
                 "lib/vue.min.js",
                 "lib/vue-i18n.min.js",
                 "lib/locales.js",
+                "lib/jszip/jszip.js",
+                "lib/jszip/jszip-utils.min.js",
+                "lib/gifjs/gif.js",
+                "lib/whammy.js",
                 "content_scripts/app.js"
             ]
         }
