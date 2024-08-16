@@ -7,3 +7,5 @@ export {
   PackageFileReader,
   Updater
 }
+
+export * from './fixFilename';
