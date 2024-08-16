@@ -35,9 +35,6 @@
    "extName": {
       "message": "Pixiv Toolkit Next"
    },
-   "generate_btn_error_text": {
-      "message": "Error"
-   },
    "generate_gif_btn_complete_text": {
       "message": "Save GIF"
    },
@@ -949,5 +946,8 @@
     },
     "_download_mode_desc": {
         "message": "In legacy mode, it doesn't support ffmpeg and generate MP4"
+    },
+    "_disable_there_is_only_one_image": {
+        "message": "Disable there is only one image"
     }
 }
