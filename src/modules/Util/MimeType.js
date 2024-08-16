@@ -5,6 +5,7 @@ class MimeType {
     'image/gif'       : 'gif',
     'image/jpeg'      : 'jpeg',
     'image/jpeg'      : 'jpg',
+    'image/webp'      : 'webp',
     'text/plain'      : 'txt',
     'text/html'       : 'html',
     'video/webm'      : 'webm',
