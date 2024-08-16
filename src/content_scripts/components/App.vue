@@ -40,10 +40,10 @@
     <div class="ptk__download-added-notice" v-show="showNotice">
       {{ this.noticeMessage }}
     </div>
-    <!-- <ptk-button v-if="!isUndetermined && browserItems.showPixivOmina"
+    <ptk-button v-if="browserItems.showPixivOmina"
       class="ptk__pixiv-omina__btn"
       @click="passToPixivOmina"
-    >Pixiv Omina</ptk-button> -->
+    >Pixiv Omina</ptk-button>
   </control-panel>
 </template>
 
