@@ -122,6 +122,9 @@ export default {
       }, {
         text: this.tl('_disable'),
         value: 0
+      }, {
+        text: this.tl('_disable_there_is_only_one_image'),
+        value: 2
       }]
     },
 

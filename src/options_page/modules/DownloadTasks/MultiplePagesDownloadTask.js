@@ -129,6 +129,10 @@ class MultipleDownloadTask extends AbstractDownloadTask {
     this.dispatch('progress', [this.progress]);
   }
 
+  shouldZipFile() {
+    return this.zipMultipleImages === 1 || (this.zipMultipleImages === 2 && this.options.pages.length > 1);
+  }
+
   /**
    *
    * @param {*} param0
@@ -141,7 +145,7 @@ class MultipleDownloadTask extends AbstractDownloadTask {
       context: Object.assign({}, this.context, { pageNum })
     });
 
-    if (this.zipMultipleImages === 1) {
+    if (this.shouldZipFile()) {
       const now = new Date();
       now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
       const file = nameFormatter.format(this.options.renameImageRule, `p${pageNum}`) + `.${MimeType.getExtenstion(mimeType)}`;
@@ -184,7 +188,7 @@ class MultipleDownloadTask extends AbstractDownloadTask {
    * @fires MultipleDownloadTask#complete
    */
   onFinish() {
-    if (this.zipMultipleImages === 1) {
+    if (this.shouldZipFile()) {
       const nameFormatter = NameFormattor.getFormatter({ context: Object.assign({}, this.context) });
       let filename = pathjoin(GlobalSettings().downloadRelativeLocation, nameFormatter.format(this.options.renameRule, this.context.id));
       filename = fixFilename(filename);
