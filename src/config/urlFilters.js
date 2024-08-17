@@ -2,7 +2,9 @@ export default [
   {
     type: 'pixiv_illust',
     patterns: [
-      /^https:\/\/www\.pixiv\.net\/([a-z\d]+\/)?artworks\/(\d+)/i
+      /^https:\/\/www\.pixiv\.net\/([a-z\d]+\/)?artworks\/(\d+)/i,
+      // https://www.pixiv.net/artworks/unlisted/eE3fTYaROT9IsZmep386
+      /^https:\/\/www\.pixiv\.net\/([a-z\d]+\/)?artworks\/(unlisted)\/([a-z\d]+)/i
     ],
   },
   {

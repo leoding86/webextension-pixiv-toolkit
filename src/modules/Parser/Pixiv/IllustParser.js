@@ -103,14 +103,24 @@ class IllustParser {
   async parseContext() {
     this.parseUrl(this.url);
 
-    await this.parseInfo(this.context.id);
+    if (this.context.unlistedId) {
+      await this.parseUnlistedInfo();
 
-    if ([IllustParser.ILLUST_TYPE, IllustParser.MANGA_TYPE].indexOf(this.context.illustType) > -1) {
-      await this.parsePages(this.context.id);
-    } else if (this.context.illustType === IllustParser.UGOIRA_TYPE) {
-      await this.parseUgoiraMeta(this.context.id);
+      if ([IllustParser.ILLUST_TYPE, IllustParser.MANGA_TYPE].indexOf(this.context.illustType) > -1) {
+        await this.parseUnlistedPages();
+      } else {
+        throw new RuntimeError(`Invalid unlisted illust type ${this.context.illustType}`);
+      }
     } else {
-      throw new RuntimeError(`Invalid illust type ${this.context.illustType}`);
+      await this.parseInfo(this.context.id);
+
+      if ([IllustParser.ILLUST_TYPE, IllustParser.MANGA_TYPE].indexOf(this.context.illustType) > -1) {
+        await this.parsePages(this.context.id);
+      } else if (this.context.illustType === IllustParser.UGOIRA_TYPE) {
+        await this.parseUgoiraMeta(this.context.id);
+      } else {
+        throw new RuntimeError(`Invalid illust type ${this.context.illustType}`);
+      }
     }
   }
 
@@ -121,6 +131,14 @@ class IllustParser {
    * @throws {RuntimeError}
    */
   parseUrl(url) {
+    const unlistedPattern = /artworks\/(unlisted)\/([a-z\d]+)/i;
+    const unlistedMatches = url.match(unlistedPattern);
+
+    if (unlistedMatches) {
+      this.context.unlistedId = unlistedMatches[2]
+      return;
+    }
+
     let patterns = [/illust_id=(\d+)/i, /artworks\/(\d+)/i];
 
     for (let pattern of patterns) {
@@ -133,6 +151,10 @@ class IllustParser {
     }
 
     throw new RuntimeError(`Can't parse the illust id out. url: ${this.url}`);
+  }
+
+  buildUnlistedInfoUrl() {
+    return `https://www.pixiv.net/ajax/illust/unlisted/${this.context.unlistedId}`;
   }
 
   /**
@@ -178,8 +200,35 @@ class IllustParser {
       // contexts from parsed
       year: dateFormatter.getYear(),
       month: dateFormatter.getMonth(),
-      day: dateFormatter.getDay()
+      day: dateFormatter.getDay(),
+      __raw: context
     }
+  }
+
+  /**
+   * Parse unlisted illust base information
+   */
+  parseUnlistedInfo() {
+    return new Promise((resolve, reject) => {
+      this.request = new Request(this.buildUnlistedInfoUrl(), { method: 'GET' });
+
+      this.request.addListener('onload', data => {
+        let textDecoder = new TextDecoder();
+        let json = JSON.parse(textDecoder.decode(data));
+
+        if (json && json.body) {
+          this.context = this.standardContext(json.body);
+
+          resolve();
+        }
+      });
+
+      this.request.addListener('onerror', error => {
+        reject(error);
+      })
+
+      this.request.send();
+    });
   }
 
   /**
@@ -217,6 +266,11 @@ class IllustParser {
    */
   buildPagesUrl(id) {
     return `https://www.pixiv.net/ajax/illust/${id}/pages`;
+  }
+
+  parseUnlistedPages() {
+    this.context.pages = [this.context.__raw.urls.original];
+    this.context.totalPages = 1;
   }
 
   /**
