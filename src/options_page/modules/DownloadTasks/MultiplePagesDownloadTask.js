@@ -50,6 +50,8 @@ class MultipleDownloadTask extends AbstractDownloadTask {
   constructor(options) {
     super();
 
+    this.now = new Date();
+    this.now.setMinutes(this.now.getMinutes() - this.now.getTimezoneOffset());
     this.options = options;
     this.id = options.id;
     this.url = options.url;
@@ -146,10 +148,8 @@ class MultipleDownloadTask extends AbstractDownloadTask {
     });
 
     if (this.shouldZipFile()) {
-      const now = new Date();
-      now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
       const file = nameFormatter.format(this.options.renameImageRule, `p${pageNum}`) + `.${MimeType.getExtenstion(mimeType)}`;
-      this.zip.file(fixFilename(file), blob, { date: now });
+      this.zip.file(fixFilename(file), blob, { date: this.now });
     } else {
       let filename = GlobalSettings().downloadRelativeLocation;
 
