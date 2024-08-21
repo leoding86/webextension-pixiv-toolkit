@@ -2,7 +2,7 @@
  * @Author: Leo Ding <leoding86@msn.com>
  * @Date: 2024-08-08 08:43:42
  * @LastEditors: Leo Ding <leoding86@msn.com>
- * @LastEditTime: 2024-08-11 23:56:54
+ * @LastEditTime: 2024-08-21 13:24:36
 -->
 <template>
   <control-panel v-if="showApp" :lastError="lastError"
@@ -363,13 +363,13 @@ export default {
       };
     },
 
-    async download({ ugoiraConvertType } = {}) {
+    async download({ ugoiraConvertType, selectedIndexes } = {}) {
       try {
-        await this.downloadManager.addTask(this.resource, { ugoiraConvertType });
+        await this.downloadManager.addTask(this.resource, { ugoiraConvertType, selectedIndexes });
       } catch (error) {
         if (error instanceof DownloadTaskExistsError) {
           if (window.confirm(this.tl('_the_resource_is_already_in_download_manager'))) {
-            this.downloadManager.addTask(this.resource, { ugoiraConvertType }, { redownload: true })
+            this.downloadManager.addTask(this.resource, { ugoiraConvertType, selectedIndexes }, { redownload: true })
           }
         } else {
           throw error;
@@ -381,8 +381,8 @@ export default {
       this.selectedIndexes = selectedIndexes;
     },
 
-    pageSelectorDownloadHandler() {
-      this.download();
+    pageSelectorDownloadHandler({ selectedPageIndexes }) {
+      this.download({ selectedIndexes: selectedPageIndexes });
     },
 
     disableGuide() {
