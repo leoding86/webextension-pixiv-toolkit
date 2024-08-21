@@ -65,7 +65,7 @@
         </v-list-tile>
       </v-list>
 
-      <!-- <v-list two-line>
+      <v-list two-line>
         <v-list-tile>
           <v-list-tile-content>
             <v-list-tile-title>{{ tl('_show') }} Pixiv Omina</v-list-tile-title>
@@ -74,7 +74,7 @@
             <v-switch v-model="showPixivOmina"></v-switch>
           </v-list-tile-action>
         </v-list-tile>
-      </v-list> -->
+      </v-list>
 
       <v-list two-line>
         <v-list-tile>

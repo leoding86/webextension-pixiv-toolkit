@@ -4,7 +4,9 @@
 
     <v-card style="margin-bottom:30px;">
       <v-list two-line>
-        <download-mode-option></download-mode-option>
+        <download-mode-option
+          v-model="downloadMode"
+        ></download-mode-option>
 
         <v-list-tile v-if="downloadMode === 2">
           <v-list-tile-content>
@@ -191,7 +193,7 @@ export default {
      * Non-reactive property
      */
     this.locationRegex = /^([^./]+\/)*$/i;
-    this.downloadMode = this.browserItems.downloadMode;
+    this.downloadMode = this.browserItems.downloadMode || 1;
     this.downloadRelativeLocation = this.oldDownloadRelativeLocation = this.browserItems.downloadRelativeLocation;
     this.enableDownloadMetadata = !!this.browserItems.enableDownloadMetadata;
     this.downloadSaveAs = !!this.browserItems.downloadSaveAs;

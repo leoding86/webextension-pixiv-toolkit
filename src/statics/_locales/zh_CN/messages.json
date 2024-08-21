@@ -952,5 +952,8 @@
     },
     "_download_mode_desc": {
         "message": "经典模式下不支持FFmpeg以及生成MP4"
+    },
+    "_disable_there_is_only_one_image": {
+        "message": "只有一张图片时禁用"
     }
 }

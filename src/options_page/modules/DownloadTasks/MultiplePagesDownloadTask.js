@@ -6,6 +6,7 @@ import NameFormattor from "@/modules/Util/NameFormatter";
 import MimeType from "@/modules/Util/MimeType";
 import pathjoin from "@/modules/Util/pathjoin";
 import browser from "@/modules/Extension/browser";
+import { fixFilename } from "@/modules/Util";
 
 /**
  * @typedef MultipleDownloadTaskOptions
@@ -49,6 +50,8 @@ class MultipleDownloadTask extends AbstractDownloadTask {
   constructor(options) {
     super();
 
+    this.now = new Date();
+    this.now.setMinutes(this.now.getMinutes() - this.now.getTimezoneOffset());
     this.options = options;
     this.id = options.id;
     this.url = options.url;
@@ -128,6 +131,10 @@ class MultipleDownloadTask extends AbstractDownloadTask {
     this.dispatch('progress', [this.progress]);
   }
 
+  shouldZipFile() {
+    return this.zipMultipleImages === 1 || (this.zipMultipleImages === 2 && this.options.pages.length > 1);
+  }
+
   /**
    *
    * @param {*} param0
@@ -140,11 +147,9 @@ class MultipleDownloadTask extends AbstractDownloadTask {
       context: Object.assign({}, this.context, { pageNum })
     });
 
-    if (this.zipMultipleImages === 1) {
-      const now = new Date();
-      now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+    if (this.shouldZipFile()) {
       const file = nameFormatter.format(this.options.renameImageRule, `p${pageNum}`) + `.${MimeType.getExtenstion(mimeType)}`;
-      this.zip.file(file, blob, { date: now });
+      this.zip.file(fixFilename(file), blob, { date: this.now });
     } else {
       let filename = GlobalSettings().downloadRelativeLocation;
 
@@ -168,7 +173,8 @@ class MultipleDownloadTask extends AbstractDownloadTask {
         to: 'ws',
         action: 'download:saveFile',
         args: {
-          url, filename
+          url,
+          filename: fixFilename(filename)
         }
       });
     }
@@ -182,8 +188,10 @@ class MultipleDownloadTask extends AbstractDownloadTask {
    * @fires MultipleDownloadTask#complete
    */
   onFinish() {
-    if (this.zipMultipleImages === 1) {
+    if (this.shouldZipFile()) {
       const nameFormatter = NameFormattor.getFormatter({ context: Object.assign({}, this.context) });
+      let filename = pathjoin(GlobalSettings().downloadRelativeLocation, nameFormatter.format(this.options.renameRule, this.context.id));
+      filename = fixFilename(filename);
 
       this.zip.generateAsync({ type: 'blob' }).then(async blob => {
         this.lastDownloadId = await browser.runtime.sendMessage({
@@ -191,7 +199,7 @@ class MultipleDownloadTask extends AbstractDownloadTask {
           action: 'download:saveFile',
           args: {
             url: URL.createObjectURL(blob),
-            filename: pathjoin(GlobalSettings().downloadRelativeLocation, nameFormatter.format(this.options.renameRule, this.context.id)) + '.zip'
+            filename: filename + '.zip'
           }
         });
 

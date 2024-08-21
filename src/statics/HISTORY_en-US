@@ -1,6 +1,7 @@
 v6.3.0
-Legacy download mode is back, you can switch download mode you like;
-Fix issues.
+Added options on whether to create a work folder;
+Added classic download mode;
+Fixed some issues.
 
 v6.2.0
 Simplify the process of adding task. Now the download manager will be opened automatically and task will be added;

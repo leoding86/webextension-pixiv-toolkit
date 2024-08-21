@@ -26,6 +26,13 @@
 
 <script>
 export default {
+  props: {
+    value: {
+      type: Number,
+      required: false
+    }
+  },
+
   data() {
     return {
       downloadMode: 1
@@ -38,6 +45,8 @@ export default {
         this.downloadMode = oldVal;
         return;
       }
+
+      this.$emit('input', val);
 
       browser.storage.local.set({ downloadMode: val });
     }

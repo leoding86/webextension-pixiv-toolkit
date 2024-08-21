@@ -173,25 +173,25 @@
         }
 
         browser.storage.local.set({
-          pixivComicRenameRule: val
+          fanboxPostRenameRule: val
         });
       },
 
       renameImageRule(val) {
         browser.storage.local.set({
-          pixivComicRenameImageRule: val === '' ? this.defaultRenameImageRule : val
+          fanboxPostRenameImageRule: val === '' ? this.defaultRenameImageRule : val
         })
       },
 
       pageNumberStartWithOne(val) {
         browser.storage.local.set({
-          pixivComicPageNumberStartWithOne: val
+          fanboxPostPageNumberStartWithOne: val
         });
       },
 
       pageNumberLength(val) {
         browser.storage.local.set({
-          pixivComicPageNumberLength: val
+          fanboxPostPageNumberLength: val
         });
       },
     },

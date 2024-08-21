@@ -352,7 +352,7 @@ class UgoiraDownloadTask extends AbstractDownloadTask {
    * @fires UgoiraDownloadTask#start
    * @param {boolean} reset
    */
-  start(reset = false) {
+  async start(reset = false) {
     if (reset) {
       this.downloader.reset();
     }
@@ -364,10 +364,12 @@ class UgoiraDownloadTask extends AbstractDownloadTask {
        * Here we get the zip file from cache repo, if get one then skip the download
        * process and start download onFinish event handler manully.
        */
-      const zip = this.zipRepo.getZip(this.uid);
+      const data = this.zipRepo.getZip(this.uid);
 
-      if (zip) {
-        this.data = zip;
+      if (data) {
+        this.data = data;
+        this.zip = new JSZip();
+        await this.zip.loadAsync(this.data);
         this.progress = 1;
         this.dispatch('progress', [this.progress]);
         this.onFinish();
