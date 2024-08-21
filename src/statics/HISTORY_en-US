@@ -1,3 +1,11 @@
+v6.3.2
+Fixed some issues (#256, #253, #251, #260).
+
+v6.3.1
+Added options on whether to create a work folder;
+Added classic download mode;
+Fixed some issues.
+
 v6.3.0
 Added options on whether to create a work folder;
 Added classic download mode;
