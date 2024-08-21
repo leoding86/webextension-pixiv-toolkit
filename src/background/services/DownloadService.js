@@ -2,7 +2,7 @@
  * @Author: Leo Ding <leoding86@msn.com>
  * @Date: 2024-08-11 11:09:14
  * @LastEditors: Leo Ding <leoding86@msn.com>
- * @LastEditTime: 2024-08-11 13:56:48
+ * @LastEditTime: 2024-08-21 18:35:40
  * @FilePath: \webextension-pixiv-toolkit\src\background\services\DownloadService.js
  */
 import browser from "@/modules/Extension/browser";
@@ -16,6 +16,21 @@ class DownloadService extends AbstractService {
   static instance;
 
   openingDownloadManager = false;
+
+  cachedDownloadIdFilenameMap = {};
+
+  constructor() {
+    super();
+
+    browser.downloads.onDeterminingFilename.addListener((downloadItem, suggest) => {
+      if (this.cachedDownloadIdFilenameMap[downloadItem.id]) {
+        suggest({
+          conflictAction: "uniquify",
+          filename: this.cachedDownloadIdFilenameMap[downloadItem.id]
+        });
+      }
+    });
+  }
 
   static getService() {
     if (!DownloadService.instance) {
@@ -96,8 +111,14 @@ class DownloadService extends AbstractService {
     }
   }
 
+  cacheDownloadIdFilename(downloadId, filename) {
+    this.cachedDownloadIdFilenameMap[downloadId] = filename;
+  }
+
   async saveFile({ url, filename }) {
-    return await FileSystem.getDefault().saveFile({ url, filename });
+    const downloadId = await FileSystem.getDefault().saveFile({ url, filename });
+    this.cacheDownloadIdFilename(downloadId, filename);
+    return downloadId;
   }
 }
 
