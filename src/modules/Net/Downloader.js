@@ -154,13 +154,13 @@ class Downloader extends Event {
         this.progresses[downloadFile.seq] = loadedLength / totalLength;
 
         this.dispatch('progress', [{
-          progress: this.progresses.reduce((previousValue, currentValue) => previousValue + currentValue) / this.files.length,
+          progress: this.progresses.reduce((previousValue, currentValue) => previousValue + currentValue, 0) / this.files.length,
           successCount: this.successCount,
           failCount: this.failedDownloadFiles.length
         }]);
       } else if (message.event === 'error') {
         this.removeDownloadFromCollection(downloadFilePort);
-        const { errorMessage = error } = message.data;
+        const { error = errorMessage } = message.data;
 
         this.failedDownloadFiles.push(downloadFile);
         this.progresses[downloadFile.seq] = 0;
