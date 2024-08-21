@@ -696,7 +696,7 @@
        "message": "Pixiv Toolkit Next版本 是 Pixiv 工具箱的下一个重要更新的版本。相对于目前的 Pixiv Toolkit 有一些重大的功能更新。可以去项目的 Github 页面了解更多。"
    },
    "_ffmpeg_custom_convert_command": {
-       "message": "FFmpeg自定义转换命令"
+       "message": "FFmpeg自定义转换命令，使用回车输入新行"
    },
    "_custom": {
        "message": "自定义"

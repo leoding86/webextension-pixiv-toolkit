@@ -693,7 +693,7 @@
        "message": "The Pixiv Toolkit Next version is the next major update version of Pixiv Toolkit. There are some breaking changes compare with current Pixiv Toolkit. Go to the project Github page to learn more."
    },
    "_ffmpeg_custom_convert_command": {
-       "message": "FFmpeg custom convert command"
+       "message": "FFmpeg custom convert command, press enter for new line"
    },
    "_custom": {
        "message": "Custom"
