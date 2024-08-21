@@ -2,7 +2,7 @@
  * @Author: Leo Ding <leoding86@msn.com>
  * @Date: 2024-08-11 11:09:14
  * @LastEditors: Leo Ding <leoding86@msn.com>
- * @LastEditTime: 2024-08-21 18:35:40
+ * @LastEditTime: 2024-08-21 19:54:16
  * @FilePath: \webextension-pixiv-toolkit\src\background\services\DownloadService.js
  */
 import browser from "@/modules/Extension/browser";
@@ -28,6 +28,8 @@ class DownloadService extends AbstractService {
           conflictAction: "uniquify",
           filename: this.cachedDownloadIdFilenameMap[downloadItem.id]
         });
+
+        delete this.cachedDownloadIdFilenameMap[downloadItem.id];
       }
     });
   }
