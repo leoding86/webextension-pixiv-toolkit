@@ -69,10 +69,14 @@ export default {
   },
 
   watch: {
-    items: {
-      deep: true,
-      handler(val) {
-        console.log(val);
+    items(val) {
+      if (val) {
+        this.pages = val.map(item => {
+          return {
+            page: item,
+            selected: false
+          }
+        });
       }
     }
   },
@@ -91,10 +95,6 @@ export default {
   },
 
   beforeDestroy() {
-    //
-  },
-
-  watch: {
     //
   },
 
@@ -173,7 +173,9 @@ export default {
     },
 
     downloadSelectedPages() {
-      this.$emit('download');
+      this.$emit('download', {
+        selectedPageIndexes: this.selectedPageIndexes
+      });
     },
 
     updatePage(index, url) {
