@@ -13,13 +13,15 @@
         </v-list-tile-action>
       </v-list-tile>
 
-      <v-list-tile>
+      <v-list-tile class="option-section__auto-height">
         <v-list-tile-content>
           <v-list-tile-title>{{ tl('_ffmpeg_custom_convert_command') }} (<a href="https://github.com/leoding86/webextension-pixiv-toolkit/blob/master/docs/help.md#about-ffmpeg-custom-convert-command-en_us" target="_blank"><strong>{{ tl('_more_info') }}</strong></a>)</v-list-tile-title>
           <v-list-tile-sub-title>
-            <input class="option-section__input-text" v-model="ugoiraCustomFFmpegCommand"
-              :placeholder="tl('_not_set')" @blur="onUgoiraCustomFFmpegCommandChangeHandler"
-            >
+            <textarea class="option-section__input-text"
+              v-model="ugoiraCustomFFmpegCommand"
+              :placeholder="tl('_not_set')"
+              @blur="onUgoiraCustomFFmpegCommandChangeHandler"
+            ></textarea>
           </v-list-tile-sub-title>
         </v-list-tile-content>
       </v-list-tile>
@@ -166,7 +168,7 @@ export default {
   methods: {
     onUgoiraCustomFFmpegCommandChangeHandler() {
       browser.storage.local.set({
-        ugoiraCustomFFmpegCommand: this.ugoiraCustomFFmpegCommand
+        ugoiraCustomFFmpegCommand: this.ugoiraCustomFFmpegCommand.trim()
       });
     },
 
@@ -180,9 +182,14 @@ export default {
 <style lang="scss">
 .option-section__input-text {
   width: 100%;
-  padding: 5px 0;
+  padding: 5px 5px;
   background: #efefef;
   border-radius: 5px;
-  text-indent: 1em;
+}
+
+.option-section__auto-height {
+  .v-list__tile {
+    height: auto;
+  }
 }
 </style>

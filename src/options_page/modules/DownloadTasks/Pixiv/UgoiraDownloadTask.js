@@ -189,6 +189,97 @@ class UgoiraDownloadTask extends AbstractDownloadTask {
   }
 
   /**
+   *
+   * @param {(args: { data: any, outputFilename: string}) => void} completeHandler
+   * @returns
+   */
+  async runFFmpeg(completeHandler) {
+    /**
+     * FFmpeg loaded as external library
+     */
+    let { createFFmpeg } = FFmpeg;
+    this.ffmpeg = new createFFmpeg({
+      log: true,
+      corePath: browser.runtime.getURL('lib/ffmpeg/ffmpeg-core.js'),
+    });
+    this.ffmpeg.setProgress(progress => {
+      this.processProgress = progress.ratio;
+
+      this.dispatch('progress', [this.processProgress]);
+    });
+
+    await this.ffmpeg.load();
+
+    let framesContent = '';
+    let loadedFiles = [];
+
+    /**
+     * Add files to ffmpeg file system
+     */
+    for (let i = 0; i < this.options.frames.length; i++) {
+      let frame = this.options.frames[i];
+      let data = await this.zip.file(frame.file).async('uint8array');
+      let indexStr = i + '';
+      let filename = '0'.repeat(6 - indexStr.length) + i + '.jpg';
+      this.ffmpeg.FS('writeFile', filename, data);
+      loadedFiles.push(filename);
+
+      /**
+       * Build frames information
+       */
+      framesContent += `file '${frame.file}'` + "\r\n";
+      framesContent += `duration ${frame.delay / 1000}` + "\r\n";
+    }
+
+    /**
+     * Add frames to ffmpeg file system
+     */
+    this.ffmpeg.FS('writeFile', 'input.txt', framesContent);
+    loadedFiles.push('input.txt');
+
+    /**
+     * parse ffmpeg command line(s)
+     */
+    const ffmpegCommands = [];
+    const ffmpegCommandSetting = this.options.ffmpegCommandArgs ?
+      this.options.ffmpegCommandArgs.trim() :
+      null;
+
+    if (!ffmpegCommandSetting) {
+      ffmpegCommands.push(['-f', 'concat', '-i', 'input.txt', '-plays', 0, 'out.gif']);
+    } else {
+      const lines = ffmpegCommandSetting.split(/\r\n|\n|\r/);
+
+      lines.forEach(line => {
+        ffmpegCommands.push(line.trim().split(' '));
+      });
+    }
+
+    const lastCommand = ffmpegCommands[ffmpegCommands.length - 1];
+    const outputFilename = lastCommand[lastCommand.length - 1];
+
+    for (const seq in ffmpegCommands) {
+      console.log(ffmpegCommands[seq]);
+      await this.ffmpeg.run.apply(this.ffmpeg, ffmpegCommands[seq]);
+    }
+
+    await completeHandler.call(this, {
+      data: this.ffmpeg.FS('readFile', outputFilename),
+      outputFilename
+    });
+
+    loadedFiles.push(outputFilename);
+
+    /**
+     * Clearup assets
+     */
+    loadedFiles.forEach(file => this.ffmpeg.FS('unlink', file));
+
+    this.ffmpeg.exit();
+    this.ffmpeg = null;
+  }
+
+  /**
    * When resource is downloaded, then generate animation file using ffmpeg
    * @fires UgoiraDownloadTask#progress
    * @fires UgoiraDownloadTask#complete
@@ -237,83 +328,26 @@ class UgoiraDownloadTask extends AbstractDownloadTask {
       return;
     }
 
-    /**
-     * FFmpeg loaded as external library
-     */
-    let { createFFmpeg } = FFmpeg;
-    this.ffmpeg = new createFFmpeg({
-      log: true,
-      corePath: browser.runtime.getURL('lib/ffmpeg/ffmpeg-core.js'),
-    });
-    this.ffmpeg.setProgress(progress => {
-      this.processProgress = progress.ratio;
-
-      this.dispatch('progress', [this.processProgress]);
-    });
-
-    await this.ffmpeg.load();
-
-    let framesContent = '';
-    let loadedFiles = [];
-
-    /**
-     * Add files to ffmpeg file system
-     */
-    for (let i = 0; i < this.options.frames.length; i++) {
-      let frame = this.options.frames[i];
-      let data = await this.zip.file(frame.file).async('uint8array');
-      let indexStr = i + '';
-      let filename = '0'.repeat(6 - indexStr.length) + i + '.jpg';
-      this.ffmpeg.FS('writeFile', filename, data);
-      loadedFiles.push(filename);
-
+    await this.runFFmpeg(async ({ data, outputFilename }) => {
       /**
-       * Build frames information
+       * Save file to disk
        */
-      framesContent += `file '${frame.file}'` + "\r\n";
-      framesContent += `duration ${frame.delay / 1000}` + "\r\n";
-    }
+      let animationFileUrl = URL.createObjectURL(new Blob([data], { type: MimeType.getFileMimeType(outputFilename) }));
+      let nameFormatter = NameFormatter.getFormatter({ context: this.context });
 
-    /**
-     * Add frames to ffmpeg file system
-     */
-    this.ffmpeg.FS('writeFile', 'input.txt', framesContent);
-    loadedFiles.push('input.txt');
+      this.lastDownloadId = await browser.runtime.sendMessage({
+        to: 'ws',
+        action: 'download:saveFile',
+        args: {
+          url: animationFileUrl,
+          filename: pathjoin(GlobalSettings().downloadRelativeLocation, nameFormatter.format(
+            this.options.renameRule
+          )) + '.' + MimeType.getFileExtension(outputFilename)
+        }
+      });
 
-    let ffmpegCommand = this.options.ffmpegCommandArgs ? this.options.ffmpegCommandArgs.split(' ') : ['-f', 'concat', '-i', 'input.txt', '-plays', 0, 'out.gif'];
-    let outputFilename = ffmpegCommand[ffmpegCommand.length - 1];
-
-    await this.ffmpeg.run.apply(this.ffmpeg, ffmpegCommand);
-
-    /**
-     * Load data out from ffmpeg filesystem
-     */
-    let data = this.ffmpeg.FS('readFile', outputFilename);
-
-    /**
-     * Save file to disk
-     */
-    let animationFileUrl = URL.createObjectURL(new Blob([data], { type: MimeType.getFileMimeType(outputFilename) }));
-    let nameFormatter = NameFormatter.getFormatter({ context: this.context });
-
-    this.lastDownloadId = await FileSystem.getDefault().saveFile({
-      url: animationFileUrl,
-      filename: pathjoin(GlobalSettings().downloadRelativeLocation, nameFormatter.format(
-        this.options.renameRule
-      )) + '.' + MimeType.getFileExtension(outputFilename)
+      URL.revokeObjectURL(animationFileUrl);
     });
-
-    URL.revokeObjectURL(animationFileUrl);
-
-    loadedFiles.push(outputFilename);
-
-    /**
-     * Clearup assets
-     */
-    loadedFiles.forEach(file => this.ffmpeg.FS('unlink', file));
-
-    this.ffmpeg.exit();
-    this.ffmpeg = null;
 
     this.changeState(this.COMPLETE_STATE);
     this.dispatch('complete');
