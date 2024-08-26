@@ -741,7 +741,7 @@
        "message": "Unit: ms"
    },
    "_add_time_gap_between_each_file_download_to_prevent_download_issue": {
-       "message": "Add time gap between each file download to prevent download issue"
+       "message": "Add time gap between each file download to prevent download issues"
    },
    "_diagnosis_messages": {
        "message": "Diagnosis Messages"
@@ -858,10 +858,10 @@
         "message": "Downloaded"
     },
     "_the_resource_is_already_in_download_manager": {
-        "message": "The download of the resource is already in download manager. Re-download it ?"
+        "message": "This download resource is already in download manager. Re-download it?"
     },
     "_download_manager_isnt_open": {
-        "message": "It seems like download manager don't open, you can open one in options page or in popup page. Open it now?"
+        "message": "It seems the download manager didn't open, you may open one in the Options or Popup page. Open it now?"
     },
     "_switch_to_it_and_close": {
         "message": "Switch to it and close"
@@ -927,10 +927,10 @@
         "message": "Always"
     },
     "_when_there_is_only_one_image": {
-        "message": "When there is only one image"
+        "message": "When only one image"
     },
     "_dont_create_work_folder": {
-        "message": "Don't create work folder (Only effect Illustration and FanBox work)"
+        "message": "Don't create work folder (Only affect Illustration and FanBox work)"
     },
     "_combin_work_and_image_rename_rule_when_dont_create_work_folder": {
         "message": "Combine work and image rename rule when don't create work folder (Using _)"
@@ -945,9 +945,9 @@
         "message": "Download mode"
     },
     "_download_mode_desc": {
-        "message": "In legacy mode, it doesn't support ffmpeg and generate MP4"
+        "message": "In legacy mode, ffmpeg and .mp4 generation isn't supported"
     },
     "_disable_there_is_only_one_image": {
-        "message": "Disable there is only one image"
+        "message": "Disable when only one image"
     }
 }
