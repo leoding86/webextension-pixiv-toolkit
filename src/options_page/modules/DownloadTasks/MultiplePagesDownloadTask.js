@@ -155,12 +155,13 @@ class MultipleDownloadTask extends AbstractDownloadTask {
 
       if (this.type !== 'PIXIV_MANGA' &&
         (
-          (GlobalSettings().dontCreateWorkFolder === 1 && this.options.pages.length === 1) ||
+          (GlobalSettings().dontCreateWorkFolder === 1 && this.downloader.files.length === 1) ||
           GlobalSettings().dontCreateWorkFolder === 2
         )
       ) {
         filename = pathjoin(filename,
-          nameFormatter.format((GlobalSettings().combinWRRuleAndIRRuleWhenDontCreateWorkFolder === 0 ? '' : (this.options.renameRule + '_')) + this.options.renameImageRule, `${this.context.id}-p${pageNum}`)
+          nameFormatter.format((GlobalSettings().combinWRRuleAndIRRuleWhenDontCreateWorkFolder === 0
+			|| (GlobalSettings().combinWRRuleAndIRRuleWhenDontCreateWorkFolder === 2 && this.downloader.files.length === 1) ? '' : (this.options.renameRule + '_')) + this.options.renameImageRule, `${this.context.id}-p${pageNum}`)
         ) + `.${MimeType.getExtenstion(mimeType)}`;
       } else {
         filename = pathjoin(filename,
