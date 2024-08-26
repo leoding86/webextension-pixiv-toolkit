@@ -893,6 +893,9 @@
     "_zip_multiple_images": {
         "message": "Zip multiple images"
     },
+	"_zip_file_extension": {
+        "message": "Extension to use for ZIP filename"
+    },
     "_create_a_zip_file_while_downloading_multiple_images": {
         "message": "Create a zip file while downloading item which includes multiple images"
     },

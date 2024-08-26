@@ -256,7 +256,8 @@ export default Object.assign({}, {
     downloadMode: 1, // 1: legacy; 2: download manager
     dontCreateWorkFolder: 0,
     combinWRRuleAndIRRuleWhenDontCreateWorkFolder: 0,
-
+    globalZipFileExtension: '.zip',
+    
     /**
      * @since 1.0.0
      * @deprecated since version 6.0.0

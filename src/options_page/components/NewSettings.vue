@@ -133,6 +133,12 @@ export default {
         globalZipMultipleImages: val
       });
     },
+    
+    zipFileExtension(val) {
+      browser.storage.local.set({
+        globalZipFileExtension: val
+      });
+    },
 
     dontCreateWorkFolder(val) {
       browser.storage.local.set({
