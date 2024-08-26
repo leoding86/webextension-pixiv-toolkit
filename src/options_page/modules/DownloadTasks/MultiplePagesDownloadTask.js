@@ -132,7 +132,7 @@ class MultipleDownloadTask extends AbstractDownloadTask {
   }
 
   shouldZipFile() {
-    return this.zipMultipleImages === 1 || (this.zipMultipleImages === 2 && this.options.pages.length > 1);
+    return this.zipMultipleImages === 1 || (this.zipMultipleImages === 2 && this.downloader.files.length > 1);
   }
 
   /**
