@@ -111,7 +111,7 @@ class PostParser {
     if (context.type === this.ARTICLE_TYPE) {
       context.body.blocks.forEach(item => {
         if (item.type === 'image' && context.body.imageMap[item.imageId]) {
-          this.images.push(context.body.imageMap[item.imageId].originalUrl);
+          images.push(context.body.imageMap[item.imageId].originalUrl);
         }
       });
     } else if (context.type === this.IMAGE_TYPE) {
