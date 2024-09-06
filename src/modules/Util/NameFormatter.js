@@ -101,6 +101,8 @@ class NameFormatter {
       }
     });
 
+    name = name.replace(/\u{200B}/ug, ' ');
+
     return name;
   }
 
