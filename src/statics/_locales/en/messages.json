@@ -947,7 +947,16 @@
     "_download_mode_desc": {
         "message": "In legacy mode, ffmpeg and .mp4 generation isn't supported"
     },
-    "_disable_there_is_only_one_image": {
-        "message": "Disable when only one image"
+    "_only_if_the_work_has_multiple_images": {
+        "message": "Only if the work has multiple images"
+    },
+    "_only_when_downloading_multiple_images": {
+        "message": "Only when downloading multiple images"
+    },
+    "_only_if_the_work_has_one_image": {
+        "message": "Only if the work has one image"
+    },
+    "_only_when_downloading_one_image": {
+        "message": "Only when downloading one image"
     }
 }

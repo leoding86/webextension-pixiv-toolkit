@@ -953,7 +953,16 @@
     "_download_mode_desc": {
         "message": "经典模式下不支持FFmpeg以及生成MP4"
     },
-    "_disable_there_is_only_one_image": {
-        "message": "只有一张图片时禁用"
+    "_only_if_the_work_has_multiple_images": {
+        "message": "仅当作品有多张图时"
+    },
+    "_only_when_downloading_multiple_images": {
+        "message": "仅当下载多张图时"
+    },
+    "_only_if_the_work_has_one_image": {
+        "message": "仅当作品有一个作品时"
+    },
+    "_only_when_downloading_one_image": {
+        "message": "仅当下载单张图时"
     }
 }
