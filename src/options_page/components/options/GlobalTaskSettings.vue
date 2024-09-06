@@ -39,7 +39,21 @@
           ></v-select>
         </v-list-tile-action>
       </v-list-tile>
-
+        
+      <v-list-tile v-if="[1,2].indexOf(zipMultipleImages) > -1">
+        <v-list-tile-content>
+          <v-list-tile-title>
+            <v-list-tile-title>{{ tl('_zip_file_extension') }}</v-list-tile-title>
+          </v-list-tile-title>
+        </v-list-tile-content>
+        <v-list-tile-action>
+          <v-select :items="zipFileExtensionOptions"
+            v-model="zipFileExtension"
+            style="width:150px;"
+          ></v-select>
+        </v-list-tile-action>
+      </v-list-tile>    
+    
       <v-list-tile>
         <v-list-tile-content>
           <v-list-tile-title>{{ tl('_dont_create_work_folder') }}</v-list-tile-title>
@@ -78,7 +92,9 @@ export default {
       pageNumberLength: 0,
 
       zipMultipleImages: 1,
-
+      
+      zipFileExtension: '.zip',
+      
       dontCreateWorkFolder: 0,
 
       combinWRRuleAndIRRuleWhenDontCreateWorkFolder: 0
@@ -127,7 +143,17 @@ export default {
         value: 2
       }]
     },
-
+    
+    zipFileExtensionOptions() {
+      return [{
+        text: '.zip',
+        value: '.zip',
+      }, {
+        text: '.cbz',
+        value: '.cbz'
+      }]
+    },
+    
     dontCreateWorkFolderOptions() {
       return [{
         text: this.tl('_disable'),
@@ -160,6 +186,12 @@ export default {
         globalZipMultipleImages: val
       });
     },
+    
+    zipFileExtension(val) {
+      browser.storage.local.set({
+        globalZipFileExtension: val
+      });
+    },
 
     dontCreateWorkFolder(val) {
       browser.storage.local.set({
@@ -178,6 +210,7 @@ export default {
     this.pageNumberStartWithOne = this.browserItems.globalTaskPageNumberStartWithOne;
     this.pageNumberLength = this.browserItems.globalTaskPageNumberLength;
     this.zipMultipleImages = this.browserItems.globalZipMultipleImages;
+    this.zipFileExtension = this.browserItems.globalZipFileExtension;
     this.dontCreateWorkFolder = this.browserItems.dontCreateWorkFolder;
     this.combinWRRuleAndIRRuleWhenDontCreateWorkFolder = this.browserItems.combinWRRuleAndIRRuleWhenDontCreateWorkFolder;
   },

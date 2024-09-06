@@ -899,6 +899,9 @@
     "_zip_multiple_images": {
         "message": "多张图片打包成ZIP文件"
     },
+	"_zip_file_extension": {
+        "message": "用于ZIP文件名的扩展名"
+    },
     "_create_a_zip_file_while_downloading_multiple_images": {
         "message": "当下载的项目包含多张图片时打包成ZIP"
     },

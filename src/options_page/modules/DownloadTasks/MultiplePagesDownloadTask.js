@@ -199,7 +199,7 @@ class MultipleDownloadTask extends AbstractDownloadTask {
           action: 'download:saveFile',
           args: {
             url: URL.createObjectURL(blob),
-            filename: filename + '.zip'
+            filename: filename + GlobalSettings().globalZipFileExtension
           }
         });
 

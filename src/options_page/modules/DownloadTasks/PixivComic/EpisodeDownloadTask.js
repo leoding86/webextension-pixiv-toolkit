@@ -169,7 +169,7 @@ class EpisodeDownloadTask extends AbstractDownloadTask {
       this.zip.generateAsync({ type: 'blob' }).then(async blob => {
         this.lastDownloadId = await FileSystem.getDefault().saveFileInBackground({
           url: URL.createObjectURL(blob),
-          filename: pathjoin(GlobalSettings().downloadRelativeLocation, nameFormatter.format(this.options.renameRule, this.context.id)) + '.zip'
+          filename: pathjoin(GlobalSettings().downloadRelativeLocation, nameFormatter.format(this.options.renameRule, this.context.id)) +  GlobalSettings().globalZipFileExtension
         });
 
         this.changeState(this.COMPLETE_STATE);
