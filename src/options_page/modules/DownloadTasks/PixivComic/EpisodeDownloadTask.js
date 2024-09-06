@@ -6,11 +6,12 @@ import NameFormattor from "@/modules/Util/NameFormatter";
 import MimeType from "@/modules/Util/MimeType";
 import pathjoin from "@/modules/Util/pathjoin";
 import { decrypteImage } from "@/modules/Parser/PixivComic/ImageDecrypte";
+import MultipleDownloadTask from "../MultiplePagesDownloadTask";
 
 /**
  * @class
  */
-class EpisodeDownloadTask extends AbstractDownloadTask {
+class EpisodeDownloadTask extends MultipleDownloadTask {
   /**
    * @inheritdoc
    */
@@ -33,7 +34,7 @@ class EpisodeDownloadTask extends AbstractDownloadTask {
    * @param {MultipleDownloadTaskOptions} options
    */
   constructor(options) {
-    super();
+    super(options);
 
     this.options = options;
     this.id = options.id;
@@ -137,7 +138,7 @@ class EpisodeDownloadTask extends AbstractDownloadTask {
       context: Object.assign({}, this.context, { pageNum })
     });
 
-    if (this.zipMultipleImages === 1) {
+    if (this.shouldZipFile()) {
       const now = new Date();
       now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
       const file = nameFormatter.format(this.options.renameImageRule, `p${pageNum}`) + `.${MimeType.getExtenstion(mimeType)}`;
@@ -147,10 +148,10 @@ class EpisodeDownloadTask extends AbstractDownloadTask {
 
       this.lastDownloadId = await FileSystem.getDefault().saveFileInBackground({
         url,
-        filename: pathjoin(GlobalSettings().downloadRelativeLocation ,nameFormatter.format(
-          this.options.renameRule,
-          this.context.id + `_${pageNum}`
-        )) + `.${MimeType.getExtenstion(mimeType)}`
+        filename: pathjoin(GlobalSettings().downloadRelativeLocation,
+          nameFormatter.format(this.options.renameRule, this.context.id),
+          nameFormatter.format(this.options.renameImageRule, this.context.id + `_p${pageNum}`),
+        ) + `.${MimeType.getExtenstion(mimeType)}`
       });
 
       URL.revokeObjectURL(url);
@@ -163,7 +164,7 @@ class EpisodeDownloadTask extends AbstractDownloadTask {
    * @fires MultipleDownloadTask#complete
    */
   onFinish() {
-    if (this.zipMultipleImages === 1) {
+    if (this.shouldZipFile()) {
       const nameFormatter = NameFormattor.getFormatter({ context: Object.assign({}, this.context) });
 
       this.zip.generateAsync({ type: 'blob' }).then(async blob => {
