@@ -23,14 +23,16 @@ class DownloadService extends AbstractService {
     super();
 
     browser.downloads.onDeterminingFilename.addListener((downloadItem, suggest) => {
-      if (this.cachedDownloadIdFilenameMap[downloadItem.id]) {
-        suggest({
-          conflictAction: "uniquify",
-          filename: this.cachedDownloadIdFilenameMap[downloadItem.id]
-        });
+      const filenameSuggestion = {
+        conflictAction: "uniquify",
+      };
 
+      if (this.cachedDownloadIdFilenameMap[downloadItem.id]) {
+        filenameSuggestion.filename = this.cachedDownloadIdFilenameMap[downloadItem.id];
         delete this.cachedDownloadIdFilenameMap[downloadItem.id];
       }
+
+      suggest(filenameSuggestion);
     });
   }
 
