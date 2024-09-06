@@ -30,12 +30,11 @@
       <v-list-tile>
         <v-list-tile-content>
           <v-list-tile-title>{{ tl('_zip_multiple_images') }}</v-list-tile-title>
-          <v-list-tile-sub-title>{{ tl('_create_a_zip_file_while_downloading_multiple_images') }}</v-list-tile-sub-title>
         </v-list-tile-content>
         <v-list-tile-action>
           <v-select :items="zipMultipleImagesOptions"
             v-model="zipMultipleImages"
-            style="width:150px;"
+            style="width:200px;"
           ></v-select>
         </v-list-tile-action>
       </v-list-tile>
@@ -47,12 +46,12 @@
         <v-list-tile-action>
           <v-select :items="dontCreateWorkFolderOptions"
             v-model="dontCreateWorkFolder"
-            style="width:175px;"
+            style="width:200px;"
           ></v-select>
         </v-list-tile-action>
       </v-list-tile>
 
-      <v-list-tile v-if="[1,2].indexOf(dontCreateWorkFolder) > -1">
+      <v-list-tile v-if="[1,2,3].indexOf(dontCreateWorkFolder) > -1">
         <v-list-tile-content>
           <v-list-tile-title>{{ tl('_combin_work_and_image_rename_rule_when_dont_create_work_folder') }}</v-list-tile-title>
         </v-list-tile-content>
@@ -120,11 +119,14 @@ export default {
         text: this.tl('_enable'),
         value: 1,
       }, {
+        text: this.tl('_only_if_the_work_has_multiple_images'),
+        value: 2
+      }, {
+        text: this.tl('_only_when_downloading_multiple_images'),
+        value: 3,
+      }, {
         text: this.tl('_disable'),
         value: 0
-      }, {
-        text: this.tl('_disable_there_is_only_one_image'),
-        value: 2
       }]
     },
 
@@ -133,8 +135,11 @@ export default {
         text: this.tl('_disable'),
         value: 0
       }, {
-        text: this.tl('_when_there_is_only_one_image'),
+        text: this.tl('_only_if_the_work_has_one_image'),
         value: 1
+      }, {
+        text: this.tl('_only_when_downloading_one_image'),
+        value: 3
       }, {
         text: this.tl('_always'),
         value: 2

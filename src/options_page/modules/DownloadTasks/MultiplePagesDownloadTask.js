@@ -132,7 +132,17 @@ class MultipleDownloadTask extends AbstractDownloadTask {
   }
 
   shouldZipFile() {
-    return this.zipMultipleImages === 1 || (this.zipMultipleImages === 2 && this.options.pages.length > 1);
+    return this.zipMultipleImages === 1 ||
+      (this.zipMultipleImages === 2 && this.options.pages.length > 1)
+      (this.zipMultipleImages === 3 && this.downloader.files.length > 1 );
+  }
+
+  dontCreateWorkFolder() {
+    const dontCreateWorkFolderSetting = GlobalSettings().dontCreateWorkFolder;
+
+    return dontCreateWorkFolderSetting === 2 ||
+      (dontCreateWorkFolderSetting === 1 && this.options.pages.length === 1) ||
+      (dontCreateWorkFolderSetting === 3 && this.downloader.files.length === 1)
   }
 
   /**
@@ -153,12 +163,7 @@ class MultipleDownloadTask extends AbstractDownloadTask {
     } else {
       let filename = GlobalSettings().downloadRelativeLocation;
 
-      if (this.type !== 'PIXIV_MANGA' &&
-        (
-          (GlobalSettings().dontCreateWorkFolder === 1 && this.options.pages.length === 1) ||
-          GlobalSettings().dontCreateWorkFolder === 2
-        )
-      ) {
+      if (this.type !== 'PIXIV_MANGA' && this.dontCreateWorkFolder()) {
         filename = pathjoin(filename,
           nameFormatter.format((GlobalSettings().combinWRRuleAndIRRuleWhenDontCreateWorkFolder === 0 ? '' : (this.options.renameRule + '_')) + this.options.renameImageRule, `${this.context.id}-p${pageNum}`)
         ) + `.${MimeType.getExtenstion(mimeType)}`;
