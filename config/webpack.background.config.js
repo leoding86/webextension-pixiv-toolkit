@@ -73,7 +73,7 @@ module.exports = env => {
                 json.options_ui.page = json.options_page;
                 json.options_ui.open_in_tab = true;
 
-                json.optional_permissions.forEach(permission => {
+                json.optional_permissions && json.optional_permissions.forEach(permission => {
                   if (permission === 'downloads.shelf') {
                     return;
                   }
