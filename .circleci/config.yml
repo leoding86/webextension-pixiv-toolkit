@@ -3,12 +3,15 @@ jobs:
   build:
     working_directory: ~/webext-pixiv-toolkit
     docker:
-      - image: circleci/node:12.9.1
+      - image: circleci/node:16.18.0
     steps:
       - checkout
       - run:
           name: update-npm
           command: 'sudo npm install -g npm@latest'
+      - run:
+          name: install-yarn
+          command: 'sudo nom install -g yarn@1.22.19'
       - restore_cache: # special step to restore the dependency cache
           # Read about caching dependencies: https://circleci.com/docs/2.0/caching/
           key: dependency-cache-{{ checksum "yarn.lock" }}
