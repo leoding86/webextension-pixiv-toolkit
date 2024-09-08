@@ -2,7 +2,7 @@
  * @Author: Leo Ding <leoding86@msn.com>
  * @Date: 2024-08-08 08:43:42
  * @LastEditors: Leo Ding <leoding86@msn.com>
- * @LastEditTime: 2024-08-08 15:36:08
+ * @LastEditTime: 2024-09-08 11:40:47
  */
 //@ts-check
 export default Object.assign({}, {
@@ -256,6 +256,11 @@ export default Object.assign({}, {
     downloadMode: 1, // 1: legacy; 2: download manager
     dontCreateWorkFolder: 0,
     combinWRRuleAndIRRuleWhenDontCreateWorkFolder: 0,
+
+    /**
+     * @since 6.4.0
+     */
+    downloadSaveMode: 0, // 0: pack in zip; 1: save in folder
 
     /**
      * @since 1.0.0
