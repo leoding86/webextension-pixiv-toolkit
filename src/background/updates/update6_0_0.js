@@ -2,7 +2,7 @@
  * @Author: Leo Ding <leoding86@msn.com>
  * @Date: 2024-08-21 13:26:02
  * @LastEditors: Leo Ding <leoding86@msn.com>
- * @LastEditTime: 2024-09-08 11:41:43
+ * @LastEditTime: 2024-09-08 14:12:23
  * @FilePath: \webextension-pixiv-toolkit\src\background\updates\update6_0_0.js
  */
 import { app } from "../Application";
@@ -78,6 +78,11 @@ export default async () => {
   updateSettings.illustrationPageNumberStartWithOne = settings.illustrationPageNumberStartWithOne ? 1 : 0;
   updateSettings.mangaPageNumberStartWithOne = settings.MangaPageNumberStartWithOne ? 1 : 0;
   updateSettings.pixivComicPageNumberStartWithOne = settings.pixivComicPageNumberStartWithOne ? 1 : 0;
+
+  if (updateSettings.globalZipMultipleImages === 0) {
+    updateSettings.globalZipMultipleImages = 1;
+    updateSettings.downloadSaveMode = 1;
+  }
 
   app().getService('setting').updateSettings(updateSettings);
 
