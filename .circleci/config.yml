@@ -3,20 +3,23 @@ jobs:
   build:
     working_directory: ~/webext-pixiv-toolkit
     docker:
-      - image: circleci/node:12.9.1
+      - image: cimg/node:16.18.0
     steps:
       - checkout
-      - run:
-          name: update-npm
-          command: 'sudo npm install -g npm@latest'
+      #- run:
+      #    name: update-npm
+      #    command: 'sudo npm install -g npm@latest'
+      # - run:
+      #    name: install-yarn
+      #    command: 'sudo npm install -g yarn@1.22.19'
       - restore_cache: # special step to restore the dependency cache
           # Read about caching dependencies: https://circleci.com/docs/2.0/caching/
-          key: dependency-cache-{{ checksum "package-lock.json" }}
+          key: dependency-cache-{{ checksum "yarn.lock" }}
       - run:
           name: "Install npm packages"
-          command: "npm install"
+          command: "yarn install"
       - save_cache: # special step to save the dependency cache
-          key: dependency-cache-{{ checksum "package-lock.json" }}
+          key: dependency-cache-{{ checksum "yarn.lock" }}
           paths:
             - ./node_modules
       - run:
@@ -24,10 +27,10 @@ jobs:
           command: "npm rebuild node-sass"
       - run:
           name: "Build extension for Chrome"
-          command: "npm run build"
+          command: "yarn build"
       - run:
           name: "Build exntesion for Firefox"
-          command: "npm run build:firefox"
+          command: "yarn build:firefox"
       - run:
           name: "Create artifacts"
           command: |
