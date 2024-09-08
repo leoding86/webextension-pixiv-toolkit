@@ -11,7 +11,7 @@ jobs:
           command: 'sudo npm install -g npm@latest'
       - run:
           name: install-yarn
-          command: 'sudo nom install -g yarn@1.22.19'
+          command: 'sudo npm install -g yarn@1.22.19'
       - restore_cache: # special step to restore the dependency cache
           # Read about caching dependencies: https://circleci.com/docs/2.0/caching/
           key: dependency-cache-{{ checksum "yarn.lock" }}
