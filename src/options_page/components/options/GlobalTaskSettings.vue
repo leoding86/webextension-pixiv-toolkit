@@ -27,29 +27,11 @@
         </v-list-tile-action>
       </v-list-tile>
 
-      <v-list-tile>
-        <v-list-tile-content>
-          <v-list-tile-title>{{ tl('_zip_multiple_images') }}</v-list-tile-title>
-        </v-list-tile-content>
-        <v-list-tile-action>
-          <v-select :items="zipMultipleImagesOptions"
-            v-model="zipMultipleImages"
-            style="width:200px;"
-          ></v-select>
-        </v-list-tile-action>
-      </v-list-tile>
+      <DownloadSaveMode />
 
-      <v-list-tile>
-        <v-list-tile-content>
-          <v-list-tile-title>{{ tl('_dont_create_work_folder') }}</v-list-tile-title>
-        </v-list-tile-content>
-        <v-list-tile-action>
-          <v-select :items="dontCreateWorkFolderOptions"
-            v-model="dontCreateWorkFolder"
-            style="width:200px;"
-          ></v-select>
-        </v-list-tile-action>
-      </v-list-tile>
+      <ZipDownloads />
+
+      <DontCreateWorkFolder />
 
       <v-list-tile v-if="[1,2,3].indexOf(dontCreateWorkFolder) > -1">
         <v-list-tile-content>
@@ -67,19 +49,23 @@
 </template>
 
 <script>
+import DownloadSaveMode from './option-items/DownloadSaveMode.vue';
+import ZipDownloads from './option-items/ZipDownloads.vue';
+import DontCreateWorkFolder from './option-items/DontCreateWorkFolder.vue';
+
 export default {
   name: 'global-task-setting',
+
+  components: {
+    DownloadSaveMode,
+    ZipDownloads,
+    DontCreateWorkFolder
+  },
 
   data() {
     return {
       pageNumberStartWithOne: 0,
-
       pageNumberLength: 0,
-
-      zipMultipleImages: 1,
-
-      dontCreateWorkFolder: 0,
-
       combinWRRuleAndIRRuleWhenDontCreateWorkFolder: 0
     };
   },
@@ -112,38 +98,6 @@ export default {
         text: this.tl('_disable'),
         value: 0,
       }]
-    },
-
-    zipMultipleImagesOptions() {
-      return [{
-        text: this.tl('_enable'),
-        value: 1,
-      }, {
-        text: this.tl('_only_if_the_work_has_multiple_images'),
-        value: 2
-      }, {
-        text: this.tl('_only_when_downloading_multiple_images'),
-        value: 3,
-      }, {
-        text: this.tl('_disable'),
-        value: 0
-      }]
-    },
-
-    dontCreateWorkFolderOptions() {
-      return [{
-        text: this.tl('_disable'),
-        value: 0
-      }, {
-        text: this.tl('_only_if_the_work_has_one_image'),
-        value: 1
-      }, {
-        text: this.tl('_only_when_downloading_one_image'),
-        value: 3
-      }, {
-        text: this.tl('_always'),
-        value: 2
-      }]
     }
   },
 
@@ -160,18 +114,6 @@ export default {
       });
     },
 
-    zipMultipleImages(val) {
-      browser.storage.local.set({
-        globalZipMultipleImages: val
-      });
-    },
-
-    dontCreateWorkFolder(val) {
-      browser.storage.local.set({
-        dontCreateWorkFolder: val
-      });
-    },
-
     combinWRRuleAndIRRuleWhenDontCreateWorkFolder(val) {
       browser.storage.local.set({
         combinWRRuleAndIRRuleWhenDontCreateWorkFolder: val
@@ -182,8 +124,6 @@ export default {
   created() {
     this.pageNumberStartWithOne = this.browserItems.globalTaskPageNumberStartWithOne;
     this.pageNumberLength = this.browserItems.globalTaskPageNumberLength;
-    this.zipMultipleImages = this.browserItems.globalZipMultipleImages;
-    this.dontCreateWorkFolder = this.browserItems.dontCreateWorkFolder;
     this.combinWRRuleAndIRRuleWhenDontCreateWorkFolder = this.browserItems.combinWRRuleAndIRRuleWhenDontCreateWorkFolder;
   },
 };
