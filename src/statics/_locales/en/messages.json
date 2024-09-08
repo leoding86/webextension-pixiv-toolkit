@@ -976,5 +976,11 @@
     },
     "_save_in_folder": {
         "message": "Save in folder"
+    },
+    "_always_dont": {
+        "message": "Always dont"
+    },
+    "_always_create": {
+        "message": "Always create"
     }
 }

@@ -982,5 +982,11 @@
     },
     "_save_in_folder": {
         "message": "保存到文件夹"
+    },
+    "_always_dont": {
+        "message": "总是不"
+    },
+    "_always_create": {
+        "message": "总是创建"
     }
 }
