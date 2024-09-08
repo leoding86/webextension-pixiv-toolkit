@@ -14,7 +14,7 @@ export default {
   computed: {
     options() {
       return [{
-        text: this.tl('_disable'),
+        text: this.tl('_always_create'),
         value: 0
       }, {
         text: this.tl('_only_if_the_work_has_one_image'),
@@ -23,7 +23,7 @@ export default {
         text: this.tl('_only_when_downloading_one_image'),
         value: 3
       }, {
-        text: this.tl('_always'),
+        text: this.tl('_always_dont'),
         value: 2
       }]
     }
