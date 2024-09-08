@@ -690,7 +690,7 @@
        "message": "Select ugoira convert tool"
    },
    "_startup_message": {
-       "message": "The Pixiv Toolkit Next version is the next major update version of Pixiv Toolkit. There are some breaking changes compare with current Pixiv Toolkit. Go to the project Github page to learn more."
+       "message": "There have been constant problems since the 6.0.0 version update, and the main reason is that the upgrade was too hasty and led to some mistakes in decision-making. After this period of repairs, it should be back to road. Thank you for continuing to use and report problems. Due to some personal affairs that need to be dealt with later, the later plan is to deal with issues in every two weeks. Please understand 🙏."
    },
    "_ffmpeg_custom_convert_command": {
        "message": "FFmpeg custom convert command, press enter for new line"
@@ -891,10 +891,10 @@
         "message": "Rename image page in Pixiv Comic"
     },
     "_zip_multiple_images": {
-        "message": "Zip multiple images"
+        "message": "Create zip file for downloads"
     },
-    "_create_a_zip_file_while_downloading_multiple_images": {
-        "message": "Create a zip file while downloading item which includes multiple images"
+    "_zip_multiple_images_desc": {
+        "message": "Only effect the illust, manga and comic work take"
     },
     "_download_gif": {
         "message": "DL GIF"
@@ -930,7 +930,10 @@
         "message": "When only one image"
     },
     "_dont_create_work_folder": {
-        "message": "Don't create work folder (Only affect Illustration and FanBox work)"
+        "message": "Don't create work folder when ..."
+    },
+    "_dont_create_work_folder_desc": {
+        "message": "Only effect the illustration and Fanbox work"
     },
     "_combin_work_and_image_rename_rule_when_dont_create_work_folder": {
         "message": "Combine work and image rename rule when don't create work folder (Using _)"
@@ -958,5 +961,20 @@
     },
     "_only_when_downloading_one_image": {
         "message": "Only when downloading one image"
+    },
+    "_download_save_mode": {
+        "message": "Download save mode"
+    },
+    "_download_save_mode_0_desc": {
+        "message": "Pack downloaded image(s) into zip and save"
+    },
+    "_download_save_mode_1_desc": {
+        "message": "Save downloaded image(s) in folder directly"
+    },
+    "_pack_in_zip": {
+        "message": "Pack in zip"
+    },
+    "_save_in_folder": {
+        "message": "Save in folder"
     }
 }
