@@ -6,9 +6,9 @@ jobs:
       - image: cimg/node:16.18.0
     steps:
       - checkout
-      - run:
-          name: update-npm
-          command: 'sudo npm install -g npm@latest'
+      #- run:
+      #    name: update-npm
+      #    command: 'sudo npm install -g npm@latest'
       - run:
           name: install-yarn
           command: 'sudo npm install -g yarn@1.22.19'
