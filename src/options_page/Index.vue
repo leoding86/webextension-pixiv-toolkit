@@ -104,8 +104,6 @@
       subTitle="A more powerful Pixiv downloader"
       link="https://github.com/leoding86/pixiv-omina"
     ></app-suggest>
-
-    <startup-dialog :show.sync="showStartupDialog"></startup-dialog>
   </div>
 </template>
 
@@ -113,7 +111,6 @@
 import Supports from '@@/components/Supports';
 import AppSuggest from '@@/components/AppSuggest';
 import UpdateNotice from '@@/components/UpdateNotice';
-import StartupDialog from '@@/components/StartupDialog';
 import browser from '@/modules/Extension/browser';
 
 export default {
@@ -122,8 +119,7 @@ export default {
   components: {
     'supports': Supports,
     'app-suggest': AppSuggest,
-    'update-notice': UpdateNotice,
-    'startup-dialog': StartupDialog,
+    'update-notice': UpdateNotice
   },
 
   data () {
@@ -131,8 +127,7 @@ export default {
       drawer: true,
       drawerTemporary: false,
       displayAppSuggest: false,
-      showAppSuggest: false,
-      showStartupDialog: false,
+      showAppSuggest: false
     }
   },
 
@@ -143,7 +138,6 @@ export default {
   },
 
   created() {
-    this.showStartupDialog = !this.browserItems.importantNoticeDisplayed;
     this.downloadManagerOpenning = false;
   },
 
