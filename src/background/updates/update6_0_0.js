@@ -2,7 +2,7 @@
  * @Author: Leo Ding <leoding86@msn.com>
  * @Date: 2024-08-21 13:26:02
  * @LastEditors: Leo Ding <leoding86@msn.com>
- * @LastEditTime: 2024-08-21 14:01:02
+ * @LastEditTime: 2024-09-08 11:41:43
  * @FilePath: \webextension-pixiv-toolkit\src\background\updates\update6_0_0.js
  */
 import { app } from "../Application";
@@ -15,7 +15,7 @@ import defaultSettings from "@/config/default";
 export default async () => {
   let settings = await app().getService('setting').getSettings();
   let updateSettings = Object.assign({}, defaultSettings, settings, {
-    version: '6.3.2',
+    version: '6.4.0',
   });
 
   /**
