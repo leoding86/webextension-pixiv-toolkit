@@ -132,12 +132,20 @@ class MultipleDownloadTask extends AbstractDownloadTask {
   }
 
   shouldZipFile() {
+    if (GlobalSettings().downloadSaveMode !== 0) {
+      return false;
+    }
+
     return this.zipMultipleImages === 1 ||
       (this.zipMultipleImages === 2 && this.options.pages.length > 1) ||
       (this.zipMultipleImages === 3 && this.downloader.files.length > 1 );
   }
 
   dontCreateWorkFolder() {
+    if (GlobalSettings().downloadSaveMode !== 1) {
+      return false;
+    }
+
     const dontCreateWorkFolderSetting = GlobalSettings().dontCreateWorkFolder;
 
     return dontCreateWorkFolderSetting === 2 ||
@@ -195,7 +203,10 @@ class MultipleDownloadTask extends AbstractDownloadTask {
   onFinish() {
     if (this.shouldZipFile()) {
       const nameFormatter = NameFormattor.getFormatter({ context: Object.assign({}, this.context) });
-      let filename = pathjoin(GlobalSettings().downloadRelativeLocation, nameFormatter.format(this.options.renameRule, this.context.id));
+      let filename = pathjoin(
+        GlobalSettings().downloadRelativeLocation,
+        nameFormatter.format(this.options.renameRule, this.context.id)
+      );
       filename = fixFilename(filename);
 
       this.zip.generateAsync({ type: 'blob' }).then(async blob => {
