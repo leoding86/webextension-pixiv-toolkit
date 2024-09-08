@@ -19,6 +19,7 @@
     <h1>Debug actions</h1>
     <div>
       <v-btn @click="resetVersionNumber">Reset version number</v-btn>
+      <v-btn @click="resetVersionNumber({ resetSettings: false })">Reset version number without reset settings</v-btn>
       <v-btn @click="insertData">Insert histories</v-btn>
     </div>
     <h1>Debug Request module</h1>
@@ -58,10 +59,10 @@ export default {
   },
 
   methods: {
-    resetVersionNumber() {
+    resetVersionNumber(options) {
       browser.storage.local.get(null, items => {
         console.log(items);
-        const keys = Object.keys(items);
+        const keys = options.resetSettings === true ? Object.keys(items) : [];
 
         browser.storage.local.remove(keys, () => {
           browser.storage.local.set({
