@@ -936,7 +936,7 @@
         "message": "Only effect the illustration and Fanbox work"
     },
     "_combin_work_and_image_rename_rule_when_dont_create_work_folder": {
-        "message": "Combine work and image rename rule when don't create work folder (Using _)"
+        "message": "Combine work and image rename rule with \"_\" when don't create work folder"
     },
     "_new_settings": {
         "message": "New Settings"
