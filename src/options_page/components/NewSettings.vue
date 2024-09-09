@@ -15,6 +15,7 @@
         <DownloadSaveMode />
         <ZipDownloads />
         <DontCreateWorkFolder />
+        <CombineRenameRules />
       </v-list>
     </v-card-text>
   </v-card>
@@ -25,6 +26,7 @@ import DownloadMode from './options/option-items/DownloadMode.vue';
 import DownloadSaveMode from './options/option-items/DownloadSaveMode.vue';
 import ZipDownloads from './options/option-items/ZipDownloads.vue';
 import DontCreateWorkFolder from './options/option-items/DontCreateWorkFolder.vue';
+import CombineRenameRules from './options/option-items/CombineRenameRules.vue';
 
 export default {
   name: 'global-task-setting',
@@ -33,7 +35,8 @@ export default {
     'download-mode': DownloadMode,
     DownloadSaveMode,
     ZipDownloads,
-    DontCreateWorkFolder
+    DontCreateWorkFolder,
+    CombineRenameRules
   }
 };
 </script>

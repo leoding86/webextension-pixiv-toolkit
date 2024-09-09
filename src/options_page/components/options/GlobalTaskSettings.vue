@@ -33,17 +33,7 @@
 
       <DontCreateWorkFolder />
 
-      <v-list-tile v-if="[1,2,3].indexOf(dontCreateWorkFolder) > -1">
-        <v-list-tile-content>
-          <v-list-tile-title>{{ tl('_combin_work_and_image_rename_rule_when_dont_create_work_folder') }}</v-list-tile-title>
-        </v-list-tile-content>
-        <v-list-tile-action>
-          <v-select :items="zipMultipleImagesOptions"
-            v-model="combinWRRuleAndIRRuleWhenDontCreateWorkFolder"
-            style="width:150px;"
-          ></v-select>
-        </v-list-tile-action>
-      </v-list-tile>
+      <CombineRenameRules />
     </v-list>
   </div>
 </template>
@@ -52,6 +42,7 @@
 import DownloadSaveMode from './option-items/DownloadSaveMode.vue';
 import ZipDownloads from './option-items/ZipDownloads.vue';
 import DontCreateWorkFolder from './option-items/DontCreateWorkFolder.vue';
+import CombineRenameRules from './option-items/CombineRenameRules.vue';
 
 export default {
   name: 'global-task-setting',
@@ -59,7 +50,8 @@ export default {
   components: {
     DownloadSaveMode,
     ZipDownloads,
-    DontCreateWorkFolder
+    DontCreateWorkFolder,
+    CombineRenameRules
   },
 
   data() {
