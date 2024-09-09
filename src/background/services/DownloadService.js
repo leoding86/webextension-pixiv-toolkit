@@ -17,7 +17,10 @@ class DownloadService extends AbstractService {
 
   openingDownloadManager = false;
 
-  cachedDownloadIdFilenameMap = {};
+  /**
+   * @type {Map<string, string>}
+   */
+  cachedDownloadIdFilenameMap = new Map();
 
   constructor() {
     super();
@@ -27,10 +30,14 @@ class DownloadService extends AbstractService {
         conflictAction: "uniquify",
       };
 
-      if (this.cachedDownloadIdFilenameMap[downloadItem.id]) {
-        filenameSuggestion.filename = this.cachedDownloadIdFilenameMap[downloadItem.id];
-        delete this.cachedDownloadIdFilenameMap[downloadItem.id];
+      if (this.cachedDownloadIdFilenameMap.has(downloadItem.url)) {
+        filenameSuggestion.filename = this.cachedDownloadIdFilenameMap.get(downloadItem.url);
+        delete this.cachedDownloadIdFilenameMap.delete(downloadItem.url);
+      } else {
+        filenameSuggestion.filename = downloadItem.filename;
       }
+
+      console.log(downloadItem, filenameSuggestion);
 
       suggest(filenameSuggestion);
     });
@@ -115,13 +122,13 @@ class DownloadService extends AbstractService {
     }
   }
 
-  cacheDownloadIdFilename(downloadId, filename) {
-    this.cachedDownloadIdFilenameMap[downloadId] = filename;
+  cacheDownloadIdFilename(url, filename) {
+    this.cachedDownloadIdFilenameMap.set(url, filename);
   }
 
   async saveFile({ url, filename }) {
+    this.cacheDownloadIdFilename(url, filename);
     const downloadId = await FileSystem.getDefault().saveFile({ url, filename });
-    this.cacheDownloadIdFilename(downloadId, filename);
     return downloadId;
   }
 }
