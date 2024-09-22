@@ -2,7 +2,7 @@
  * @Author: Leo Ding <leoding86@msn.com>
  * @Date: 2024-08-11 11:09:14
  * @LastEditors: Leo Ding <leoding86@msn.com>
- * @LastEditTime: 2024-09-22 11:23:29
+ * @LastEditTime: 2024-09-22 13:13:08
  * @FilePath: \webextension-pixiv-toolkit\src\background\services\DownloadService.js
  */
 import browser from "@/modules/Extension/browser";
@@ -30,8 +30,6 @@ class DownloadService extends AbstractService {
   listenOnDeterminingFilename() {
     if (DownloadService.onDeterminingFilenameListenered === true) return;
     DownloadService.onDeterminingFilenameListenered = true;
-
-    browser.downloads.onDeterminingFilename.removeListener();
 
     browser.downloads.onDeterminingFilename.addListener((downloadItem, suggest) => {
       const filenameSuggestion = {
