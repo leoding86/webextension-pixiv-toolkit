@@ -198,9 +198,49 @@ class MultipleDownloadTask extends AbstractDownloadTask {
   }
 
   /**
+   * Override in download task
+   * @returns {boolean}
+   */
+  canSaveInfo() {
+    return false;
+  }
+
+  async saveInfo() {
+    const metaFilename = 'info.json';
+    const that = this;
+
+    return new Promise(async resolve => {
+      const blob = new Blob([JSON.stringify(that.options.context)], {
+        type: 'application/json'
+      });
+
+      if (that.shouldZipFile()) {
+        that.zip.file(metaFilename, blob, { date: this.now });
+      } else {
+        await browser.runtime.sendMessage({
+          to: 'ws',
+          action: 'download:saveFile',
+          args: {
+            url: URL.createObjectURL(blob),
+            filename: metaFilename
+          }
+        })
+      }
+      resolve();
+    });
+  }
+
+  /**
    * @fires MultipleDownloadTask#complete
    */
-  onFinish() {
+  async onFinish() {
+    if (GlobalSettings().enableDownloadMetadata &&
+      this.options.context &&
+      this.canSaveInfo()
+    ) {
+      await this.saveInfo();
+    }
+
     if (this.shouldZipFile()) {
       const nameFormatter = NameFormattor.getFormatter({ context: Object.assign({}, this.context) });
       let filename = pathjoin(
