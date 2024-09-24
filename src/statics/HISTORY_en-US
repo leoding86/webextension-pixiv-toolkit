@@ -1,3 +1,7 @@
+v6.4.2
+Remove the listener for event onDeterminingFilename;
+Fixed issues（#271, #284, #288）。
+
 v6.4.0
 Optimize download save mode settings;
 Fixed issues (#242、#270、#271、#277、#281).
