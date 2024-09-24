@@ -186,6 +186,20 @@ class UgoiraDownloadTask extends AbstractDownloadTask {
     URL.revokeObjectURL(url);
 
     this.dispatch('progress', [this.progress]);
+
+    /**
+     * Save work information accroding the enableDownloadMetadata setting
+     */
+    if (GlobalSettings().enableDownloadMetadata && this.options.context) {
+      const blob = new Blob([JSON.stringify(this.options.context)], { type: 'application/json' });
+      await browser.runtime.sendMessage({
+        to: 'ws', action: 'download:saveFile',
+        args: {
+          url: URL.createObjectURL(blob),
+          filename: 'info.json'
+        }
+      });
+    }
   }
 
   /**

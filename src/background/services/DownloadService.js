@@ -2,7 +2,7 @@
  * @Author: Leo Ding <leoding86@msn.com>
  * @Date: 2024-08-11 11:09:14
  * @LastEditors: Leo Ding <leoding86@msn.com>
- * @LastEditTime: 2024-08-21 19:54:16
+ * @LastEditTime: 2024-09-22 13:13:08
  * @FilePath: \webextension-pixiv-toolkit\src\background\services\DownloadService.js
  */
 import browser from "@/modules/Extension/browser";
@@ -24,6 +24,12 @@ class DownloadService extends AbstractService {
 
   constructor() {
     super();
+    this.listenOnDeterminingFilename();
+  }
+
+  listenOnDeterminingFilename() {
+    if (DownloadService.onDeterminingFilenameListenered === true) return;
+    DownloadService.onDeterminingFilenameListenered = true;
 
     browser.downloads.onDeterminingFilename.addListener((downloadItem, suggest) => {
       const filenameSuggestion = {
@@ -36,8 +42,6 @@ class DownloadService extends AbstractService {
       } else {
         filenameSuggestion.filename = downloadItem.filename;
       }
-
-      console.log(downloadItem, filenameSuggestion);
 
       suggest(filenameSuggestion);
     });
@@ -132,5 +136,10 @@ class DownloadService extends AbstractService {
     return downloadId;
   }
 }
+
+/**
+ * @type {boolean} Prevent listen the event multiple times
+ */
+DownloadService.onDeterminingFilenameListenered = false;
 
 export default DownloadService;

@@ -3,6 +3,7 @@
  * @property {number} downloadSaveMode
  * @property {number} globalZipMultipleImages
  * @property {number} downloadSaveMode
+ * @property {boolean} enableDownloadMetadata
  *
  * @param {*} fallback
  * @returns {GlobalSettings}

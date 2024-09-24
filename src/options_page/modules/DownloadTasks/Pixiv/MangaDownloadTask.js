@@ -25,6 +25,14 @@ class MangaDownloadTask extends MultipleDownloadTask {
   static create(options) {
     return new MangaDownloadTask(options);
   }
+
+  /**
+   * @override
+   * @returns {true}
+   */
+  canSaveInfo() {
+    return true;
+  }
 }
 
 export default MangaDownloadTask;
