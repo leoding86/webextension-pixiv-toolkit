@@ -70,6 +70,8 @@
                 "lib/jszip/jszip-utils.min.js",
                 "lib/gifjs/gif.js",
                 "lib/whammy.js",
+                "lib/js-epub-maker/js-epub-maker-idpf-wasteland-template.js",
+                "lib/js-epub-maker/js-epub-maker.js",
                 "content_scripts/app.js"
             ]
         }
