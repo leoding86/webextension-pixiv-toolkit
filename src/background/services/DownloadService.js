@@ -24,7 +24,7 @@ class DownloadService extends AbstractService {
 
   constructor() {
     super();
-    // this.listenOnDeterminingFilename();
+    this.listenOnDeterminingFilename();
   }
 
   listenOnDeterminingFilename() {
@@ -131,7 +131,7 @@ class DownloadService extends AbstractService {
   }
 
   async saveFile({ url, filename }) {
-    // this.cacheDownloadIdFilename(url, filename);
+    this.cacheDownloadIdFilename(url, filename);
     const downloadId = await FileSystem.getDefault().saveFile({ url, filename });
     return downloadId;
   }

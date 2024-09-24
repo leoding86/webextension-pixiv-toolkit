@@ -85,6 +85,12 @@ class Application {
      * Get settings before doing anything else.
      */
     this.settings = await settingService.getSettings();
+
+    /**
+     * Initialize DownloadService here to ensure the event onDetermingFilename has been listened
+     * when extension boots, otherwise it will occure browser 'save as' delay issue.
+     */
+    this.getService('Download');
   }
 
   onBooted() {
