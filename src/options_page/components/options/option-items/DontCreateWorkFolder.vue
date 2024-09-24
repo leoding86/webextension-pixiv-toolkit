@@ -41,7 +41,7 @@ export default {
 
   created() {
     this.showThis = this.browserItems.downloadSaveMode === 1;
-    this.value = this.browserItems.dontCreateWorkFoldoer;
+    this.value = this.browserItems.dontCreateWorkFolder;
 
     browser.storage.onChanged.addListener(changes => {
       if ('downloadSaveMode' in changes) {
