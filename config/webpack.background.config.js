@@ -66,6 +66,19 @@ module.exports = env => {
                * About manifest file, there are some differences between FireFox and browsers which based Chromium.
                * So we need do some extra works to make the target browser manifest file.
                */
+              if (platform === 'firefox') {
+                /**
+                 * Firefox implements the manifest v3 background as an event page,
+                 * it doesn't support `background.service_worker`. Convert it to
+                 * `background.scripts` so the extension can be loaded on Firefox.
+                 */
+                if (json.background && json.background.service_worker) {
+                  json.background = {
+                    scripts: [json.background.service_worker]
+                  };
+                }
+              }
+
               if (json.options_page && platform === 'firefox') {
                 console.log(`rename options_page to options_ui`);
 

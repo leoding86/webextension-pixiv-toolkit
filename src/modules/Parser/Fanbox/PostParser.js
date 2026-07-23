@@ -1,6 +1,6 @@
 import { RuntimeError } from "@/errors";
 import DateFormatter from "@/modules/Util/DateFormatter";
-import Request from "@/modules/Net/Request";
+import browser from "@/modules/Extension/browser";
 
 /**
  * @class
@@ -27,9 +27,9 @@ class PostParser {
   context;
 
   /**
-   * @type {Request}
+   * @type {boolean} Whether the parse has been aborted
    */
-  request;
+  aborted = false;
 
   /**
    * @constructor
@@ -57,6 +57,7 @@ class PostParser {
   setUrl(url) {
     this.url = url;
     this.context = {};
+    this.aborted = false;
   }
 
   /**
@@ -89,15 +90,6 @@ class PostParser {
     }
 
     throw new RuntimeError(`Can't parse the post id and creator id out. url: ${this.url}`);
-  }
-
-  /**
-   * Build the url which will represet post context data
-   * @param {string} postId
-   * @returns {string}
-   */
-  buildContextUrl(postId) {
-    return `https://api.fanbox.cc/post.info?postId=${postId}`;
   }
 
   /**
@@ -153,48 +145,52 @@ class PostParser {
   }
 
   /**
-   * Parse post context data
+   * Parse post context data.
+   *
+   * The api request is delegated to the background service worker instead of
+   * being sent from here directly. This page runs on `*.fanbox.cc` while the api
+   * lives on `api.fanbox.cc`, so a direct credentialed request is cross-origin
+   * and fails CORS under manifest v3 (issues #268 and #334). The background
+   * worker isn't subject to page CORS and still sends the session cookie.
+   *
    * @returns {Promise.<any,Error>}
    */
-  parseContext() {
+  async parseContext() {
     this.parseUrl(this.url);
 
-    return new Promise((resolve, reject) => {
-      this.request = new Request(this.buildContextUrl(this.context.postId), {
-        method: 'GET',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        }
-      });
-
-      this.request.addListener('onload', data => {
-        let textDecoder = new TextDecoder();
-        let json = JSON.parse(textDecoder.decode(data));
-
-        if (json && json.body) {
-          this.context = this.standardContext(json.body);
-          resolve();
-        } else {
-          reject(new RuntimeError(`Can't fetch fanbox post ${this.context.postId} context`));
-        }
-      });
-
-      this.request.addListener('onerror', error => {
-        reject(error);
-      });
-
-      this.request.send();
+    let response = await browser.runtime.sendMessage({
+      to: 'ws',
+      action: 'fanbox:postInfo',
+      args: { postId: this.context.postId },
     });
+
+    if (this.aborted) {
+      return;
+    }
+
+    if (response && response.error) {
+      throw new RuntimeError(`Can't fetch fanbox post ${this.context.postId} context: ${response.error}`);
+    }
+
+    if (response && response.body) {
+      /**
+       * Fanbox now nests the post data under `body.post`; older responses put it
+       * directly on `body`. Support both so the post fields line up with what
+       * standardContext expects.
+       */
+      let post = response.body.post || response.body;
+      this.context = this.standardContext(post);
+    } else {
+      throw new RuntimeError(`Can't fetch fanbox post ${this.context.postId} context`);
+    }
   }
 
   /**
-   * Abort request
+   * Abort parse. The background request itself can't be cancelled, so a late
+   * response is simply ignored.
    */
   abort() {
-    if (this.request) {
-      this.request.abort();
-    }
+    this.aborted = true;
   }
 }
 
