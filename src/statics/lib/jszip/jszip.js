@@ -1034,7 +1034,10 @@ https://github.com/nodeca/pako/blob/master/LICENSE
         //   "folder/" : {...},
         //   "folder/data.txt" : {...}
         // }
-        this.files = {};
+        // NOTE: we use a null prototype because we do not
+        // want filenames like "toString" coming from a zip file
+        // to overwrite methods and attributes in a normal Object.
+        this.files = Object.create(null);
     
         this.comment = null;
     
@@ -1506,16 +1509,16 @@ https://github.com/nodeca/pako/blob/master/LICENSE
          */
         forEach: function(cb) {
             var filename, relativePath, file;
+            /* jshint ignore:start */
+            // ignore warning about unwanted properties because this.files is a null prototype object
             for (filename in this.files) {
-                if (!this.files.hasOwnProperty(filename)) {
-                    continue;
-                }
                 file = this.files[filename];
                 relativePath = filename.slice(this.root.length, filename.length);
                 if (relativePath && filename.slice(0, this.root.length) === this.root) { // the file is in the current root
                     cb(relativePath, file); // TODO reverse the parameters ? need to be clean AND consistent with the filter search fn...
                 }
             }
+            /* jshint ignore:end */
         },
     
         /**
